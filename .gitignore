@@ -12,7 +12,7 @@
 hs_err_pid*
 
 #IDE and output folders and files
-/.idea/
+/.idea
 /target/
 /build/
 /gradle/
