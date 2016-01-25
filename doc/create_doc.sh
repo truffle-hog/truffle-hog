@@ -2,4 +2,4 @@
 
 # Run this from the doc directory
 
-sudo javadoc -docletpath TeXDoclet.jar -doclet org.stfm.texdoclet.TeXDoclet -sourcepath ./src/main/java -subpackages .
+sudo javadoc -docletpath TeXDoclet.jar -doclet org.stfm.texdoclet.TeXDoclet -sourcepath ../src/main/java -subpackages .
