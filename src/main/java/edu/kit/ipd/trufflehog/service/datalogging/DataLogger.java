@@ -32,37 +32,48 @@ public class DataLogger {
 
     /**
      * <p>
-     *      Creates a new DataLog object based on the snapshot of a graph given and the list of commands that occured
-     *      for the next X seconds after the snaphot was taken.
+     *      Creates a new {@link DataLog} object based on the snapshot of a graph given and the list of commands that
+     *      were executed for the next X seconds after the snapshot was taken.
      * </p>
      *
-     * @param snapshotGraph The snapshot of the graph to use
-     * @param commands
-     * @return
+     * @param snapshotGraph The snapshot of the graph to include in the data log.
+     * @param commands The list of commands to include in the data log.
+     * @return A new DataLog object that is serializable and that contains the graph snapshot and the list of commands
+     *          passed to the method.
      */
     public DataLog createDataLog(INetworkGraph snapshotGraph, List<ICommand> commands) {
         throw new NotImplementedException();
     }
 
     /**
+     * <p>
+     *     Saves the {@link DataLog} object given on the hard drive so that it can be retrieved later.
+     * </p>
      *
-     * @param log
+     * @param log The data log to save on the hard drive.
      */
     public void saveDataLog(DataLog log) {
 
     }
 
     /**
+     * <p>
+     *     Loads a {@link DataLog} object from the hard drive so that the graph can be viewed at that point in time.
+     * </p>
      *
-     * @param index
+     * @param index The data log to load from the hard drive.
      */
     public void loadDataLog(int index) {
 
     }
 
     /**
+     * <p>
+     *     Outputs the raw data of a {@link DataLog} object to the view, so that the user can see all kinds of
+     *     information about the graph its content at a given point in time.
+     * </p>
      *
-     * @param log
+     * @param log The DataLog object whose internal data should be shown on screen.
      */
     public void outputDataLog(DataLog log) {
 
