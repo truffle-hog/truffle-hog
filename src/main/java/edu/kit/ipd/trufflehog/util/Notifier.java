@@ -4,13 +4,13 @@ package edu.kit.ipd.trufflehog.util;
  * <p>
  *     The Notifier class works together with {@link INotifier} and {@link IListener} to create the main
  *     communication method between threads in TruffleHog. This communication method is a variation of the observer design
- *     pattern where messages sent from the subject to the observer include a parameter of type {@code M}. The
- *     {@code Notifier} is the subject in this case. {@code IListener}s register with the {@code Notifier} and can
- *     then be notified through the {@code notifyListeners} method. Unlike in the classic observer pattern, the
- *     {@code notifyListeners} method offers the possibility to pass along a parameter of type {@code M}.
+ *     pattern where messages sent from the subject to the observer include a parameter of type M. The
+ *     Notifier is the subject in this case. IListeners register with the Notifier and can
+ *     then be notified through the notifyListeners method. Unlike in the classic observer pattern, the
+ *     notifyListeners method offers the possibility to pass along a parameter of type M.
  * </p>
  * <p>
- *     The {@code Notifier} is the implementation of the {@link INotifier}. If a class can extend the {@code Notifier}
+ *     The Notifier is the implementation of the {@link INotifier}. If a class can extend the Notifier
  *     it should.
  * </p>
  *
