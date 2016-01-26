@@ -1,4 +1,4 @@
-package edu.kit.ipd.trufflehog.commands;
+package edu.kit.ipd.trufflehog.command;
 
 /**
  * Created by julianbrendl on 1/26/16.

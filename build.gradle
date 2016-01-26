@@ -5,7 +5,7 @@ version '0.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = "TruffleHog.TruffleHog"
+mainClassName = "edu.kit.ipd.trufflehog.Main"
 
 repositories {
     mavenCentral()
@@ -13,6 +13,19 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    //jung
+    compile 'org.apache.commons:commons-collections4:4.1'
+    compile 'colt:colt:1.2.0'
+    compile 'net.sf.jung:jung2:2.0.1'
+    compile 'net.sf.jung:jung-graph-impl:2.0.1'
+    compile 'net.sf.jung:jung-visualization:2.0.1'
+
+    testCompile 'org.apache.commons:commons-collections4:4.1'
+    testCompile 'colt:colt:1.2.0'
+    testCompile 'net.sf.jung:jung2:2.0.1'
+    testCompile 'net.sf.jung:jung-graph-impl:2.0.1'
+    testCompile 'net.sf.jung:jung-visualization:2.0.1'
 }
 
 jar {

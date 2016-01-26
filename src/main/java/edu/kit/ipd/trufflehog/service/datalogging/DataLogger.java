@@ -1,6 +1,6 @@
 package edu.kit.ipd.trufflehog.service.datalogging;
 
-import edu.kit.ipd.trufflehog.commands.ICommand;
+import edu.kit.ipd.trufflehog.command.ICommand;
 import edu.kit.ipd.trufflehog.model.graph.INetworkGraph;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -13,10 +13,10 @@ import java.util.List;
  * </p>
  * <p>
  *     The DataLogger saves the state of the graph through two things. It takes snapshots of the graph every X seconds
- *     through the {@link SnapshotLogger} and then saves all commands that occurred from that point on until the next
- *     snapshot is taken through the {@link CommandLogger}. Together these snapshots with the list of commands form a
+ *     through the {@link SnapshotLogger} and then saves all command that occurred from that point on until the next
+ *     snapshot is taken through the {@link CommandLogger}. Together these snapshots with the list of command form a
  *     DataLog. When blocks of DataLogs that were saved consecutively are loaded back into memory, they can be used to
- *     reconstruct the graph by taking the snapshot as the original graph and then applying all commands that occurred
+ *     reconstruct the graph by taking the snapshot as the original graph and then applying all command that occurred
  *     back on the graph, in the order and interval they occurred. This is how old graphs can be viewed.
  * </p>
  */
@@ -32,13 +32,13 @@ public class DataLogger {
 
     /**
      * <p>
-     *      Creates a new {@link DataLog} object based on the snapshot of a graph given and the list of commands that
+     *      Creates a new {@link DataLog} object based on the snapshot of a graph given and the list of command that
      *      were executed for the next X seconds after the snapshot was taken.
      * </p>
      *
      * @param snapshotGraph The snapshot of the graph to include in the data log.
-     * @param commands The list of commands to include in the data log.
-     * @return A new DataLog object that is serializable and that contains the graph snapshot and the list of commands
+     * @param commands The list of command to include in the data log.
+     * @return A new DataLog object that is serializable and that contains the graph snapshot and the list of command
      *          passed to the method.
      */
     public DataLog createDataLog(INetworkGraph snapshotGraph, List<ICommand> commands) {
