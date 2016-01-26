@@ -6,7 +6,7 @@ package edu.kit.ipd.trufflehog;
 public class Main {
 
     /**
-     * The main method of TruffleHog. It starts the program
+     * The main method of TruffleHog. It starts the program.
 	 *
      * @param args command line arguments
      */
