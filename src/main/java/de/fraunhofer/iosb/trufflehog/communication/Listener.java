@@ -1,4 +1,4 @@
-package de.fraunhofer.iosb.trufflehog.util;
+package de.fraunhofer.iosb.trufflehog.communication;
 
 /**
  * <p>
@@ -11,7 +11,7 @@ package de.fraunhofer.iosb.trufflehog.util;
  *
  * @param <M> The type of message to receive
  */
-public interface IListener<M> {
+public interface Listener<M> {
 
     /**
      * <p>
@@ -21,5 +21,5 @@ public interface IListener<M> {
      *
      * @param m The message that is sent from the Notifier to the IListener.
      */
-    void recieve(M m);
+    void receive(M m);
 }

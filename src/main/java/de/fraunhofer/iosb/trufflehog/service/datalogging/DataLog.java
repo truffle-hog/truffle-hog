@@ -4,6 +4,7 @@ import de.fraunhofer.iosb.trufflehog.command.ICommand;
 import de.fraunhofer.iosb.trufflehog.model.graph.INetworkGraph;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  *
  * @author MrX
  */
-public class DataLog {
+public class DataLog implements Serializable {
 
     /**
      * <p>

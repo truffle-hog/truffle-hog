@@ -30,7 +30,7 @@ public class DataLogLoader {
      *     This method should not be confused with {@link #getData(Instant)}. {@link #getData(Instant)} gets
      *     the desired DataLog object from the already loaded DataLog objects and does not load any DataLog itself.
      * </p>
-     * @param instant The time instant that should be used to load the DataLog object. The DataLog object closest to
+     * @param instant The time instant that should be used to load the DataLog objects. The DataLog objects closest to
      *                the time instant will be loaded.
      */
     public void loadData(Instant instant) {

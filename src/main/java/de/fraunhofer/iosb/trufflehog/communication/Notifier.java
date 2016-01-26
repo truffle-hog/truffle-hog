@@ -1,8 +1,8 @@
-package de.fraunhofer.iosb.trufflehog.util;
+package de.fraunhofer.iosb.trufflehog.communication;
 
 /**
  * <p>
- *     The Notifier class works together with {@link INotifier} and {@link IListener} to create the main
+ *     The Notifier class works together with {@link INotifier} and {@link Listener} to create the main
  *     communication method between threads in TruffleHog. This communication method is a variation of the observer design
  *     pattern where messages sent from the subject to the observer include a parameter of type M. The
  *     Notifier is the subject in this case. IListeners register with the Notifier and can
@@ -18,12 +18,12 @@ package de.fraunhofer.iosb.trufflehog.util;
  */
 public abstract class Notifier<M> implements INotifier<M> {
     @Override
-    public void addListener(IListener listener) {
+    public void addListener(Listener listener) {
 
     }
 
     @Override
-    public void removeListener(IListener listener) {
+    public void removeListener(Listener listener) {
 
     }
 
