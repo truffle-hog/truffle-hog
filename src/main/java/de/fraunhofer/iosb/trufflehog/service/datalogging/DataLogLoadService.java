@@ -54,7 +54,7 @@ public class DataLogLoadService extends Notifier<ICommand> implements Runnable {
     /**
      * <p>
      *     Loads a batch of {@link DataLog}s closest to the given time instant into memory so that they are ready when
-     *     needed.
+     *     needed. It does this through the {@link DataLogLoader}.
      * </p>
      * @param instant The time instant that should be used to load the DataLog objects. The DataLog objects closest to
      *                the time instant will be loaded.
