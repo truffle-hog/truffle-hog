@@ -3,7 +3,7 @@ package edu.kit.ipd.trufflehog.model.graph;
 import java.io.Serializable;
 
 import edu.kit.ipd.trufflehog.model.graphlog.TruffleLogger;
-import edu.kit.ipd.trufflehog.service.truffleprocessor.Truffle;
+import edu.kit.ipd.trufflehog.service.packetdataprocessor.Truffle;
 
 /**<p>
  * Node in the graph to represent a device in the network. Stores important device data and logs.
