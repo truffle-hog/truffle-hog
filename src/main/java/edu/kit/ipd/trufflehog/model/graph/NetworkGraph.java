@@ -1,7 +1,31 @@
 package edu.kit.ipd.trufflehog.model.graph;
 
-/**
- * Created by julianbrendl on 1/26/16.
+import java.io.Serializable;
+import java.lang.Override;
+import java.util.HashMap;
+
+/**<p>
+ * Stores {@link NetworkNode}s and {@link NetworkConnection}s.
+ * </p>
  */
-public class NetworkGraph {
+public class NetworkGraph implements Serializable, INetworkGraph {
+
+	private HashMap networkNodes;
+	private NetworkNode networkNode;
+	private NetworkEdge networkEdge;
+
+    /**{@inheritDoc}
+     *
+     */
+	public void addNetworkEdge(NetworkNode from, NetworkNode to) {
+
+	}
+
+    /**{@inheritDoc}
+     *
+     */
+	public void addNetworkNode(NetworkNode node) {
+
+	}
+
 }
