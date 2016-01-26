@@ -17,14 +17,18 @@ import java.util.List;
 public class CommandLogger {
 
     /**
-     * Creates a new CommandLogger object.
+     * <p>
+     *     Creates a new CommandLogger object.
+     * </p>
      */
     public CommandLogger() {
     }
 
     /**
-     * Adds a command to the internal command list. The list will be taken by {@link #createCommandLog()}
-     * and then cleared.
+     * <p>
+     *     Adds a command to the internal command list. The list will be taken by {@link #createCommandLog()}
+     *     and then cleared.
+     * </p>
      *
      * @param command The command to add to the list that is to be processed.
      */
