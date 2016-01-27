@@ -1,13 +1,15 @@
 package de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.IPacketData;
-import de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * <p>
  * This class is used to store packet data which is received from the spp_profinet snort plugin using
  * the {@link TruffleReceiver}.
+ * </p>
  * @author Mr. X
  * @version 0.0
  */
@@ -33,7 +35,8 @@ public class Truffle implements IPacketData {
 
     }
 
-    /** {@inheritDoc}
+    /**
+     * {@inheritDoc}
      *
      * @param attributeType The type of attribute that is supposed to be retrieved, for example Integer.class
      * @param attributeIdentifier The string identifier of the attribute that should be retrieved.

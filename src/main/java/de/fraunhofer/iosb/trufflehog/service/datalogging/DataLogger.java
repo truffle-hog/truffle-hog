@@ -24,7 +24,7 @@ public class DataLogger {
 
     /**
      * <p>
-     *     Creates a new DataLogger.
+     *     Creates a new DataLogger object.
      * </p>
      */
     public DataLogger() {
@@ -53,18 +53,5 @@ public class DataLogger {
      * @param log The data log to save on the hard drive.
      */
     public void saveDataLog(DataLog log) {
-
-    }
-
-    /**
-     * <p>
-     *     Outputs the raw data of a {@link DataLog} object to the view, so that the user can see all kinds of
-     *     information about the graph its content at a given point in time.
-     * </p>
-     *
-     * @param log The DataLog object whose internal data should be shown on screen.
-     */
-    public void outputDataLog(DataLog log) {
-
     }
 }

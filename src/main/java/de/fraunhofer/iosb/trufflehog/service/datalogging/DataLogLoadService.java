@@ -1,7 +1,7 @@
 package de.fraunhofer.iosb.trufflehog.service.datalogging;
 
 import de.fraunhofer.iosb.trufflehog.command.ICommand;
-import de.fraunhofer.iosb.trufflehog.communication.Notifier;
+import de.fraunhofer.iosb.trufflehog.util.Notifier;
 
 import java.time.Instant;
 

@@ -7,6 +7,6 @@ import edu.uci.ics.jung.algorithms.layout.Layout;
  * Interface to exchange graph drawing algorithms.
  * </p>
  */
-public interface INetworkGraphLayout extends Layout {
+public interface INetworkGraphLayout<V, E> extends Layout<V, E> {
 
 }
