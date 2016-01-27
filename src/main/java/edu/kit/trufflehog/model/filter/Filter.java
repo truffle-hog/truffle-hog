@@ -1,11 +1,11 @@
 package edu.kit.trufflehog.model.filter;
 
+import edu.kit.trufflehog.command.ICommand;
 import java.io.Serializable;
 import java.util.LinkedList;
 
 /**<p>
- * This class is used to store filtering options such as white- and blacklists. There are rules to filter names, ip and mac adresses which
- * can be used to highlight specific nodes.
+ * Contains regex lists with ip, mac and name rules. These will be used with {@link ICommand} to distinguish specific nodes in the graph.
  * </p>
  */
 
@@ -41,4 +41,13 @@ public class Filter implements Serializable {
 
 	}
 
+    /**<p>
+     *Checks whether a word matches one of the expressions from the regex lists
+     * </p>
+     * @param s String to check
+     * @return true if it does match, otherwise false
+     */
+    public boolean contains(String s) {
+        return false; //requires implementation
+    }
 }
