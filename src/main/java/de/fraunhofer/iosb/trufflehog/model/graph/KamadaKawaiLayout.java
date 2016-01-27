@@ -15,8 +15,8 @@ public class KamadaKawaiLayout extends KKLayout<INode, IConnection> implements I
      * </p>
      * @param graph {@link INetworkGraph} to be drawn.
      */
-    public KamadaKawaiLayout(INetworkGraph g) {
-        super(g);
+    public KamadaKawaiLayout(INetworkGraph graph) {
+        super(graph);
     }
 
 }

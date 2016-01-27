@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**<p>
- * Stores {@link NetworkNode}s and {@link NetworkConnection}s.
+ * Stores {@link NetworkNode}s and {@link IConnection}s.
  * </p>
  */
-public class NetworkGraph implements Serializable, INetworkGraph {
+public class NetworkGraph extends INetworkGraph implements Serializable {
 
 	private HashMap networkNodes;
 	private NetworkNode networkNode;

@@ -4,7 +4,7 @@ package de.fraunhofer.iosb.trufflehog.model.graph;
  *Switch to jump between replay and live modes of the graph.
  * </p>
  */
-public class NetworkGraphSwitch implements INetworkGraph {
+public class NetworkGraphSwitch extends INetworkGraph {
 
 	private GraphProxy liveGraph;
     private GraphProxy playbackGraph;
