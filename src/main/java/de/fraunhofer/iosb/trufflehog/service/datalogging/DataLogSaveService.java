@@ -7,7 +7,7 @@ package de.fraunhofer.iosb.trufflehog.service.datalogging;
  *     this time interval). Thus the DataLogSaveService runs in its own thread.
  * </p>
  */
-public class DataLogSaveService implements Runnable{
+public class DataLogSaveService implements Runnable {
 
     /**
      * <p>

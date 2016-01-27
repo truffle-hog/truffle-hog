@@ -1,10 +1,12 @@
 package de.fraunhofer.iosb.trufflehog.model.graph;
 
+import java.io.Serializable;
+
 /**<p>
  * Interface for the network graph.
  * </p>
  */
-public interface INetworkGraph {
+public interface INetworkGraph extends Serializable {
 
     /**<p>
      *Adds a new {@link NetworkNode} to the graph to represent a new device.
