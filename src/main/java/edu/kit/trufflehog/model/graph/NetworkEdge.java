@@ -3,8 +3,10 @@ package edu.kit.trufflehog.model.graph;
 import javafx.beans.property.*;
 import java.io.Serializable;
 
-/**<p>
- * Edge in the graph to represent a relation between two devices. Stores important statistics about the ongoing communication.
+/**
+ * <p>
+ *     Edge in the graph to represent a relation between two devices. Stores important statistics about the ongoing
+ *     communication.
  * </p>
  */
 public class NetworkEdge implements IConnection, Serializable {
@@ -13,8 +15,9 @@ public class NetworkEdge implements IConnection, Serializable {
     private LongProperty active = new SimpleLongProperty();
     private IntegerProperty connectionType = new SimpleIntegerProperty();
 
-    /**<p>
-     * Getter for the total packet count
+    /**
+     * <p>
+     *     Getter for the total packet count
      * </p>
      * @return total packet count
      */
