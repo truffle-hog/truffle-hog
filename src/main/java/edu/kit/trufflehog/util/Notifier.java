@@ -1,5 +1,8 @@
 package edu.kit.trufflehog.util;
 
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * <p>
  *     The Notifier class works together with {@link INotifier} and {@link IListener} to create the main
@@ -17,18 +20,21 @@ package edu.kit.trufflehog.util;
  * @param <M> The type of message to receive.
  */
 public abstract class Notifier<M> implements INotifier<M> {
-    @Override
-    public void addListener(IListener listener) {
 
+    private final Collection<IListener<M>> listeners = new ConcurrentLinkedQueue<>();
+
+    @Override
+    public void addListener(IListener<M> listener) {
+        listeners.add(listener);
     }
 
     @Override
     public void removeListener(IListener listener) {
-
+        listeners.remove(listener);
     }
 
     @Override
     public void notifyListeners(M message) {
-
+        listeners.forEach(listener -> listener.receive(message));
     }
 }

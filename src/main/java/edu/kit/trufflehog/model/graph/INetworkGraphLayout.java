@@ -1,7 +1,12 @@
 package edu.kit.trufflehog.model.graph;
 
-/**
- * Created by jan on 27.01.16.
+
+import edu.uci.ics.jung.algorithms.layout.Layout;
+
+/**<p>
+ * Interface to exchange graph drawing algorithms.
+ * </p>
  */
-public interface INetworkGraphLayout {
+public interface INetworkGraphLayout<V, E> extends Layout<V, E> {
+
 }

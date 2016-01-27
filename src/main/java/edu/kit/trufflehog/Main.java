@@ -1,7 +1,5 @@
 package edu.kit.trufflehog;
 
-
-
 /**
  * The main class in TruffleHog. It initiates everything.
  */

@@ -5,7 +5,7 @@ version '0.0.1-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = "edu.kit.ipd.trufflehog.Main"
+mainClassName = "edu.kit.trufflehog.TruffleHog"
 
 repositories {
     mavenCentral()
@@ -13,13 +13,24 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile group: 'net.sf.jung', name: 'jung-visualization', version:
-            '2.0.1'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+
+    //jung
+    compile 'org.apache.commons:commons-collections4:4.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'colt:colt:1.2.0'
+    compile 'net.sf.jung:jung2:2.0.1'
+    compile 'net.sf.jung:jung-graph-impl:2.0.1'
+    compile 'net.sf.jung:jung-visualization:2.0.1'
+
+    testCompile 'org.apache.commons:commons-collections4:4.1'
+    testCompile 'colt:colt:1.2.0'
+    testCompile 'net.sf.jung:jung2:2.0.1'
+    testCompile 'net.sf.jung:jung-graph-impl:2.0.1'
+    testCompile 'net.sf.jung:jung-visualization:2.0.1'
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'edu.kit.ipd.trufflehog.Main'
+        attributes 'Main-Class': 'edu.kit.trufflehog.Main'
     }
 }

@@ -15,10 +15,70 @@ hs_err_pid*
 /.idea
 /target/
 /build/
-/gradle/
-.gradle/
 *.iml
 pom.xml
 
-# Exceptions
-!TeXDoclet.jar
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# General files that shouldn't be included
+*.log
+*.pdf
+.DS_Store
+*.bak
+*.lock
+
+# TeX temp/output files
+*.glg
+*.glo
+*.gls
+*.ist
+*.ilg
+*.aux
+*.out
+*.blg
+*.bbl
+*.synctex
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.toc
+*.lof
+*.acr
+*.acn
+*.alg
+*.nav
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+#Gradle stuff
+/gradle/
+/.gradle/

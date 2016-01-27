@@ -1,6 +1,6 @@
 package edu.kit.trufflehog.service.datalogging;
 
-import edu.kit.trufflehog.commands.ICommand;
+import edu.kit.trufflehog.command.ICommand;
 import edu.kit.trufflehog.model.graph.INetworkGraph;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -24,7 +24,7 @@ public class DataLogger {
 
     /**
      * <p>
-     *     Creates a new DataLogger.
+     *     Creates a new DataLogger object.
      * </p>
      */
     public DataLogger() {
@@ -53,29 +53,5 @@ public class DataLogger {
      * @param log The data log to save on the hard drive.
      */
     public void saveDataLog(DataLog log) {
-
-    }
-
-    /**
-     * <p>
-     *     Loads a {@link DataLog} object from the hard drive so that the graph can be viewed at that point in time.
-     * </p>
-     *
-     * @param index The data log to load from the hard drive.
-     */
-    public void loadDataLog(int index) {
-
-    }
-
-    /**
-     * <p>
-     *     Outputs the raw data of a {@link DataLog} object to the view, so that the user can see all kinds of
-     *     information about the graph its content at a given point in time.
-     * </p>
-     *
-     * @param log The DataLog object whose internal data should be shown on screen.
-     */
-    public void outputDataLog(DataLog log) {
-
     }
 }

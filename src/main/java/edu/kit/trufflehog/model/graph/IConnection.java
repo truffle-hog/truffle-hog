@@ -1,7 +1,9 @@
 package edu.kit.trufflehog.model.graph;
 
-/**
- * Created by jan on 27.01.16.
+/**<p>
+ * Interface used to represent communication relations of nodes in the graph.
+ * </p>
  */
 public interface IConnection {
+
 }
