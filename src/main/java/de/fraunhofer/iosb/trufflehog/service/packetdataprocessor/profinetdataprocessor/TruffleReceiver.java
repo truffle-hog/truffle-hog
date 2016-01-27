@@ -1,8 +1,8 @@
 package de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import de.fraunhofer.iosb.trufflehog.command.trufflecommand.ITruffleCommand;
-import de.fraunhofer.iosb.trufflehog.communication.INotifier;
-import de.fraunhofer.iosb.trufflehog.communication.Notifier;
+import de.fraunhofer.iosb.trufflehog.util.INotifier;
+import de.fraunhofer.iosb.trufflehog.util.Notifier;
 
 /**
  * This class is a runnable notifier service that fetches packet data from the spp_profinet snort plugin, generates

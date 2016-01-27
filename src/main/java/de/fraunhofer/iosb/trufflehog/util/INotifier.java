@@ -1,8 +1,8 @@
-package de.fraunhofer.iosb.trufflehog.communication;
+package de.fraunhofer.iosb.trufflehog.util;
 
 /**
  * <p>
- *     The INotifier interface works together with {@link Notifier} and {@link Listener} to create the main
+ *     The INotifier interface works together with {@link Notifier} and {@link IListener} to create the main
  *     communication method between threads in TruffleHog. This communication method is a variation of the observer design
  *     pattern where messages sent from the subject to the observer include a parameter of type M. The
  *     INotifier is the subject in this case. IListeners register with the INotifier and can
@@ -25,9 +25,9 @@ public interface INotifier<M> {
      *    {@link #notifyListeners(M)} method call.
      * </p>
      *
-     * @param listener The IListeners to register with this INotifier.
+     * @param IListener The IListeners to register with this INotifier.
      */
-    void addListener(Listener listener);
+    void addListener(IListener IListener);
 
     /**
      * <p>
@@ -35,9 +35,9 @@ public interface INotifier<M> {
      *    anymore on the {@link #notifyListeners(M)} method call.
      * </p>
      *
-     * @param listener The IListeners to register with this INotifier.
+     * @param IListener The IListeners to register with this INotifier.
      */
-    void removeListener(Listener listener);
+    void removeListener(IListener IListener);
 
     /**
      * <p>
