@@ -38,9 +38,6 @@ public interface ICommandQueue {
      */
     ICommand pop() throws InterruptedException;
 
-    /**
-     *
-     * @return
-     */
+    // TODO: put doc here
     boolean isEmpty();
 }
