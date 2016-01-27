@@ -19,16 +19,13 @@ package de.fraunhofer.iosb.trufflehog.communication;
 public abstract class Notifier<M> implements INotifier<M> {
     @Override
     public void addListener(Listener listener) {
-
     }
 
     @Override
     public void removeListener(Listener listener) {
-
     }
 
     @Override
     public void notifyListeners(M message) {
-
     }
 }
