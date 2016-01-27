@@ -18,21 +18,21 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public abstract class BorderPaneController<I extends IInteraction> extends BorderPane
 		implements IViewController<I> {
 
-	private final Collection<IListener<IUserCommand<?>>> listeners =
+	private final Collection<IListener<IUserCommand>> listeners =
 			new ConcurrentLinkedQueue<>();
 
 	@Override
-	public void addListener(IListener<IUserCommand<?>> listener) {
+	public void addListener(IListener<IUserCommand> listener) {
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeListener(IListener<IUserCommand<?>> listener) {
+	public void removeListener(IListener<IUserCommand> listener) {
 		listeners.remove(listener);
 	}
 
 	@Override
-	public void sendToListeners(IUserCommand<?> message) {
+	public void sendToListeners(IUserCommand message) {
 
 		listeners.forEach(listener -> {
 			listener.receive(message);
