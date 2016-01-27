@@ -82,3 +82,6 @@ gradle-app.setting
 #Gradle stuff
 /gradle/
 /.gradle/
+
+#eclipse stuff
+.project

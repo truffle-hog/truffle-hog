@@ -1,42 +1,42 @@
 package edu.kit.trufflehog.view;
 
-import edu.kit.trufflehog.command.IUserCommand;
-import edu.kit.trufflehog.interactor.IInteraction;
+
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.interaction.IInteraction;
 import edu.kit.trufflehog.util.IListener;
+import edu.kit.trufflehog.util.INotifier;
 import javafx.scene.layout.BorderPane;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
+
 
 /**
- * The Basic class for alls BorderPane controllers... if needed we can also
- * implement a dispatch Command fucntion in here that sends all the commands
- * to the dispatch Thread
- *
+ * <p>
+ * The Basic abstraction for alls BorderPane controllers. Every abstraction
+ * for javafx Components wrap a {@link ViewControllerNotifier} instance for
+ * implementation of the specific operations.
+ * </p>
  * @param <I>
  */
-public abstract class BorderPaneController<I extends IInteraction> extends BorderPane
-		implements IViewController<I> {
+public abstract class BorderPaneController<I extends IInteraction> extends
+        BorderPane implements IViewController<I> {
 
-	private final Collection<IListener<IUserCommand>> listeners =
-			new ConcurrentLinkedQueue<>();
+    private final INotifier<IUserCommand> viewControllerNotifier =
+            new ViewControllerNotifier();
 
-	@Override
-	public void addListener(IListener<IUserCommand> listener) {
-		listeners.add(listener);
-	}
+    @Override
+    public void addListener(final IListener<IUserCommand> listener) {
 
-	@Override
-	public void removeListener(IListener<IUserCommand> listener) {
-		listeners.remove(listener);
-	}
+        viewControllerNotifier.addListener(listener);
+    }
 
-	@Override
-	public void sendToListeners(IUserCommand message) {
+    @Override
+    public void removeListener(final IListener<IUserCommand> listener) {
+        viewControllerNotifier.removeListener(listener);
+    }
 
-		listeners.forEach(listener -> {
-			listener.receive(message);
-		});
-	}
+    @Override
+    public void notifyListeners(final IUserCommand message) {
+        viewControllerNotifier.notifyListeners(message);
+    }
 
 }

@@ -6,6 +6,6 @@ package edu.kit.trufflehog.view;
  * </p>
  */
 public interface IWindowController {
- 
+
 	void show();
 }

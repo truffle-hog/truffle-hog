@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.IInteraction;
 import edu.kit.trufflehog.util.INotifier;
 
