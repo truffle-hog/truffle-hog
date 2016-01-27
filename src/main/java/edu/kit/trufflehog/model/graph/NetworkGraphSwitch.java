@@ -1,7 +1,8 @@
 package edu.kit.trufflehog.model.graph;
 
-/**<p>
- *Switch to jump between replay and live modes of the graph.
+/**
+ * <p>
+ *     Switch to jump between replay and live modes of the graph.
  * </p>
  */
 public class NetworkGraphSwitch extends INetworkGraph {
@@ -10,16 +11,18 @@ public class NetworkGraphSwitch extends INetworkGraph {
     private GraphProxy playbackGraph;
     private int state;
 
-    /**<p>
-     * Sets the viewing mode to playback
+    /**
+	 * <p>
+     *     Sets the viewing mode to playback
      * </p>
      */
 	public void viewPlayback() {
 
 	}
 
-    /**<p>
-     * Sets the viewing mode to live
+    /**
+     * <p>
+     *     Sets the viewing mode to live
      * </p>
      */
 	public void viewLive() {
@@ -27,14 +30,16 @@ public class NetworkGraphSwitch extends INetworkGraph {
 	}
 
 
-	/**{@inheritDoc}
+	/**
+     * {@inheritDoc}
 	 */
 	public void addNetworkNode(NetworkNode node) {
 
 	}
 
 
-	/**{@inheritDoc}
+	/**
+     * {@inheritDoc}
 	 */
 	public void addNetworkEdge(NetworkNode from, NetworkNode to) {
 

@@ -9,9 +9,11 @@ import edu.uci.ics.jung.algorithms.layout.FRLayout2;
  */
 public class FruchtermanReingoldLayout extends FRLayout2 implements INetworkGraphLayout {
 
-	/**<p>
-     * Creates a new layout to present a given INetworkGraph.
+	/**
+     * <p>
+     *     Creates a new layout to present a given INetworkGraph.
      * </p>
+     *
 	 * @param graph {@link INetworkGraph} to be drawn.
 	 */
 	FruchtermanReingoldLayout(INetworkGraph graph) {
