@@ -79,6 +79,4 @@ gradle-app.setting
 !gradle-wrapper.jar
 !gradle-wrapper.properties
 
-#Gradle stuff
-/gradle/
-/.gradle/
+
