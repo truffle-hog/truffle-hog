@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 
 /**<p>
- * This class is used to store filtering options such as white- and blacklists.
+ * This class is used to store filtering options such as white- and blacklists. There are rules to filter names, ip and mac adresses which
+ * can be used to highlight specific nodes.
  * </p>
  */
 

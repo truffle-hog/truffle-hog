@@ -1,7 +1,7 @@
 package de.fraunhofer.iosb.trufflehog.model.graph;
 
-import jung.algorithms.layout.Layout;
-import jung.algorithms.layout.KKLayout;
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.KKLayout;
 
 /**<p>
  * Uses the Kamada-Kawai-algorithm from the jung library to present the {@link INetworkGraph}.
@@ -14,8 +14,8 @@ public class KamadaKawaiLayout extends KKLayout<INode, IConnection> implements I
      * </p>
      * @param graph {@link INetworkGraph} to be drawn.
      */
-    public void KamadaKawaiLayout(INetworkGraph graph) {
-
+    KamadaKawaiLayout(INetworkGraph graph) {
+        super(graph);
     }
 
 }
