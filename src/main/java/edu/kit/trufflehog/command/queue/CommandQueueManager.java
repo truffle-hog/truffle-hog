@@ -37,6 +37,10 @@ public class CommandQueueManager {
         currentQueue = 0;
     }
 
+    /**
+     * //TODO: Add doc
+     * @param queue The {@link ICommandQueue} to add.
+     */
     protected void registerQueue(ICommandQueue queue) {
         queues.add(queue);
         registeredQueues++;

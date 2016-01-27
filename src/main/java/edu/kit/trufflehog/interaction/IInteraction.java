@@ -1,6 +1,6 @@
 package edu.kit.trufflehog.interaction;
 
-import edu.kit.trufflehog.commands.ICommand;
+import edu.kit.trufflehog.command.ICommand;
 
 /**
  * <p>
@@ -10,7 +10,7 @@ import edu.kit.trufflehog.commands.ICommand;
  * <p>
  *     Interactions are used in combination with a
  *     {@link ICommand}. Basically commands are linked to
- *     interactions by the {@link edu.kit.ipd.trufflehog.presenter.Presenter}.
+ *     interactions by the {@link edu.kit.trufflehog.presenter.Presenter}.
  * </p>
  */
 public interface IInteraction {
