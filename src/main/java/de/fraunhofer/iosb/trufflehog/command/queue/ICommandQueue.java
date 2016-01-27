@@ -8,12 +8,19 @@ import de.fraunhofer.iosb.trufflehog.command.ICommand;
 public interface ICommandQueue {
 
     /**
+     * This interface
      *
      * @param command
      * @param <T>
      */
     <T extends ICommand> void push(T command) throws InterruptedException;
 
+    /**
+     * <p>
+     *     Gets the first element of the queue and removes it from the list.
+     * </p>
+     * @return
+     */
     ICommand pop();
 
     boolean isEmpty();
