@@ -1,8 +1,6 @@
 package de.fraunhofer.iosb.trufflehog.command.queue;
 
 import de.fraunhofer.iosb.trufflehog.command.ICommand;
-import de.fraunhofer.iosb.trufflehog.command.queue.CommandQueueManager;
-import de.fraunhofer.iosb.trufflehog.command.queue.ICommandQueue;
 
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
