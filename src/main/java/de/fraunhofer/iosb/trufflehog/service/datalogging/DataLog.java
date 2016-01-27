@@ -19,8 +19,6 @@ import java.util.List;
  *     in it back on the snapshot until the end of the DataLog is reached, at which point the commands of the next
  *     data log are applied and so on.
  * </p>
- *
- * @author MrX
  */
 public class DataLog implements Serializable {
 

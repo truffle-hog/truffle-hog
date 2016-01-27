@@ -2,6 +2,7 @@ package de.fraunhofer.iosb.trufflehog.service.datalogging;
 
 import de.fraunhofer.iosb.trufflehog.model.graph.GraphProxy;
 import de.fraunhofer.iosb.trufflehog.model.graph.INetworkGraph;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  *
@@ -9,6 +10,9 @@ import de.fraunhofer.iosb.trufflehog.model.graph.INetworkGraph;
 public class SnapshotLogger {
 
     /**
+     * <p>
+     *
+     * </p>
      *
      * @param graphProxy
      */
@@ -20,5 +24,6 @@ public class SnapshotLogger {
      * @return
      */
     public INetworkGraph takeSnapshot() {
+        throw new NotImplementedException();
     }
 }

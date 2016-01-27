@@ -46,6 +46,7 @@ public class DataLogLoadService extends Notifier<ICommand> implements Runnable {
      *     The current playback of the {@link DataLog}s will jump to the location in time closest to the given instant,
      *     if the playback is currently active.
      * </p>
+     *
      * @param instant The instant in time to which to jump in the playback, if it is active.
      */
     public void jumpToInstant(Instant instant) {
@@ -56,14 +57,17 @@ public class DataLogLoadService extends Notifier<ICommand> implements Runnable {
      *     Loads a batch of {@link DataLog}s closest to the given time instant into memory so that they are ready when
      *     needed. It does this through the {@link DataLogLoader}.
      * </p>
+     *
      * @param instant The time instant that should be used to load the DataLog objects. The DataLog objects closest to
      *                the time instant will be loaded.
      */
     public void load(Instant instant) {
-
     }
 
     /**
+     * <p>
+     *     Starts the data log load service.
+     * </p>
      * <p>
      *     The DataLogLoadService runs in its own thread to buffer {@link DataLog} objects in the background so that
      *     when the graph playback function is activated, the old graph can immediately be started. It also notifies the
@@ -73,6 +77,5 @@ public class DataLogLoadService extends Notifier<ICommand> implements Runnable {
      */
     @Override
     public void run() {
-
     }
 }
