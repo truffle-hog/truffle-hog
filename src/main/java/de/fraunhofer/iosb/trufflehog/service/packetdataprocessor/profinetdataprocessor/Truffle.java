@@ -1,7 +1,7 @@
 package de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.IPacketData;
-import de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +25,7 @@ public class Truffle implements IPacketData {
         HashMap<String, Object> attributeMap = attributes.get(attributeType);
 
         if (attributeMap == null) {
-            attributeMap = new HashMap<>();
+            //attributeMap = new HashMap<>();
             attributes.put(attributeType, attributeMap);
         }
 
@@ -33,7 +33,8 @@ public class Truffle implements IPacketData {
 
     }
 
-    /** {@inheritDoc}
+    /**
+     * {@inheritDoc}
      *
      * @param attributeType The type of attribute that is supposed to be retrieved, for example Integer.class
      * @param attributeIdentifier The string identifier of the attribute that should be retrieved.
