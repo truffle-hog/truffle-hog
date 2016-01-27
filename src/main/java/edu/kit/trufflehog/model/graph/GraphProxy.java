@@ -6,9 +6,9 @@ package edu.kit.trufflehog.model.graph;
  *     references of other objects.
  * </p>
  */
-public class GraphProxy extends INetworkGraph {
+public class GraphProxy extends ANetworkGraph {
 
-	private INetworkGraph networkGraph;
+	private ANetworkGraph networkGraph;
 
     /**
      * <p>
@@ -17,7 +17,7 @@ public class GraphProxy extends INetworkGraph {
      *
      * @param graph INetworkGraph to refer to
      */
-	public void setGraph(INetworkGraph graph) {
+	public void setGraph(ANetworkGraph graph) {
 
 	}
 

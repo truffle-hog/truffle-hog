@@ -7,7 +7,7 @@ import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
  *     Interface for the network graph.
  * </p>
  */
-public abstract class INetworkGraph extends DirectedSparseMultigraph<INode, IConnection> {
+public abstract class ANetworkGraph extends DirectedSparseMultigraph<INode, IConnection> {
 
     /**
      * <p>

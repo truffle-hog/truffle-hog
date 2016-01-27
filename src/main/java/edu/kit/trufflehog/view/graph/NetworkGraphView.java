@@ -2,7 +2,7 @@ package edu.kit.trufflehog.view.graph;
 
 import edu.kit.trufflehog.interaction.GraphViewInteraction;
 import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.INetworkGraph;
+import edu.kit.trufflehog.model.graph.ANetworkGraph;
 import edu.kit.trufflehog.model.graph.INetworkGraphLayout;
 import edu.kit.trufflehog.model.graph.INode;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
@@ -25,7 +25,7 @@ import java.util.Map;
  *     This class is an implementation of the {@link INetworkGraphView} abstraction. It is
  *     used to wrap a layout {@link INetworkGraphLayout} of the graph data model. Thereby it
  *     can response to any changes in the layout that are reflected by modifications in the
- *     underlying data model {@link INetworkGraph}.
+ *     underlying data model {@link ANetworkGraph}.
  * </p>
  * <p>
  *     The NetworkGraphView also incorporates an instance of an implementation of a
@@ -39,7 +39,7 @@ public class NetworkGraphView extends INetworkGraphView {
 	/** The wrapped instance of the jung graph visualization. **/
 	private VisualizationViewer<INode, IConnection> jungView;
 	/** The factory used for refreshing the layout of the underlying graph. **/
-	private Transformer<INetworkGraph, INetworkGraphLayout> layoutFactory;
+	private Transformer<ANetworkGraph, INetworkGraphLayout> layoutFactory;
 
 	/**
 	 * <p>
@@ -62,7 +62,7 @@ public class NetworkGraphView extends INetworkGraphView {
 	 * @param layoutFactory the layout factory to be used for refreshing the layout {@see }
 	 */
 	public NetworkGraphView(final INetworkGraphLayout layout,
-							final Transformer<INetworkGraph,
+							final Transformer<ANetworkGraph,
 									INetworkGraphLayout>	layoutFactory) {
 
 
@@ -228,7 +228,7 @@ public class NetworkGraphView extends INetworkGraphView {
 	}
 
 	@Override
-	public final void setLayoutFactory(final Transformer<INetworkGraph,
+	public final void setLayoutFactory(final Transformer<ANetworkGraph,
 			INetworkGraphLayout> layoutFactory) {
 
 	}
