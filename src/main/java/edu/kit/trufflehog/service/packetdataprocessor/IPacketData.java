@@ -9,9 +9,6 @@ import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truf
  *     a {@link TruffleReceiver}
  *     and put into a class (e.g a {@link Truffle}) that implements this interface.
  * </p>
- *
- * @author Mr. X
- * @version 0.0
  */
 public interface IPacketData {
 

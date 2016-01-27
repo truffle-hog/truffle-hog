@@ -10,9 +10,6 @@ import java.util.Map;
  *     This class is used to store packet data which is received from the spp_profinet snort plugin using
  *     the {@link TruffleReceiver}.
  * </p>
- *
- * @author Mr. X
- * @version 0.0
  */
 public class Truffle implements IPacketData {
 
