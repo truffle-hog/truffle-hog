@@ -1,7 +1,9 @@
 package edu.kit.trufflehog.command.trufflecommand;
 
 /**
- * Created by Infinity on 27.01.2016.
+ * <p>
+ *     Command to start the spp_profinet Snort plugin.
+ * </p>
  */
 public class StartPluginCommand implements ITruffleCommand {
     @Override
