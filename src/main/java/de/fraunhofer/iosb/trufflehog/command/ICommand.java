@@ -5,6 +5,6 @@ import java.io.Serializable;
 /**
  *
  */
-public interface ICommand extends Serializable {
+public interface ICommand<S> extends Serializable {
     void execute();
 }

@@ -1,6 +1,6 @@
 package de.fraunhofer.iosb.trufflehog.model.graph;
 
-import de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.Truffle;
+import de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
 import java.io.Serializable;
 

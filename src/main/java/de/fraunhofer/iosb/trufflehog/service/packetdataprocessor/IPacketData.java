@@ -1,8 +1,12 @@
 package de.fraunhofer.iosb.trufflehog.service.packetdataprocessor;
 
+import de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
+import de.fraunhofer.iosb.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
+
 /**
  * This Interface provides the default methods for any incoming packet data which is received by e.g.
- * a TruffleReceiver and put into a class (e.g a truffle) that implements this interface.
+ * a {@link TruffleReceiver}
+ * and put into a class (e.g a {@link Truffle}) that implements this interface.
  *
  * @author Mr. X
  * @version 0.0
