@@ -15,8 +15,6 @@ hs_err_pid*
 /.idea
 /target/
 /build/
-/gradle/
-.gradle/
 *.iml
 
 # Compiled Object files
@@ -73,5 +71,9 @@ hs_err_pid*
 *.alg
 *.nav
 
-# Exceptions
-!TeXDoclet.jar
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+!gradle-wrapper.properties
