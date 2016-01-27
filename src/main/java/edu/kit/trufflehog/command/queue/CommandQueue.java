@@ -20,6 +20,7 @@ public class CommandQueue implements ICommandQueue {
 
     private final CommandQueueManager manager;
 
+    // TODO: put doc here
     public CommandQueue(CommandQueueManager commandQueueManager) {
         this.manager = commandQueueManager;
         this.manager.registerQueue(this);

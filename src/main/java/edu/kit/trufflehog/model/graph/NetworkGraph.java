@@ -8,7 +8,7 @@ import java.util.HashMap;
  *     Stores {@link NetworkNode}s and {@link IConnection}s.
  * </p>
  */
-public class NetworkGraph extends INetworkGraph implements Serializable {
+public class NetworkGraph extends ANetworkGraph implements Serializable {
 
     private HashMap networkNodes;
     private NetworkNode networkNode;

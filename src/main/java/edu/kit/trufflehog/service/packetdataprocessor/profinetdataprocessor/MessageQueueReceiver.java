@@ -8,9 +8,6 @@ import edu.kit.trufflehog.command.trufflecommand.StartPluginCommand;
  *     This implementation of the {@link TruffleReceiver} uses a message queue
  *     to communicate with the spp_profinet snort plugin.
  * </p>
- *
- * @author Mr. X
- * @version 0.0
  */
 public class MessageQueueReceiver extends TruffleReceiver {
 

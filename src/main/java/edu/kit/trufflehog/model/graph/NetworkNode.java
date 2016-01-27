@@ -4,8 +4,9 @@ import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truf
 
 import java.io.Serializable;
 
-/**<p>
- * Node in the graph to represent a device in the network. Stores important device data and logs.
+/**
+ * <p>
+ *     Node in the graph to represent a device in the network. Stores important device data and logs.
  * </p>
  */
 public class NetworkNode implements Serializable, INode {

@@ -68,7 +68,7 @@ public class FileSystem {
      * @return The corresponding File object of the data folder.
      */
     public File getDataFolder() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -79,7 +79,7 @@ public class FileSystem {
      * @return The corresponding File object of the data log folder.
      */
     public File getDataLogFolder() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -90,7 +90,7 @@ public class FileSystem {
      * @return The corresponding File object of the config folder.
      */
     public File getConfigFolder() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -101,7 +101,7 @@ public class FileSystem {
      * @return The corresponding File object of the graph log folder.
      */
     public File getGraphLogFolder() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -112,7 +112,7 @@ public class FileSystem {
      * @return The corresponding File object of the log folder.
      */
     public File getLogFolder() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }
 

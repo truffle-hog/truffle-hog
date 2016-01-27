@@ -14,9 +14,6 @@ import edu.kit.trufflehog.util.Notifier;
  * <p>
  *     Possible implementations: {@link UnixSocketReceiver}, {@link MessageQueueReceiver}
  * </p>
- *
- * @author Mr. X
- * @version 0.0
  */
 public abstract class TruffleReceiver extends Notifier<ITruffleCommand> implements INotifier<ITruffleCommand>, Runnable {
 
