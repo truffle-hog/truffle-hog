@@ -16,6 +16,14 @@ public class CommandCompressor {
 
     /**
      * <p>
+     *     Creates a new CommandCompressor object.
+     * </p>
+     */
+    public CommandCompressor() {
+    }
+
+    /**
+     * <p>
      *     Creates a compacted list of all commands it received the way it has been described in the class description.
      * </p>
      *

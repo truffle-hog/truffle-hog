@@ -24,7 +24,7 @@ public class DataLogger {
 
     /**
      * <p>
-     *     Creates a new DataLogger.
+     *     Creates a new DataLogger object.
      * </p>
      */
     public DataLogger() {

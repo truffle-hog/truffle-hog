@@ -1,6 +1,9 @@
 package de.fraunhofer.iosb.trufflehog.model;
 
+import de.fraunhofer.iosb.trufflehog.model.configdata.ConfigDataModel;
+import de.fraunhofer.iosb.trufflehog.model.graphlog.TruffleLogger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import de.fraunhofer.iosb.trufflehog.service.datalogging.DataLog;
 
 import java.io.File;
 
@@ -20,21 +23,21 @@ import java.io.File;
  *         <li>
  *             Data log folder:
  *             <p>
- *                 This is where the DataLog objects are saved to.
+ *                 This is where the {@link DataLog} objects are saved to.
  *             </p>
  *         </li>
  *         <br></br>
  *         <li>
  *             Config folder:
  *             <p>
- *                 This is where the property files for the GUIDataModel are saved to.
+ *                 This is where the property files for the {@link ConfigDataModel} are saved to.
  *             </p>
  *         </li>
  *         <br></br>
  *         <li>
  *             Graph log Folder:
  *             <p>
- *                 This is where the logs created by the TruffleLogger for each Node are saved to.
+ *                 This is where the logs created by the {@link TruffleLogger} for each Node are saved to.
  *             </p>
  *         </li>
  *         <br></br>
@@ -48,6 +51,14 @@ import java.io.File;
  * </p>
  */
 public class FileSystem {
+
+    /**
+     * <p>
+     *     Creates a new FileSystem object.
+     * </p>
+     */
+    public FileSystem() {
+    }
 
     /**
      * <p>
