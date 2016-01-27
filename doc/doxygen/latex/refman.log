@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.12.8)  26 JAN 2016 20:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.12.8)  27 JAN 2016 01:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1070,16 +1070,25 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
 (Font)              Font shape `T1/phv/b/n' tried instead on input line 1.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 8.99994pt on input line 1.
+
+[3
+
+]
+LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <7> not available
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 72.
+LaTeX Font Info:    Font shape `T1/phv/b/n' will be
+(Font)              scaled to size 6.29996pt on input line 72.
+ [4] [5]
+Underfull \hbox (badness 10000) in paragraph at lines 137--137
+ [][] [][][]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]pack
+etdataprocessor.[]profinetdataprocessor.[]Truffle[]Receiver 
+ []
+
 )
 \tf@toc=\write5
 \openout5 = `refman.toc'.
 
-
-[3
-
-] [4
-
-]
+ [6]
 Package hyperref Info: Option `pageanchor' set `true' on input line 138.
 
 Chapter 1.
@@ -1098,41 +1107,22 @@ LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 12.9599pt on input line 1.
 LaTeX Font Info:    Font shape `T1/phv/bc/n' will be
 (Font)              scaled to size 12.9599pt on input line 1.
-) [1
+ [1
 
-]
-LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <7> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 143.
-LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 6.29996pt on input line 143.
- [2
 
-]
+]) [2]
 Chapter 2.
-(./annotated.tex) [3] [4
+(./annotated.tex) [3
+
+] [4
 
 ]
 Chapter 3.
-(./interfaceedu_1_1kit_1_1ipd_1_1trufflehog_1_1util_1_1_i_listener.tex
+
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_co
+mmand_compressor.tex
 LaTeX Font Info:    Font shape `T1/phv/bc/n' will be
 (Font)              scaled to size 6.29996pt on input line 1.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1.
-
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <12> not available
 (Font)              Font shape `T1/phv/b/n' tried instead on input line 3.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
@@ -1140,54 +1130,841 @@ LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 LaTeX Font Info:    Font shape `T1/phv/bc/n' will be
 (Font)              scaled to size 10.79993pt on input line 3.
 LaTeX Font Info:    Try loading font information for TS1+phv on input line 6.
+
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/ts1phv.fd
 File: ts1phv.fd 2001/06/04 scalable font definitions for TS1/phv.
 )
 LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
 (Font)              scaled to size 8.99994pt on input line 6.
 LaTeX Font Info:    Font shape `T1/phv/bc/n' will be
-(Font)              scaled to size 8.99994pt on input line 14.
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 15.
-LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 8.99994pt on input line 15.
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <7> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 15.
-LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 6.29996pt on input line 15.
+(Font)              scaled to size 8.99994pt on input line 20.
 LaTeX Font Info:    Font shape `T1/phv/bc/it' in size <10> not available
-(Font)              Font shape `T1/phv/bc/sl' tried instead on input line 27.
+(Font)              Font shape `T1/phv/bc/sl' tried instead on input line 20.
 LaTeX Font Info:    Font shape `T1/phv/bc/sl' will be
-(Font)              scaled to size 8.99994pt on input line 27.
+(Font)              scaled to size 8.99994pt on input line 20.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 20.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 20.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 20.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 20.
+
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 25.
+LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
+(Font)              scaled to size 8.99994pt on input line 25.
+
+Underfull \hbox (badness 10000) detected at line 28
+[][][]
+ []
+
 )
-(./interfaceedu_1_1kit_1_1ipd_1_1trufflehog_1_1util_1_1_i_notifier.tex
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_co
+mmand_logger.tex [5]
+Underfull \hbox (badness 10000) detected at line 53
+[][][]
+ []
+
+)
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_da
+ta_log.tex
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1service_1_1datalogging_1_1_data_log.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 3880 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1service_1_1datalogging_1_1_data_log-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:47
+(epstopdf)                    size: 5995 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1service_1_1datalogging_1_1_data_log-eps-converted-to.pdf c
+lassde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_data_l
+og.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_data
+_log-eps-converted-to.pdf, id=905, 501.875pt x 115.0398pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1
+_data_log-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_
+data_log-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service
+_1_1datalogging_1_1_data_log-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 248.25658pt x 56.9055pt.
+ [6 <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_
+1_data_log-eps-converted-to.pdf>]
+LaTeX Font Info:    Font shape `T1/phv/bc/it' in size <7> not available
+(Font)              Font shape `T1/phv/bc/sl' tried instead on input line 37.
+LaTeX Font Info:    Font shape `T1/phv/bc/sl' will be
+(Font)              scaled to size 6.29996pt on input line 37.
+
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1.
+(hyperref)                removing `math shift' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1.
+(hyperref)                removing `math shift' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1.
+(hyperref)                removing `math shift' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1.
+(hyperref)                removing `math shift' on input line 37.
 
-[5]) (./classedu_1_1kit_1_1ipd_1_1trufflehog_1_1_main.tex [6]
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 20.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <7> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 42.
+LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
+(Font)              scaled to size 6.29996pt on input line 42.
+
+Underfull \hbox (badness 10000) detected at line 59
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 71
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 83
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 95
+[][][]
+ []
+
+)
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_da
+ta_logger.tex [7]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 39.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 39.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 39.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 39.
+
+
+Underfull \hbox (badness 10000) detected at line 49
+[][][]
+ []
+
+[8])
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_da
+ta_log_loader.tex
+Underfull \hbox (badness 10000) detected at line 44
+[][][]
+ []
+
+[9])
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_da
+ta_log_load_service.tex
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1service_1_1datalogging_1_1_data_log_load_service.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4347 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1service_1_1datalogging_1_1_data_log_load_service-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:48
+(epstopdf)                    size: 6887 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1service_1_1datalogging_1_1_data_log_load_service-eps-conve
+rted-to.pdf classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1dataloggi
+ng_1_1_data_log_load_service.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_data
+_log_load_service-eps-converted-to.pdf, id=1010, 501.875pt x 71.52722pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1
+_data_log_load_service-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_
+data_log_load_service-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service
+_1_1datalogging_1_1_data_log_load_service-eps-converted-to.pdf used on input li
+ne 6.
+(pdftex.def)             Requested size: 398.3531pt x 56.77048pt.
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 28.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+) [10 <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_
+1_1_data_log_load_service-eps-converted-to.pdf>])
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_da
+ta_log_save_service.tex
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1service_1_1datalogging_1_1_data_log_save_service.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 3893 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1service_1_1datalogging_1_1_data_log_save_service-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:48
+(epstopdf)                    size: 6040 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1service_1_1datalogging_1_1_data_log_save_service-eps-conve
+rted-to.pdf classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1dataloggi
+ng_1_1_data_log_save_service.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_data
+_log_save_service-eps-converted-to.pdf, id=1052, 501.875pt x 95.14546pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1
+_data_log_save_service-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_
+data_log_save_service-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service
+_1_1datalogging_1_1_data_log_save_service-eps-converted-to.pdf used on input li
+ne 6.
+(pdftex.def)             Requested size: 300.16241pt x 56.9055pt.
+ [11 <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1
+_1_data_log_save_service-eps-converted-to.pdf>])
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1filter_1_1_filter.te
+x
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1filter_1_1_filter.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 3864 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1filter_1_1_filter-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:48
+(epstopdf)                    size: 5922 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1model_1_1filter_1_1_filter-eps-converted-to.pdf classde_1_
+1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1filter_1_1_filter.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1filter_1_1_filter-eps-
+converted-to.pdf, id=1076, 501.875pt x 142.3719pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1filter_1_1_filter
+-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1filter_1_1_filter-
+eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1
+_1filter_1_1_filter-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 200.59328pt x 56.9055pt.
+ [12 <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1filter_1_1_filt
+er-eps-converted-to.pdf>])
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_fruchterma
+n_reingold_layout.tex
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_fruchterman_reingold_layout.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4101 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_fruchterman_reingold_layout-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:49
+(epstopdf)                    size: 6900 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1model_1_1graph_1_1_fruchterman_reingold_layout-eps-convert
+ed-to.pdf classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_fru
+chterman_reingold_layout.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_fruchterman_
+reingold_layout-eps-converted-to.pdf, id=1093, 501.875pt x 143.39572pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_fruchte
+rman_reingold_layout-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_fruchter
+man_reingold_layout-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1
+_1graph_1_1_fruchterman_reingold_layout-eps-converted-to.pdf used on input line
+ 6.
+(pdftex.def)             Requested size: 298.75334pt x 85.35826pt.
+ [13 <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_fruch
+terman_reingold_layout-eps-converted-to.pdf>])
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_graph_prox
+y.tex
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_graph_proxy.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4071 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_graph_proxy-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:49
+(epstopdf)                    size: 6901 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy-eps-converted-to.pdf classd
+e_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy-
+eps-converted-to.pdf, id=1122, 501.875pt x 174.56216pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_graph_p
+roxy-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_graph_pr
+oxy-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1
+_1graph_1_1_graph_proxy-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 245.41547pt x 85.35826pt.
 )
+(./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1_i_command.tex
+Package epstopdf Info: Source file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1command_1_1_i_command.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4307 bytes
+(epstopdf)             Output file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1command_1_1_i_command-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:50
+(epstopdf)                    size: 6445 bytes
+(epstopdf)             Command: <repstopdf --outfile=interfacede_1_1fraunhofer_
+1_1iosb_1_1trufflehog_1_1command_1_1_i_command-eps-converted-to.pdf interfacede
+_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1_i_command.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1_i_command-eps-c
+onverted-to.pdf, id=1136, 501.875pt x 70.19223pt>
+File: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1_i_command-
+eps-converted-to.pdf Graphic file (type pdf)
+
+<use interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1_i_command-e
+ps-converted-to.pdf>
+Package pdftex.def Info: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1com
+mand_1_1_i_command-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 398.33778pt x 55.71158pt.
+ [14 <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_graph
+_proxy-eps-converted-to.pdf>])
+(./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_conn
+ection.tex
+Package epstopdf Info: Source file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1model_1_1graph_1_1_i_connection.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 3954 bytes
+(epstopdf)             Output file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1model_1_1graph_1_1_i_connection-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:50
+(epstopdf)                    size: 6431 bytes
+(epstopdf)             Command: <repstopdf --outfile=interfacede_1_1fraunhofer_
+1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_connection-eps-converted-to.pdf i
+nterfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_connecti
+on.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_connec
+tion-eps-converted-to.pdf, id=1151, 501.875pt x 119.49644pt>
+File: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_c
+onnection-eps-converted-to.pdf Graphic file (type pdf)
+
+<use interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_co
+nnection-eps-converted-to.pdf>
+Package pdftex.def Info: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1mod
+el_1_1graph_1_1_i_connection-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 238.99808pt x 56.9055pt.
+)
+(./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_netw
+ork_graph.tex
+Package epstopdf Info: Source file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1model_1_1graph_1_1_i_network_graph.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4458 bytes
+(epstopdf)             Output file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1model_1_1graph_1_1_i_network_graph-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:50
+(epstopdf)                    size: 7077 bytes
+(epstopdf)             Command: <repstopdf --outfile=interfacede_1_1fraunhofer_
+1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_network_graph-eps-converted-to.pd
+f interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_netwo
+rk_graph.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_networ
+k_graph-eps-converted-to.pdf, id=1152, 501.875pt x 52.9679pt>
+File: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_n
+etwork_graph-eps-converted-to.pdf Graphic file (type pdf)
+
+<use interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_ne
+twork_graph-eps-converted-to.pdf>
+Package pdftex.def Info: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1mod
+el_1_1graph_1_1_i_network_graph-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 398.36076pt x 42.04092pt.
+ [15 <./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1_i_comman
+d-eps-converted-to.pdf> <./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1m
+odel_1_1graph_1_1_i_connection-eps-converted-to.pdf> <./interfacede_1_1fraunhof
+er_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_network_graph-eps-converted-to
+.pdf>]
+Underfull \hbox (badness 1755) in paragraph at lines 43--44
+[]\T1/phv/m/n/10 Implemented in [][]de.[]fraunhofer.[]iosb.[]trufflehog.[]model
+.[]graph.[]Network[]Graph[]Switch[][], [][]de.[]fraunhofer.[]iosb.[]trufflehog.
+[]
+ []
+
+)
+(./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_netw
+ork_graph_layout.tex
+Underfull \hbox (badness 10000) in paragraph at lines 1--1
+[]\T1/phv/bc/n/14.4 de.[]fraunhofer.[]iosb.[]trufflehog.[]model.[]graph.[]I[]Ne
+twork[]Graph[]Layout In-ter-face Ref-er-
+ []
+
+Package epstopdf Info: Source file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1model_1_1graph_1_1_i_network_graph_layout.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4317 bytes
+(epstopdf)             Output file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1model_1_1graph_1_1_i_network_graph_layout-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:51
+(epstopdf)                    size: 7003 bytes
+(epstopdf)             Command: <repstopdf --outfile=interfacede_1_1fraunhofer_
+1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_network_graph_layout-eps-converte
+d-to.pdf interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_
+i_network_graph_layout.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_networ
+k_graph_layout-eps-converted-to.pdf, id=1189, 501.875pt x 71.69786pt>
+File: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_n
+etwork_graph_layout-eps-converted-to.pdf Graphic file (type pdf)
+
+<use interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_ne
+twork_graph_layout-eps-converted-to.pdf>
+Package pdftex.def Info: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1mod
+el_1_1graph_1_1_i_network_graph_layout-eps-converted-to.pdf used on input line 
+6.
+(pdftex.def)             Requested size: 398.33778pt x 56.9055pt.
+)
+(./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_node
+.tex
+Package epstopdf Info: Source file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1model_1_1graph_1_1_i_node.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 3942 bytes
+(epstopdf)             Output file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1model_1_1graph_1_1_i_node-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:51
+(epstopdf)                    size: 6146 bytes
+(epstopdf)             Command: <repstopdf --outfile=interfacede_1_1fraunhofer_
+1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_node-eps-converted-to.pdf interfa
+cede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_node.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_node-e
+ps-converted-to.pdf, id=1190, 501.875pt x 119.13509pt>
+File: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_n
+ode-eps-converted-to.pdf Graphic file (type pdf)
+
+<use interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i_no
+de-eps-converted-to.pdf>
+Package pdftex.def Info: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1mod
+el_1_1graph_1_1_i_node-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 239.72559pt x 56.9055pt.
+)
+(./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_i_notif
+ier.tex
+Underfull \hbox (badness 1939) in paragraph at lines 1--1
+[]\T1/phv/bc/n/14.4 de.[]fraunhofer.[]iosb.[]trufflehog.[]communication.[]I[]No
+tifier$\OML/cmm/m/it/14.4 <$ \T1/phv/bc/n/14.4 M $\OML/cmm/m/it/14.4 >$ \T1/phv
+/bc/n/14.4 In-ter-face Tem-plate
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1.
+
+Package epstopdf Info: Source file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1communication_1_1_i_notifier.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4199 bytes
+(epstopdf)             Output file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1communication_1_1_i_notifier-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:51
+(epstopdf)                    size: 6596 bytes
+(epstopdf)             Command: <repstopdf --outfile=interfacede_1_1fraunhofer_
+1_1iosb_1_1trufflehog_1_1communication_1_1_i_notifier-eps-converted-to.pdf inte
+rfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_i_notifier.eps
+>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_i_notifie
+r-eps-converted-to.pdf, id=1191, 501.875pt x 143.05446pt>
+File: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_i_no
+tifier-eps-converted-to.pdf Graphic file (type pdf)
+
+<use interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_i_not
+ifier-eps-converted-to.pdf>
+Package pdftex.def Info: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1com
+munication_1_1_i_notifier-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 299.47319pt x 85.35826pt.
+
+Underfull \vbox (badness 1490) has occurred while \output is active []
+
+ [16 <./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_i
+_network_graph_layout-eps-converted-to.pdf> <./interfacede_1_1fraunhofer_1_1ios
+b_1_1trufflehog_1_1model_1_1graph_1_1_i_node-eps-converted-to.pdf>] [17 <./inte
+rfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_i_notifier-eps
+-converted-to.pdf>])
+(./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdataproc
+essor_1_1_i_packet_data.tex
+Underfull \hbox (badness 10000) in paragraph at lines 1--1
+[]\T1/phv/bc/n/14.4 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]packetdatap
+rocessor.[]I[]Packet[]Data In-ter-face
+ []
+
+Package epstopdf Info: Source file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1service_1_1packetdataprocessor_1_1_i_packet_data.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4009 bytes
+(epstopdf)             Output file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1service_1_1packetdataprocessor_1_1_i_packet_data-eps-converted-to.pdf>
+
+(epstopdf)                    date: 2016-01-27 01:18:52
+(epstopdf)                    size: 6236 bytes
+(epstopdf)             Command: <repstopdf --outfile=interfacede_1_1fraunhofer_
+1_1iosb_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1_i_packet_data-eps-c
+onverted-to.pdf interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1p
+acketdataprocessor_1_1_i_packet_data.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdataproces
+sor_1_1_i_packet_data-eps-converted-to.pdf, id=1249, 501.875pt x 95.14546pt>
+File: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdatap
+rocessor_1_1_i_packet_data-eps-converted-to.pdf Graphic file (type pdf)
+
+<use interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdatapr
+ocessor_1_1_i_packet_data-eps-converted-to.pdf>
+Package pdftex.def Info: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1ser
+vice_1_1packetdataprocessor_1_1_i_packet_data-eps-converted-to.pdf used on inpu
+t line 6.
+(pdftex.def)             Requested size: 300.16241pt x 56.9055pt.
+
+Underfull \hbox (badness 10000) detected at line 19
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 22
+[][][]
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 35.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 35.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 35.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 35.
+
+
+Underfull \hbox (badness 10000) detected at line 49
+[][][]
+ []
+
+)
+(./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1trufflecommand
+_1_1_i_truffle_command.tex
+Package epstopdf Info: Source file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1command_1_1trufflecommand_1_1_i_truffle_command.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4085 bytes
+(epstopdf)             Output file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1command_1_1trufflecommand_1_1_i_truffle_command-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:52
+(epstopdf)                    size: 6253 bytes
+(epstopdf)             Command: <repstopdf --outfile=interfacede_1_1fraunhofer_
+1_1iosb_1_1trufflehog_1_1command_1_1trufflecommand_1_1_i_truffle_command-eps-co
+nverted-to.pdf interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1tr
+ufflecommand_1_1_i_truffle_command.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1trufflecommand_1
+_1_i_truffle_command-eps-converted-to.pdf, id=1251, 501.875pt x 140.38448pt>
+File: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1trufflecomm
+and_1_1_i_truffle_command-eps-converted-to.pdf Graphic file (type pdf)
+
+<use interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1trufflecomma
+nd_1_1_i_truffle_command-eps-converted-to.pdf>
+Package pdftex.def Info: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1com
+mand_1_1trufflecommand_1_1_i_truffle_command-eps-converted-to.pdf used on input
+ line 6.
+(pdftex.def)             Requested size: 305.15541pt x 85.35826pt.
+ [18 <./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdat
+aprocessor_1_1_i_packet_data-eps-converted-to.pdf>])
+(./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1usercommand_1_
+1_i_user_command.tex
+Underfull \hbox (badness 10000) in paragraph at lines 1--1
+[]\T1/phv/bc/n/14.4 de.[]fraunhofer.[]iosb.[]trufflehog.[]command.[]usercommand
+.[]I[]User[]Command In-ter-face
+ []
+
+Package epstopdf Info: Source file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1command_1_1usercommand_1_1_i_user_command.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4073 bytes
+(epstopdf)             Output file: <interfacede_1_1fraunhofer_1_1iosb_1_1truff
+lehog_1_1command_1_1usercommand_1_1_i_user_command-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:52
+(epstopdf)                    size: 6210 bytes
+(epstopdf)             Command: <repstopdf --outfile=interfacede_1_1fraunhofer_
+1_1iosb_1_1trufflehog_1_1command_1_1usercommand_1_1_i_user_command-eps-converte
+d-to.pdf interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1usercomm
+and_1_1_i_user_command.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1usercommand_1_1_
+i_user_command-eps-converted-to.pdf, id=1264, 501.875pt x 146.88878pt>
+File: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1usercommand
+_1_1_i_user_command-eps-converted-to.pdf Graphic file (type pdf)
+
+<use interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1usercommand_
+1_1_i_user_command-eps-converted-to.pdf>
+Package pdftex.def Info: interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1com
+mand_1_1usercommand_1_1_i_user_command-eps-converted-to.pdf used on input line 
+6.
+(pdftex.def)             Requested size: 291.65439pt x 85.35826pt.
+)
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_kamada_kaw
+ai_layout.tex
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_kamada_kawai_layout.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4295 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_kamada_kawai_layout-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:53
+(epstopdf)                    size: 7395 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1model_1_1graph_1_1_kamada_kawai_layout-eps-converted-to.pd
+f classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_kamada_kawa
+i_layout.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_kamada_kawai
+_layout-eps-converted-to.pdf, id=1265, 501.875pt x 78.62373pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_kamada_
+kawai_layout-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_kamada_k
+awai_layout-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1
+_1graph_1_1_kamada_kawai_layout-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 398.33778pt x 62.40277pt.
+ [19 <./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1command_1_1truffleco
+mmand_1_1_i_truffle_command-eps-converted-to.pdf> <./interfacede_1_1fraunhofer_
+1_1iosb_1_1trufflehog_1_1command_1_1usercommand_1_1_i_user_command-eps-converte
+d-to.pdf> <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_
+kamada_kawai_layout-eps-converted-to.pdf>])
+(./interfacede_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_listene
+r.tex
+Underfull \hbox (badness 1590) in paragraph at lines 1--1
+[]\T1/phv/bc/n/14.4 de.[]fraunhofer.[]iosb.[]trufflehog.[]communication.[]Liste
+ner$\OML/cmm/m/it/14.4 <$ \T1/phv/bc/n/14.4 M $\OML/cmm/m/it/14.4 >$ \T1/phv/bc
+/n/14.4 In-ter-face Tem-plate
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1.
+
+) (./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1_main.tex
 
 LaTeX Font Warning: Font shape `T1/pcr/bc/n' undefined
 (Font)              using `T1/pcr/m/n' instead on input line 20.
 
-) (./classedu_1_1kit_1_1ipd_1_1trufflehog_1_1util_1_1_notifier.tex
+[20] [21])
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_ed
+ge.tex
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_network_edge.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4076 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_network_edge-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:53
+(epstopdf)                    size: 6748 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1model_1_1graph_1_1_network_edge-eps-converted-to.pdf class
+de_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_edge.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_edge
+-eps-converted-to.pdf, id=1316, 501.875pt x 59.7432pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network
+_edge-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_
+edge-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1
+_1graph_1_1_network_edge-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 398.36842pt x 47.4214pt.
+)
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_gr
+aph.tex
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_network_graph.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4197 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_network_graph-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:53
+(epstopdf)                    size: 6710 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1model_1_1graph_1_1_network_graph-eps-converted-to.pdf clas
+sde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_graph.eps
+>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_grap
+h-eps-converted-to.pdf, id=1317, 501.875pt x 87.2861pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network
+_graph-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_
+graph-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1
+_1graph_1_1_network_graph-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 398.33778pt x 69.2763pt.
+
+
+Package hyperref Warning: Suppressing link with empty target on input line 19.
+
+[22 <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_networ
+k_edge-eps-converted-to.pdf> <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1
+model_1_1graph_1_1_network_graph-eps-converted-to.pdf>])
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_gr
+aph_switch.tex
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_network_graph_switch.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4087 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_network_graph_switch-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:54
+(epstopdf)                    size: 6645 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1model_1_1graph_1_1_network_graph_switch-eps-converted-to.p
+df classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_gr
+aph_switch.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_grap
+h_switch-eps-converted-to.pdf, id=1347, 501.875pt x 158.90366pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network
+_graph_switch-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_
+graph_switch-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1
+_1graph_1_1_network_graph_switch-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 269.59938pt x 85.35826pt.
+)
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_no
+de.tex [23 <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1
+_network_graph_switch-eps-converted-to.pdf>]
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_network_node.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4064 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1model_1_1graph_1_1_network_node-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:54
+(epstopdf)                    size: 6402 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1model_1_1graph_1_1_network_node-eps-converted-to.pdf class
+de_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_node.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_node
+-eps-converted-to.pdf, id=1375, 501.875pt x 59.57256pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network
+_node-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_network_
+node-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1
+_1graph_1_1_network_node-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 398.33012pt x 47.28073pt.
+
+Underfull \hbox (badness 10000) detected at line 29
+[][][]
+ []
+
+
+Package hyperref Warning: Suppressing link with empty target on input line 30.
+
+
+Package hyperref Warning: Suppressing link with empty target on input line 36.
+
+)
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_notifier.te
+x
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 1.
@@ -1204,33 +1981,461 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 1.
 
-[7]) [8] (./refman.ind [9
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1communication_1_1_notifier.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4209 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1communication_1_1_notifier-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:54
+(epstopdf)                    size: 6652 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1communication_1_1_notifier-eps-converted-to.pdf classde_1_
+1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_notifier.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_notifier-eps-
+converted-to.pdf, id=1378, 501.875pt x 143.05446pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_notifier
+-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communication_1_1_notifier-
+eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1communi
+cation_1_1_notifier-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 299.47319pt x 85.35826pt.
+ [24 <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1model_1_1graph_1_1_netwo
+rk_node-eps-converted-to.pdf> <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_
+1communication_1_1_notifier-eps-converted-to.pdf>])
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1datalogging_1_1_sn
+apshot_logger.tex [25]
+
+Package hyperref Warning: Suppressing link with empty target on input line 13.
 
 
+Package hyperref Warning: Suppressing link with empty target on input line 23.
 
 
-])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 160.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 160.
+Underfull \hbox (badness 10000) detected at line 42
+[][][]
+ []
+
+)
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdataprocesso
+r_1_1_truffle.tex
+Package epstopdf Info: Source file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1service_1_1packetdataprocessor_1_1_truffle.eps>
+(epstopdf)                    date: 2016-01-27 01:18:17
+(epstopdf)                    size: 4009 bytes
+(epstopdf)             Output file: <classde_1_1fraunhofer_1_1iosb_1_1truffleho
+g_1_1service_1_1packetdataprocessor_1_1_truffle-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-01-27 01:18:55
+(epstopdf)                    size: 6236 bytes
+(epstopdf)             Command: <repstopdf --outfile=classde_1_1fraunhofer_1_1i
+osb_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1_truffle-eps-converted-t
+o.pdf classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdataproce
+ssor_1_1_truffle.eps>
+(epstopdf)             \includegraphics on input line 6.
+Package epstopdf Info: Output file is already uptodate.
+
+<classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdataprocessor_
+1_1_truffle-eps-converted-to.pdf, id=1436, 501.875pt x 95.14546pt>
+File: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdataproce
+ssor_1_1_truffle-eps-converted-to.pdf Graphic file (type pdf)
+
+<use classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdataproces
+sor_1_1_truffle-eps-converted-to.pdf>
+Package pdftex.def Info: classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service
+_1_1packetdataprocessor_1_1_truffle-eps-converted-to.pdf used on input line 6.
+(pdftex.def)             Requested size: 300.16241pt x 56.9055pt.
+
+
+Package hyperref Warning: Suppressing link with empty target on input line 13.
+
+
+Underfull \hbox (badness 10000) detected at line 13
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 16
+[][][]
+ []
+
+)
+(./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdataprocesso
+r_1_1profinetdataprocessor_1_1_truffle_receiver.tex
+Underfull \hbox (badness 10000) in paragraph at lines 1--1
+[]\T1/phv/bc/n/14.4 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]packetdatap
+rocessor.[]profinetdataprocessor.[]
+ []
+
+[26 <./classde_1_1fraunhofer_1_1iosb_1_1trufflehog_1_1service_1_1packetdataproc
+essor_1_1_truffle-eps-converted-to.pdf>])
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 22.16548pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[27] [28
+
+] (./refman.ind
+Underfull \hbox (badness 10000) in paragraph at lines 7--9
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::filter[]:
+:[]Filter,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 10--12
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::communication[]::[
+]I[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 12--14
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::communication[]::[
+]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 15--17
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::filter[]:
+:[]Filter,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 18--20
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--22
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 22--24
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 25--27
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--29
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]I[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 29--31
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 31--33
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 72--74
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]communication.[]I[]Notif
+ier$\OML/cmm/m/it/10 <$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 74--76
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]communication.[]Listener
+$\OML/cmm/m/it/10 <$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 83--85
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]model.[]graph.[]Graph[]P
+roxy,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 85--87
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]model.[]graph.[]I[]Conne
+ction,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 87--89
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]model.[]graph.[]I[]Netwo
+rk[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 89--91
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]model.[]graph.[]I[]Netwo
+rk[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--95
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]model.[]graph.[]Kamada[]
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 95--97
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]model.[]graph.[]Network[
+]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--99
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]model.[]graph.[]Network[
+]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 99--101
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]model.[]graph.[]Network[
+]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 101--103
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]model.[]graph.[]Network[
+]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 103--105
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]datalogging.[]
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 105--107
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]datalogging.[]
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--109
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]datalogging.[]
+Data[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 109--111
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]datalogging.[]
+Data[]
+ []
+
+[29
+
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 111--113
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]datalogging.[]
+Data[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 113--115
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]datalogging.[]
+Data[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--117
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]datalogging.[]
+Data[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 117--119
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]datalogging.[]
+
+ []
+
+
+Overfull \hbox (16.62001pt too wide) in paragraph at lines 119--121
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]packetdataproc
+essor.[]
+ []
+
+
+Overfull \hbox (16.62001pt too wide) in paragraph at lines 121--123
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]packetdataproc
+essor.[]
+ []
+
+
+Overfull \hbox (16.62001pt too wide) in paragraph at lines 123--125
+[]\T1/phv/m/n/10 de.[]fraunhofer.[]iosb.[]trufflehog.[]service.[]packetdataproc
+essor.[]
+ []
+
+
+Overfull \hbox (19.51715pt too wide) in paragraph at lines 140--141
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::[]
+Fruchterman[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 142--143
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::[]
+Graph[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 145--146
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::[]
+I[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 158--159
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::service[]::dataloggi
+ng[]::[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 160--161
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::service[]::dataloggi
+ng[]::[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 164--165
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::service[]::dataloggi
+ng[]::[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 170--171
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::service[]::dataloggi
+ng[]::[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 177--178
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::service[]::dataloggi
+ng[]::[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 181--182
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::service[]::dataloggi
+ng[]::[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 184--185
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::service[]::dataloggi
+ng[]::[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 189--190
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::service[]::dataloggi
+ng[]::[]
+ []
+
+
+Overfull \hbox (28.15736pt too wide) in paragraph at lines 192--193
+[]\T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::service[]::packetdat
+aprocessor[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 198--200
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]
+ []
+
+
+Overfull \hbox (48.15736pt too wide) in paragraph at lines 204--206
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::service[]::packetd
+ataprocessor[]
+ []
+
+[30]
+Underfull \hbox (badness 10000) in paragraph at lines 231--233
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 243--245
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 255--257
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::communication[]::[
+]I[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 257--259
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::communication[]::[
+]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 278--280
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::communication[]::[
+]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 281--283
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::communication[]::[
+]I[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 283--285
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::communication[]::[
+]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 309--311
+[]| \T1/phv/m/n/10 de[]::fraunhofer[]::iosb[]::trufflehog[]::model[]::graph[]::
+[]
+ []
+
+[31])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 186.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 186.
  (./refman.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 160.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 160.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 186.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 186.
 Package rerunfilecheck Info: File `refman.out' has not changed.
-(rerunfilecheck)             Checksum: 73ED8C90ADDCF36635621755998E892F;6219.
+(rerunfilecheck)             Checksum: 89FA598FD210CA9B149253025F8B3794;40648.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 160.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 186.
  ) 
 Here is how much of TeX's memory you used:
- 13069 strings out of 493054
- 183783 string characters out of 6134760
- 274745 words of memory out of 5000000
- 16300 multiletter control sequences out of 15000+600000
- 61156 words of font info for 71 fonts, out of 8000000 for 9000
+ 13683 strings out of 493054
+ 221939 string characters out of 6134760
+ 293973 words of memory out of 5000000
+ 16610 multiletter control sequences out of 15000+600000
+ 63474 words of font info for 74 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 48i,15n,43p,1058b,406s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 48i,16n,43p,1209b,480s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/te
 xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/tex
@@ -1242,10 +2447,10 @@ t/fonts/type1/urw/helvetic/uhvb8ac.pfb></usr/local/texlive/2015/texmf-dist/font
 s/type1/urw/helvetic/uhvbo8ac.pfb></usr/local/texlive/2015/texmf-dist/fonts/typ
 e1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/
 helvetic/uhvro8a.pfb>
-Output written on refman.pdf (13 pages, 97616 bytes).
+Output written on refman.pdf (37 pages, 268478 bytes).
 PDF statistics:
- 366 PDF objects out of 1000 (max. 8388607)
- 337 compressed objects within 4 object streams
- 53 named destinations out of 1000 (max. 500000)
- 209 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1698 PDF objects out of 1728 (max. 8388607)
+ 1589 compressed objects within 16 object streams
+ 291 named destinations out of 1000 (max. 500000)
+ 1223 words of extra memory for PDF output out of 10000 (max. 10000000)
 
