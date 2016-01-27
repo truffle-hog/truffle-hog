@@ -1,11 +1,11 @@
-group 'TruffleHogProject'
-version '0.0-SNAPSHOT'
+group 'edu.kit.ipd.trufflehog'
+version '0.0.1-SNAPSHOT'
 
 
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = "TruffleHog.TruffleHog"
+mainClassName = "edu.kit.ipd.trufflehog.Main"
 
 repositories {
     mavenCentral()
@@ -13,10 +13,13 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile group: 'net.sf.jung', name: 'jung-visualization', version:
+            '2.0.1'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'TruffleHog.TruffleHog'
+        attributes 'Main-Class': 'edu.kit.ipd.trufflehog.Main'
     }
 }

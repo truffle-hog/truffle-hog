@@ -18,6 +18,7 @@ hs_err_pid*
 /gradle/
 .gradle/
 *.iml
+pom.xml
 
 # Exceptions
 !TeXDoclet.jar
