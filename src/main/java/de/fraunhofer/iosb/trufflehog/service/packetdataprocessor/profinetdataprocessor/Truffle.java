@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * <p>
  * This class is used to store packet data which is received from the spp_profinet snort plugin using
  * the {@link TruffleReceiver}.
+ * </p>
  * @author Mr. X
  * @version 0.0
  */
@@ -25,7 +27,7 @@ public class Truffle implements IPacketData {
         HashMap<String, Object> attributeMap = attributes.get(attributeType);
 
         if (attributeMap == null) {
-            //attributeMap = new HashMap<>();
+            attributeMap = new HashMap<>();
             attributes.put(attributeType, attributeMap);
         }
 

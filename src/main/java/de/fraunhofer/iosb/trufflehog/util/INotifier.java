@@ -27,7 +27,7 @@ public interface INotifier<M> {
      *
      * @param IListener The IListeners to register with this INotifier.
      */
-    void addListener(IListener IListener);
+    void addListener(IListener<M> IListener);
 
     /**
      * <p>
@@ -37,7 +37,7 @@ public interface INotifier<M> {
      *
      * @param IListener The IListeners to register with this INotifier.
      */
-    void removeListener(IListener IListener);
+    void removeListener(IListener<M> IListener);
 
     /**
      * <p>

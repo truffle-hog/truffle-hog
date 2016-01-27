@@ -1,13 +1,40 @@
 package de.fraunhofer.iosb.trufflehog.command.queue;
 
+import de.fraunhofer.iosb.trufflehog.command.ICommand;
 import de.fraunhofer.iosb.trufflehog.command.queue.CommandQueueManager;
 import de.fraunhofer.iosb.trufflehog.command.queue.ICommandQueue;
 
+import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
 /**
- * Created by Infinity on 27.01.2016.
+ *
+ * @author Mark Giraud
+ * @version 0.0
  */
 public class CommandQueue implements ICommandQueue {
-    public CommandQueue(CommandQueueManager commandQueueManager) {
 
+    private final Deque<ICommand> commandQueue = new ConcurrentLinkedDeque<>();
+
+    private final CommandQueueManager manager;
+
+    public CommandQueue(CommandQueueManager commandQueueManager) {
+        this.manager = commandQueueManager;
+        this.manager.registerQueue(this);
+    }
+
+    @Override
+    public <T extends ICommand> void push(T command) throws InterruptedException {
+        throw new UnsupportedOperationException("Not implemented yet!");
+    }
+
+    @Override
+    public ICommand pop() {
+        throw new UnsupportedOperationException("Not implemented yet!");
+    }
+
+    @Override
+    public boolean isEmpty() {
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 }

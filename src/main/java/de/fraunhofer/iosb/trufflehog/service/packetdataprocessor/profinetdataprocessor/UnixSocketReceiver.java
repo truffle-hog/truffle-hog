@@ -4,8 +4,10 @@ import de.fraunhofer.iosb.trufflehog.command.trufflecommand.ITruffleCommand;
 import de.fraunhofer.iosb.trufflehog.command.trufflecommand.StartPluginCommand;
 
 /**
- * This implementation of the {@link TruffleReceiver} uses a unix socket
- * to communicate with the spp_profinet snort plugin.
+ * <p>
+ *     This implementation of the {@link TruffleReceiver} uses a unix socket
+ *     to communicate with the spp_profinet snort plugin.
+ * </p>
  *
  * @author Mr. X
  * @version 0.0
@@ -13,18 +15,26 @@ import de.fraunhofer.iosb.trufflehog.command.trufflecommand.StartPluginCommand;
 public class UnixSocketReceiver extends TruffleReceiver {
 
     /**
-     * Creates the UnixSocketReceiver.
+     * <p>
+     *     Creates the UnixSocketReceiver.
+     * </p>
      */
     public UnixSocketReceiver() {
         throw new UnsupportedOperationException("Note implemented yet!");
     }
 
     /**
-     * Tries to connect to the spp_profinet process.
-     * If the connection failed a {@link StartPluginCommand} is sent to all listeners.
-     * Otherwise the service starts receiving packet data from the spp_profinet snort plugin,
-     * packs the data into {@link Truffle} objects and then generates {@link ITruffleCommand} objects and sends
-     * them to all listeners.
+     * <p>
+     *     The main method of the UnixSocketReceiver service.
+     * </p>
+     *
+     * <p>
+     *     Tries to connect to the spp_profinet process.
+     *     If the connection failed a {@link StartPluginCommand} is sent to all listeners.
+     *     Otherwise the service starts receiving packet data from the spp_profinet snort plugin,
+     *     packs the data into {@link Truffle} objects and then generates {@link ITruffleCommand} objects and sends
+     *     them to all listeners.
+     * </p>
      */
     @Override
     public void run() {

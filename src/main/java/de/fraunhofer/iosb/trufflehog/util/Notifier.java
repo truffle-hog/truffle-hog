@@ -1,7 +1,6 @@
 package de.fraunhofer.iosb.trufflehog.util;
 
 import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -25,7 +24,7 @@ public abstract class Notifier<M> implements INotifier<M> {
     private final Collection<IListener<M>> listeners = new ConcurrentLinkedQueue<>();
 
     @Override
-    public void addListener(IListener listener) {
+    public void addListener(IListener<M> listener) {
         listeners.add(listener);
     }
 
