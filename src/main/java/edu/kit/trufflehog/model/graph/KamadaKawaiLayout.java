@@ -2,9 +2,10 @@ package edu.kit.trufflehog.model.graph;
 
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 
-/**<p>
-* Uses the Kamada-Kawai-algorithm from the jung library to present the {@link INetworkGraph}.
-* </p>
+/**
+ * <p>
+ *     Uses the Kamada-Kawai-algorithm from the jung library to present the {@link INetworkGraph}.
+ * </p>
 */
 
 public class KamadaKawaiLayout extends KKLayout<INode, IConnection> implements INetworkGraphLayout<INode, IConnection> {

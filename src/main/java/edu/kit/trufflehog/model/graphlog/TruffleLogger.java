@@ -25,8 +25,7 @@ public class TruffleLogger {
 
     /**
      * <p>
-     *     Returns a list of Truffles that the {@link NetworkNode} received.
-     *     TODO: think about this some more, do we really want a list?
+     *     Returns a list of all Truffles that the {@link NetworkNode} received and that were saved.
      * </p>
      */
     public List<Truffle> getLog() {

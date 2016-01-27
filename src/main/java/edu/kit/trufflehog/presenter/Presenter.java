@@ -42,6 +42,5 @@ public class Presenter {
      *  </p>
      */
     public void present() {
-
     }
 }
