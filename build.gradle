@@ -1,11 +1,11 @@
-group 'TruffleHogProject'
-version '0.0-SNAPSHOT'
+group 'edu.kit.ipd.trufflehog'
+version '0.0.1-SNAPSHOT'
 
 
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = "edu.kit.ipd.trufflehog.Main"
+mainClassName = "edu.kit.trufflehog.TruffleHog"
 
 repositories {
     mavenCentral()
@@ -16,6 +16,7 @@ dependencies {
 
     //jung
     compile 'org.apache.commons:commons-collections4:4.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
     compile 'colt:colt:1.2.0'
     compile 'net.sf.jung:jung2:2.0.1'
     compile 'net.sf.jung:jung-graph-impl:2.0.1'
@@ -30,6 +31,6 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'TruffleHog.TruffleHog'
+        attributes 'Main-Class': 'edu.kit.trufflehog.Main'
     }
 }
