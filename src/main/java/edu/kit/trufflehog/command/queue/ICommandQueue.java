@@ -3,15 +3,28 @@ package edu.kit.trufflehog.command.queue;
 import edu.kit.trufflehog.command.ICommand;
 
 /**
- * Created by Infinity on 27.01.2016.
+ * <p>
+ *     This interface supplies general methods for any CommandQueue implementation.
+ * </p>
+ *
+ * @author Mark Giraud
+ * @version 0.0
  */
 public interface ICommandQueue {
 
     /**
-     * This interface
+     * <p>
+     *     Pushes the supplied command onto the queue.
+     * </p>
      *
-     * @param command
-     * @param <T>
+     * <p>
+     *     The element will always be added to the end of the list. Any element that was added will be returned after
+     *     all elements that were added before it if pop is called.
+     * </p>
+     *
+     * @param command The command to put onto the Queue.
+     * @param <T>     The type of the command.
+     * @throws InterruptedException
      */
     <T extends ICommand> void push(T command) throws InterruptedException;
 
@@ -19,9 +32,11 @@ public interface ICommandQueue {
      * <p>
      *     Gets the first element of the queue and removes it from the list.
      * </p>
-     * @return
+     *
+     * @return The first command on the queue
+     * @throws InterruptedException
      */
-    ICommand pop();
+    ICommand pop() throws InterruptedException;
 
     boolean isEmpty();
 }

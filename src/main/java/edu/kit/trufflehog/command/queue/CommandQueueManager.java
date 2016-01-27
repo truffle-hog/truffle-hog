@@ -6,6 +6,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
+ * <p>
+ *     The command queue manager makes it possible for multiple command queues to be managed so that only once an
+ *     element is present in one of the queues the calling thread is notified and can fetch the element.
+ *     Essentially the CommandQueueManager is a BlockingQueue of CommandQueues.
+ * </p>
+ * <p>
+ *     If multiple command queues have elements in them, each call to getNextQueue() will return a different one
+ *     until every queue was at least popped once.
+ * </p>
  *
  * @author Mark Giraud
  * @version 0.0
@@ -21,7 +30,7 @@ public class CommandQueueManager {
     private final BlockingQueue availableElementQueue = new LinkedBlockingQueue<>();
 
     /**
-     * Creates a mew CommandQueueManager
+     * Creates a new CommandQueueManager
      */
     public CommandQueueManager() {
         registeredQueues = 0;
@@ -35,21 +44,20 @@ public class CommandQueueManager {
 
     /**
      * <p>
-     *     Gets the next non empty queue
+     *     Gets the next non empty queue.
      * </p>
      *
      * <p>
-     *     This method gets the next non empty {@link ICommandQueue}
+     *     This method gets the next non empty {@link ICommandQueue}. If there are multiple queues registered
+     *     the queues are cycled each call until every queue was returned at least once.
      * </p>
-     * @return
+     * @return The next command queue.
      * @throws InterruptedException
      */
     public ICommandQueue getNextQueue() throws InterruptedException {
 
         if (registeredQueues == 0)
             return null;
-
-        availableElementQueue.take();
 
         ICommandQueue current = queues.get(currentQueue);
 
@@ -69,7 +77,35 @@ public class CommandQueueManager {
         return current;
     }
 
-    public void notifyNewElement() throws InterruptedException {
+    /**
+     * <p>
+     *     Notifies the manager that a new element was pushed onto a queue.
+     * </p>
+     *
+     * <p>
+     *     This method should always be called by any {@link ICommandQueue} implementation whenever
+     *     an element is added to it.
+     * </p>
+     *
+     * @throws InterruptedException
+     */
+    protected void notifyNewElement() throws InterruptedException {
         availableElementQueue.put(Boolean.TRUE);
+    }
+
+    /**
+     * <p>
+     *     Notifies the manager that an element was removed from the queue.
+     * </p>
+     *
+     * <p>
+     *     This method should always be called by any {@link ICommandQueue} implementation whenever
+     *     an element is removed from it.
+     * </p>
+     *
+     * @throws InterruptedException
+     */
+    protected void notifyRemovedElement() throws InterruptedException {
+        availableElementQueue.take();
     }
 }
