@@ -27,9 +27,11 @@ public class NetworkNode implements Serializable, INode {
 //	public TruffleLogger getLogger() {
 //	}
 
-    /**<p>
-     *Logs a Truffle package with the internal TruffleLogger.
-     *</p>
+    /**
+     * <p>
+     *     Logs a Truffle package with the internal TruffleLogger.
+     * </p>
+     *
      * @param truffle {@link Truffle} to log
      */
 	public void log(Truffle truffle) {
