@@ -6,7 +6,7 @@ import edu.kit.trufflehog.util.INotifier;
 
 /**
  * <p>
- *     The {@code IViewController} class is the basic interface that is
+ *     The IViewController class is the basic interface that is
  *     implemented by every GUI View Component in the application.
  * </p>
  * <p>
@@ -18,11 +18,11 @@ import edu.kit.trufflehog.util.INotifier;
  *     {@link edu.kit.trufflehog.presenter.Presenter}.
  * </p>
  * <p>
- *     Every {@code IViewController} is also integrated into the notification
+ *     Every IViewController is also integrated into the notification
  *     framework of this application by implementing the
  *     {@link INotifier} interface. Meaning if
  *     interactions are invoked on a view controller, the commands mapped to
- *     these interactions are sent to any listeners.
+ *     these interactions are sent to all listeners.
  * </p>
  *
  * @param <I> The type of interactions this view controller can invoke.

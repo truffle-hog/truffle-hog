@@ -10,9 +10,11 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * The MainToolBarController class is the View designed for all most
- * important functionality that should be directly accessed by the user
- * during the running program.
+ * <p>
+ *     The MainToolBarController class is the view designed for all most
+ *     important functionality that should be directly accessed by the user
+ *     during the running program.
+ * </p>
  */
 public final class MainToolBarController extends
         ToolBarController<ToolBarInteraction> {
@@ -22,10 +24,11 @@ public final class MainToolBarController extends
             new EnumMap<>(ToolBarInteraction.class);
 
     /**
-     * Creates a new MainToolBarController with the fiven fxmlFileName.
-     * The fxml file has to be in the same namespace as the
-     * MainToolBarController.
-     *
+     * <p>
+     *     Creates a new MainToolBarController with the given fxmlFileName.
+     *     The fxml file has to be in the same namespace as the
+     *     MainToolBarController.
+     * </p>
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
     public MainToolBarController(final String fxmlFileName) {

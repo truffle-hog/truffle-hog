@@ -2,7 +2,7 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.MainInteraction;
-import edu.kit.trufflehog.interaction.NetworkMonitoringInteraction;
+import edu.kit.trufflehog.interaction.SettingsInteraction;
 import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
@@ -11,26 +11,25 @@ import java.util.Map;
 
 /**
  * <p>
- *     The NetworkMonitoringViewController provides GUI functionality for all
- *     interactions that a user performs during monitoring of an ongoing
- *     network communication.
+ *     The SettingsViewController provides the functionality for user
+ *     interaction with the settings.
  * </p>
  */
-public class NetworkMonitoringViewController extends BorderPaneController<NetworkMonitoringInteraction> {
+public class SettingsViewController extends BorderPaneController<SettingsInteraction> {
 
 	/** The commands that are mapped to their interactions. **/
-    private final Map<NetworkMonitoringInteraction, IUserCommand> interactionMap =
-            new EnumMap<>(NetworkMonitoringInteraction.class);
+    private final Map<SettingsInteraction, IUserCommand> interactionMap =
+            new EnumMap<>(SettingsInteraction.class);
 
     /**
      * <p>
-     *     Creates a new NetworkMonitoringViewController with the given fxmlFileName.
+     *     Creates a new SettingsViewController with the given fxmlFileName.
      *     The fxml file has to be in the same namespace as the
-     *     NetworkMonitoringViewController.
+     *     SettingsViewController.
      * </p>
-     * @param fxmlFileName the name of the fxml file to be loaded
+     * @param fxmlFileName the name of the fxml file to be loaded.
      */
-    public NetworkMonitoringViewController(final String fxmlFileName) {
+    public SettingsViewController(final String fxmlFileName) {
 
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource
                 (fxmlFileName));
@@ -44,12 +43,11 @@ public class NetworkMonitoringViewController extends BorderPaneController<Networ
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public final void addCommand(final NetworkMonitoringInteraction interactor, final
+    public final void addCommand(final SettingsInteraction interactor, final
     IUserCommand
             command) {
 
