@@ -1,7 +1,6 @@
-package edu.kit.trufflehog.service.datalogging;
+package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.ICommand;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
@@ -31,6 +30,6 @@ public class CommandCompressor {
      * @return The compressed commands.
      */
     public List<ICommand> compressCommands(List<ICommand> commands) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 }

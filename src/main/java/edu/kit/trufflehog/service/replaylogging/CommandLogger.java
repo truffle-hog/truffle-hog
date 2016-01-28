@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.service.datalogging;
+package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.ICommand;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -8,8 +8,8 @@ import java.util.List;
 /**
  * <p>
  *     The CommandLogger takes a list of commands, packages them into a more "dense" list through the
- *     {@link CommandCompressor}. This compacted list is returned to the {@link DataLogLoadService} where the command
- *     list is packaged into a {@link DataLog}.
+ *     {@link CommandCompressor}. This compacted list is returned to the {@link ReplayLogLoadService} where the command
+ *     list is packaged into a {@link ReplayLog}.
  * </p>
  */
 public class CommandLogger {
@@ -44,6 +44,6 @@ public class CommandLogger {
      * @return A list of compacted commands it received.
      */
     public List<ICommand> createCommandLog() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 }

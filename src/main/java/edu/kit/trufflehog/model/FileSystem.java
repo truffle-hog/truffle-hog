@@ -1,9 +1,8 @@
 package edu.kit.trufflehog.model;
 
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
-import edu.kit.trufflehog.model.graphlog.TruffleLogger;
-import edu.kit.trufflehog.service.datalogging.DataLog;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import edu.kit.trufflehog.model.truffledatalog.TruffleLogger;
+import edu.kit.trufflehog.service.replaylogging.ReplayLog;
 
 import java.io.File;
 
@@ -21,9 +20,9 @@ import java.io.File;
  *         </li>
  *         <br></br>
  *         <li>
- *             Data log folder:
+ *             replay log folder:
  *             <p>
- *                 This is where the {@link DataLog} objects are saved to.
+ *                 This is where the {@link ReplayLog} objects are saved to.
  *             </p>
  *         </li>
  *         <br></br>
@@ -73,10 +72,10 @@ public class FileSystem {
 
     /**
      * <p>
-     *     Returns the File object of the data log folder, or creates the folder if it does not exist yet.
+     *     Returns the File object of the replay log folder, or creates the folder if it does not exist yet.
      * </p>
      *
-     * @return The corresponding File object of the data log folder.
+     * @return The corresponding File object of the replay log folder.
      */
     public File getDataLogFolder() {
         throw new UnsupportedOperationException("Not implemented yet");

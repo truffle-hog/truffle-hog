@@ -35,7 +35,7 @@ public abstract class ConfigDataModel {
      * @return The value mapped to the key, if it exists, else null.
      */
     public String getProperty(String key) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     /**

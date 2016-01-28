@@ -1,8 +1,7 @@
-package edu.kit.trufflehog.model.graphlog;
+package edu.kit.trufflehog.model.truffledatalog;
 
 import edu.kit.trufflehog.model.graph.NetworkNode;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class TruffleLogger {
      * </p>
      */
     public List<Truffle> getLog() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     /**

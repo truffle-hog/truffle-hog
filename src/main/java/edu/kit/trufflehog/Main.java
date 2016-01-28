@@ -1,7 +1,9 @@
 package edu.kit.trufflehog;
 
 /**
- * The main class in TruffleHog. It initiates everything.
+ * <p>
+ *     The main class in TruffleHog. It initiates everything.
+ * </p>
  */
 public class Main {
     /**
