@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.command.trufflecommand;
+package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.filter.Filter;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
@@ -7,12 +7,10 @@ import java.util.List;
 
 /**
  * <p>
- *     Command used to add Truffle data to the graph. It updates the INodes and IConnections and creates new ones if
- *     necessary (i.e. when new devices enter the network). After the creation, the new nodes get checked with the
- *     Filter objects and marked accordingly.
+ *     Command used to run filters on a graph. Can be used to update the graph after filter preferences have changed.
  * </p>
  */
-public class AddPacketDataCommand implements ITruffleCommand{
+public class UpdateFilterCommand implements IUserCommand {
     private AbstractNetworkGraph networkGraph = null;
     private List<Filter> filterList = null;
 
@@ -23,7 +21,7 @@ public class AddPacketDataCommand implements ITruffleCommand{
      * @param graph {@link AbstractNetworkGraph} to add data to
      * @param filters List of filters to check
      */
-    AddPacketDataCommand(AbstractNetworkGraph graph, List<Filter> filters) {
+    UpdateFilterCommand(AbstractNetworkGraph graph, List<Filter> filters) {
         networkGraph = graph;
         filterList = filters;
     }

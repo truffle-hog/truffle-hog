@@ -9,7 +9,7 @@ import edu.kit.trufflehog.model.graph.INetworkGraphLayout;
 public class SetDisplayAlgorithmCommand implements IUserCommand{
 
     /*
-    TODO: Let the class make actually make sense
+    TODO: Factories and shit
      */
     public void execute() {
 

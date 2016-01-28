@@ -2,7 +2,7 @@ package edu.kit.trufflehog.view.graph;
 
 import edu.kit.trufflehog.interaction.GraphViewInteraction;
 import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.ANetworkGraph;
+import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import edu.kit.trufflehog.model.graph.INetworkGraphLayout;
 import edu.kit.trufflehog.model.graph.INode;
 import edu.kit.trufflehog.view.IViewController;
@@ -38,6 +38,6 @@ public abstract class INetworkGraphView extends SwingNode
 	 * @param layoutFactory the layout factory for instantiating new layouts
 	 *                         of the given type
 	 */
-	public abstract void setLayoutFactory(Transformer<ANetworkGraph, INetworkGraphLayout> layoutFactory);
+	public abstract void setLayoutFactory(Transformer<AbstractNetworkGraph, INetworkGraphLayout> layoutFactory);
 
 }

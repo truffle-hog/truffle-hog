@@ -5,7 +5,7 @@ package edu.kit.trufflehog.model.graph;
  *     Switch to jump between replay and live modes of the graph.
  * </p>
  */
-public class NetworkGraphSwitch extends ANetworkGraph {
+public class NetworkGraphSwitch extends AbstractNetworkGraph {
 
 	private GraphProxy liveGraph;
     private GraphProxy playbackGraph;
