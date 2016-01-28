@@ -62,7 +62,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 * @param layoutFactory the layout factory to be used for visualization of
 	 *                         the graph
 	 */
-	public NetworkGraphView(final Transformer<ANetworkGraph,
+	public NetworkGraphView(final Transformer<AbstractNetworkGraph,
 			INetworkGraphLayout> layoutFactory) {
 
 	}
