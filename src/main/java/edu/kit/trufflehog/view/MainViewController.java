@@ -48,7 +48,7 @@ public class MainViewController extends BorderPaneController<MainInteraction> {
      */
     public void onExit() {
 
-
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 
