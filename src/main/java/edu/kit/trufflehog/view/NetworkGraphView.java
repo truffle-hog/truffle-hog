@@ -54,6 +54,19 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
     public NetworkGraphView(final INetworkGraphLayout layout) {
 
     }
+
+	/**
+	 * <p>
+	 *     	 Instantiates a new NetworkGraphView with a given layout factory.
+	 *
+	 * @param layoutFactory the layout factory to be used for visualization of
+	 *                         the graph
+	 */
+	public NetworkGraphView(final Transformer<ANetworkGraph,
+			INetworkGraphLayout> layoutFactory) {
+
+	}
+
     /**
      * <p>
      * 		Instantiates a new NetworkGraphView with a given layout and
