@@ -27,7 +27,7 @@ public class StatisticsViewController extends BorderPaneController<StatisticsInt
      *     The fxml file has to be in the same namespace as the
      *     StatisticsViewController.
      * </p>
-     * @param fxmlFileName the name of the fxml file to be loaded.
+     * @param fxmlFileName the name of the fxml file to be loaded
      */
     public StatisticsViewController(final String fxmlFileName) {
 

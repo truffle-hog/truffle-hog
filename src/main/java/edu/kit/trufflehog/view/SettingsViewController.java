@@ -27,7 +27,7 @@ public class SettingsViewController extends BorderPaneController<SettingsInterac
      *     The fxml file has to be in the same namespace as the
      *     SettingsViewController.
      * </p>
-     * @param fxmlFileName the name of the fxml file to be loaded.
+     * @param fxmlFileName the name of the fxml file to be loaded
      */
     public SettingsViewController(final String fxmlFileName) {
 

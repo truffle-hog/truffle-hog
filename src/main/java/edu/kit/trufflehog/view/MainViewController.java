@@ -23,9 +23,9 @@ public class MainViewController extends BorderPaneController<MainInteraction> {
 
     /**
      * <p>
-     *     Creates a new MainToolBarController with the given fxmlFileName.
+     *     Creates a new MainViewController with the given fxmlFileName.
      *     The fxml file has to be in the same namespace as the
-     *     MainToolBarController.
+     *     MainViewController.
      * </p>
      * @param fxmlFileName the name of the fxml file to be loaded.
      */

@@ -26,7 +26,7 @@ public class OverlayViewController extends BorderPaneController<OverlayInteracti
      * <p>
      *     Creates a new OverlayViewController with the given fxmlFileName.
      *     The fxml file has to be in the same namespace as the
-     *     MainToolBarController.
+     *     OverlayViewController.
      * </p>
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
