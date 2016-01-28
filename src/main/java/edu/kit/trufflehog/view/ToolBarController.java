@@ -1,36 +1,49 @@
 package edu.kit.trufflehog.view;
 
-import edu.kit.trufflehog.command.IUserCommand;
-import edu.kit.trufflehog.interactor.IInteraction;
+
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.interaction.IInteraction;
 import edu.kit.trufflehog.util.IListener;
+import edu.kit.trufflehog.util.INotifier;
 import javafx.scene.control.ToolBar;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 /**
- * The Basic class for alls BorderPane controllers... if needed we can also
- * implement a dispatch Command fucntion in here that sends all the commands
- * to the dispatch Thread
- *
- * @param <I>
+ * <p>
+ *     The ToolBarController is the Basic ToolBar class that will be
+ *     used by every ToolBar implementation in the application. Extending the
+ *     javafx {@link ToolBar} it can be placed on every javafx Component.
+ * </p>
+ * @param <I> The type of interactions to be used on this toolbar
  */
 public abstract class ToolBarController<I extends IInteraction> extends ToolBar
-		implements IViewController<I> {
+        implements IViewController<I> {
 
-//	private static final Logger logger = Logger.getLogger(ToolBarController.class);
+    /** The wrapped instance of view controller notifier. **/
+    private final INotifier<IUserCommand> viewControllerNotifier =
+            new ViewControllerNotifier();
 
-	private final Collection<IListener<IUserCommand<?>>> listeners =
-			new ConcurrentLinkedQueue<>();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void addListener(final IListener<IUserCommand> listener) {
 
-	@Override
-	public void addListener(IListener<IUserCommand<?>> listener) {
-		listeners.add(listener);
-	}
+        viewControllerNotifier.addListener(listener);
+    }
 
-	@Override
-	public void removeListener(IListener<IUserCommand<?>> listener) {
-		listeners.remove(listener);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void removeListener(final IListener<IUserCommand> listener) {
+        viewControllerNotifier.removeListener(listener);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void notifyListeners(final IUserCommand message) {
+        viewControllerNotifier.notifyListeners(message);
+    }
 }

@@ -1,7 +1,8 @@
 package edu.kit.trufflehog.view;
 
-import edu.kit.trufflehog.command.IUserCommand;
-import edu.kit.trufflehog.interactor.NetworkMonitoringInteraction;
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.interaction.MainInteraction;
+import edu.kit.trufflehog.interaction.NetworkMonitoringInteraction;
 import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
@@ -9,32 +10,49 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Created by jan on 09.01.16.
+ * <p>
+ *     The NetworkMonitoringViewController provides GUI functionality for all
+ *     interactions that a user performs during monitoring of an ongoing
+ *     network communication.
+ * </p>
  */
-public class NetworkMonitoringViewController
-		extends BorderPaneController<NetworkMonitoringInteraction> {
+public class NetworkMonitoringViewController extends BorderPaneController<NetworkMonitoringInteraction> {
 
-	private final Map<NetworkMonitoringInteraction, IUserCommand<?>> interactionMap =
-			new EnumMap<>(NetworkMonitoringInteraction.class);
+	/** The commands that are mapped to their interactions. **/
+    private final Map<NetworkMonitoringInteraction, IUserCommand> interactionMap =
+            new EnumMap<>(NetworkMonitoringInteraction.class);
 
-	public NetworkMonitoringViewController() {
+    /**
+     * <p>
+     *     Creates a new NetworkMonitoringViewController with the given fxmlFileName.
+     *     The fxml file has to be in the same namespace as the
+     *     NetworkMonitoringViewController.
+     * </p>
+     * @param fxmlFileName the name of the fxml file to be loaded
+     */
+    public NetworkMonitoringViewController(final String fxmlFileName) {
 
-		final FXMLLoader fxmlLoader =
-				new FXMLLoader(getClass().getResource("NetworkMonitoringView.fxml"));
-		fxmlLoader.setRoot(this);
-		fxmlLoader.setController(this);
+        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource
+                (fxmlFileName));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
 
-		try {
-			fxmlLoader.load();
-		} catch (IOException exception) {
-			throw new RuntimeException(exception);
-		}
-	}
+        try {
+            fxmlLoader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
 
-	@Override
-	public void addCommand(NetworkMonitoringInteraction interactor, IUserCommand<?> command) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void addCommand(final NetworkMonitoringInteraction interactor, final
+    IUserCommand
+            command) {
 
-		interactionMap.put(interactor, command);
-	}
+        interactionMap.put(interactor, command);
+    }
 }
