@@ -52,7 +52,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
      * @param layout the layout to be used for visualization of the graph
      */
     public NetworkGraphView(final INetworkGraphLayout layout) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -64,7 +64,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
 	public NetworkGraphView(final Transformer<AbstractNetworkGraph,
 			INetworkGraphLayout> layoutFactory) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
 	}
 
     /**
@@ -81,7 +81,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
                                     INetworkGraphLayout> layoutFactory) {
 
 
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     /**
@@ -115,7 +115,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
     @Override
     public void setModel(final VisualizationModel<INode, IConnection>
                                      visualizationModel) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -124,7 +124,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
     @Override
     public final void stateChanged(final ChangeEvent changeEvent) {
 
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -132,7 +132,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void setRenderer(Renderer<INode, IConnection> renderer) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -140,7 +140,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public final Renderer<INode, IConnection> getRenderer() {
-        return null;
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -148,7 +148,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void setGraphLayout(final Layout<INode, IConnection> layout) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -156,7 +156,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public final Layout<INode, IConnection> getGraphLayout() {
-        return null;
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -164,7 +164,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public final Map<RenderingHints.Key, Object> getRenderingHints() {
-        return null;
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -172,7 +172,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void setRenderingHints(final Map<RenderingHints.Key, Object> map) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -180,7 +180,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void addPreRenderPaintable(final Paintable paintable) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -188,7 +188,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void removePreRenderPaintable(final Paintable paintable) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -196,7 +196,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void addPostRenderPaintable(final Paintable paintable) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -204,7 +204,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void removePostRenderPaintable(final Paintable paintable) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -212,7 +212,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void addChangeListener(final ChangeListener changeListener) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -220,7 +220,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void removeChangeListener(final ChangeListener changeListener) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -228,7 +228,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public final ChangeListener[] getChangeListeners() {
-        return new ChangeListener[0];
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -243,12 +243,12 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public final PickedState<INode> getPickedVertexState() {
-        return null;
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     @Override
     public final PickedState<IConnection> getPickedEdgeState() {
-        return null;
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -256,7 +256,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void setPickedVertexState(final PickedState<INode> pickedState) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -264,7 +264,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public void setPickedEdgeState(final PickedState<IConnection> pickedState) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -272,7 +272,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public final GraphElementAccessor<INode, IConnection> getPickSupport() {
-        return null;
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -282,7 +282,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
     public void setPickSupport(
             final GraphElementAccessor<INode, IConnection>
                     graphElementAccessor) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -290,7 +290,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public final Point2D getCenter() {
-        return null;
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -298,7 +298,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public final RenderContext<INode, IConnection> getRenderContext() {
-        return null;
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -307,7 +307,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
     @Override
     public void setRenderContext(final RenderContext<INode, IConnection>
                                              renderContext) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -323,6 +323,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 */
     @Override
     public final void refreshLayout() {
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -331,7 +332,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
     @Override
     public final void setLayoutFactory(final Transformer<AbstractNetworkGraph,
             INetworkGraphLayout> layoutFactory) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
 	/**
@@ -340,6 +341,6 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
     @Override
     public void addCommand(final GraphInteraction interaction,
                            final IUserCommand command) {
-
+		throw new UnsupportedOperationException("Not implemented yet!");
     }
 }
