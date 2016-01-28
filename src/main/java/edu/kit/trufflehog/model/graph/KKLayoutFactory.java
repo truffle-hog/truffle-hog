@@ -3,13 +3,14 @@ package edu.kit.trufflehog.model.graph;
 import org.apache.commons.collections15.Transformer;
 
 /**
- * Created by Jan on 24.01.16.
+ * <p>
+ *     Creates a {@link INetworkGraphLayout} implementation of the Kamada-Kawai algorithm.
+ * </p>
  */
-public class KKLayoutFactory implements
-        Transformer<ANetworkGraph, INetworkGraphLayout> {
+public class KKLayoutFactory implements ILayoutFactory{
 
     @Override
-    public INetworkGraphLayout transform(ANetworkGraph aNetworkGraph) {
+    public INetworkGraphLayout transform(AbstractNetworkGraph aNetworkGraph) {
         return new KamadaKawaiLayout(aNetworkGraph);
     }
 }
