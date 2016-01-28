@@ -6,11 +6,12 @@ import org.apache.commons.collections15.Transformer;
  * Created by Jan on 24.01.16.
  */
 public class FRLayoutFactory implements
-        Transformer<ANetworkGraph, INetworkGraphLayout> {
+        Transformer<AbstractNetworkGraph, INetworkGraphLayout> {
 
     @Override
-    public INetworkGraphLayout transform(ANetworkGraph iNetworkGraph) {
+    public INetworkGraphLayout transform(AbstractNetworkGraph
+                                                     abstractNetworkGraph) {
 
-        return new FruchtermanReingoldLayout(iNetworkGraph);
+        return new FruchtermanReingoldLayout(abstractNetworkGraph);
     }
 }
