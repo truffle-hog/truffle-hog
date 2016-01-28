@@ -2,8 +2,8 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
+import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.ANetworkGraph;
 import edu.kit.trufflehog.model.graph.INetworkGraphLayout;
 import edu.kit.trufflehog.model.graph.INode;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
@@ -27,7 +27,7 @@ import java.util.Map;
  *     This class is an implementation of the {@link AbstractNetworkGraphView} abstraction. It is
  *     used to wrap a layout {@link INetworkGraphLayout} of the graph data model. Thereby it
  *     can response to any changes in the layout that are reflected by modifications in the
- *     underlying data model {@link ANetworkGraph}.
+ *     underlying data model {@link AbstractNetworkGraph}.
  * </p>
  * <p>
  *     The NetworkGraphView also incorporates an instance of an implementation of a
@@ -41,7 +41,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
     /** The wrapped instance of the jung graph visualization. **/
     private VisualizationViewer<INode, IConnection> jungView;
     /** The factory used for refreshing the layout of the underlying graph. **/
-    private Transformer<ANetworkGraph, INetworkGraphLayout> layoutFactory;
+    private Transformer<AbstractNetworkGraph, INetworkGraphLayout> layoutFactory;
 
     /**
      * <p>
@@ -77,7 +77,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
      * @param layoutFactory the layout factory to be used for refreshing the layout
      */
     public NetworkGraphView(final INetworkGraphLayout layout,
-                            final Transformer<ANetworkGraph,
+                            final Transformer<AbstractNetworkGraph,
                                     INetworkGraphLayout> layoutFactory) {
 
 
@@ -329,7 +329,7 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 * {@inheritDoc}
 	 */
     @Override
-    public final void setLayoutFactory(final Transformer<ANetworkGraph,
+    public final void setLayoutFactory(final Transformer<AbstractNetworkGraph,
             INetworkGraphLayout> layoutFactory) {
 
     }

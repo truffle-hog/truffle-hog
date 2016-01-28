@@ -3,7 +3,7 @@ package edu.kit.trufflehog.view;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.ANetworkGraph;
+import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import edu.kit.trufflehog.model.graph.INetworkGraphLayout;
 import edu.kit.trufflehog.model.graph.INode;
 import edu.kit.trufflehog.util.IListener;
@@ -66,6 +66,6 @@ public abstract class AbstractNetworkGraphView extends SwingNode
 	 * @param layoutFactory the layout factory for instantiating new layouts
 	 *                         of the given type
 	 */
-	public abstract void setLayoutFactory(Transformer<ANetworkGraph, INetworkGraphLayout> layoutFactory);
+	public abstract void setLayoutFactory(Transformer<AbstractNetworkGraph, INetworkGraphLayout> layoutFactory);
 
 }

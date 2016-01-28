@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.service.datalogging;
 
 import edu.kit.trufflehog.command.ICommand;
-import edu.kit.trufflehog.model.graph.ANetworkGraph;
+import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.Serializable;
@@ -30,7 +30,7 @@ public class DataLog implements Serializable {
      * @param snapshotGraph The snapshot of the graph to include in the data log.
      * @param commands The list of commands to include in the data log.
      */
-    public DataLog(ANetworkGraph snapshotGraph, List<ICommand> commands) {
+    public DataLog(AbstractNetworkGraph snapshotGraph, List<ICommand> commands) {
     }
 
     /**
@@ -40,7 +40,7 @@ public class DataLog implements Serializable {
      *
      * @return The graph snapshot contained in this DataLog object.
      */
-    public ANetworkGraph getGraphSnapshot() {
+    public AbstractNetworkGraph getGraphSnapshot() {
         throw new NotImplementedException();
     }
 
