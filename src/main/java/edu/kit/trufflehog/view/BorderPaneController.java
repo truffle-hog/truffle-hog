@@ -11,31 +11,43 @@ import javafx.scene.layout.BorderPane;
 
 /**
  * <p>
- * The Basic abstraction for alls BorderPane controllers. Every abstraction
- * for javafx Components wrap a {@link ViewControllerNotifier} instance for
- * implementation of the specific operations.
+ *      The Basic abstraction for all BorderPane controllers. Every abstraction
+ *      for javafx Components wraps a {@link ViewControllerNotifier} instance
+ *      for implementation of the specific operations of the INotifier
+ *      interface.
  * </p>
- * @param <I>
+ *
+ * @param <I> The type of interaction to be used in the ViewController
  */
 public abstract class BorderPaneController<I extends IInteraction> extends
         BorderPane implements IViewController<I> {
 
+    /** The wrapped instance of view controller notifier. **/
     private final INotifier<IUserCommand> viewControllerNotifier =
             new ViewControllerNotifier();
 
+	/**
+     * {@inheritDoc}
+     */
     @Override
-    public void addListener(final IListener<IUserCommand> listener) {
+    public final void addListener(final IListener<IUserCommand> listener) {
 
         viewControllerNotifier.addListener(listener);
     }
 
+	/**
+     * {@inheritDoc}
+     */
     @Override
-    public void removeListener(final IListener<IUserCommand> listener) {
+    public final void removeListener(final IListener<IUserCommand> listener) {
         viewControllerNotifier.removeListener(listener);
     }
 
+	/**
+     * {@inheritDoc}
+     */
     @Override
-    public void notifyListeners(final IUserCommand message) {
+    public final void notifyListeners(final IUserCommand message) {
         viewControllerNotifier.notifyListeners(message);
     }
 

@@ -1,12 +1,11 @@
 package edu.kit.trufflehog.view;
 
-import edu.kit.trufflehog.command.IUserCommand;
-import edu.kit.trufflehog.interactor.IInteraction;
-import edu.kit.trufflehog.util.IListener;
-import javafx.scene.control.ToolBar;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.interaction.IInteraction;
+import edu.kit.trufflehog.util.IListener;
+import edu.kit.trufflehog.util.INotifier;
+import javafx.scene.control.ToolBar;
 
 /**
  * The Basic class for alls BorderPane controllers... if needed we can also
@@ -16,21 +15,34 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @param <I>
  */
 public abstract class ToolBarController<I extends IInteraction> extends ToolBar
-		implements IViewController<I> {
+        implements IViewController<I> {
 
-//	private static final Logger logger = Logger.getLogger(ToolBarController.class);
+    /** The wrapped instance of view controller notifier. **/
+    private final INotifier<IUserCommand> viewControllerNotifier =
+            new ViewControllerNotifier();
 
-	private final Collection<IListener<IUserCommand<?>>> listeners =
-			new ConcurrentLinkedQueue<>();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void addListener(final IListener<IUserCommand> listener) {
 
-	@Override
-	public void addListener(IListener<IUserCommand<?>> listener) {
-		listeners.add(listener);
-	}
+        viewControllerNotifier.addListener(listener);
+    }
 
-	@Override
-	public void removeListener(IListener<IUserCommand<?>> listener) {
-		listeners.remove(listener);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void removeListener(final IListener<IUserCommand> listener) {
+        viewControllerNotifier.removeListener(listener);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void notifyListeners(final IUserCommand message) {
+        viewControllerNotifier.notifyListeners(message);
+    }
 }

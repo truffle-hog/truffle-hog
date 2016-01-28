@@ -5,8 +5,11 @@ import edu.kit.trufflehog.util.INotifier;
 import edu.kit.trufflehog.util.Notifier;
 
 /**
- * Created by jan on 27.01.16.
+ * This class has the single design purpose to be used by ViewControllers for
+ * implementing the functionality of the INotifier interface. Meaning, every
+ * view controller is a composition that implements the INotifier interface,
+ * but calls the functionality on this wrapped instance.
  */
-public class ViewControllerNotifier extends Notifier<IUserCommand> implements
+class ViewControllerNotifier extends Notifier<IUserCommand> implements
 		INotifier<IUserCommand> {
 }
