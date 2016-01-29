@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
-import edu.kit.trufflehog.command.trufflecommand.StartPluginCommand;
+import edu.kit.trufflehog.command.trufflecommand.PluginNotRunningCommand;
 
 /**
  * <p>
@@ -27,7 +27,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *
      * <p>
      *     Tries to connect to the spp_profinet process.
-     *     If the connection failed a {@link StartPluginCommand} is sent to all listeners.
+     *     If the connection failed a {@link PluginNotRunningCommand} is sent to all listeners.
      *     Otherwise the service starts receiving packet data from the spp_profinet snort plugin,
      *     packs the data into {@link Truffle} objects and then generates {@link ITruffleCommand} objects and sends
      *     them to all listeners.
@@ -43,6 +43,6 @@ public class UnixSocketReceiver extends TruffleReceiver {
     private native void getTruffle();
 
     private void sendStartPluginCommand() {
-        notifyListeners(new StartPluginCommand());
+        notifyListeners(new PluginNotRunningCommand());
     }
 }
