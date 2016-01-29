@@ -7,7 +7,7 @@ import edu.uci.ics.jung.algorithms.layout.FRLayout2;
  *     Uses the Fruchterman-Reingold-algorithm from the jung library to present the {@link AbstractNetworkGraph}.
  * </p>
  */
-public class FruchtermanReingoldLayout extends FRLayout2 implements INetworkGraphLayout {
+public class FruchtermanReingoldLayout extends FRLayout2<INode, IConnection> implements INetworkGraphLayout<INode, IConnection> {
 
 	/**
      * <p>
