@@ -1,7 +1,6 @@
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.util.INotifier;
 import edu.kit.trufflehog.util.Notifier;
 
 /**
@@ -12,6 +11,5 @@ import edu.kit.trufflehog.util.Notifier;
  *     but calls the functionality on this wrapped instance.
  * </p>
  */
-class ViewControllerNotifier extends Notifier<IUserCommand> implements
-		INotifier<IUserCommand> {
+class ViewControllerNotifier extends Notifier<IUserCommand> {
 }
