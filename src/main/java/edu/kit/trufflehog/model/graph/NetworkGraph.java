@@ -21,6 +21,26 @@ public class NetworkGraph extends AbstractNetworkGraph implements Serializable {
 
     }
 
+    @Override
+    public NetworkNode getNetworkNodeByMACAddress(String macAddress) {
+        throw new UnsupportedOperationException("Not implemented yet!");
+    }
+
+    @Override
+    public NetworkNode getNetworkNodeByIPAddress(String ipAddress) {
+        throw new UnsupportedOperationException("Not implemented yet!");
+    }
+
+    @Override
+    public NetworkNode getNetworkNodeByDeviceName(String deviceName) {
+        throw new UnsupportedOperationException("Not implemented yet!");
+    }
+
+    @Override
+    public NetworkEdge getNetworkEdge(NetworkNode a, NetworkNode b) {
+        throw new UnsupportedOperationException("Not implemented yet!");
+    }
+
     /**
      * {@inheritDoc}
      */

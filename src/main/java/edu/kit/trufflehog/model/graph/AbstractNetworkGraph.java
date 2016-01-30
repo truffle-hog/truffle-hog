@@ -16,7 +16,7 @@ public abstract class AbstractNetworkGraph extends DirectedSparseMultigraph<INod
      *
      * @param node NetworkNode to add
      */
-    public void addNetworkNode(NetworkNode node){ }
+    public abstract void addNetworkNode(NetworkNode node);
 
     /**
      * <p>
@@ -25,7 +25,17 @@ public abstract class AbstractNetworkGraph extends DirectedSparseMultigraph<INod
      *
      * @param from NetworkNode sending packages
      * @param to NetworkNode receiving packages
+     * @return The edge that was added.
      */
-    public void addNetworkEdge(NetworkNode from, NetworkNode to){ }
+    public abstract NetworkEdge addNetworkEdge(NetworkNode from, NetworkNode to);
+
+
+    public abstract NetworkNode getNetworkNodeByMACAddress(String macAddress);
+
+    public abstract NetworkNode getNetworkNodeByIPAddress(String ipAddress);
+
+    public abstract NetworkNode getNetworkNodeByDeviceName(String deviceName);
+
+    public abstract NetworkEdge getNetworkEdge(NetworkNode a, NetworkNode b);
 
 }
