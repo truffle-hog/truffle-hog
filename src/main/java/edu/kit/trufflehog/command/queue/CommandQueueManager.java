@@ -56,9 +56,8 @@ public class CommandQueueManager {
      *     the queues are cycled each call until every queue was returned at least once.
      * </p>
      * @return The next command queue.
-     * @throws InterruptedException
      */
-    public ICommandQueue getNextQueue() throws InterruptedException {
+    public ICommandQueue getNextQueue() {
 
         if (registeredQueues == 0)
             return null;
