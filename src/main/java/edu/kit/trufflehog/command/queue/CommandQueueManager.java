@@ -13,11 +13,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  * </p>
  * <p>
  *     If multiple command queues have elements in them, each call to getNextQueue() will return a different one
- *     until every queue was at least popped once.
+ *     until every queue was at least popped once (round-robin style).
  * </p>
- *
- * @author Mark Giraud
- * @version 0.0
  */
 public class CommandQueueManager {
 
@@ -38,7 +35,10 @@ public class CommandQueueManager {
     }
 
     /**
-     * //TODO: Add doc
+     * <p>
+     *     Registers a {@link ICommandQueue} with the CommandQueueManager.
+     * </p>
+     *
      * @param queue The {@link ICommandQueue} to add.
      */
     protected void registerQueue(ICommandQueue queue) {

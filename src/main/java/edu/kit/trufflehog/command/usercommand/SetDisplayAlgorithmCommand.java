@@ -26,6 +26,7 @@ public class SetDisplayAlgorithmCommand implements IUserCommand{
         graphView = view;
     }
 
+    @Override
     public void execute() {
         graphView.setLayoutFactory(layoutFactory);
     }

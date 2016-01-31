@@ -6,9 +6,6 @@ import edu.kit.trufflehog.command.ICommand;
  * <p>
  *     This interface supplies general methods for any CommandQueue implementation.
  * </p>
- *
- * @author Mark Giraud
- * @version 0.0
  */
 public interface ICommandQueue {
 
@@ -38,6 +35,12 @@ public interface ICommandQueue {
      */
     ICommand pop() throws InterruptedException;
 
-    // TODO: put doc here
+    /**
+     * <p>
+     *     Returns true if the ICommandQueue is empty, else it returns false.
+     * </p>
+     *
+     * @return True if the ICommandQueue is empty, else it returns false.
+     */
     boolean isEmpty();
 }

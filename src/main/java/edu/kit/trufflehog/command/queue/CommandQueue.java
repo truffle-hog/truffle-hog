@@ -10,9 +10,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  *     This {@link ICommandQueue} implementation uses a {@link ConcurrentLinkedDeque}.
  *     It also automatically registers itself with a {@link CommandQueueManager} to allow the usage of it.
  * </p>
- *
- * @author Mark Giraud
- * @version 0.0
  */
 public class CommandQueue implements ICommandQueue {
 
@@ -20,7 +17,13 @@ public class CommandQueue implements ICommandQueue {
 
     private final CommandQueueManager manager;
 
-    // TODO: put doc here
+    /**
+     * <p>
+     *     Creates a new CommandQueue object.
+     * </p>
+     *
+     * @param commandQueueManager The instance of the {@link CommandQueueManager} that manages all the command queues.
+     */
     public CommandQueue(CommandQueueManager commandQueueManager) {
         this.manager = commandQueueManager;
         this.manager.registerQueue(this);

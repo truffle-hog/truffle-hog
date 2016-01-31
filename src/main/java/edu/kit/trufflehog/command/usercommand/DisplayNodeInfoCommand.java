@@ -5,9 +5,9 @@ package edu.kit.trufflehog.command.usercommand;
  *     Command to display statistics of a certain node in the graph.
  * </p>
  */
-public class DisplayNodeInfoCommand implements IUserCommand{
+public class DisplayNodeInfoCommand implements IUserCommand {
 
+    @Override
     public void execute() {
-
     }
 }

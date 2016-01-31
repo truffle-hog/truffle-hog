@@ -21,6 +21,7 @@ public class SetLoggingIntervalCommand implements IUserCommand {
         configModel = config;
     }
 
+    @Override
     public void execute() {
 
     }
