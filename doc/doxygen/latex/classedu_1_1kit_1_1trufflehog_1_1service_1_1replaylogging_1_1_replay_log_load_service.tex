@@ -1,0 +1,93 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service}{}\section{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Load\+Service Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service}\index{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Load\+Service@{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Load\+Service}}
+
+
+Inherits \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier}{edu.\+kit.\+trufflehog.\+util.\+Notifier$<$ M $>$}, and Runnable.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a7aa6163b0d86702cc64bc76b252d8506}{Replay\+Log\+Load\+Service} ()
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a7ee1720d6e1bf1dd3f94a09d3ae7579d}{play} ()
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a34f38fff2e96f71a064a9d47df49e5bc}{pause} ()
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_ae1b27ba7e747a0e91ffd19e0e0fc4cfe}{jump\+To\+Instant} (Instant instant)
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a037e283e5597521c9d18df6b0ab3ea07}{load} (Instant instant)
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_aa223e6abd2022d6b879cd981562bf40c}{run} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service}{Replay\+Log\+Load\+Service} controls the playback of the playback graph (the old graph, generated from the 
+\begin{DoxyCode}
+ReplayLog 
+\end{DoxyCode}
+ s). It runs in its own thread, however most of its methods are called in other threads where the actual playback is controlled. Instead the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service}{Replay\+Log\+Load\+Service} makes sure there is always data to playback in the background by loading and buffering \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects, and dispatching the commands of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects. (The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service}{Replay\+Log\+Load\+Service} can do this since it is also a Notifier). 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a7aa6163b0d86702cc64bc76b252d8506}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}!Replay\+Log\+Load\+Service@{Replay\+Log\+Load\+Service}}
+\index{Replay\+Log\+Load\+Service@{Replay\+Log\+Load\+Service}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}}
+\subsubsection[{Replay\+Log\+Load\+Service()}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Load\+Service.\+Replay\+Log\+Load\+Service (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a7aa6163b0d86702cc64bc76b252d8506}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service}{Replay\+Log\+Load\+Service} object. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_ae1b27ba7e747a0e91ffd19e0e0fc4cfe}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}!jump\+To\+Instant@{jump\+To\+Instant}}
+\index{jump\+To\+Instant@{jump\+To\+Instant}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}}
+\subsubsection[{jump\+To\+Instant(\+Instant instant)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Load\+Service.\+jump\+To\+Instant (
+\begin{DoxyParamCaption}
+\item[{Instant}]{instant}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_ae1b27ba7e747a0e91ffd19e0e0fc4cfe}
+The current playback of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log}s will jump to the location in time closest to the given instant, if the playback is currently active. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em instant} & The instant in time to which to jump in the playback, if it is active. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a037e283e5597521c9d18df6b0ab3ea07}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}!load@{load}}
+\index{load@{load}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}}
+\subsubsection[{load(\+Instant instant)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Load\+Service.\+load (
+\begin{DoxyParamCaption}
+\item[{Instant}]{instant}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a037e283e5597521c9d18df6b0ab3ea07}
+Loads a batch of \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log}s closest to the given time instant into memory so that they are ready when needed. It does this through the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader}{Replay\+Log\+Loader}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em instant} & The time instant that should be used to load the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects. The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects closest to the time instant will be loaded. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a34f38fff2e96f71a064a9d47df49e5bc}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}!pause@{pause}}
+\index{pause@{pause}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}}
+\subsubsection[{pause()}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Load\+Service.\+pause (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a34f38fff2e96f71a064a9d47df49e5bc}
+Pauses the playback of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log}s if it was in progress. \hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a7ee1720d6e1bf1dd3f94a09d3ae7579d}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}!play@{play}}
+\index{play@{play}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}}
+\subsubsection[{play()}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Load\+Service.\+play (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_a7ee1720d6e1bf1dd3f94a09d3ae7579d}
+Starts the playback of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log}s. The graph snapshot will be loaded and the subsequent commands will be executed on that snapshot. \hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_aa223e6abd2022d6b879cd981562bf40c}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}!run@{run}}
+\index{run@{run}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}}
+\subsubsection[{run()}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Load\+Service.\+run (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service_aa223e6abd2022d6b879cd981562bf40c}
+Starts the replay log load service. 
+
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_load_service}{Replay\+Log\+Load\+Service} runs in its own thread to buffer \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects in the background so that when the graph playback function is activated, the old graph can immediately be started. It also notifies the playback executor with the old commands found in the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects so that the executor can update the playback graph. 

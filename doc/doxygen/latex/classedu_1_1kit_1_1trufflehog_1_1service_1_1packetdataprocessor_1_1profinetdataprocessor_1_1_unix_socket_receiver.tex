@@ -1,0 +1,39 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_unix_socket_receiver}{}\section{edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Unix\+Socket\+Receiver Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_unix_socket_receiver}\index{edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Unix\+Socket\+Receiver@{edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Unix\+Socket\+Receiver}}
+
+
+Inherits \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_truffle_receiver}{edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Truffle\+Receiver}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_unix_socket_receiver_a7341a8ebee2d3d32cfa46a54401a8c85}{Unix\+Socket\+Receiver} ()
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_unix_socket_receiver_a47c3e55796789b4ee88b34488289709a}{run} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This implementation of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_truffle_receiver}{Truffle\+Receiver} uses a unix socket to communicate with the spp\+\_\+profinet snort plugin. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_unix_socket_receiver_a7341a8ebee2d3d32cfa46a54401a8c85}{}\index{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Unix\+Socket\+Receiver@{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Unix\+Socket\+Receiver}!Unix\+Socket\+Receiver@{Unix\+Socket\+Receiver}}
+\index{Unix\+Socket\+Receiver@{Unix\+Socket\+Receiver}!edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Unix\+Socket\+Receiver@{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Unix\+Socket\+Receiver}}
+\subsubsection[{Unix\+Socket\+Receiver()}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Unix\+Socket\+Receiver.\+Unix\+Socket\+Receiver (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_unix_socket_receiver_a7341a8ebee2d3d32cfa46a54401a8c85}
+Creates the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_unix_socket_receiver}{Unix\+Socket\+Receiver}. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_unix_socket_receiver_a47c3e55796789b4ee88b34488289709a}{}\index{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Unix\+Socket\+Receiver@{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Unix\+Socket\+Receiver}!run@{run}}
+\index{run@{run}!edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Unix\+Socket\+Receiver@{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Unix\+Socket\+Receiver}}
+\subsubsection[{run()}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Unix\+Socket\+Receiver.\+run (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_unix_socket_receiver_a47c3e55796789b4ee88b34488289709a}
+The main method of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_unix_socket_receiver}{Unix\+Socket\+Receiver} service. 
+
+Tries to connect to the spp\+\_\+profinet process. If the connection failed a \hyperlink{}{Plugin\+Not\+Running\+Command} is sent to all listeners. Otherwise the service starts receiving packet data from the spp\+\_\+profinet snort plugin, packs the data into \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_truffle}{Truffle} objects and then generates \hyperlink{}{I\+Truffle\+Command} objects and sends them to all listeners. 

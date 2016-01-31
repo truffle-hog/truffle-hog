@@ -1,0 +1,34 @@
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{}\section{edu.\+kit.\+trufflehog.\+util.\+I\+Listener$<$ M $>$ Interface Template Reference}
+\label{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}\index{edu.\+kit.\+trufflehog.\+util.\+I\+Listener$<$ M $>$@{edu.\+kit.\+trufflehog.\+util.\+I\+Listener$<$ M $>$}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener_a052500b6cbdc4d0087fc44591fe32bc1}{receive} (M m)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener} interface works together with \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier}{Notifier} and \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier} to create the main communication method between threads in Truffle\+Hog. This communication method is a variation of the observer design pattern where messages sent from the subject to the observer include a parameter of type M. The \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener} is the observer in this case. It registers with the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier}{Notifier} and receives messages sent from the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier}{Notifier} through the receive method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em $<$\+M$>$} & The type of message to receive \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener_a052500b6cbdc4d0087fc44591fe32bc1}{}\index{edu\+::kit\+::trufflehog\+::util\+::\+I\+Listener@{edu\+::kit\+::trufflehog\+::util\+::\+I\+Listener}!receive@{receive}}
+\index{receive@{receive}!edu\+::kit\+::trufflehog\+::util\+::\+I\+Listener@{edu\+::kit\+::trufflehog\+::util\+::\+I\+Listener}}
+\subsubsection[{receive(\+M m)}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf edu.\+kit.\+trufflehog.\+util.\+I\+Listener}$<$ M $>$.receive (
+\begin{DoxyParamCaption}
+\item[{M}]{m}
+\end{DoxyParamCaption}
+)}\label{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener_a052500b6cbdc4d0087fc44591fe32bc1}
+Gets a message from a \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier}{Notifier} this \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener} is registered to along with a parameter of type M. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em m} & The message that is sent from the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier}{Notifier} to the \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener}. \\
+\hline
+\end{DoxyParams}

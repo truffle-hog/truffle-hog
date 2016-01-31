@@ -1,0 +1,62 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy}{}\section{edu.\+kit.\+trufflehog.\+model.\+graph.\+Graph\+Proxy Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy}\index{edu.\+kit.\+trufflehog.\+model.\+graph.\+Graph\+Proxy@{edu.\+kit.\+trufflehog.\+model.\+graph.\+Graph\+Proxy}}
+
+
+Inherits \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph}{edu.\+kit.\+trufflehog.\+model.\+graph.\+Abstract\+Network\+Graph}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_afb028bf6437eec5ab0ce9afc40e614a1}{set\+Graph} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph}{Abstract\+Network\+Graph} graph)
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a17c86f39ded5a72837e3bbf63f3fdc9d}{add\+Network\+Node} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} node)
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a6e43333b04c48bcff13eeff9230dc970}{add\+Network\+Edge} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} from, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} to)
+\item 
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a72b0367b353f4a8f8308858f66ec4cb2}{}\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} {\bfseries get\+Network\+Node\+By\+M\+A\+C\+Address} (String mac\+Address)\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a72b0367b353f4a8f8308858f66ec4cb2}
+
+\item 
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a40a5cd13fdd1134dbeda1cdda5850c90}{}\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} {\bfseries get\+Network\+Node\+By\+I\+P\+Address} (String ip\+Address)\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a40a5cd13fdd1134dbeda1cdda5850c90}
+
+\item 
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a5c5bed3e0b5a36a235aed25bfd5d208f}{}\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} {\bfseries get\+Network\+Node\+By\+Device\+Name} (String device\+Name)\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a5c5bed3e0b5a36a235aed25bfd5d208f}
+
+\item 
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a62671e24ac92779e67acceed4d243e3a}{}\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_edge}{Network\+Edge} {\bfseries get\+Network\+Edge} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} a, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} b)\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a62671e24ac92779e67acceed4d243e3a}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Graph deputy used to encapsulate the graph and thus make it interchangeable without having to update graph references of other objects. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a6e43333b04c48bcff13eeff9230dc970}{}\index{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy@{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy}!add\+Network\+Edge@{add\+Network\+Edge}}
+\index{add\+Network\+Edge@{add\+Network\+Edge}!edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy@{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy}}
+\subsubsection[{add\+Network\+Edge(\+Network\+Node from, Network\+Node to)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+model.\+graph.\+Graph\+Proxy.\+add\+Network\+Edge (
+\begin{DoxyParamCaption}
+\item[{{\bf Network\+Node}}]{from, }
+\item[{{\bf Network\+Node}}]{to}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a6e43333b04c48bcff13eeff9230dc970}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a17c86f39ded5a72837e3bbf63f3fdc9d}{}\index{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy@{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy}!add\+Network\+Node@{add\+Network\+Node}}
+\index{add\+Network\+Node@{add\+Network\+Node}!edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy@{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy}}
+\subsubsection[{add\+Network\+Node(\+Network\+Node node)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+model.\+graph.\+Graph\+Proxy.\+add\+Network\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf Network\+Node}}]{node}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_a17c86f39ded5a72837e3bbf63f3fdc9d}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_afb028bf6437eec5ab0ce9afc40e614a1}{}\index{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy@{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy}!set\+Graph@{set\+Graph}}
+\index{set\+Graph@{set\+Graph}!edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy@{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy}}
+\subsubsection[{set\+Graph(\+Abstract\+Network\+Graph graph)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+model.\+graph.\+Graph\+Proxy.\+set\+Graph (
+\begin{DoxyParamCaption}
+\item[{{\bf Abstract\+Network\+Graph}}]{graph}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy_afb028bf6437eec5ab0ce9afc40e614a1}
+Sets the new reference graph. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graph} & I\+Network\+Graph to refer to \\
+\hline
+\end{DoxyParams}

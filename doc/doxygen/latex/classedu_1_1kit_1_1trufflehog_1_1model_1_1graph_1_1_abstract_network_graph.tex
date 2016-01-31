@@ -1,0 +1,69 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph}{}\section{edu.\+kit.\+trufflehog.\+model.\+graph.\+Abstract\+Network\+Graph Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph}\index{edu.\+kit.\+trufflehog.\+model.\+graph.\+Abstract\+Network\+Graph@{edu.\+kit.\+trufflehog.\+model.\+graph.\+Abstract\+Network\+Graph}}
+
+
+Inherits Directed\+Sparse\+Multigraph$<$ I\+Node, I\+Connection $>$.
+
+
+
+Inherited by \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy}{edu.\+kit.\+trufflehog.\+model.\+graph.\+Graph\+Proxy}, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_graph}{edu.\+kit.\+trufflehog.\+model.\+graph.\+Network\+Graph}, and \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_graph_switch}{edu.\+kit.\+trufflehog.\+model.\+graph.\+Network\+Graph\+Switch}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+abstract void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a856bebd1d38f01b33940f1e022098083}{add\+Network\+Node} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} node)
+\item 
+abstract \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_edge}{Network\+Edge} \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a9016b664c89cc2cee09d15699fa89bdf}{add\+Network\+Edge} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} from, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} to)
+\item 
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a1ad8850d99c26e6a032d056080dbbe58}{}abstract \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} {\bfseries get\+Network\+Node\+By\+M\+A\+C\+Address} (String mac\+Address)\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a1ad8850d99c26e6a032d056080dbbe58}
+
+\item 
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_ab0462af70f25673374a4416106fd9786}{}abstract \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} {\bfseries get\+Network\+Node\+By\+I\+P\+Address} (String ip\+Address)\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_ab0462af70f25673374a4416106fd9786}
+
+\item 
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a55bc65f98505b2be80a558933292874d}{}abstract \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} {\bfseries get\+Network\+Node\+By\+Device\+Name} (String device\+Name)\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a55bc65f98505b2be80a558933292874d}
+
+\item 
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a288fa095ad352b29c332046411df91fb}{}abstract \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_edge}{Network\+Edge} {\bfseries get\+Network\+Edge} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} a, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} b)\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a288fa095ad352b29c332046411df91fb}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Interface for the network graph. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a9016b664c89cc2cee09d15699fa89bdf}{}\index{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph@{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph}!add\+Network\+Edge@{add\+Network\+Edge}}
+\index{add\+Network\+Edge@{add\+Network\+Edge}!edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph@{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph}}
+\subsubsection[{add\+Network\+Edge(\+Network\+Node from, Network\+Node to)}]{\setlength{\rightskip}{0pt plus 5cm}abstract {\bf Network\+Edge} edu.\+kit.\+trufflehog.\+model.\+graph.\+Abstract\+Network\+Graph.\+add\+Network\+Edge (
+\begin{DoxyParamCaption}
+\item[{{\bf Network\+Node}}]{from, }
+\item[{{\bf Network\+Node}}]{to}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [abstract]}}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a9016b664c89cc2cee09d15699fa89bdf}
+Adds a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_edge}{Network\+Edge} to the graph to represent a new communication protocol used by two nodes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} sending packages \\
+\hline
+{\em to} & \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} receiving packages \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The edge that was added. 
+\end{DoxyReturn}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a856bebd1d38f01b33940f1e022098083}{}\index{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph@{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph}!add\+Network\+Node@{add\+Network\+Node}}
+\index{add\+Network\+Node@{add\+Network\+Node}!edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph@{edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph}}
+\subsubsection[{add\+Network\+Node(\+Network\+Node node)}]{\setlength{\rightskip}{0pt plus 5cm}abstract void edu.\+kit.\+trufflehog.\+model.\+graph.\+Abstract\+Network\+Graph.\+add\+Network\+Node (
+\begin{DoxyParamCaption}
+\item[{{\bf Network\+Node}}]{node}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [abstract]}}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph_a856bebd1d38f01b33940f1e022098083}
+Adds a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} to the graph to represent a new device. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em node} & \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_network_node}{Network\+Node} to add \\
+\hline
+\end{DoxyParams}

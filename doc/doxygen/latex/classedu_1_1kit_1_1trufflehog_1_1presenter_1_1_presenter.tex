@@ -1,0 +1,43 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter}{}\section{edu.\+kit.\+trufflehog.\+presenter.\+Presenter Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter}\index{edu.\+kit.\+trufflehog.\+presenter.\+Presenter@{edu.\+kit.\+trufflehog.\+presenter.\+Presenter}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter_a053127570d49e53f61750d2901b85cea}{present} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter}{Presenter} \hyperlink{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter_af177bd2bd35c1942ec831eacde8c4dca}{create\+Presenter} ()  throws Instance\+Already\+Exists\+Exception 
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter}{Presenter} builds Truffle\+Hog. It instantiates all necessary instances of classes, registers these instances with each other, distributes resources (parameters) to them etc. In other words it is the glue code of Truffle\+Hog. There should always only be one instance of a \hyperlink{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter}{Presenter} around. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter_af177bd2bd35c1942ec831eacde8c4dca}{}\index{edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter@{edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter}!create\+Presenter@{create\+Presenter}}
+\index{create\+Presenter@{create\+Presenter}!edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter@{edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter}}
+\subsubsection[{create\+Presenter()}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Presenter} edu.\+kit.\+trufflehog.\+presenter.\+Presenter.\+create\+Presenter (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) throws Instance\+Already\+Exists\+Exception\hspace{0.3cm}{\ttfamily [static]}}\label{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter_af177bd2bd35c1942ec831eacde8c4dca}
+Creates a new instance of a \hyperlink{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter}{Presenter}. A presenter is a singelton, thus Instance\+Already\+Exists\+Exception is thrown when an instance has already been created. 
+
+\begin{DoxyReturn}{Returns}
+A new instance of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter}{Presenter}, if none already exists. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Instance\+Already\+Exists\+Exception} & Thrown if this method is called when an instance of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter}{Presenter} already exists. \\
+\hline
+\end{DoxyExceptions}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter_a053127570d49e53f61750d2901b85cea}{}\index{edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter@{edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter}!present@{present}}
+\index{present@{present}!edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter@{edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter}}
+\subsubsection[{present()}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+presenter.\+Presenter.\+present (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter_a053127570d49e53f61750d2901b85cea}
+Present Truffle\+Hog. Create all necessary objects, register them with each other, bind them, pass them the resources they need ect. 

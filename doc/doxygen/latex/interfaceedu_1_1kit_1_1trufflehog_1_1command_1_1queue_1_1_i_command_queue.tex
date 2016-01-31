@@ -1,0 +1,81 @@
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}{}\section{edu.\+kit.\+trufflehog.\+command.\+queue.\+I\+Command\+Queue Interface Reference}
+\label{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}\index{edu.\+kit.\+trufflehog.\+command.\+queue.\+I\+Command\+Queue@{edu.\+kit.\+trufflehog.\+command.\+queue.\+I\+Command\+Queue}}
+
+
+Inherited by \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue}{edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+$<$ T extends \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command}{I\+Command} $>$ void \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue_aa3b183fb2b7d8c6d4a53dd493e5e7e78}{push} (T command)  throws Interrupted\+Exception
+\item 
+\hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command}{I\+Command} \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue_a7f5d0222a8c92e15517638dee8a5dad3}{pop} ()  throws Interrupted\+Exception
+\item 
+boolean \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue_a16bf5e5567d71d66e24563a7943122a3}{is\+Empty} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This interface supplies general methods for any \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue}{Command\+Queue} implementation. 
+
+\subsection{Member Function Documentation}
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue_a16bf5e5567d71d66e24563a7943122a3}{}\index{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue}!is\+Empty@{is\+Empty}}
+\index{is\+Empty@{is\+Empty}!edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue}}
+\subsubsection[{is\+Empty()}]{\setlength{\rightskip}{0pt plus 5cm}boolean edu.\+kit.\+trufflehog.\+command.\+queue.\+I\+Command\+Queue.\+is\+Empty (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue_a16bf5e5567d71d66e24563a7943122a3}
+Returns true if the \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}{I\+Command\+Queue} is empty, else it returns false. 
+
+\begin{DoxyReturn}{Returns}
+True if the \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}{I\+Command\+Queue} is empty, else it returns false. 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_aaec2b8be8558dad0971f55bab6d1017d}{edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue}.
+
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue_a7f5d0222a8c92e15517638dee8a5dad3}{}\index{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue}!pop@{pop}}
+\index{pop@{pop}!edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue}}
+\subsubsection[{pop()}]{\setlength{\rightskip}{0pt plus 5cm}{\bf I\+Command} edu.\+kit.\+trufflehog.\+command.\+queue.\+I\+Command\+Queue.\+pop (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) throws Interrupted\+Exception}\label{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue_a7f5d0222a8c92e15517638dee8a5dad3}
+Gets the first element of the queue and removes it from the list. 
+
+\begin{DoxyReturn}{Returns}
+The first command on the queue 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & \\
+\hline
+\end{DoxyExceptions}
+
+
+Implemented in \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_a4b7286000646adfdf52a9006ab944acb}{edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue}.
+
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue_aa3b183fb2b7d8c6d4a53dd493e5e7e78}{}\index{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue}!push@{push}}
+\index{push@{push}!edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue}}
+\subsubsection[{push(\+T command)}]{\setlength{\rightskip}{0pt plus 5cm}$<$T extends {\bf I\+Command}$>$ void edu.\+kit.\+trufflehog.\+command.\+queue.\+I\+Command\+Queue.\+push (
+\begin{DoxyParamCaption}
+\item[{T}]{command}
+\end{DoxyParamCaption}
+) throws Interrupted\+Exception}\label{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue_aa3b183fb2b7d8c6d4a53dd493e5e7e78}
+Pushes the supplied command onto the queue. 
+
+The element will always be added to the end of the list. Any element that was added will be returned after all elements that were added before it if pop is called. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & The command to put onto the Queue. \\
+\hline
+{\em $<$\+T$>$} & The type of the command. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & \\
+\hline
+\end{DoxyExceptions}

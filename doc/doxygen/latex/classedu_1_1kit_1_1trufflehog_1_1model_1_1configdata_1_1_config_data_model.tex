@@ -1,0 +1,99 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model}{}\section{edu.\+kit.\+trufflehog.\+model.\+configdata.\+Config\+Data\+Model Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model}\index{edu.\+kit.\+trufflehog.\+model.\+configdata.\+Config\+Data\+Model@{edu.\+kit.\+trufflehog.\+model.\+configdata.\+Config\+Data\+Model}}
+
+
+Inherited by \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_filter_menu_model}{edu.\+kit.\+trufflehog.\+model.\+configdata.\+Filter\+Menu\+Model}, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_graph_window_model}{edu.\+kit.\+trufflehog.\+model.\+configdata.\+Graph\+Window\+Model}, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_log_window_model}{edu.\+kit.\+trufflehog.\+model.\+configdata.\+Log\+Window\+Model}, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_notification_view_model}{edu.\+kit.\+trufflehog.\+model.\+configdata.\+Notification\+View\+Model}, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_settings_menu_model}{edu.\+kit.\+trufflehog.\+model.\+configdata.\+Settings\+Menu\+Model}, and \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_statistics_model}{edu.\+kit.\+trufflehog.\+model.\+configdata.\+Statistics\+Model}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a827eb9f7469d26bc730ec5c81480246a}{Config\+Data\+Model} ()
+\item 
+String \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a946667515c9fb5ab39e3e2f6884c4b73}{get\+Property} (String key)
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a8753d9d8d42a610805ffc57a5760de14}{set\+Property} (String key, String value)
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_ae130887f94da803c6355df743b83b6cc}{set\+Properties\+File} (String name)
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a54a23d4904aae198dbee7e63af5e81ee}{load\+Property\+File} (String path)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model}{Config\+Data\+Model} mainly manages the G\+U\+I state using java property files. It also manages what the gui displays (e.\+g. labels etc.). It can save the G\+U\+I state and load it back. To do so, each G\+U\+I window is mapped to its own Config\+Datat\+Model from which it loads its display settings. Thus it is easy to change the language for example, since only the underlying property file has to be exchanged. 
+
+Multiple property objects can be loaded at once, however one has to be always marked as the current object. This way it is easy to switch between different configurations (for example switch languages). 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a827eb9f7469d26bc730ec5c81480246a}{}\index{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model@{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}!Config\+Data\+Model@{Config\+Data\+Model}}
+\index{Config\+Data\+Model@{Config\+Data\+Model}!edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model@{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}}
+\subsubsection[{Config\+Data\+Model()}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+model.\+configdata.\+Config\+Data\+Model.\+Config\+Data\+Model (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a827eb9f7469d26bc730ec5c81480246a}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model}{Config\+Data\+Model} object. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a946667515c9fb5ab39e3e2f6884c4b73}{}\index{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model@{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}!get\+Property@{get\+Property}}
+\index{get\+Property@{get\+Property}!edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model@{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}}
+\subsubsection[{get\+Property(\+String key)}]{\setlength{\rightskip}{0pt plus 5cm}String edu.\+kit.\+trufflehog.\+model.\+configdata.\+Config\+Data\+Model.\+get\+Property (
+\begin{DoxyParamCaption}
+\item[{String}]{key}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a946667515c9fb5ab39e3e2f6884c4b73}
+Gets the value mapped to the given key in the currently loaded \hyperlink{}{Properties} object, or null if the key does not exist. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & The key of the value to get in the currently loaded \hyperlink{}{Properties} object. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The value mapped to the key, if it exists, else null. 
+\end{DoxyReturn}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a54a23d4904aae198dbee7e63af5e81ee}{}\index{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model@{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}!load\+Property\+File@{load\+Property\+File}}
+\index{load\+Property\+File@{load\+Property\+File}!edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model@{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}}
+\subsubsection[{load\+Property\+File(\+String path)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+model.\+configdata.\+Config\+Data\+Model.\+load\+Property\+File (
+\begin{DoxyParamCaption}
+\item[{String}]{path}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a54a23d4904aae198dbee7e63af5e81ee}
+Loads a new property file into memory. It is put on the list of loaded property files in the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model}{Config\+Data\+Model} and can now be selected as the current \hyperlink{}{Properties} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & The path to the property file to load into memory. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_ae130887f94da803c6355df743b83b6cc}{}\index{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model@{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}!set\+Properties\+File@{set\+Properties\+File}}
+\index{set\+Properties\+File@{set\+Properties\+File}!edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model@{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}}
+\subsubsection[{set\+Properties\+File(\+String name)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+model.\+configdata.\+Config\+Data\+Model.\+set\+Properties\+File (
+\begin{DoxyParamCaption}
+\item[{String}]{name}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_ae130887f94da803c6355df743b83b6cc}
+Sets a \hyperlink{}{Properties} object that has been loaded into memory as the current Properties object. That means that \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a8753d9d8d42a610805ffc57a5760de14}{set\+Property(\+String, String)} and \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a946667515c9fb5ab39e3e2f6884c4b73}{get\+Property(\+String)} now apply to that property file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the property file to set as the current property file. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a8753d9d8d42a610805ffc57a5760de14}{}\index{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model@{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}!set\+Property@{set\+Property}}
+\index{set\+Property@{set\+Property}!edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model@{edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}}
+\subsubsection[{set\+Property(\+String key, String value)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+model.\+configdata.\+Config\+Data\+Model.\+set\+Property (
+\begin{DoxyParamCaption}
+\item[{String}]{key, }
+\item[{String}]{value}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1configdata_1_1_config_data_model_a8753d9d8d42a610805ffc57a5760de14}
+Adds a new property key value pair to the currently loaded \hyperlink{}{Properties} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & The key to add to the currently loaded Properties object. \\
+\hline
+{\em value} & The value to match with the given key. \\
+\hline
+\end{DoxyParams}

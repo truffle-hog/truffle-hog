@@ -1,0 +1,32 @@
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command}{}\section{edu.\+kit.\+trufflehog.\+command.\+I\+Command$<$ S $>$ Interface Template Reference}
+\label{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command}\index{edu.\+kit.\+trufflehog.\+command.\+I\+Command$<$ S $>$@{edu.\+kit.\+trufflehog.\+command.\+I\+Command$<$ S $>$}}
+
+
+Inherits Serializable.
+
+
+
+Inherited by \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1trufflecommand_1_1_i_truffle_command}{edu.\+kit.\+trufflehog.\+command.\+trufflecommand.\+I\+Truffle\+Command}, and \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1usercommand_1_1_i_user_command}{edu.\+kit.\+trufflehog.\+command.\+usercommand.\+I\+User\+Command}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command_a2a845dff6b1463c6184d7198ea79bc28}{execute} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This interface is used to encapsulate an operation and execute it by the \hyperlink{}{Command\+Executor} using its own scheduling policies. The operation to perform has to be implemented in the \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command_a2a845dff6b1463c6184d7198ea79bc28}{execute()} method. All the references needed must be stored within the command class. If the operation requires too much computation time, it is advisable to start a new thread to prevent starvation of other commands. 
+
+\subsection{Member Function Documentation}
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command_a2a845dff6b1463c6184d7198ea79bc28}{}\index{edu\+::kit\+::trufflehog\+::command\+::\+I\+Command@{edu\+::kit\+::trufflehog\+::command\+::\+I\+Command}!execute@{execute}}
+\index{execute@{execute}!edu\+::kit\+::trufflehog\+::command\+::\+I\+Command@{edu\+::kit\+::trufflehog\+::command\+::\+I\+Command}}
+\subsubsection[{execute()}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf edu.\+kit.\+trufflehog.\+command.\+I\+Command}$<$ S $>$.execute (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command_a2a845dff6b1463c6184d7198ea79bc28}
+Executes the operation 
+
+Implemented in \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1trufflecommand_1_1_add_packet_data_command_a4ed54d9757631b64e1c1907124b08ffa}{edu.\+kit.\+trufflehog.\+command.\+trufflecommand.\+Add\+Packet\+Data\+Command}, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1usercommand_1_1_set_display_algorithm_command_a86a195d5b1ca4683af539fbad74ca62d}{edu.\+kit.\+trufflehog.\+command.\+usercommand.\+Set\+Display\+Algorithm\+Command}, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1usercommand_1_1_update_filter_command_ac8117be6e707fc951a5bbec29bbde690}{edu.\+kit.\+trufflehog.\+command.\+usercommand.\+Update\+Filter\+Command}, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1usercommand_1_1_set_logging_interval_command_ac778ddff48e1e7b07277e679519cf20e}{edu.\+kit.\+trufflehog.\+command.\+usercommand.\+Set\+Logging\+Interval\+Command}, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1usercommand_1_1_display_node_info_command_ad035e2b2d477b40045c43e2985819e41}{edu.\+kit.\+trufflehog.\+command.\+usercommand.\+Display\+Node\+Info\+Command}, and \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1trufflecommand_1_1_plugin_not_running_command_aedc8bd7de4a9ac250e39c10f01bd04d6}{edu.\+kit.\+trufflehog.\+command.\+trufflecommand.\+Plugin\+Not\+Running\+Command}.
+

@@ -1,0 +1,124 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system}{}\section{edu.\+kit.\+trufflehog.\+model.\+File\+System Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system}\index{edu.\+kit.\+trufflehog.\+model.\+File\+System@{edu.\+kit.\+trufflehog.\+model.\+File\+System}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_adbc995de33c1ac9171e424abaa8d69d8}{File\+System} ()
+\item 
+File \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_af99824871df77f3caa54231bfc6d1195}{get\+Data\+Folder} ()
+\item 
+File \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_a5f5c82767a27fb361fbfc41f160f14b7}{get\+Data\+Log\+Folder} ()
+\item 
+File \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_a79727e770c2813a6e1e9653f79d83094}{get\+Config\+Folder} ()
+\item 
+File \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_afd39b43c19f095b6d25c7846fbf45742}{get\+Graph\+Log\+Folder} ()
+\item 
+File \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_a423b2e19eb7dc0c6cb499604b1f44f12}{get\+Log\+Folder} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system}{File\+System} class servers as a means to access data that is saved on the hard drive. It has getter methods for every directory that Truffle\+Hog creates and uses. The following directories are\+: 
+\begin{DoxyItemize}
+\item Data folder\+: 
+
+This is where all files and folders are created. It is the parent folder to every other file and folder created by Truffle\+Hog. If you need to save data, put it in here. 
+
+~\newline
+ 
+\item replay log folder\+: 
+
+This is where the \hyperlink{}{Replay\+Log} objects are saved to. 
+
+~\newline
+ 
+\item Config folder\+: 
+
+This is where the property files for the \hyperlink{}{Config\+Data\+Model} are saved to. 
+
+~\newline
+ 
+\item Graph log Folder\+: 
+
+This is where the logs created by the \hyperlink{}{Truffle\+Logger} for each Node are saved to. 
+
+~\newline
+ 
+\item Log Folder\+: 
+
+This is where actual logs with debug and error information etc. are saved to. 
+
+
+\end{DoxyItemize}
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_adbc995de33c1ac9171e424abaa8d69d8}{}\index{edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}!File\+System@{File\+System}}
+\index{File\+System@{File\+System}!edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}}
+\subsubsection[{File\+System()}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+model.\+File\+System.\+File\+System (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_adbc995de33c1ac9171e424abaa8d69d8}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system}{File\+System} object. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_a79727e770c2813a6e1e9653f79d83094}{}\index{edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}!get\+Config\+Folder@{get\+Config\+Folder}}
+\index{get\+Config\+Folder@{get\+Config\+Folder}!edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}}
+\subsubsection[{get\+Config\+Folder()}]{\setlength{\rightskip}{0pt plus 5cm}File edu.\+kit.\+trufflehog.\+model.\+File\+System.\+get\+Config\+Folder (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_a79727e770c2813a6e1e9653f79d83094}
+Returns the File object of the config folder, or creates the folder if it does not exist yet. 
+
+\begin{DoxyReturn}{Returns}
+The corresponding File object of the config folder. 
+\end{DoxyReturn}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_af99824871df77f3caa54231bfc6d1195}{}\index{edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}!get\+Data\+Folder@{get\+Data\+Folder}}
+\index{get\+Data\+Folder@{get\+Data\+Folder}!edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}}
+\subsubsection[{get\+Data\+Folder()}]{\setlength{\rightskip}{0pt plus 5cm}File edu.\+kit.\+trufflehog.\+model.\+File\+System.\+get\+Data\+Folder (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_af99824871df77f3caa54231bfc6d1195}
+Returns the File object of the data folder, or creates the folder if it does not exist yet. 
+
+\begin{DoxyReturn}{Returns}
+The corresponding File object of the data folder. 
+\end{DoxyReturn}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_a5f5c82767a27fb361fbfc41f160f14b7}{}\index{edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}!get\+Data\+Log\+Folder@{get\+Data\+Log\+Folder}}
+\index{get\+Data\+Log\+Folder@{get\+Data\+Log\+Folder}!edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}}
+\subsubsection[{get\+Data\+Log\+Folder()}]{\setlength{\rightskip}{0pt plus 5cm}File edu.\+kit.\+trufflehog.\+model.\+File\+System.\+get\+Data\+Log\+Folder (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_a5f5c82767a27fb361fbfc41f160f14b7}
+Returns the File object of the replay log folder, or creates the folder if it does not exist yet. 
+
+\begin{DoxyReturn}{Returns}
+The corresponding File object of the replay log folder. 
+\end{DoxyReturn}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_afd39b43c19f095b6d25c7846fbf45742}{}\index{edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}!get\+Graph\+Log\+Folder@{get\+Graph\+Log\+Folder}}
+\index{get\+Graph\+Log\+Folder@{get\+Graph\+Log\+Folder}!edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}}
+\subsubsection[{get\+Graph\+Log\+Folder()}]{\setlength{\rightskip}{0pt plus 5cm}File edu.\+kit.\+trufflehog.\+model.\+File\+System.\+get\+Graph\+Log\+Folder (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_afd39b43c19f095b6d25c7846fbf45742}
+Returns the File object of the graph log folder, or creates the folder if it does not exist yet. 
+
+\begin{DoxyReturn}{Returns}
+The corresponding File object of the graph log folder. 
+\end{DoxyReturn}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_a423b2e19eb7dc0c6cb499604b1f44f12}{}\index{edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}!get\+Log\+Folder@{get\+Log\+Folder}}
+\index{get\+Log\+Folder@{get\+Log\+Folder}!edu\+::kit\+::trufflehog\+::model\+::\+File\+System@{edu\+::kit\+::trufflehog\+::model\+::\+File\+System}}
+\subsubsection[{get\+Log\+Folder()}]{\setlength{\rightskip}{0pt plus 5cm}File edu.\+kit.\+trufflehog.\+model.\+File\+System.\+get\+Log\+Folder (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1model_1_1_file_system_a423b2e19eb7dc0c6cb499604b1f44f12}
+Returns the File object of the log folder, or creates the folder if it does not exist yet. 
+
+\begin{DoxyReturn}{Returns}
+The corresponding File object of the log folder. 
+\end{DoxyReturn}

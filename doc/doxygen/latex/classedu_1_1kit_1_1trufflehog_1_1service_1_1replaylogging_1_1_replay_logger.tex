@@ -1,0 +1,63 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger}{}\section{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Logger Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger}\index{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Logger@{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Logger}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger_a1fbb45af8fae81e2f13e85fdebbf20ed}{Replay\+Logger} ()
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger_a4862893fea048110604e9e5d9cf06f14}{create\+Data\+Log} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph}{Abstract\+Network\+Graph} snapshot\+Graph, List$<$ \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command}{I\+Command} $>$ commands)
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger_a714803cd052c9a2269a814080cfeeadf}{save\+Data\+Log} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} log)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger}{Replay\+Logger} manages the saving of the graph structure. It creates \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects which are serialized and saved. From these \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects, the entire graph can be recreated from a certain point in time. 
+
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger}{Replay\+Logger} saves the state of the graph through two things. It takes snapshots of the graph every X seconds through the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger}{Snapshot\+Logger} and then saves all commands that occurred from that point on until the next snapshot is taken through the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_logger}{Command\+Logger}. Together these snapshots with the list of commands form a \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log}. When blocks of Data\+Logs that were saved consecutively are loaded back into memory, they can be used to reconstruct the graph by taking the snapshot as the original graph and then applying all commands that occurred back on the graph, in the order and interval they occurred. This is how old graphs can be viewed. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger_a1fbb45af8fae81e2f13e85fdebbf20ed}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger}!Replay\+Logger@{Replay\+Logger}}
+\index{Replay\+Logger@{Replay\+Logger}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger}}
+\subsubsection[{Replay\+Logger()}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Logger.\+Replay\+Logger (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger_a1fbb45af8fae81e2f13e85fdebbf20ed}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger}{Replay\+Logger} object. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger_a4862893fea048110604e9e5d9cf06f14}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger}!create\+Data\+Log@{create\+Data\+Log}}
+\index{create\+Data\+Log@{create\+Data\+Log}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger}}
+\subsubsection[{create\+Data\+Log(\+Abstract\+Network\+Graph snapshot\+Graph, List$<$ I\+Command $>$ commands)}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Replay\+Log} edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Logger.\+create\+Data\+Log (
+\begin{DoxyParamCaption}
+\item[{{\bf Abstract\+Network\+Graph}}]{snapshot\+Graph, }
+\item[{List$<$ {\bf I\+Command} $>$}]{commands}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger_a4862893fea048110604e9e5d9cf06f14}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object based on the snapshot of a graph given and the list of commands that were executed for the next X seconds after the snapshot was taken. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em snapshot\+Graph} & The snapshot of the graph to include in the replay log. \\
+\hline
+{\em commands} & The list of commands to include in the replay log. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object that is serializable and that contains the graph snapshot and the list of commands passed to the method. 
+\end{DoxyReturn}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger_a714803cd052c9a2269a814080cfeeadf}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger}!save\+Data\+Log@{save\+Data\+Log}}
+\index{save\+Data\+Log@{save\+Data\+Log}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger}}
+\subsubsection[{save\+Data\+Log(\+Replay\+Log log)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Logger.\+save\+Data\+Log (
+\begin{DoxyParamCaption}
+\item[{{\bf Replay\+Log}}]{log}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger_a714803cd052c9a2269a814080cfeeadf}
+Saves the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object given on the hard drive so that it can be retrieved later. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em log} & The replay log to save on the hard drive. \\
+\hline
+\end{DoxyParams}

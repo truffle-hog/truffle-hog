@@ -1,0 +1,39 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_message_queue_receiver}{}\section{edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Message\+Queue\+Receiver Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_message_queue_receiver}\index{edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Message\+Queue\+Receiver@{edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Message\+Queue\+Receiver}}
+
+
+Inherits \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_truffle_receiver}{edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Truffle\+Receiver}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_message_queue_receiver_a31dad1654052ad70cf48b81dbc027a00}{Message\+Queue\+Receiver} ()
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_message_queue_receiver_a8880f03a0cbc1fd2ef6e6fa1dfac91e9}{run} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This implementation of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_truffle_receiver}{Truffle\+Receiver} uses a message queue to communicate with the spp\+\_\+profinet snort plugin. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_message_queue_receiver_a31dad1654052ad70cf48b81dbc027a00}{}\index{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver@{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver}!Message\+Queue\+Receiver@{Message\+Queue\+Receiver}}
+\index{Message\+Queue\+Receiver@{Message\+Queue\+Receiver}!edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver@{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver}}
+\subsubsection[{Message\+Queue\+Receiver()}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Message\+Queue\+Receiver.\+Message\+Queue\+Receiver (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_message_queue_receiver_a31dad1654052ad70cf48b81dbc027a00}
+Creates the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_message_queue_receiver}{Message\+Queue\+Receiver} 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_message_queue_receiver_a8880f03a0cbc1fd2ef6e6fa1dfac91e9}{}\index{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver@{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver}!run@{run}}
+\index{run@{run}!edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver@{edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver}}
+\subsubsection[{run()}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Message\+Queue\+Receiver.\+run (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_message_queue_receiver_a8880f03a0cbc1fd2ef6e6fa1dfac91e9}
+The main method of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_message_queue_receiver}{Message\+Queue\+Receiver} service. 
+
+Tries to connect to the spp\+\_\+profinet process. If the connection failed a \hyperlink{}{Plugin\+Not\+Running\+Command} is sent to all listeners. Otherwise the service starts receiving packet data from the spp\+\_\+profinet snort plugin, packs the data into \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_truffle}{Truffle} objects and then generates \hyperlink{}{I\+Truffle\+Command} objects and sends them to all listeners. 

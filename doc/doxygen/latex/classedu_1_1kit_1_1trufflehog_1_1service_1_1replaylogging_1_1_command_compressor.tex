@@ -1,0 +1,42 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor}{}\section{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Command\+Compressor Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor}\index{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Command\+Compressor@{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Command\+Compressor}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor_af68600aecab5ef89ac97343c18f36144}{Command\+Compressor} ()
+\item 
+List$<$ \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command}{I\+Command} $>$ \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor_a8d84702fcf9363ccdf6fbbbf1c874836}{compress\+Commands} (List$<$ \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command}{I\+Command} $>$ commands)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor}{Command\+Compressor} creates a compacted list of all commands it received by using the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor}{Command\+Compressor}. For example, if there are 50 consecutive commands in the list that all increment the same counter by 1, these 50 commands are packaged into 1 command that increments the counter by 50 and then returned as a single command. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor_af68600aecab5ef89ac97343c18f36144}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Command\+Compressor@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Command\+Compressor}!Command\+Compressor@{Command\+Compressor}}
+\index{Command\+Compressor@{Command\+Compressor}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Command\+Compressor@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Command\+Compressor}}
+\subsubsection[{Command\+Compressor()}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Command\+Compressor.\+Command\+Compressor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor_af68600aecab5ef89ac97343c18f36144}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor}{Command\+Compressor} object. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor_a8d84702fcf9363ccdf6fbbbf1c874836}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Command\+Compressor@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Command\+Compressor}!compress\+Commands@{compress\+Commands}}
+\index{compress\+Commands@{compress\+Commands}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Command\+Compressor@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Command\+Compressor}}
+\subsubsection[{compress\+Commands(\+List$<$ I\+Command $>$ commands)}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf I\+Command}$>$ edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Command\+Compressor.\+compress\+Commands (
+\begin{DoxyParamCaption}
+\item[{List$<$ {\bf I\+Command} $>$}]{commands}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_command_compressor_a8d84702fcf9363ccdf6fbbbf1c874836}
+Creates a compacted list of all commands it received the way it has been described in the class description. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em commands} & The commands to compress. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The compressed commands. 
+\end{DoxyReturn}

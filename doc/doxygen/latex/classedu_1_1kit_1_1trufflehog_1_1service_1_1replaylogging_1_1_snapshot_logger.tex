@@ -1,0 +1,44 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger}{}\section{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Snapshot\+Logger Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger}\index{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Snapshot\+Logger@{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Snapshot\+Logger}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger_a194eb36abde2eba0f44baa433171aa61}{Snapshot\+Logger} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_graph_proxy}{Graph\+Proxy} graph\+Proxy)
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph}{Abstract\+Network\+Graph} \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger_a77bd10ba3572185ac0f9fba2b5bc0928}{take\+Snapshot} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger}{Snapshot\+Logger} takes the current graph from the \hyperlink{}{Graph\+Proxy} and takes a snapshot of it. This snapshot is then given to the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_logger}{Replay\+Logger} to help generate a \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log}. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger_a194eb36abde2eba0f44baa433171aa61}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger}!Snapshot\+Logger@{Snapshot\+Logger}}
+\index{Snapshot\+Logger@{Snapshot\+Logger}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger}}
+\subsubsection[{Snapshot\+Logger(\+Graph\+Proxy graph\+Proxy)}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Snapshot\+Logger.\+Snapshot\+Logger (
+\begin{DoxyParamCaption}
+\item[{{\bf Graph\+Proxy}}]{graph\+Proxy}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger_a194eb36abde2eba0f44baa433171aa61}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger}{Snapshot\+Logger} object with a \hyperlink{}{Graph\+Proxy} object. The Graph\+Proxy object contains the graph (after the proxy design pattern) so that the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger}{Snapshot\+Logger} can take a snapshot of the graph. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graph\+Proxy} & The proxy object that contains the graph so that the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger}{Snapshot\+Logger} can take a snapshot of it. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger_a77bd10ba3572185ac0f9fba2b5bc0928}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger}!take\+Snapshot@{take\+Snapshot}}
+\index{take\+Snapshot@{take\+Snapshot}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger}}
+\subsubsection[{take\+Snapshot()}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Abstract\+Network\+Graph} edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Snapshot\+Logger.\+take\+Snapshot (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_snapshot_logger_a77bd10ba3572185ac0f9fba2b5bc0928}
+Takes a snapshot of the current graph and returns the snapshot. 
+
+\begin{DoxyReturn}{Returns}
+A snapshot of the current graph. 
+\end{DoxyReturn}

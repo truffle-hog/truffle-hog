@@ -1,0 +1,49 @@
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_view_controller}{}\section{edu.\+kit.\+trufflehog.\+view.\+I\+View\+Controller$<$ I extends I\+Interaction $>$ Interface Template Reference}
+\label{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_view_controller}\index{edu.\+kit.\+trufflehog.\+view.\+I\+View\+Controller$<$ I extends I\+Interaction $>$@{edu.\+kit.\+trufflehog.\+view.\+I\+View\+Controller$<$ I extends I\+Interaction $>$}}
+
+
+Inherits \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{edu.\+kit.\+trufflehog.\+util.\+I\+Notifier$<$ M $>$}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_view_controller_a07ac3479b2e94987c27be104801fe3a6}{add\+Command} (I interaction, \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1usercommand_1_1_i_user_command}{I\+User\+Command} command)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_view_controller}{I\+View\+Controller} class is the basic interface that is implemented by every G\+U\+I View Component in the application. 
+
+
+\begin{DoxyCode}
+IViewControllers 
+\end{DoxyCode}
+ always provide a specified range of interactions that can be invoked. By using this abstraction a view controller only needs to know the interactions it can perform, and does not have any idea of the underlying commands that are mapped to these interactions by the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1presenter_1_1_presenter}{edu.\+kit.\+trufflehog.\+presenter.\+Presenter}. 
+
+Every \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_view_controller}{I\+View\+Controller} is also integrated into the notification framework of this application by implementing the \hyperlink{}{I\+Notifier} interface. Meaning if interactions are invoked on a view controller, the commands mapped to these interactions are sent to all listeners. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em $<$\+I$>$} & The type of interactions this view controller can invoke. Typically implemented by a specific enumeration. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_view_controller_a07ac3479b2e94987c27be104801fe3a6}{}\index{edu\+::kit\+::trufflehog\+::view\+::\+I\+View\+Controller@{edu\+::kit\+::trufflehog\+::view\+::\+I\+View\+Controller}!add\+Command@{add\+Command}}
+\index{add\+Command@{add\+Command}!edu\+::kit\+::trufflehog\+::view\+::\+I\+View\+Controller@{edu\+::kit\+::trufflehog\+::view\+::\+I\+View\+Controller}}
+\subsubsection[{add\+Command(\+I interaction, I\+User\+Command command)}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf edu.\+kit.\+trufflehog.\+view.\+I\+View\+Controller}$<$ I extends {\bf I\+Interaction} $>$.add\+Command (
+\begin{DoxyParamCaption}
+\item[{I}]{interaction, }
+\item[{{\bf I\+User\+Command}}]{command}
+\end{DoxyParamCaption}
+)}\label{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_view_controller_a07ac3479b2e94987c27be104801fe3a6}
+Maps the specified command to the given interaction. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em interaction} & the interaction the command is mapped to \\
+\hline
+{\em command} & the command that will be send to the listeners if the given interaction will be invoked \\
+\hline
+\end{DoxyParams}

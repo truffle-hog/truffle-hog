@@ -1,0 +1,101 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager}{}\section{edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue\+Manager Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager}\index{edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue\+Manager@{edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue\+Manager}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_a30e1f24537977773a3e63e7da9caea36}{Command\+Queue\+Manager} ()
+\item 
+\hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}{I\+Command\+Queue} \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_ab2d3dd74a53b8a012260d8c29bb35772}{get\+Next\+Queue} ()  throws Interrupted\+Exception 
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_aa53bc947ab4e03a9c0c59fb6f0e4ebc8}{register\+Queue} (\hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}{I\+Command\+Queue} queue)
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_ac230c474e3af5968872ab96afea64c83}{notify\+New\+Element} ()  throws Interrupted\+Exception 
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_afadc515ae2540edf379193155f3f6dad}{notify\+Removed\+Element} ()  throws Interrupted\+Exception 
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The command queue manager makes it possible for multiple command queues to be managed so that only once an element is present in one of the queues the calling thread is notified and can fetch the element. Essentially the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager}{Command\+Queue\+Manager} is a Blocking\+Queue of Command\+Queues. 
+
+If multiple command queues have elements in them, each call to \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_ab2d3dd74a53b8a012260d8c29bb35772}{get\+Next\+Queue()} will return a different one until every queue was at least popped once (round-\/robin style). 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_a30e1f24537977773a3e63e7da9caea36}{}\index{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager}!Command\+Queue\+Manager@{Command\+Queue\+Manager}}
+\index{Command\+Queue\+Manager@{Command\+Queue\+Manager}!edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager}}
+\subsubsection[{Command\+Queue\+Manager()}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue\+Manager.\+Command\+Queue\+Manager (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_a30e1f24537977773a3e63e7da9caea36}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager}{Command\+Queue\+Manager} 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_ab2d3dd74a53b8a012260d8c29bb35772}{}\index{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager}!get\+Next\+Queue@{get\+Next\+Queue}}
+\index{get\+Next\+Queue@{get\+Next\+Queue}!edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager}}
+\subsubsection[{get\+Next\+Queue()}]{\setlength{\rightskip}{0pt plus 5cm}{\bf I\+Command\+Queue} edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue\+Manager.\+get\+Next\+Queue (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) throws Interrupted\+Exception}\label{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_ab2d3dd74a53b8a012260d8c29bb35772}
+Gets the next non empty queue. 
+
+This method gets the next non empty \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}{I\+Command\+Queue}. If there are multiple queues registered the queues are cycled each call until every queue was returned at least once. 
+
+\begin{DoxyReturn}{Returns}
+The next command queue. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & \\
+\hline
+\end{DoxyExceptions}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_ac230c474e3af5968872ab96afea64c83}{}\index{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager}!notify\+New\+Element@{notify\+New\+Element}}
+\index{notify\+New\+Element@{notify\+New\+Element}!edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager}}
+\subsubsection[{notify\+New\+Element()}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue\+Manager.\+notify\+New\+Element (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) throws Interrupted\+Exception\hspace{0.3cm}{\ttfamily [protected]}}\label{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_ac230c474e3af5968872ab96afea64c83}
+Notifies the manager that a new element was pushed onto a queue. 
+
+This method should always be called by any \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}{I\+Command\+Queue} implementation whenever an element is added to it. 
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & \\
+\hline
+\end{DoxyExceptions}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_afadc515ae2540edf379193155f3f6dad}{}\index{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager}!notify\+Removed\+Element@{notify\+Removed\+Element}}
+\index{notify\+Removed\+Element@{notify\+Removed\+Element}!edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager}}
+\subsubsection[{notify\+Removed\+Element()}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue\+Manager.\+notify\+Removed\+Element (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) throws Interrupted\+Exception\hspace{0.3cm}{\ttfamily [protected]}}\label{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_afadc515ae2540edf379193155f3f6dad}
+Notifies the manager that an element was removed from the queue. 
+
+This method should always be called by any \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}{I\+Command\+Queue} implementation whenever an element is removed from it. 
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Interrupted\+Exception} & \\
+\hline
+\end{DoxyExceptions}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_aa53bc947ab4e03a9c0c59fb6f0e4ebc8}{}\index{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager}!register\+Queue@{register\+Queue}}
+\index{register\+Queue@{register\+Queue}!edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager@{edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue\+Manager}}
+\subsubsection[{register\+Queue(\+I\+Command\+Queue queue)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue\+Manager.\+register\+Queue (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Command\+Queue}}]{queue}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager_aa53bc947ab4e03a9c0c59fb6f0e4ebc8}
+Registers a \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}{I\+Command\+Queue} with the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_command_queue_manager}{Command\+Queue\+Manager}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em queue} & The \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1queue_1_1_i_command_queue}{I\+Command\+Queue} to add. \\
+\hline
+\end{DoxyParams}

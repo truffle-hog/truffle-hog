@@ -1,0 +1,39 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service}{}\section{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Save\+Service Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service}\index{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Save\+Service@{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Save\+Service}}
+
+
+Inherits Runnable.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_a6c679cb4574f24f914e3c0402d444d40}{Replay\+Log\+Save\+Service} ()
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_ae78e77d574e2e7f8791152f03e2f350a}{run} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service}{Replay\+Log\+Save\+Service} saves the current graph state so that it can be fully reconstructed at a later date. It does this by creating \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects at a fixed time interval (each \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object covers the data for this time interval). Thus the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service}{Replay\+Log\+Save\+Service} runs in its own thread. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_a6c679cb4574f24f914e3c0402d444d40}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}!Replay\+Log\+Save\+Service@{Replay\+Log\+Save\+Service}}
+\index{Replay\+Log\+Save\+Service@{Replay\+Log\+Save\+Service}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}}
+\subsubsection[{Replay\+Log\+Save\+Service()}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Save\+Service.\+Replay\+Log\+Save\+Service (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_a6c679cb4574f24f914e3c0402d444d40}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service}{Replay\+Log\+Save\+Service} object. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_ae78e77d574e2e7f8791152f03e2f350a}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}!run@{run}}
+\index{run@{run}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}}
+\subsubsection[{run()}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Save\+Service.\+run (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_ae78e77d574e2e7f8791152f03e2f350a}
+Starts the replay log save service. 
+
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service}{Replay\+Log\+Save\+Service} saves the current graph state so that it can be fully reconstructed at a later date. It does this by creating \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects at a fixed time interval (each \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object covers the data for this time interval). Thus the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service}{Replay\+Log\+Save\+Service} runs in its own thread. 

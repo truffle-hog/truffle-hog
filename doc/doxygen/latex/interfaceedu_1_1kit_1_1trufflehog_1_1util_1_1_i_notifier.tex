@@ -1,0 +1,80 @@
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{}\section{edu.\+kit.\+trufflehog.\+util.\+I\+Notifier$<$ M $>$ Interface Template Reference}
+\label{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}\index{edu.\+kit.\+trufflehog.\+util.\+I\+Notifier$<$ M $>$@{edu.\+kit.\+trufflehog.\+util.\+I\+Notifier$<$ M $>$}}
+
+
+Inherited by \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1packetdataprocessor_1_1profinetdataprocessor_1_1_truffle_receiver}{edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Truffle\+Receiver}, \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier}{edu.\+kit.\+trufflehog.\+util.\+Notifier$<$ M $>$}, and \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_view_controller}{edu.\+kit.\+trufflehog.\+view.\+I\+View\+Controller$<$ I extends I\+Interaction $>$}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a5f823c4f68c848816503f09646ca08ba}{add\+Listener} (\hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener}$<$ M $>$ \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener})
+\item 
+void \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a4c9e8f054b744e4e09b1d33fa11fbea1}{remove\+Listener} (\hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener}$<$ M $>$ \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener})
+\item 
+void \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a8e9907d8ae194d5f59af215d61a7b3dc}{notify\+Listeners} (M message)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier} interface works together with \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier}{Notifier} and \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener} to create the main communication method between threads in Truffle\+Hog. This communication method is a variation of the observer design pattern where messages sent from the subject to the observer include a parameter of type M. The \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier} is the subject in this case. I\+Listeners register with the \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier} and can then be notified through the notify\+Listeners method. Unlike in the classic observer pattern, the notify\+Listeners method offers the possibility to pass along a parameter of type M. 
+
+The \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier} is the abstraction from the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier}{Notifier}. If a class needs to be notified and cannot extend it, it should implement \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier} and its methods should be delegated to the actual \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier}{Notifier} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em $<$\+M$>$} & The type of message to receive. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a5f823c4f68c848816503f09646ca08ba}{}\index{edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier@{edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier}!add\+Listener@{add\+Listener}}
+\index{add\+Listener@{add\+Listener}!edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier@{edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier}}
+\subsubsection[{add\+Listener(\+I\+Listener$<$ M $>$ I\+Listener)}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf edu.\+kit.\+trufflehog.\+util.\+I\+Notifier}$<$ M $>$.add\+Listener (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Listener}$<$ M $>$}]{I\+Listener}
+\end{DoxyParamCaption}
+)}\label{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a5f823c4f68c848816503f09646ca08ba}
+Register an \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener} with this \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier}. This \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener} will then be notified on the \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a8e9907d8ae194d5f59af215d61a7b3dc}{notify\+Listeners(\+M)} method call. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener}} & The I\+Listeners to register with this \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier}. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier_af076d7bc5d02b148215dc75674ae9aae}{edu.\+kit.\+trufflehog.\+util.\+Notifier$<$ M $>$}.
+
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a8e9907d8ae194d5f59af215d61a7b3dc}{}\index{edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier@{edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier}!notify\+Listeners@{notify\+Listeners}}
+\index{notify\+Listeners@{notify\+Listeners}!edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier@{edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier}}
+\subsubsection[{notify\+Listeners(\+M message)}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf edu.\+kit.\+trufflehog.\+util.\+I\+Notifier}$<$ M $>$.notify\+Listeners (
+\begin{DoxyParamCaption}
+\item[{M}]{message}
+\end{DoxyParamCaption}
+)}\label{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a8e9907d8ae194d5f59af215d61a7b3dc}
+Notifies all I\+Listeners that are registered with this \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier}. It sends along a message of type M 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & The message to send along with the notification to each \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener}. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classedu_1_1kit_1_1trufflehog_1_1util_1_1_notifier_aedc86baa16574be2ceab61f54c786dae}{edu.\+kit.\+trufflehog.\+util.\+Notifier$<$ M $>$}.
+
+\hypertarget{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a4c9e8f054b744e4e09b1d33fa11fbea1}{}\index{edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier@{edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier}!remove\+Listener@{remove\+Listener}}
+\index{remove\+Listener@{remove\+Listener}!edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier@{edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier}}
+\subsubsection[{remove\+Listener(\+I\+Listener$<$ M $>$ I\+Listener)}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf edu.\+kit.\+trufflehog.\+util.\+I\+Notifier}$<$ M $>$.remove\+Listener (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Listener}$<$ M $>$}]{I\+Listener}
+\end{DoxyParamCaption}
+)}\label{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a4c9e8f054b744e4e09b1d33fa11fbea1}
+Removes an \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener} from this \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier}. This \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener} will then not be notified anymore on the \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier_a8e9907d8ae194d5f59af215d61a7b3dc}{notify\+Listeners(\+M)} method call. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{I\+Listener}} & The I\+Listeners to register with this \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_notifier}{I\+Notifier}. \\
+\hline
+\end{DoxyParams}

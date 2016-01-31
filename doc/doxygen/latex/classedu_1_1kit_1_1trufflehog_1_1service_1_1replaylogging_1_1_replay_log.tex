@@ -1,0 +1,95 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{}\section{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}\index{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log@{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log}}
+
+
+Inherits Serializable.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a4e64d939395912c270bdb05f40743c4b}{Replay\+Log} (\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph}{Abstract\+Network\+Graph} snapshot\+Graph, List$<$ \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command}{I\+Command} $>$ commands)
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1model_1_1graph_1_1_abstract_network_graph}{Abstract\+Network\+Graph} \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a82562e44dfec3f9ea83d6fcd99d43ae5}{get\+Graph\+Snapshot} ()
+\item 
+List$<$ \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command}{I\+Command} $>$ \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a76ef79ab22e3e006d99c6d259973ff3d}{get\+Commands} ()
+\item 
+Instant \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a7d948f6f6c3810c5d80f24d3ce736849}{get\+Start\+Instant} ()
+\item 
+Instant \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a67ddd49d72ce8860d01f56969d1af52a}{get\+End\+Instant} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object contains the snapshot of a given graph, a list of all commands that were executed for the next X seconds following that snapshot and a timestamp of when the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} starts to where it ends. 
+
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects are used to recreate a graph that already occurred. They capture all necessary information to display the full graph the way it was at any given point in time. This is done by applying the commands stored in it back on the snapshot until the end of the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} is reached, at which point the commands of the next replay log are applied and so on. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a4e64d939395912c270bdb05f40743c4b}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}!Replay\+Log@{Replay\+Log}}
+\index{Replay\+Log@{Replay\+Log}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}}
+\subsubsection[{Replay\+Log(\+Abstract\+Network\+Graph snapshot\+Graph, List$<$ I\+Command $>$ commands)}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log.\+Replay\+Log (
+\begin{DoxyParamCaption}
+\item[{{\bf Abstract\+Network\+Graph}}]{snapshot\+Graph, }
+\item[{List$<$ {\bf I\+Command} $>$}]{commands}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a4e64d939395912c270bdb05f40743c4b}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object containing the given graph snapshot and the list of commands. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em snapshot\+Graph} & The snapshot of the graph to include in the replay log. \\
+\hline
+{\em commands} & The list of commands to include in the replay log. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a76ef79ab22e3e006d99c6d259973ff3d}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}!get\+Commands@{get\+Commands}}
+\index{get\+Commands@{get\+Commands}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}}
+\subsubsection[{get\+Commands()}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf I\+Command}$>$ edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log.\+get\+Commands (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a76ef79ab22e3e006d99c6d259973ff3d}
+Gets the command list contained in this \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object. 
+
+\begin{DoxyReturn}{Returns}
+The command list contained in this \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object. 
+\end{DoxyReturn}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a67ddd49d72ce8860d01f56969d1af52a}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}!get\+End\+Instant@{get\+End\+Instant}}
+\index{get\+End\+Instant@{get\+End\+Instant}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}}
+\subsubsection[{get\+End\+Instant()}]{\setlength{\rightskip}{0pt plus 5cm}Instant edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log.\+get\+End\+Instant (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a67ddd49d72ce8860d01f56969d1af52a}
+Gets the point in time of when this \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object stops to contain graph data. 
+
+\begin{DoxyReturn}{Returns}
+The point in time of when this \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object stops to contain graph data. 
+\end{DoxyReturn}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a82562e44dfec3f9ea83d6fcd99d43ae5}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}!get\+Graph\+Snapshot@{get\+Graph\+Snapshot}}
+\index{get\+Graph\+Snapshot@{get\+Graph\+Snapshot}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}}
+\subsubsection[{get\+Graph\+Snapshot()}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Abstract\+Network\+Graph} edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log.\+get\+Graph\+Snapshot (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a82562e44dfec3f9ea83d6fcd99d43ae5}
+Gets the graph snapshot contained in this \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object. 
+
+\begin{DoxyReturn}{Returns}
+The graph snapshot contained in this \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object. 
+\end{DoxyReturn}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a7d948f6f6c3810c5d80f24d3ce736849}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}!get\+Start\+Instant@{get\+Start\+Instant}}
+\index{get\+Start\+Instant@{get\+Start\+Instant}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}}
+\subsubsection[{get\+Start\+Instant()}]{\setlength{\rightskip}{0pt plus 5cm}Instant edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log.\+get\+Start\+Instant (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_a7d948f6f6c3810c5d80f24d3ce736849}
+Gets the point in time of when this \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object starts to contain graph data. 
+
+\begin{DoxyReturn}{Returns}
+The point in time of when this \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object starts to contain graph data. 
+\end{DoxyReturn}

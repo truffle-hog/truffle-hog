@@ -1,0 +1,49 @@
+\hypertarget{namespaceedu_1_1kit_1_1trufflehog_1_1view}{}\section{Package edu.\+kit.\+trufflehog.\+view}
+\label{namespaceedu_1_1kit_1_1trufflehog_1_1view}\index{edu.\+kit.\+trufflehog.\+view@{edu.\+kit.\+trufflehog.\+view}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_abstract_network_graph_view}{Abstract\+Network\+Graph\+View}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_border_pane_controller}{Border\+Pane\+Controller}
+\item 
+interface \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_view_controller}{I\+View\+Controller}
+\item 
+interface \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_window_controller}{I\+Window\+Controller}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_main_tool_bar_controller}{Main\+Tool\+Bar\+Controller}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_main_view_controller}{Main\+View\+Controller}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_network_graph_view}{Network\+Graph\+View}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_network_monitoring_view_controller}{Network\+Monitoring\+View\+Controller}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_overlay_view_controller}{Overlay\+View\+Controller}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_root_window_controller}{Root\+Window\+Controller}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_settings_view_controller}{Settings\+View\+Controller}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_statistics_view_controller}{Statistics\+View\+Controller}
+\item 
+class \hyperlink{classedu_1_1kit_1_1trufflehog_1_1view_1_1_tool_bar_controller}{Tool\+Bar\+Controller}
+\item 
+class {\bfseries View\+Controller\+Notifier}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Provides the classes necessary to create a G\+U\+I for the Truffle\+Hog application. 
+
+The view framework provides two abstractions\+: 
+\begin{DoxyItemize}
+\item The windows that will be placed on the screen. Every window class implements the \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_window_controller}{edu.\+kit.\+trufflehog.\+view.\+I\+Window\+Controller} interface.  
+\item The views that are places into the windows. Views are showing buttons, menus, toolbars etc. as well as the graph visualization. Every view controller class implements the \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1view_1_1_i_view_controller}{edu.\+kit.\+trufflehog.\+view.\+I\+View\+Controller} interface.
+\begin{DoxyCode}
+IViewControllers 
+\end{DoxyCode}
+  
+\end{DoxyItemize}
+
+As this application is developed with the javafx framework, every view implementation derives from a basic abstraction of javafx Components that can be places in javafx scenes. 

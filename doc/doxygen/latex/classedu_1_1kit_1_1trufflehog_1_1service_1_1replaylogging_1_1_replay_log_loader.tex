@@ -1,0 +1,67 @@
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader}{}\section{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Loader Class Reference}
+\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader}\index{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Loader@{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Loader}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a8e5f1797640ddd452660e9989b67cd7f}{Replay\+Log\+Loader} ()
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a9fdb8df0838a49a212bcae58e30bd833}{load\+Data} (Instant instant)
+\item 
+\hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a8d65e900a6e19990f4df0397e806fbc4}{get\+Data} (Instant instant)  throws Missing\+Resource\+Exception 
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader}{Replay\+Log\+Loader} loads \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log}s from the hard drive into memory, so that when the view needs them to display the old graph, it is at the view\textquotesingle{}s disposal. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a8e5f1797640ddd452660e9989b67cd7f}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader}!Replay\+Log\+Loader@{Replay\+Log\+Loader}}
+\index{Replay\+Log\+Loader@{Replay\+Log\+Loader}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader}}
+\subsubsection[{Replay\+Log\+Loader()}]{\setlength{\rightskip}{0pt plus 5cm}edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Loader.\+Replay\+Log\+Loader (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a8e5f1797640ddd452660e9989b67cd7f}
+Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader}{Replay\+Log\+Loader} object. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a8d65e900a6e19990f4df0397e806fbc4}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader}!get\+Data@{get\+Data}}
+\index{get\+Data@{get\+Data}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader}}
+\subsubsection[{get\+Data(\+Instant instant)}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Replay\+Log} edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Loader.\+get\+Data (
+\begin{DoxyParamCaption}
+\item[{Instant}]{instant}
+\end{DoxyParamCaption}
+) throws Missing\+Resource\+Exception}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a8d65e900a6e19990f4df0397e806fbc4}
+Gets the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object closest to the given time instant. 
+
+Condition\+: A \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} reasonably close in time to the given instant must be in memory, else a Missing\+Resource\+Exception is thrown. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em instant} & The time instant that should be used to get the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object. The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object closest to the time instant will be returned. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object closest in time to the given time instant. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Missing\+Resource\+Exception} & Thrown when no \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} reasonably close in time to the given instant is found in memory. \\
+\hline
+\end{DoxyExceptions}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a9fdb8df0838a49a212bcae58e30bd833}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader}!load\+Data@{load\+Data}}
+\index{load\+Data@{load\+Data}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader}}
+\subsubsection[{load\+Data(\+Instant instant)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Loader.\+load\+Data (
+\begin{DoxyParamCaption}
+\item[{Instant}]{instant}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a9fdb8df0838a49a212bcae58e30bd833}
+Loads a batch of \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log}s closest to the given time instant into memory so that they are ready when needed. 
+
+This method should not be confused with \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a8d65e900a6e19990f4df0397e806fbc4}{get\+Data(\+Instant)}. \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_loader_a8d65e900a6e19990f4df0397e806fbc4}{get\+Data(\+Instant)} gets the desired \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} object from the already loaded \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects and does not load any \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} itself. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em instant} & The time instant that should be used to load the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects. The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log} objects closest to the time instant will be loaded. \\
+\hline
+\end{DoxyParams}
