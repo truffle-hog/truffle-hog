@@ -90,7 +90,7 @@ public class CommandQueueManager {
      *     an element is added to it.
      * </p>
      *
-     * @throws InterruptedException
+     * @throws InterruptedException Thrown if queue is interrupted while waiting
      */
     protected void notifyNewElement() throws InterruptedException {
         availableElementQueue.put(Boolean.TRUE);
@@ -106,7 +106,7 @@ public class CommandQueueManager {
      *     an element is removed from it.
      * </p>
      *
-     * @throws InterruptedException
+     * @throws InterruptedException Thrown if queue is interrupted while waiting
      */
     protected void notifyRemovedElement() throws InterruptedException {
         availableElementQueue.take();
