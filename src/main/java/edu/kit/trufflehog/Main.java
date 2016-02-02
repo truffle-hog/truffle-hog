@@ -11,6 +11,8 @@ public class Main {
 	 *     The main method of TruffleHog. It starts the program.
 	 * </p>
 	 *
+	 * Test push
+	 *
      * @param args command line arguments
      */
 	public static void main(String[] args) {
