@@ -17,4 +17,14 @@ public class Main {
      */
 	public static void main(String[] args) {
 	}
+
+    /**
+     * Dummy method to test unit tests and code coverage
+     *
+     * @param i any number
+     * @return returns i
+     */
+    public int methodToTest(int i) {
+        return i;
+    }
 }
