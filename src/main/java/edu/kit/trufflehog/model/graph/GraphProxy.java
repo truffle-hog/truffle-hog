@@ -21,18 +21,14 @@ public class GraphProxy extends AbstractNetworkGraph {
 
 	}
 
-    /**
-     * {@inheritDoc}
-     */
+	@Override
 	public void addNetworkNode(NetworkNode node) {
 
 	}
 
-    /**
-     * {@inheritDoc}
-     */
-	public void addNetworkEdge(NetworkNode from, NetworkNode to) {
-
+	@Override
+	public NetworkEdge addNetworkEdge(NetworkNode from, NetworkNode to) {
+		return null;
 	}
 
 	@Override

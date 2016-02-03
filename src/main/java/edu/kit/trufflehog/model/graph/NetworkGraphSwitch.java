@@ -29,23 +29,17 @@ public class NetworkGraphSwitch extends AbstractNetworkGraph {
 
 	}
 
+    @Override
+    public void addNetworkNode(NetworkNode node) {
 
-	/**
-     * {@inheritDoc}
-	 */
-	public void addNetworkNode(NetworkNode node) {
+    }
 
-	}
+    @Override
+    public NetworkEdge addNetworkEdge(NetworkNode from, NetworkNode to) {
+        return null;
+    }
 
-
-	/**
-     * {@inheritDoc}
-	 */
-	public void addNetworkEdge(NetworkNode from, NetworkNode to) {
-
-	}
-
-	@Override
+    @Override
 	public NetworkNode getNetworkNodeByMACAddress(String macAddress) {
 		throw new UnsupportedOperationException("Not implemented yet!");
 	}

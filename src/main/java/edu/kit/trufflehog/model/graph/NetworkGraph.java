@@ -14,11 +14,9 @@ public class NetworkGraph extends AbstractNetworkGraph implements Serializable {
     private NetworkNode networkNode;
     private NetworkEdge networkEdge;
 
-    /**
-     * {@inheritDoc}
-     */
-    public void addNetworkEdge(NetworkNode from, NetworkNode to) {
-
+    @Override
+    public NetworkEdge addNetworkEdge(NetworkNode from, NetworkNode to) {
+        return null;
     }
 
     @Override
@@ -41,11 +39,8 @@ public class NetworkGraph extends AbstractNetworkGraph implements Serializable {
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void addNetworkNode(NetworkNode node) {
 
     }
-
 }
