@@ -81,7 +81,6 @@ gradle-app.setting
 !gradle-wrapper.properties
 
 #Gradle stuff
-/gradle/
 /.gradle/
 
 #eclipse stuff
