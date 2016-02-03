@@ -17,6 +17,6 @@ public class MainTest {
     public void testMethodToTest() throws Exception {
         Main main = new Main();
         int result = main.methodToTest(1);
-        assertEquals(result, 0);
+        assertEquals(result, 1);
     }
 }
