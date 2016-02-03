@@ -1,4 +1,4 @@
-group 'edu.kit.ipd.trufflehog'
+group 'edu.kit.trufflehog'
 version '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
@@ -19,6 +19,8 @@ buildscript {
 
 mainClassName = 'edu.kit.trufflehog.Main'
 
+
+// Compatible with Java 8
 sourceCompatibility = 1.8
 
 repositories {
@@ -37,6 +39,7 @@ dependencies {
     compile 'net.sf.jung:jung-visualization:2.0.1'
 
     testCompile 'org.apache.commons:commons-collections4:4.1'
+    testCompile 'org.apache.commons:commons-lang3:3.4'
     testCompile 'colt:colt:1.2.0'
     testCompile 'net.sf.jung:jung2:2.0.1'
     testCompile 'net.sf.jung:jung-graph-impl:2.0.1'
@@ -46,15 +49,6 @@ dependencies {
 jar {
     manifest {
         attributes 'Main-Class': 'edu.kit.trufflehog.Main'
-    }
-}
-
-/**
- * Tests
- */
-test {
-    testLogging {
-        events 'started', 'passed'
     }
 }
 
