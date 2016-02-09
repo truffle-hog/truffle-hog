@@ -1,5 +1,12 @@
 package edu.kit.trufflehog.service.replaylogging;
 
+import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.util.IListener;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+
 /**
  * <p>
  *     The ReplayLogSaveService saves the current graph state so that it can be fully reconstructed at a later date. It
@@ -7,7 +14,9 @@ package edu.kit.trufflehog.service.replaylogging;
  *     this time interval). Thus the ReplayLogSaveService runs in its own thread.
  * </p>
  */
-public class ReplayLogSaveService implements Runnable {
+public class ReplayLogSaveService implements Runnable, IListener<ICommand> {
+    private List<ICommand> commandList;
+    private ExecutorService executorService;
 
     /**
      * <p>
@@ -15,6 +24,7 @@ public class ReplayLogSaveService implements Runnable {
      * </p>
      */
     public ReplayLogSaveService() {
+        commandList = new LinkedList<>();
     }
 
     /**
@@ -29,5 +39,18 @@ public class ReplayLogSaveService implements Runnable {
      */
     @Override
     public void run() {
+    }
+
+    /**
+     * <p>
+     *     Through this method the ReplayLogSaveService receives new Commands that it should save into the list so that
+     *     they can be turned into {@link ReplayLog}s later.
+     * </p>
+     *
+     * @param command The command to save
+     */
+    @Override
+    public void receive(ICommand command) {
+
     }
 }
