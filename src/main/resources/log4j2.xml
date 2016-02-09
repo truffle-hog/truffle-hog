@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <File name="fileAppenderTruffleHog" fileName="logs/edu.kit.trufflehog.log" append="true">
+            <PatternLayout pattern="%d %-5p [%t] %C{10} (%F:%L) - %m%n"/>
+        </File>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %-5p [%t] %C{10} (%F:%L) - %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="edu.kit.trufflehog" level="debug">
+            <AppenderRef ref="fileAppenderTruffleHog"/>
+        </Logger>
+        <Root level="debug">
+            <AppenderRef ref="CONSOLE"/>
+        </Root>
+    </Loggers>
+</Configuration>
