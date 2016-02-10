@@ -3,8 +3,13 @@ package edu.kit.trufflehog.model;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.truffledatalog.TruffleLogger;
 import edu.kit.trufflehog.service.replaylogging.ReplayLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * <p>
@@ -20,7 +25,7 @@ import java.io.File;
  *         </li>
  *         <br></br>
  *         <li>
- *             replay log folder:
+ *             Replay log folder:
  *             <p>
  *                 This is where the {@link ReplayLog} objects are saved to.
  *             </p>
@@ -34,7 +39,7 @@ import java.io.File;
  *         </li>
  *         <br></br>
  *         <li>
- *             Graph log Folder:
+ *             Truffle data log Folder:
  *             <p>
  *                 This is where the logs created by the {@link TruffleLogger} for each Node are saved to.
  *             </p>
@@ -48,8 +53,19 @@ import java.io.File;
  *         </li>
  *     </ul>
  * </p>
+ *
+ * @author Julian Brendl
+ * @version 1.0
  */
 public class FileSystem {
+    private static final Logger logger = LogManager.getLogger(FileSystem.class);
+
+    private final File parentLocation;
+    private File dataFolder = null;
+    private File replayLogFolder = null;
+    private File configFolder = null;
+    private File truffleDataLogFolder = null;
+    private File logFolder = null;
 
     /**
      * <p>
@@ -57,6 +73,20 @@ public class FileSystem {
      * </p>
      */
     public FileSystem() {
+        try {
+            // Get parent folder
+            parentLocation = new File(FileSystem.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI().getPath()).getParentFile();
+
+            // Create folder where all data will be kept
+            dataFolder = createFolder(dataFolder, "data", parentLocation);
+
+            // Set path to log folder
+            logFolder = new File(dataFolder.getCanonicalPath() + File.separator + "log").getCanonicalFile();
+        } catch (IOException | URISyntaxException e) {
+            logger.error("Unable to get current working directory's parent folder", e);
+            throw new IllegalStateException("Unable to initialize TruffleHog file system");
+        }
     }
 
     /**
@@ -67,7 +97,9 @@ public class FileSystem {
      * @return The corresponding File object of the data folder.
      */
     public File getDataFolder() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        dataFolder = createFolder(dataFolder, "data", parentLocation);
+
+        return dataFolder;
     }
 
     /**
@@ -77,8 +109,11 @@ public class FileSystem {
      *
      * @return The corresponding File object of the replay log folder.
      */
-    public File getDataLogFolder() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public File getReplayLogFolder() {
+        getDataFolder();
+        replayLogFolder = createFolder(replayLogFolder, "replay_data", dataFolder);
+
+        return replayLogFolder;
     }
 
     /**
@@ -89,7 +124,10 @@ public class FileSystem {
      * @return The corresponding File object of the config folder.
      */
     public File getConfigFolder() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        getDataFolder();
+        configFolder = createFolder(configFolder, "config", dataFolder);
+
+        return configFolder;
     }
 
     /**
@@ -99,8 +137,11 @@ public class FileSystem {
      *
      * @return The corresponding File object of the graph log folder.
      */
-    public File getGraphLogFolder() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public File getTruffleDataLogFolder() {
+        getDataFolder();
+        truffleDataLogFolder = createFolder(truffleDataLogFolder, "truffle_data_log", dataFolder);
+
+        return truffleDataLogFolder;
     }
 
     /**
@@ -109,9 +150,39 @@ public class FileSystem {
      * </p>
      *
      * @return The corresponding File object of the log folder.
+     * @throws FileNotFoundException Thrown if the log folder is not found - this could happen if there is an error
+     *          with log4j, and the log or log folder was not created correctly
      */
-    public File getLogFolder() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public File getLogFolder() throws FileNotFoundException {
+        getDataFolder();
+        if (logFolder == null || !logFolder.exists()) {
+            throw new FileNotFoundException("Unable to find log folder - possible error with log4j");
+        }
+
+        return logFolder;
+    }
+
+    /**
+     * <p>
+     *     Creates a folder below its parent.
+     * </p>
+     *
+     * @param folder The folder to create
+     * @param name The name of the folder in case it does not exists yet
+     * @param parentFolder The parent of the folder to create.
+     * @return The created folder.
+     */
+    private File createFolder(File folder, String name, File parentFolder) {
+        if (folder == null || !folder.exists()) {
+            try {
+                folder = new File(parentFolder.getCanonicalPath() + File.separator + name)
+                        .getCanonicalFile();
+                folder.mkdir();
+            } catch (IOException e) {
+                logger.error("Unable to create truffle_data_log folder", e);
+            }
+        }
+
+        return folder;
     }
 }
-
