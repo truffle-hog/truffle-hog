@@ -29,6 +29,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'org.mockito:mockito-all:1.8.4'
 
     // general
     compile 'commons-io:commons-io:2.4'

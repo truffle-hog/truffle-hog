@@ -35,15 +35,21 @@ public class CommandQueue implements ICommandQueue {
      * @param command The command to put onto the Queue.
      * @param <T>     The type of the command.
      * @throws InterruptedException
+     * @throws NullPointerException
      */
     @Override
     public <T extends ICommand> void push(T command) throws InterruptedException {
+        if (command == null)
+            throw new NullPointerException("Command object to be added may not be null!");
+
         commandQueue.addLast(command);
         manager.notifyNewElement();
     }
 
     /**
      * {@inheritDoc}
+     * @throws InterruptedException
+     * @throws java.util.NoSuchElementException If there are no elements in this queue.
      */
     @Override
     public ICommand pop() throws InterruptedException {
