@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import edu.kit.trufflehog.model.graph.GraphProxy;
 import edu.kit.trufflehog.util.IListener;
@@ -36,13 +37,14 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
      *     Creates a new ReplayLogSaveService object.
      * </p>
      *
-     *param graphProxy The proxy object that contains the graph so that the SnapshotLogger can take a snapshot of it.xy
+     * @param graphProxy The proxy object that contains the graph so that the SnapshotLogger can take a snapshot of it.
+     * @param fileSystem
      */
-    public ReplayLogSaveService(GraphProxy graphProxy) {
+    public ReplayLogSaveService(GraphProxy graphProxy, FileSystem fileSystem) {
         // Create all the logging objects
         commandLogger = new CommandLogger();
         snapshotLogger = new SnapshotLogger(graphProxy);
-        replayLogger = new ReplayLogger();
+        replayLogger = new ReplayLogger(fileSystem);
 
         // Instantiate the scheduled executor service
         executorService = new LoggedScheduledExecutor(1);

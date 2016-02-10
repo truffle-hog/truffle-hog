@@ -58,7 +58,6 @@ pom.xml
 *.ist
 *.ilg
 *.aux
-*.out
 *.blg
 *.bbl
 *.synctex
@@ -72,7 +71,7 @@ pom.xml
 *.alg
 *.nav
 
-# Ignore Gradle stuff
+# Gradle stuff
 gradle-app.setting
 /.gradle/
 
@@ -80,12 +79,9 @@ gradle-app.setting
 !gradle-wrapper.jar
 !gradle-wrapper.properties
 
-# Gradle stuff
-/.gradle/
-
 # Eclipse stuff
 .project
 
 # Other Folders
-/logs
+/data
 
