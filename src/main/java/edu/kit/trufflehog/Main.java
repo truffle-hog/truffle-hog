@@ -21,16 +21,4 @@ public class Main {
 	public static void main(String[] args) {
         logger.debug("example log at debug level");
 	}
-
-    /**
-     * Dummy method to test unit tests and code coverage
-     *
-     * TODO: Take away once real test exist for TruffleHog
-     *
-     * @param i any number
-     * @return returns i
-     */
-    public int methodToTest(int i) {
-        return i;
-    }
 }
