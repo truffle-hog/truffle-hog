@@ -5,9 +5,9 @@ import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import edu.kit.trufflehog.model.graph.GraphProxy;
 import edu.kit.trufflehog.util.IListener;
+import org.apache.commons.collections4.map.LinkedMap;
 
-import java.util.List;
-import java.util.concurrent.ScheduledFuture;
+import java.time.Instant;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -28,8 +28,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
     private SnapshotLogger snapshotLogger;
     private ReplayLogger replayLogger;
 
-    private LoggedScheduledExecutor executorService;
-    private int createReplayLogInterval;
+    private int createReplayLogInterval = 10000; //TODO: hook up with settings stuff
     private Lock lock;
 
     /**
@@ -48,11 +47,11 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
         replayLogger = new ReplayLogger(fileSystem);
 
         // Instantiate the scheduled executor service
-        executorService = new LoggedScheduledExecutor(1);
+        LoggedScheduledExecutor executorService = new LoggedScheduledExecutor(1);
         lock = new ReentrantLock();
 
         // TODO: Think about whether this is good
-        ScheduledFuture<?> replayLogExecutor = executorService.scheduleAtFixedRate(this, 0, createReplayLogInterval, SECONDS);
+        executorService.scheduleAtFixedRate(this, 0, createReplayLogInterval, SECONDS);
     }
 
     /**
@@ -74,7 +73,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
         lock.unlock();
 
         // Create a new replay log
-        List<ICommand> compressedCommandList = commandLogger.createCommandLog();
+        LinkedMap<ICommand, Instant> compressedCommandList = commandLogger.createCommandLog();
         AbstractNetworkGraph graph = snapshotLogger.takeSnapshot();
         ReplayLog replayLog = replayLogger.createReplayLog(graph, compressedCommandList);
 

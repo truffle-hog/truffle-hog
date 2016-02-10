@@ -2,11 +2,10 @@ package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.ICommand;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.List;
 
 /**
  * <p>
@@ -21,6 +20,10 @@ import java.util.List;
  * </p>
  */
 public class ReplayLog implements Serializable {
+    private AbstractNetworkGraph snapshotGraph;
+    private LinkedMap<ICommand, Instant> commands;
+    private Instant startInstant;
+    private Instant endInstant;
 
     /**
      * <p>
@@ -30,7 +33,14 @@ public class ReplayLog implements Serializable {
      * @param snapshotGraph The snapshot of the graph to include in the replay log.
      * @param commands The list of commands to include in the replay log.
      */
-    public ReplayLog(AbstractNetworkGraph snapshotGraph, List<ICommand> commands) {
+    public ReplayLog(AbstractNetworkGraph snapshotGraph, LinkedMap<ICommand, Instant> commands) {
+        this.snapshotGraph = snapshotGraph;
+        this.commands = commands;
+
+        if (!commands.isEmpty()) {
+            startInstant = commands.get(commands.firstKey());
+            endInstant = commands.get(commands.lastKey());
+        }
     }
 
     /**
@@ -41,7 +51,7 @@ public class ReplayLog implements Serializable {
      * @return The graph snapshot contained in this ReplayLog object.
      */
     public AbstractNetworkGraph getGraphSnapshot() {
-        throw new UnsupportedOperationException("Not implemented yet!");
+        return snapshotGraph;
     }
 
     /**
@@ -51,8 +61,8 @@ public class ReplayLog implements Serializable {
      *
      * @return The command list contained in this ReplayLog object.
      */
-    public List<ICommand> getCommands() {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public LinkedMap<ICommand, Instant> getCommands() {
+        return commands;
     }
 
     /**
@@ -63,7 +73,7 @@ public class ReplayLog implements Serializable {
      * @return The point in time of when this ReplayLog object starts to contain graph data.
      */
     public Instant getStartInstant() {
-        throw new UnsupportedOperationException("Not implemented yet!");
+        return startInstant;
     }
 
     /**
@@ -74,6 +84,6 @@ public class ReplayLog implements Serializable {
      * @return The point in time of when this ReplayLog object stops to contain graph data.
      */
     public Instant getEndInstant() {
-        throw new UnsupportedOperationException("Not implemented yet!");
+        return endInstant;
     }
 }

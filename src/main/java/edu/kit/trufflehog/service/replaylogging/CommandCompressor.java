@@ -1,8 +1,9 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.ICommand;
+import org.apache.commons.collections4.map.LinkedMap;
 
-import java.util.List;
+import java.time.Instant;
 
 /**
  * <p>
@@ -29,7 +30,7 @@ public class CommandCompressor {
      * @param commands The commands to compress.
      * @return The compressed commands.
      */
-    public List<ICommand> compressCommands(List<ICommand> commands) {
+    public LinkedMap<ICommand, Instant> compressCommands(LinkedMap<ICommand, Instant> commands) {
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 }

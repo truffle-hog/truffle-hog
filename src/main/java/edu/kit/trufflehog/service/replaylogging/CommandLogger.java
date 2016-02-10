@@ -1,9 +1,9 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.ICommand;
+import org.apache.commons.collections4.map.LinkedMap;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.time.Instant;
 
 /**
  * <p>
@@ -16,8 +16,8 @@ import java.util.List;
  * @version 1.0
  */
 public class CommandLogger {
-    private List<ICommand> waitingCommandList; // This is where commands are put
-    private List<ICommand> commpressCommandList; // This is where commands are compressed
+    private LinkedMap<ICommand, Instant> waitingCommandMap; // This is where commands are put
+    private LinkedMap<ICommand, Instant> commpressCommandMap; // This is where commands are compressed
     private CommandCompressor commandCompressor;
 
     /**
@@ -26,7 +26,8 @@ public class CommandLogger {
      * </p>
      */
     public CommandLogger() {
-        waitingCommandList = new LinkedList<>();
+        waitingCommandMap = new LinkedMap<>();
+        commpressCommandMap = new LinkedMap<>();
         commandCompressor = new CommandCompressor();
     }
 
@@ -39,7 +40,7 @@ public class CommandLogger {
      * @param command The command to add to the list that is to be processed.
      */
     public void addCommand(ICommand command) {
-        waitingCommandList.add(command);
+        waitingCommandMap.put(command, Instant.now());
     }
 
     /**
@@ -53,8 +54,8 @@ public class CommandLogger {
      * </p>
      */
     public void transferList() {
-        commpressCommandList = new LinkedList<>(waitingCommandList);
-        waitingCommandList.clear();
+        commpressCommandMap = new LinkedMap<>(waitingCommandMap);
+        waitingCommandMap.clear();
     }
 
     /**
@@ -67,7 +68,7 @@ public class CommandLogger {
      *
      * @return A list of compacted commands it received.
      */
-    public List<ICommand> createCommandLog() {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public LinkedMap<ICommand, Instant> createCommandLog() {
+        return commandCompressor.compressCommands(commpressCommandMap);
     }
 }
