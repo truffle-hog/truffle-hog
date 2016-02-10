@@ -38,7 +38,8 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
      * </p>
      *
      * @param graphProxy The proxy object that contains the graph so that the SnapshotLogger can take a snapshot of it.
-     * @param fileSystem
+     * @param fileSystem The fileSystem object that gives access to the locations where files are saved on the hard drive.
+     *                   This is necessary because of the ReplayLogger that needs to save ReplayLogs.
      */
     public ReplayLogSaveService(GraphProxy graphProxy, FileSystem fileSystem) {
         // Create all the logging objects
