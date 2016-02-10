@@ -179,7 +179,7 @@ public class FileSystem {
                         .getCanonicalFile();
                 folder.mkdir();
             } catch (IOException e) {
-                logger.error("Unable to create truffle_data_log folder", e);
+                logger.error("Unable to create " + name + " folder", e);
             }
         }
 

@@ -1,9 +1,15 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 /**
@@ -19,21 +25,30 @@ import java.util.List;
  *     reconstruct the graph by taking the snapshot as the original graph and then applying all commands that occurred
  *     back on the graph, in the order and interval they occurred. This is how old graphs can be viewed.
  * </p>
+ *
+ * @author Julian Brendl
+ * @version 1.0
  */
 public class ReplayLogger {
+    private static final Logger logger = LogManager.getLogger(ReplayLogger.class);
+
+    private FileSystem fileSystem;
 
     /**
      * <p>
      *     Creates a new ReplayLogger object.
      * </p>
+     *
+     * @param fileSystem a {@link FileSystem} object so that the ReplayLogger knows where to save the replay logs to.
      */
-    public ReplayLogger() {
+    public ReplayLogger(FileSystem fileSystem) {
+        this.fileSystem = fileSystem;
     }
 
     /**
      * <p>
-     *      Creates a new {@link ReplayLog} object based on the snapshot of a graph given and the list of commands that
-     *      were executed for the next X seconds after the snapshot was taken.
+     *     Creates a new {@link ReplayLog} object based on the snapshot of a graph given and the list of commands that
+     *     were executed for the next X seconds after the snapshot was taken.
      * </p>
      *
      * @param snapshotGraph The snapshot of the graph to include in the replay log.
@@ -41,8 +56,8 @@ public class ReplayLogger {
      * @return A new ReplayLog object that is serializable and that contains the graph snapshot and the list of commands
      *          passed to the method.
      */
-    public ReplayLog createDataLog(AbstractNetworkGraph snapshotGraph, List<ICommand> commands) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public ReplayLog createReplayLog(AbstractNetworkGraph snapshotGraph, List<ICommand> commands) {
+        return new ReplayLog(snapshotGraph, commands);
     }
 
     /**
@@ -50,8 +65,21 @@ public class ReplayLogger {
      *     Saves the {@link ReplayLog} object given on the hard drive so that it can be retrieved later.
      * </p>
      *
-     * @param log The replay log to save on the hard drive.
+     * @param replayLog The replay log to save on the hard drive.
      */
-    public void saveDataLog(ReplayLog log) {
+    public void saveReplayLog(ReplayLog replayLog) {
+        try {
+            String fileName = replayLog.getStartInstant().getEpochSecond() + "-"
+                    + replayLog.getEndInstant().getEpochSecond() + ".replaylog";
+            String filePath = fileSystem.getReplayLogFolder() + File.separator + fileName;
+            FileOutputStream fileOut = new FileOutputStream(filePath);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(replayLog);
+            out.close();
+            fileOut.close();
+            System.out.printf("Serialized replay log and saved as: " + filePath);
+        } catch(IOException e) {
+            logger.error("Unable to serialize replay log: " + replayLog, e);
+        }
     }
 }
