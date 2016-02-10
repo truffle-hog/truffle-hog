@@ -54,13 +54,19 @@ public class CommandQueueManager {
      * <p>
      *     This method gets the next non empty {@link ICommandQueue}. If there are multiple queues registered
      *     the queues are cycled each call until every queue was returned at least once.
+     *     If all queues are empty this method blocks, until one of the queues receives an element.
      * </p>
-     * @return The next command queue.
+     * @return The next command queue. Returns null if no queues are registered.
+     * @throws InterruptedException
      */
-    public ICommandQueue getNextQueue() {
+    public synchronized ICommandQueue getNextQueue() throws InterruptedException {
 
         if (registeredQueues == 0)
             return null;
+
+        while (availableElementQueue.isEmpty()) {
+            this.wait();
+        }
 
         ICommandQueue current = queues.get(currentQueue);
 
@@ -70,12 +76,12 @@ public class CommandQueueManager {
         while (current.isEmpty() && timesLooped <= registeredQueues) {
             currentQueue = (currentQueue + 1) % registeredQueues;
             timesLooped++;
+            current = queues.get(currentQueue);
         }
 
-        current = queues.get(currentQueue);
-
-        // next time we want a different queue
-        currentQueue = (currentQueue + 1) % registeredQueues;
+        // next time we want a different queue if other queues have elements in them
+        if (availableElementQueue.size() != 1)
+            currentQueue = (currentQueue + 1) % registeredQueues;
 
         return current;
     }
@@ -92,8 +98,10 @@ public class CommandQueueManager {
      *
      * @throws InterruptedException Thrown if queue is interrupted while waiting
      */
-    protected void notifyNewElement() throws InterruptedException {
+    protected synchronized void notifyNewElement() throws InterruptedException {
         availableElementQueue.put(Boolean.TRUE);
+
+        this.notifyAll();
     }
 
     /**

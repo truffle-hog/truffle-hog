@@ -22,6 +22,7 @@ public interface ICommandQueue {
      * @param command The command to put onto the Queue.
      * @param <T>     The type of the command.
      * @throws InterruptedException
+     * @throws NullPointerException If the command to add is null.
      */
     <T extends ICommand> void push(T command) throws InterruptedException;
 
@@ -32,6 +33,7 @@ public interface ICommandQueue {
      *
      * @return The first command on the queue
      * @throws InterruptedException
+     * @throws java.util.NoSuchElementException If there are no elements in this queue.
      */
     ICommand pop() throws InterruptedException;
 

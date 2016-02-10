@@ -21,7 +21,7 @@ public class SetDisplayAlgorithmCommand implements IUserCommand{
      * @param factory {@link ILayoutFactory} implementation of the desired {@link INetworkGraphLayout} implementation
      * @param view {@link AbstractNetworkGraphView} implementation managing the graph layouts
      */
-    SetDisplayAlgorithmCommand(ILayoutFactory factory, AbstractNetworkGraphView view) {
+    public SetDisplayAlgorithmCommand(ILayoutFactory factory, AbstractNetworkGraphView view) {
         layoutFactory = factory;
         graphView = view;
     }

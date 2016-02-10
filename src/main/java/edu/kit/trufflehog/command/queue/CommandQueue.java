@@ -10,6 +10,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  *     This {@link ICommandQueue} implementation uses a {@link ConcurrentLinkedDeque}.
  *     It also automatically registers itself with a {@link CommandQueueManager} to allow the usage of it.
  * </p>
+ *
+ * @author Mark Giraud
+ * @version 1.0
  */
 public class CommandQueue implements ICommandQueue {
 
@@ -25,6 +28,10 @@ public class CommandQueue implements ICommandQueue {
      * @param commandQueueManager The instance of the {@link CommandQueueManager} that manages all the command queues.
      */
     public CommandQueue(CommandQueueManager commandQueueManager) {
+
+        if (commandQueueManager == null)
+            throw new NullPointerException();
+
         this.manager = commandQueueManager;
         this.manager.registerQueue(this);
     }
@@ -35,7 +42,7 @@ public class CommandQueue implements ICommandQueue {
      * @param command The command to put onto the Queue.
      * @param <T>     The type of the command.
      * @throws InterruptedException
-     * @throws NullPointerException
+     * @throws NullPointerException If the command to add is null.
      */
     @Override
     public <T extends ICommand> void push(T command) throws InterruptedException {

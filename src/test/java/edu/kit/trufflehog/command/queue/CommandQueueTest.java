@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
  * </p>
  *
  * @author Mark Giraud
- * @version 0.0
+ * @version 1.0
  */
 public class CommandQueueTest {
 
@@ -34,6 +34,10 @@ public class CommandQueueTest {
     public void tearDown() {
     }
 
+    /**
+     * Checks if the queue registers itself with the {@link CommandQueueManager}.
+     * @throws Exception
+     */
     @Test
     public void testConstruction() throws Exception {
         commandQueue = new CommandQueue(mockedManager);
