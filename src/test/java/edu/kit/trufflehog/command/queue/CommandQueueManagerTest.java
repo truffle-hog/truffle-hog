@@ -93,7 +93,6 @@ public class CommandQueueManagerTest {
      *
      * @throws Exception
      */
-    @Ignore
     @Test
     public void testIfManagerBlocksAfterRemovingElements() throws Exception {
         ICommandQueue cmdQueue = mock(ICommandQueue.class);
@@ -105,26 +104,24 @@ public class CommandQueueManagerTest {
         manager.notifyNewElement();
         manager.notifyNewElement();
 
+        // the first command queue is empty
+        when(cmdQueue.isEmpty()).thenReturn(true);
         // mock the queue so that it returns true for isEmpty after 2 mocked elements have been removed
-        when(cmdQueue.isEmpty()).thenReturn(false, false, true);
-        // mock the queue so that it returns 2 mock objects for commands and after that null
-        when(cmdQueue.pop()).thenAnswer(invocation -> {
+        when(cmdQueue2.isEmpty()).thenReturn(false, false, true);
+        // mock the queue so that it returns 2 mock objects for commands and after that throws an exception as specified by the interface.
+        when(cmdQueue2.pop()).thenAnswer(invocation -> {
             manager.notifyRemovedElement();
-            System.out.println("Popped");
             return mock(ICommand.class);
         }).thenAnswer(invocation -> {
-            System.out.println("Popped");
             manager.notifyRemovedElement();
             return mock(ICommand.class);
         }).thenAnswer(invocation1 -> {
-            System.out.println("Popped");
             throw new NoSuchElementException();
         });
 
         Thread testRunner = new Thread(() -> {
             while (!Thread.interrupted()) {
                 try {
-                    System.out.println("Popping");
                     manager.getNextQueue().pop();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();

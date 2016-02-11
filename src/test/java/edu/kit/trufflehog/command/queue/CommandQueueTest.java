@@ -44,6 +44,11 @@ public class CommandQueueTest {
         verify(mockedManager).registerQueue(commandQueue);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testConstructionWithNull() throws Exception {
+        commandQueue = new CommandQueue(null);
+    }
+
     /**
      * <p>
      *     This test verifies if the {@link CommandQueue} correctly notifies the manager that a new object was added.

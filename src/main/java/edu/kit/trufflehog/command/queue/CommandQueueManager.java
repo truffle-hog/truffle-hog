@@ -24,7 +24,7 @@ public class CommandQueueManager {
 
     private final List<ICommandQueue> queues = new ArrayList<>();
 
-    private final BlockingQueue availableElementQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<Boolean> availableElementQueue = new LinkedBlockingQueue<>();
 
     /**
      * Creates a new CommandQueueManager
