@@ -6,6 +6,8 @@ import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import edu.kit.trufflehog.model.graph.GraphProxy;
 import edu.kit.trufflehog.util.IListener;
 import org.apache.commons.collections4.map.LinkedMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
 import java.util.concurrent.locks.Lock;
@@ -24,6 +26,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * @version 1.0
  */
 public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
+    private static final Logger logger = LogManager.getLogger(ReplayLogSaveService.class);
+
     private CommandLogger commandLogger;
     private SnapshotLogger snapshotLogger;
     private ReplayLogger replayLogger;

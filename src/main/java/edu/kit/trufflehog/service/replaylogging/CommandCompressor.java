@@ -31,6 +31,7 @@ public class CommandCompressor {
      * @return The compressed commands.
      */
     public LinkedMap<ICommand, Instant> compressCommands(LinkedMap<ICommand, Instant> commands) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+        // TODO: This is just to make things work, if we decide to keep this functionality, we should implement it
+        return commands;
     }
 }
