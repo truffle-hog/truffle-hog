@@ -23,17 +23,26 @@ public abstract class Notifier<M> implements INotifier<M> {
     private final Collection<IListener<M>> listeners = new ConcurrentLinkedQueue<>();
 
     @Override
-    public void addListener(IListener<M> listener) {
-        listeners.add(listener);
+    public boolean addListener(IListener<M> listener) {
+        if (listener == null)
+            throw new NullPointerException("Listener to add must not be null!");
+
+        return listeners.add(listener);
     }
 
     @Override
-    public void removeListener(IListener listener) {
-        listeners.remove(listener);
+    public boolean removeListener(IListener listener) {
+        if (listener == null)
+            throw new NullPointerException("Listener to remove must not be null!");
+
+        return listeners.remove(listener);
     }
 
     @Override
     public void notifyListeners(M message) {
+        if (message == null)
+            throw new NullPointerException("Message to be sent must not be null!");
+
         listeners.forEach(listener -> listener.receive(message));
     }
 }

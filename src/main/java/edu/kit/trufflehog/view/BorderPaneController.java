@@ -30,17 +30,17 @@ public abstract class BorderPaneController<I extends IInteraction> extends
      * {@inheritDoc}
      */
     @Override
-    public final void addListener(final IListener<IUserCommand> listener) {
+    public final boolean addListener(final IListener<IUserCommand> listener) {
 
-        viewControllerNotifier.addListener(listener);
+        return viewControllerNotifier.addListener(listener);
     }
 
 	/**
      * {@inheritDoc}
      */
     @Override
-    public final void removeListener(final IListener<IUserCommand> listener) {
-        viewControllerNotifier.removeListener(listener);
+    public final boolean removeListener(final IListener<IUserCommand> listener) {
+        return viewControllerNotifier.removeListener(listener);
     }
 
 	/**
