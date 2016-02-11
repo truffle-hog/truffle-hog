@@ -7,6 +7,11 @@ import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.util.IListener;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
 
 /**
  * <p>
@@ -14,8 +19,13 @@ import edu.kit.trufflehog.util.IListener;
  *     Any incoming commands will always be executed in alternating order and first in first out (round robbin way).
  *     If no command is available the service will block and wait until a new command is available.
  * </p>
+ *
+ * @author Mark Giraud
+ * @version 1.0
  */
 public class CommandExecutor implements Runnable {
+
+    private static final Logger logger = LogManager.getLogger(CommandExecutor.class);
 
     private final CommandQueueManager commandQueueManager = new CommandQueueManager();
     private final ICommandQueue truffleCommandQueue = new CommandQueue(commandQueueManager);
@@ -28,7 +38,18 @@ public class CommandExecutor implements Runnable {
      */
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not implemented yet!");
+
+        while (!Thread.interrupted()) {
+            try {
+                commandQueueManager.getNextQueue().pop().execute();
+            } catch (InterruptedException e) {
+                logger.debug("Executor thread interrupted: " + Arrays.toString(e.getStackTrace()));
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        logger.debug("Executor thread exited");
+
     }
 
     /**
@@ -42,6 +63,9 @@ public class CommandExecutor implements Runnable {
     public IListener<IUserCommand> asUserCommandListener() {
         return message -> {
             try {
+                if (message == null) {
+                    throw new NullPointerException("Message to receive must not be null!");
+                }
                 userCommandQueue.push(message);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -57,9 +81,12 @@ public class CommandExecutor implements Runnable {
      *
      * @return A truffle command listener.
      */
-    public IListener<IUserCommand> asTruffleCommandListener() {
+    public IListener<ITruffleCommand> asTruffleCommandListener() {
         return message -> {
             try {
+                if (message == null) {
+                    throw new NullPointerException("Message to receive must not be null!");
+                }
                 truffleCommandQueue.push(message);
             } catch (InterruptedException e) {
                 e.printStackTrace();

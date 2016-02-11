@@ -25,9 +25,11 @@ public interface INotifier<M> {
      *    {@link #notifyListeners(M)} method call.
      * </p>
      *
-     * @param IListener The IListeners to register with this INotifier.
+     * @param listener The IListeners to register with this INotifier.
+     * @return True, if the listener list changed due to this call.
+     * @throws NullPointerException If the supplied listener is null.
      */
-    void addListener(IListener<M> IListener);
+    boolean addListener(IListener<M> listener);
 
     /**
      * <p>
@@ -35,9 +37,11 @@ public interface INotifier<M> {
      *    anymore on the {@link #notifyListeners(M)} method call.
      * </p>
      *
-     * @param IListener The IListeners to register with this INotifier.
+     * @param listener The IListeners to register with this INotifier.
+     * @return True, if a listener was removed due to this call.
+     * @throws NullPointerException If the supplied listener is null.
      */
-    void removeListener(IListener<M> IListener);
+    boolean removeListener(IListener<M> listener);
 
     /**
      * <p>
@@ -46,6 +50,7 @@ public interface INotifier<M> {
      * </p>
      *
      * @param message The message to send along with the notification to each IListener.
+     * @throws NullPointerException If the supplied message is null.
      */
     void notifyListeners(M message);
 }
