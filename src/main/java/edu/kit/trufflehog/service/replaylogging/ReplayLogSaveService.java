@@ -73,7 +73,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
      * </p>
      */
     public void startRecord() {
-        //
+        // Lock here because instant could be used in the thread calling the receive method
         lock.lock();
         startInstant = Instant.now();
         currentReplayLogFolder = new File(fileSystem.getReplayLogFolder() + File.separator +
@@ -92,7 +92,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
      * </p>
      */
     public void stopRecord() {
-        //
+        // Lock here because instant could be used in the thread calling the receive method
         lock.lock();
         startInstant = null;
         lock.unlock();
