@@ -19,7 +19,7 @@ import java.time.Instant;
  *     replay log are applied and so on.
  * </p>
  */
-public class ReplayLog implements Serializable {
+public class ReplayLog implements Serializable, Comparable<ReplayLog> {
     private AbstractNetworkGraph snapshotGraph;
     private LinkedMap<ICommand, Instant> commands;
     private Instant startInstant;
@@ -85,5 +85,13 @@ public class ReplayLog implements Serializable {
      */
     public Instant getEndInstant() {
         return endInstant;
+    }
+
+    @Override
+    public int compareTo(ReplayLog o) {
+        long thisMiddleTime = (startInstant.getEpochSecond() + endInstant.getEpochSecond()) / 2;
+        long otherMiddleTime = (o.getStartInstant().getEpochSecond() + o.getEndInstant().getEpochSecond()) / 2;
+
+        return (int)(thisMiddleTime - otherMiddleTime);
     }
 }

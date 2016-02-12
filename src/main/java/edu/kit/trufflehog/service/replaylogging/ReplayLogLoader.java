@@ -1,7 +1,6 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.model.FileSystem;
-import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,9 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.time.Instant;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.MissingResourceException;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +23,9 @@ public class ReplayLogLoader {
     private static final Logger logger = LogManager.getLogger(ReplayLogLoader.class);
 
     private FileSystem fileSystem;
-    private LinkedList<ReplayLog> replayLogs;
+    private int MAX_BUFFER_SIZE;                  //
+    private int REPLAY_LOG_BATCH_LOAD_SIZE;       //
+    PriorityQueue<ReplayLog> replayLogs;
 
     /**
      * <p>
@@ -38,7 +37,10 @@ public class ReplayLogLoader {
      */
     public ReplayLogLoader(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
-        replayLogs = new LinkedList<>();
+        replayLogs = new PriorityQueue<>();
+
+        MAX_BUFFER_SIZE = 200;
+        REPLAY_LOG_BATCH_LOAD_SIZE = 20;
     }
 
     /**
@@ -57,30 +59,45 @@ public class ReplayLogLoader {
     public void loadData(Instant instant) {
         // Get all files in folder
         File replayLogFolder = fileSystem.getReplayLogFolder();
-        File[] replayLogs = replayLogFolder.listFiles();
+        File[] replayLogFiles = replayLogFolder.listFiles();
 
         // Make sure there are files
-        if (replayLogs == null || replayLogs.length <= 0) {
+        if (replayLogFiles == null || replayLogFiles.length <= 0) {
             return;
         }
 
-        //
-        LinkedMap<File, Long> validReplayLogs = getReplayLogMap(replayLogs);
+        // Get all replay log files found sorted in ascending order based on their middle playback time (end playback
+        // time - start playback time)
+        TreeMap<Long, File> validReplayLogFiles = getReplayLogMap(replayLogFiles);
 
-        //
-        File closestReplayLogFile = getClosestReplayLog(instant, validReplayLogs);
+        // Get a list of all replay log files that should be deserialized. This is a number
+        List<File> closestReplayLogs = getClosestReplayLog(instant, validReplayLogFiles);
 
-        if (closestReplayLogFile != null) {
-            ReplayLog replayLog = null;
-            try {
-                FileInputStream inputFileStream = new FileInputStream(closestReplayLogFile.getCanonicalPath());
-                ObjectInputStream objectInputStream = new ObjectInputStream(inputFileStream);
-                replayLog = (ReplayLog) objectInputStream.readObject();
-                objectInputStream.close();
-                inputFileStream.close();
-            } catch(IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        // Deserialize all replay logs in the list returned above
+        if (!closestReplayLogs.isEmpty()) {
+            closestReplayLogs.forEach(file -> {
+                ReplayLog replayLog = null;
+                try {
+                    // Deserialize the replay log
+                    FileInputStream inputFileStream = new FileInputStream(file.getCanonicalPath());
+                    ObjectInputStream objectInputStream = new ObjectInputStream(inputFileStream);
+                    replayLog = (ReplayLog) objectInputStream.readObject();
+                    objectInputStream.close();
+                    inputFileStream.close();
+
+                    // Add it to the priority queue
+                    replayLogs.add(replayLog);
+
+                    // Check if the priority queue is full, and if so remove the "oldest" replay log (the head of the
+                    // queue since the queue is sorted in ascending order). The queue is considered full it contains
+                    // more elements than is defined in MAX_BUFFER_SIZE
+                    if (replayLogs.size() > MAX_BUFFER_SIZE) {
+                        replayLogs.poll();
+                    }
+                } catch(IOException | ClassNotFoundException e) {
+                    logger.error("Unable to deserialize a replay log", e);
+                }
+            });
         }
     }
 
@@ -90,28 +107,26 @@ public class ReplayLogLoader {
      * @param validReplayLogs
      * @return
      */
-    private List<File> getClosestReplayLog(Instant instant, LinkedMap<File, Long> validReplayLogs) {
+    private List<File> getClosestReplayLog(Instant instant, TreeMap<Long, File> validReplayLogs) {
         List<File> fileList = new LinkedList<>();
 
-        if (validReplayLogs.size() <= 20) {
-            fileList.addAll(validReplayLogs.keySet());
+        //
+        if (validReplayLogs.size() <= REPLAY_LOG_BATCH_LOAD_SIZE) {
+            fileList.addAll(validReplayLogs.values());
             return fileList;
         }
 
-        File closestReplayLogFile = null;
+        //
         long closestInstant = -1;
-        int closestReplayLogFileIndex = 0;
+        long closestReplayLogFileIndex = 0;
         int j = 0;
-        for (File replayLog : validReplayLogs.keySet()) {
+        for (Long time : validReplayLogs.keySet()) {
             if (closestInstant == -1) {
-                closestReplayLogFile = replayLog;
-                closestInstant = validReplayLogs.get(replayLog);
+                closestInstant = time;
                 closestReplayLogFileIndex = j;
             } else {
-                long currentInstant = validReplayLogs.get(replayLog);
-                if (Math.abs(currentInstant - instant.getEpochSecond()) < closestInstant) {
-                    closestReplayLogFile = replayLog;
-                    closestInstant = validReplayLogs.get(replayLog);
+                if (Math.abs(time - instant.getEpochSecond()) < closestInstant) {
+                    closestInstant = time;
                     closestReplayLogFileIndex = j;
                 }
             }
@@ -119,8 +134,9 @@ public class ReplayLogLoader {
             j++;
         }
 
+        //
         j = 0;
-        for (File replayLog : validReplayLogs.keySet()) {
+        for (Long time : validReplayLogs.keySet()) {
             try {
                 if (j >= 20) {
                     return fileList;
@@ -141,8 +157,8 @@ public class ReplayLogLoader {
      * @param replayLogs
      * @return
      */
-    private LinkedMap<File, Long> getReplayLogMap(File[] replayLogs) {
-        LinkedMap<File, Long> validReplayLogs = new LinkedMap<>();
+    private TreeMap<Long, File> getReplayLogMap(File[] replayLogs) {
+        TreeMap<Long, File> validReplayLogs = new TreeMap<>();
         for (File replayLog : replayLogs) {
 
             // Check if the file matches the replay log file name structure
@@ -155,7 +171,7 @@ public class ReplayLogLoader {
                 long endTime = Long.parseLong(m.group(2));
                 long middleTime = (startTime + endTime) / 2;
 
-                validReplayLogs.put(replayLog, middleTime);
+                validReplayLogs.put(middleTime, replayLog);
             }
         }
         return validReplayLogs;
