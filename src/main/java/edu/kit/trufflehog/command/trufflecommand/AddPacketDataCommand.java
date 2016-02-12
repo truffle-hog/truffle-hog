@@ -2,6 +2,7 @@ package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.Filter;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
+import edu.kit.trufflehog.model.graph.NetworkNode;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
 import java.util.List;
@@ -33,6 +34,30 @@ public class AddPacketDataCommand implements ITruffleCommand{
     }
 
     public void execute() {
+        String sourceMacAdress = truffle.getAttribute(new String().getClass(), "sourceMacAdress");
+        String destinationMacAdress = truffle.getAttribute(new String().getClass(), "destinationMacAdress");
+        Boolean allowed = true;
 
+        NetworkNode givenSourceNode = networkGraph.getNetworkNodeByMACAddress(sourceMacAdress);
+        NetworkNode givenDestinationNode = networkGraph.getNetworkNodeByMACAddress(destinationMacAdress);
+
+        if (givenSourceNode != null && givenDestinationNode != null) {
+            networkGraph.addNetworkEdge(givenSourceNode, givenDestinationNode);
+        } else {
+            for (Filter filter : filterList) {
+                if (filter.contains(sourceMacAdress) | filter.contains(destinationMacAdress)) {
+                    allowed = false;
+                }
+            }
+
+            NetworkNode sourceNode = new NetworkNode();
+            NetworkNode destinationNode = new NetworkNode();
+            sourceNode.setMacAdress(sourceMacAdress);
+            destinationNode.setMacAdress(destinationMacAdress);
+
+            networkGraph.addNetworkNode(sourceNode);
+            networkGraph.addNetworkNode(destinationNode);
+            networkGraph.addNetworkEdge(sourceNode, destinationNode);
+        }
     }
 }
