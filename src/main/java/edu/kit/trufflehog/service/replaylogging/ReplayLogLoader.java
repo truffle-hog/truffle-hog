@@ -23,9 +23,9 @@ public class ReplayLogLoader {
     private static final Logger logger = LogManager.getLogger(ReplayLogLoader.class);
 
     private FileSystem fileSystem;
-    private int MAX_BUFFER_SIZE;                  //
-    private int REPLAY_LOG_BATCH_LOAD_SIZE;       //
-    PriorityQueue<ReplayLog> replayLogs;
+    private PriorityQueue<ReplayLog> replayLogs;
+    private int MAX_BUFFER_SIZE;      // The maximum number of data logs that can be loaded into memory
+    private int MAX_BATCH_SIZE;       // The maximum number of data logs to deserialize at once
 
     /**
      * <p>
@@ -37,10 +37,10 @@ public class ReplayLogLoader {
      */
     public ReplayLogLoader(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
-        replayLogs = new PriorityQueue<>();
+        this.replayLogs = new PriorityQueue<>();
 
         MAX_BUFFER_SIZE = 200;
-        REPLAY_LOG_BATCH_LOAD_SIZE = 20;
+        MAX_BATCH_SIZE = 20;
     }
 
     /**
@@ -57,12 +57,28 @@ public class ReplayLogLoader {
      *                the time instant will be loaded.
      */
     public void loadData(Instant instant) {
+        logger.debug("Loading new batch of replay logs.");
+
         // Get all files in folder
         File replayLogFolder = fileSystem.getReplayLogFolder();
-        File[] replayLogFiles = replayLogFolder.listFiles();
+        File[] files = replayLogFolder.listFiles();
+        if (files == null || files.length <= 0) {
+            logger.debug("No replay logs found at all.");
+            return;
+        }
 
-        // Make sure there are files
-        if (replayLogFiles == null || replayLogFiles.length <= 0) {
+        // Get the folder whose time interval includes the given instant (So get the folder that contains the relevant
+        // replay logs
+        File selectedFolder = getReplayLogFolder(files, instant);
+        if (selectedFolder == null) {
+            logger.debug("No replay logs found for given instant.");
+            return;
+        }
+
+        // Get all replayLogs in folder
+        File[] replayLogFiles = selectedFolder.listFiles();
+        if (replayLogFiles == null || replayLogFiles.length == 0) {
+            logger.debug("No replay logs found in folder for given instant.");
             return;
         }
 
@@ -98,25 +114,39 @@ public class ReplayLogLoader {
                     logger.error("Unable to deserialize a replay log", e);
                 }
             });
+
+            logger.debug("New batch of replay logs loaded.");
+        } else {
+            logger.debug("No replay logs to load found!");
         }
     }
 
     /**
+     * <p>
+     *     Get the replay log that matches most closely the given time instant and returns a whole batch of replay
+     *     logs that lie around this chosen replay log. This way replay logs are buffered for future use and don't have
+     *     to be constantly loaded.
+     * </p>
+     * <p>
+     *     This method finds the {@link File} object of the replay log that is closest to in time, and if possible
+     *     contains the graph the way it was at the given instant.
+     * </p>
      *
-     * @param instant
-     * @param validReplayLogs
-     * @return
+     * @param instant The instant used to choose the right replay log file
+     * @param validReplayLogs All replay log files that were found in the folder which covers the time interval of
+     *                        interest.
+     * @return The batch of replay logs that should be deserialized.
      */
     private List<File> getClosestReplayLog(Instant instant, TreeMap<Long, File> validReplayLogs) {
         List<File> fileList = new LinkedList<>();
 
-        //
-        if (validReplayLogs.size() <= REPLAY_LOG_BATCH_LOAD_SIZE) {
+        // Check if we can just directly return the received list because it is smaller than the batch size
+        if (validReplayLogs.size() <= MAX_BATCH_SIZE) {
             fileList.addAll(validReplayLogs.values());
             return fileList;
         }
 
-        //
+        // Find the replay log around which to base the batch
         long closestInstant = -1;
         long closestReplayLogFileIndex = 0;
         int j = 0;
@@ -134,18 +164,17 @@ public class ReplayLogLoader {
             j++;
         }
 
-        //
+        // Collect +- MAX_BATCH_SIZE replay logs which form the batch of replay logs that will be deserialized
         j = 0;
-        for (Long time : validReplayLogs.keySet()) {
-            try {
-                if (j >= 20) {
+        for (File file : validReplayLogs.values()) {
+            long index = closestReplayLogFileIndex + j - 9;
+            if (index >= 0 && index < validReplayLogs.size()) {
+                if (j >= MAX_BATCH_SIZE) {
                     return fileList;
                 }
 
-                fileList.add(validReplayLogs.get(closestReplayLogFileIndex + j - 9));
+                fileList.add(file);
                 j++;
-            } catch (IndexOutOfBoundsException e) {
-                // Do nothing because eventually we will
             }
         }
 
@@ -153,9 +182,13 @@ public class ReplayLogLoader {
     }
 
     /**
+     * <p>
+     *     Gets all replay log files in the folder mapped to the median of their time interval that they represent.
+     *     That way it is easy later on to find the replay log of interest. These replay logs are sorted based
+     * </p>
      *
-     * @param replayLogs
-     * @return
+     * @param replayLogs All files in the replay log folder that was chosen in {@link #getReplayLogFolder(File[], Instant)}
+     * @return All files that are actual replay logs mapped to their median time interval value in a sorted map
      */
     private TreeMap<Long, File> getReplayLogMap(File[] replayLogs) {
         TreeMap<Long, File> validReplayLogs = new TreeMap<>();
@@ -174,7 +207,39 @@ public class ReplayLogLoader {
                 validReplayLogs.put(middleTime, replayLog);
             }
         }
+
         return validReplayLogs;
+    }
+
+    /**
+     * <p>
+     *     Gets the folder which contains the replay logs that contain the graph at the given interval.
+     * </p>
+     *
+     * @param files All replay log folders found
+     * @param instant The time instant for which to find a replay log
+     * @return The folder
+     */
+    private File getReplayLogFolder(File[] files, Instant instant) {
+        for (File file : files) {
+            if (file.isDirectory()) {
+
+                // Check if the folder matches the replay log folder name structure
+                Pattern p = Pattern.compile("([0-9]+)-([0-9]+)");
+                Matcher m = p.matcher(file.getName());
+
+                // Find folder that contains replay logs for the given instant
+                long startTime = Long.parseLong(m.group(1));
+                long endTime = Long.parseLong(m.group(2));
+                long instantTime = instant.getEpochSecond();
+
+                if (instantTime >= startTime && instantTime <= endTime) {
+                    return file;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
