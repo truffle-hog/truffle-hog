@@ -4,12 +4,15 @@ import edu.kit.trufflehog.command.ICommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import edu.kit.trufflehog.model.graph.GraphProxy;
+import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import edu.kit.trufflehog.util.IListener;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.time.Instant;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,9 +34,14 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
     private CommandLogger commandLogger;
     private SnapshotLogger snapshotLogger;
     private ReplayLogger replayLogger;
+    private Instant startInstant;
+    private FileSystem fileSystem;
+    private File currentReplayLogFolder;
 
-    private int createReplayLogInterval = 10000; //TODO: hook up with settings stuff
     private Lock lock;
+    private ScheduledFuture<?> scheduledFuture;
+    private LoggedScheduledExecutor executorService;
+    private int createReplayLogInterval;
 
     /**
      * <p>
@@ -44,18 +52,53 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
      * @param fileSystem The fileSystem object that gives access to the locations where files are saved on the hard drive.
      *                   This is necessary because of the ReplayLogger that needs to save ReplayLogs.
      */
-    public ReplayLogSaveService(GraphProxy graphProxy, FileSystem fileSystem) {
-        // Create all the logging objects
-        commandLogger = new CommandLogger();
-        snapshotLogger = new SnapshotLogger(graphProxy);
-        replayLogger = new ReplayLogger(fileSystem);
+    public ReplayLogSaveService(GraphProxy graphProxy, FileSystem fileSystem, LoggedScheduledExecutor executorService) {
+        this.commandLogger = new CommandLogger();
+        this.snapshotLogger = new SnapshotLogger(graphProxy);
+        this.replayLogger = new ReplayLogger();
+        this.fileSystem = fileSystem;
+        this.currentReplayLogFolder = null;
 
-        // Instantiate the scheduled executor service
-        LoggedScheduledExecutor executorService = new LoggedScheduledExecutor(1);
-        lock = new ReentrantLock();
+        this.lock = new ReentrantLock();
+        this.executorService = executorService;
+        createReplayLogInterval = 10000; //TODO: hook up with settings stuff
+    }
 
-        // TODO: Think about whether this is good
-        executorService.scheduleAtFixedRate(this, 0, createReplayLogInterval, SECONDS);
+    /**
+     * <p>
+     *     Starts the replay log saving functionality of TruffleHog.
+     * </p>
+     * <p>
+     *     This creates a new folder in the replaylog folder into which all recorded {@link ReplayLog}s will be saved.
+     * </p>
+     */
+    public void startRecord() {
+        //
+        lock.lock();
+        startInstant = Instant.now();
+        currentReplayLogFolder = new File(fileSystem.getReplayLogFolder() + File.separator +
+                startInstant.getEpochSecond());
+        lock.unlock();
+
+        currentReplayLogFolder.mkdir();
+
+        scheduledFuture = executorService.scheduleAtFixedRate(this, 0, createReplayLogInterval, SECONDS);
+        logger.debug("Recording replay logs..");
+    }
+
+    /**
+     * <p>
+     *     Stops the replay log saving functionality of TruffleHog.
+     * </p>
+     */
+    public void stopRecord() {
+        //
+        lock.lock();
+        startInstant = null;
+        lock.unlock();
+
+        scheduledFuture.cancel(true);
+        logger.debug("Stopped recording replay logs..");
     }
 
     /**
@@ -73,7 +116,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
         // Copy all commands that were received until now into the temporary list with a lock, so that no commands are
         // added to the list while the list is being transferred
         lock.lock();
-        commandLogger.transferList();
+        commandLogger.swapMaps();
         lock.unlock();
 
         // Create a new replay log
@@ -82,7 +125,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
         ReplayLog replayLog = replayLogger.createReplayLog(graph, compressedCommandList);
 
         // Save the replay log to the disk
-        replayLogger.saveReplayLog(replayLog);
+        replayLogger.saveReplayLog(replayLog, currentReplayLogFolder);
     }
 
     /**
@@ -97,7 +140,11 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
     public void receive(ICommand command) {
         // Lock so that the list cannot be transferred while a command is being added to it. See the run method for more
         lock.lock();
-        commandLogger.addCommand(command);
+        // Drop the command if we are currently not recording
+        if (startInstant == null) {
+            return;
+        }
+        commandLogger.addCommand(command, startInstant);
         lock.unlock();
     }
 }

@@ -18,6 +18,9 @@ import java.util.regex.Pattern;
  *     The ReplayLogLoader loads {@link ReplayLog}s from the hard drive into memory, so that when the view needs them to
  *     display the old graph, it is at the view's disposal.
  * </p>
+ *
+ * @author Julian Brendl
+ * @version 1.0
  */
 public class ReplayLogLoader {
     private static final Logger logger = LogManager.getLogger(ReplayLogLoader.class);
@@ -225,15 +228,14 @@ public class ReplayLogLoader {
             if (file.isDirectory()) {
 
                 // Check if the folder matches the replay log folder name structure
-                Pattern p = Pattern.compile("([0-9]+)-([0-9]+)");
+                Pattern p = Pattern.compile("([0-9]+)");
                 Matcher m = p.matcher(file.getName());
 
                 // Find folder that contains replay logs for the given instant
                 long startTime = Long.parseLong(m.group(1));
-                long endTime = Long.parseLong(m.group(2));
                 long instantTime = instant.getEpochSecond();
 
-                if (instantTime >= startTime && instantTime <= endTime) {
+                if (instantTime >= startTime) {
                     return file;
                 }
             }

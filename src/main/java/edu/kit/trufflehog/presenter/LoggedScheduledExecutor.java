@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.service.replaylogging;
+package edu.kit.trufflehog.presenter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @author Julian Brendl
  * @version 1.0
  */
-class LoggedScheduledExecutor extends ScheduledThreadPoolExecutor {
+public class LoggedScheduledExecutor extends ScheduledThreadPoolExecutor {
     private static final Logger logger = LogManager.getLogger(LoggedScheduledExecutor.class);
 
     /**

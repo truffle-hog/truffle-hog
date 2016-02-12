@@ -18,6 +18,8 @@ import java.time.Instant;
  *     in it back on the snapshot until the end of the ReplayLog is reached, at which point the commands of the next
  *     replay log are applied and so on.
  * </p>
+ *
+ * @author Julian Brendl
  */
 public class ReplayLog implements Serializable, Comparable<ReplayLog> {
     private AbstractNetworkGraph snapshotGraph;
@@ -89,9 +91,9 @@ public class ReplayLog implements Serializable, Comparable<ReplayLog> {
 
     @Override
     public int compareTo(ReplayLog o) {
-        long thisMiddleTime = (startInstant.getEpochSecond() + endInstant.getEpochSecond()) / 2;
-        long otherMiddleTime = (o.getStartInstant().getEpochSecond() + o.getEndInstant().getEpochSecond()) / 2;
+        long thisMedianTime = (startInstant.getEpochSecond() + endInstant.getEpochSecond()) / 2;
+        long otherMedianTime = (o.getStartInstant().getEpochSecond() + o.getEndInstant().getEpochSecond()) / 2;
 
-        return (int)(thisMiddleTime - otherMiddleTime);
+        return (int)(thisMedianTime - otherMedianTime);
     }
 }

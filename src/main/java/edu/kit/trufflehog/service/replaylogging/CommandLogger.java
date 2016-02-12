@@ -34,27 +34,30 @@ public class CommandLogger {
     /**
      * <p>
      *     Adds a command to the internal command list. The list will be taken by {@link #createCommandLog()}
-     *     and then cleared.
+     *     and then swapped.
      * </p>
      *
      * @param command The command to add to the list that is to be processed.
+     * @param startInstant The instant at which the recording session was started
      */
-    public void addCommand(ICommand command) {
-        waitingCommandMap.put(command, Instant.now());
+    public void addCommand(ICommand command, Instant startInstant) {
+        // TODO: subtract truffle arrival from startInstant
+        waitingCommandMap.put(command, startInstant);
     }
 
     /**
      * <p>
-     *     Transfers all commands from the waitingCommandList into the commpressCommandList where they can be compressed,
-     *     and then empties the waitingCommandList.
+     *     Swaps the waitingCommandMap list with the compressCommandMap.
      * </p>
      * <p>
-     *     This is done for concurrency reasons. That commands can be added to the waitingCommandList while the
-     *     commpressCommandList is being compressed.
+     *     This is done for concurrency reasons. That way commands can be added to the waitingCommandList while the
+     *     compressCommandList is being compressed.
      * </p>
      */
-    public void transferList() {
-        commpressCommandMap = new LinkedMap<>(waitingCommandMap);
+    public void swapMaps() {
+        LinkedMap<ICommand, Instant> tempMap = commpressCommandMap;
+        commpressCommandMap = waitingCommandMap;
+        waitingCommandMap = tempMap;
         waitingCommandMap.clear();
     }
 

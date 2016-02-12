@@ -1,7 +1,6 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.ICommand;
-import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.logging.log4j.LogManager;
@@ -33,17 +32,12 @@ import java.time.Instant;
 public class ReplayLogger {
     private static final Logger logger = LogManager.getLogger(ReplayLogger.class);
 
-    private FileSystem fileSystem;
-
     /**
      * <p>
      *     Creates a new ReplayLogger object.
      * </p>
-     *
-     * @param fileSystem a {@link FileSystem} object so that the ReplayLogger knows where to save the replay logs to.
      */
-    public ReplayLogger(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
+    public ReplayLogger() {
     }
 
     /**
@@ -67,18 +61,19 @@ public class ReplayLogger {
      * </p>
      *
      * @param replayLog The replay log to save on the hard drive.
+     * @param currentReplayLogFolder The folder where to save the replay logs to
      */
-    public void saveReplayLog(ReplayLog replayLog) {
+    public void saveReplayLog(ReplayLog replayLog, File currentReplayLogFolder) {
         try {
             String fileName = replayLog.getStartInstant().getEpochSecond() + "-"
                     + replayLog.getEndInstant().getEpochSecond() + ".replaylog";
-            String filePath = fileSystem.getReplayLogFolder() + File.separator + fileName;
+            String filePath = currentReplayLogFolder.getCanonicalPath() + File.separator + fileName;
             FileOutputStream fileOut = new FileOutputStream(filePath);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(replayLog);
             out.close();
             fileOut.close();
-            System.out.printf("Serialized replay log and saved as: " + filePath);
+            logger.debug("Serialized replay log and saved at: " + filePath);
         } catch(IOException e) {
             logger.error("Unable to serialize replay log: " + replayLog, e);
         }
