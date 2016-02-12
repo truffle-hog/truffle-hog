@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  */
 public class IPacketDataTestClassDummy implements IPacketData {
 
-    private Map<Class<?>, HashMap<String, Object>> attributes;
+    private Map<Class<?>, HashMap<String, Object>> attributes = new HashMap<Class<?>, HashMap<String, Object>>();
 
     public IPacketDataTestClassDummy() {
         attributes.put(Integer.class, new HashMap<>());
