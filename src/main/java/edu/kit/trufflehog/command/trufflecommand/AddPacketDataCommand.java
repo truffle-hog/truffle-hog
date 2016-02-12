@@ -34,30 +34,32 @@ public class AddPacketDataCommand implements ITruffleCommand{
     }
 
     public void execute() {
-        String sourceMacAdress = truffle.getAttribute(new String().getClass(), "sourceMacAdress");
-        String destinationMacAdress = truffle.getAttribute(new String().getClass(), "destinationMacAdress");
-        Boolean allowed = true;
+        String sourceMacAdress = truffle.getAttribute(String.class, "sourceMacAdress");
+        String destinationMacAdress = truffle.getAttribute(String.class, "destinationMacAdress");
+        Boolean allowedSource = true;
+        Boolean allowedDestination = true;
 
-        NetworkNode givenSourceNode = networkGraph.getNetworkNodeByMACAddress(sourceMacAdress);
-        NetworkNode givenDestinationNode = networkGraph.getNetworkNodeByMACAddress(destinationMacAdress);
+        NetworkNode sourceNode = networkGraph.getNetworkNodeByMACAddress(sourceMacAdress);
+        NetworkNode destinationNode = networkGraph.getNetworkNodeByMACAddress(destinationMacAdress);
 
-        if (givenSourceNode != null && givenDestinationNode != null) {
-            networkGraph.addNetworkEdge(givenSourceNode, givenDestinationNode);
-        } else {
-            for (Filter filter : filterList) {
-                if (filter.contains(sourceMacAdress) | filter.contains(destinationMacAdress)) {
-                    allowed = false;
-                }
-            }
-
-            NetworkNode sourceNode = new NetworkNode();
-            NetworkNode destinationNode = new NetworkNode();
+        if (sourceNode == null) {
+            sourceNode = new NetworkNode();
             sourceNode.setMacAdress(sourceMacAdress);
-            destinationNode.setMacAdress(destinationMacAdress);
-
             networkGraph.addNetworkNode(sourceNode);
+        }
+        if (destinationNode == null) {
+            destinationNode = new NetworkNode();
+            destinationNode.setMacAdress(destinationMacAdress);
             networkGraph.addNetworkNode(destinationNode);
-            networkGraph.addNetworkEdge(sourceNode, destinationNode);
+        }
+
+        for (Filter filter : filterList) {
+            if (filter.contains(sourceMacAdress)) {
+                allowedSource = false;
+            }
+            if (filter.contains(destinationMacAdress)) {
+                allowedDestination = false;
+            }
         }
     }
 }
