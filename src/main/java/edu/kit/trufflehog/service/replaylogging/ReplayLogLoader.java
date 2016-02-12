@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -27,8 +28,27 @@ public class ReplayLogLoader {
 
     private FileSystem fileSystem;
     private PriorityQueue<ReplayLog> replayLogs;
-    private int MAX_BUFFER_SIZE;      // The maximum number of data logs that can be loaded into memory
-    private int MAX_BATCH_SIZE;       // The maximum number of data logs to deserialize at once
+
+    /**
+     * <p>
+     *     The maximum number of data logs that can be loaded into memory
+     * </p>
+     */
+    private int MAX_BUFFER_SIZE;
+
+    /**
+     * <p>
+     *     The maximum number of data logs to deserialize at once
+     * </p>
+     */
+    private int MAX_BATCH_SIZE;
+
+    /**
+     * <p>
+     *     The maximum number of seconds a replay log's covered interval can deviate from the desired instant
+     * </p>
+     */
+    private int LOAD_TIME_LIMIT;
 
     /**
      * <p>
@@ -42,8 +62,9 @@ public class ReplayLogLoader {
         this.fileSystem = fileSystem;
         this.replayLogs = new PriorityQueue<>();
 
-        MAX_BUFFER_SIZE = 200;
-        MAX_BATCH_SIZE = 20;
+        MAX_BUFFER_SIZE = 200; //TODO: hook up with settings stuff
+        MAX_BATCH_SIZE = 20;   //TODO: hook up with settings stuff
+        LOAD_TIME_LIMIT = 3;   //TODO: hook up with settings stuff
     }
 
     /**
@@ -52,8 +73,9 @@ public class ReplayLogLoader {
      *     needed.
      * </p>
      * <p>
-     *     This method should not be confused with {@link #getData(Instant)}. {@link #getData(Instant)} gets
-     *     the desired ReplayLog object from the already loaded ReplayLog objects and does not load any ReplayLog itself.
+     *     This method should not be confused with {@link #getData(Instant, boolean)}. {@link #getData(Instant, boolean)}
+     *     gets the desired ReplayLog object from the already loaded ReplayLog objects and does not load any ReplayLog
+     *     itself.
      * </p>
      *
      * @param instant The time instant that should be used to load the ReplayLog objects. The ReplayLog objects closest to
@@ -94,34 +116,46 @@ public class ReplayLogLoader {
 
         // Deserialize all replay logs in the list returned above
         if (!closestReplayLogs.isEmpty()) {
-            closestReplayLogs.forEach(file -> {
-                ReplayLog replayLog = null;
-                try {
-                    // Deserialize the replay log
-                    FileInputStream inputFileStream = new FileInputStream(file.getCanonicalPath());
-                    ObjectInputStream objectInputStream = new ObjectInputStream(inputFileStream);
-                    replayLog = (ReplayLog) objectInputStream.readObject();
-                    objectInputStream.close();
-                    inputFileStream.close();
-
-                    // Add it to the priority queue
-                    replayLogs.add(replayLog);
-
-                    // Check if the priority queue is full, and if so remove the "oldest" replay log (the head of the
-                    // queue since the queue is sorted in ascending order). The queue is considered full it contains
-                    // more elements than is defined in MAX_BUFFER_SIZE
-                    if (replayLogs.size() > MAX_BUFFER_SIZE) {
-                        replayLogs.poll();
-                    }
-                } catch(IOException | ClassNotFoundException e) {
-                    logger.error("Unable to deserialize a replay log", e);
-                }
-            });
+            deserializeReplayLogs(closestReplayLogs);
 
             logger.debug("New batch of replay logs loaded.");
         } else {
             logger.debug("No replay logs to load found!");
         }
+    }
+
+    /**
+     * <p>
+     *     Deserializes all replay logs given to it and loads them into memory by putting them into the
+     *     {@link ReplayLogLoader#replayLogs} priority queue.
+     * </p>
+     *
+     * @param closestReplayLogs The replay logs to deserialize and load into memory
+     */
+    private void deserializeReplayLogs(List<File> closestReplayLogs) {
+        closestReplayLogs.forEach(file -> {
+            ReplayLog replayLog = null;
+            try {
+                // Deserialize the replay log
+                FileInputStream inputFileStream = new FileInputStream(file.getCanonicalPath());
+                ObjectInputStream objectInputStream = new ObjectInputStream(inputFileStream);
+                replayLog = (ReplayLog) objectInputStream.readObject();
+                objectInputStream.close();
+                inputFileStream.close();
+
+                // Add it to the priority queue
+                replayLogs.add(replayLog);
+
+                // Check if the priority queue is full, and if so remove the "oldest" replay log (the head of the
+                // queue since the queue is sorted in ascending order). The queue is considered full it contains
+                // more elements than is defined in MAX_BUFFER_SIZE
+                if (replayLogs.size() > MAX_BUFFER_SIZE) {
+                    replayLogs.poll();
+                }
+            } catch(IOException | ClassNotFoundException e) {
+                logger.error("Unable to deserialize a replay log", e);
+            }
+        });
     }
 
     /**
@@ -232,7 +266,7 @@ public class ReplayLogLoader {
                 Matcher m = p.matcher(file.getName());
 
                 // Find folder that contains replay logs for the given instant
-                long startTime = Long.parseLong(m.group(1));
+                long startTime = Long.parseLong(file.getName());
                 long instantTime = instant.getEpochSecond();
 
                 if (instantTime >= startTime) {
@@ -246,20 +280,75 @@ public class ReplayLogLoader {
 
     /**
      * <p>
-     *      Gets the ReplayLog object closest to the given time instant.
+     *     Gets the ReplayLog object closest to the given time instant.
      * </p>
      * <p>
-     *      Condition: A ReplayLog reasonably close in time to the given instant must be in memory, else a
-     *      MissingResourceException is thrown.
+     *     If strict is set, a replay log containing the given time instant must be returned, else the
+     *     MissingResourceException is thrown. If strict is false, a ReplayLog reasonably close in time to the given
+     *     instant must be in memory, else a MissingResourceException is thrown.
      * </p>
      *
      * @param instant The time instant that should be used to get the ReplayLog object. The ReplayLog object closest to
      *                the time instant will be returned.
+     * @param strict If strict is set to true, than a replay log will only be returned if it strictly lies in the
+     *               covered time interval of the replay log. If it is set to false, then a replay log will even be
+     *               returned if the time instant lies in +- {@link ReplayLogLoader#LOAD_TIME_LIMIT} of its covered interval.
      * @return The ReplayLog object closest in time to the given time instant.
-     * @throws MissingResourceException Thrown when no ReplayLog reasonably close in time to the given instant is found
-     *                                  in memory.
+     * @throws MissingResourceException Thrown when no appropriate replay log is found in memory.
      */
-    public ReplayLog getData(Instant instant) throws MissingResourceException {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public ReplayLog getData(Instant instant, boolean strict) throws MissingResourceException {
+        if (strict) {
+            // Get all replay logs who contain the instant in their covered time interval
+            List<ReplayLog> foundReplayLogs = replayLogs.stream()
+                    .filter(replayLog -> replayLog.getStartInstant().getEpochSecond() <= instant.getEpochSecond()
+                            && replayLog.getEndInstant().getEpochSecond() >= instant.getEpochSecond())
+                    .collect(Collectors.toList());
+
+            if (foundReplayLogs.size() > 1) {
+                // More than 1 replay log has been found
+                logger.debug("Found more than 1 replay log that matches time interval, returning 1st");
+                return foundReplayLogs.get(0);
+            } else if (foundReplayLogs.isEmpty()) {
+                // No replay log has been found
+                throw new MissingResourceException("ReplayLog that matches time instant not found", "ReplayLog",
+                        instant.getEpochSecond() + "");
+            } else {
+                // Exactly 1 replay log has been found
+                return foundReplayLogs.get(0);
+            }
+        } else {
+            ReplayLog foundReplayLog = null;
+            int timeOffset = LOAD_TIME_LIMIT + 1;
+            for (ReplayLog replayLog : replayLogs) {
+                long endOffset = replayLog.getEndInstant().getEpochSecond() - instant.getEpochSecond();
+                long startOffset = instant.getEpochSecond() - replayLog.getStartInstant().getEpochSecond();
+
+                if (endOffset > 0 && startOffset > 0) {
+                    // Replay log contained time instant
+                    return replayLog;
+                } else {
+                    endOffset = Math.abs(endOffset);
+                    startOffset = Math.abs(startOffset);
+
+                    // Find replay log whose covered interval lies closest to the desired time instant
+                    if (endOffset <= LOAD_TIME_LIMIT || startOffset <= LOAD_TIME_LIMIT) {
+                        if (endOffset < startOffset && endOffset < timeOffset) {
+                            foundReplayLog = replayLog;
+                            timeOffset = (int) endOffset;
+                        } else if (startOffset < timeOffset) {
+                            foundReplayLog = replayLog;
+                            timeOffset = (int) startOffset;
+                        }
+                    }
+                }
+            }
+
+            if (foundReplayLog == null) {
+                throw new MissingResourceException("ReplayLog that matches time instant not found", "ReplayLog",
+                        instant.getEpochSecond() + "");
+            }
+
+            return foundReplayLog;
+        }
     }
 }

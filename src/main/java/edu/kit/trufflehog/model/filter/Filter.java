@@ -23,7 +23,6 @@ public class Filter implements Serializable {
      * @param ex Expression to add
      */
     public void addIPRegex(String ex) {
-
     }
 
     /**
@@ -34,7 +33,6 @@ public class Filter implements Serializable {
      * @param ex Expression to add
      */
     public void addMACRegex(String ex) {
-
     }
 
     /**
@@ -45,7 +43,6 @@ public class Filter implements Serializable {
      * @param ex Expression to add
      */
     public void addNameRegex(String ex) {
-
     }
 
     /**
