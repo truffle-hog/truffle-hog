@@ -3,6 +3,7 @@ package edu.kit.trufflehog.command.trufflecommand;
 import edu.kit.trufflehog.model.filter.Filter;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import edu.kit.trufflehog.model.graph.NetworkNode;
+import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 public class AddPacketDataCommand implements ITruffleCommand{
     private AbstractNetworkGraph networkGraph = null;
     private List<Filter> filterList = null;
-    private Truffle truffle = null;
+    private IPacketData truffle = null;
 
     /**
      * <p>
@@ -27,39 +28,41 @@ public class AddPacketDataCommand implements ITruffleCommand{
      * @param packet Truffle to get data from
      * @param filters List of filters to check
      */
-    AddPacketDataCommand(AbstractNetworkGraph graph,  Truffle packet, List<Filter> filters) {
+    AddPacketDataCommand(AbstractNetworkGraph graph, IPacketData packet, List<Filter> filters) {
         networkGraph = graph;
         filterList = filters;
         truffle = packet;
     }
 
     public void execute() {
-        String sourceMacAdress = truffle.getAttribute(String.class, "sourceMacAdress");
-        String destinationMacAdress = truffle.getAttribute(String.class, "destinationMacAdress");
+        String sourceMacAddress = truffle.getAttribute(String.class, "sourceMacAddress");
+        String destinationMacAddress = truffle.getAttribute(String.class, "destinationMacAddress");
         Boolean allowedSource = true;
         Boolean allowedDestination = true;
 
-        NetworkNode sourceNode = networkGraph.getNetworkNodeByMACAddress(sourceMacAdress);
-        NetworkNode destinationNode = networkGraph.getNetworkNodeByMACAddress(destinationMacAdress);
+        NetworkNode sourceNode = networkGraph.getNetworkNodeByMACAddress(sourceMacAddress);
+        NetworkNode destinationNode = networkGraph.getNetworkNodeByMACAddress(destinationMacAddress);
 
         if (sourceNode == null) {
             sourceNode = new NetworkNode();
-            sourceNode.setMacAdress(sourceMacAdress);
+            sourceNode.setMacAdress(sourceMacAddress);
             networkGraph.addNetworkNode(sourceNode);
         }
         if (destinationNode == null) {
             destinationNode = new NetworkNode();
-            destinationNode.setMacAdress(destinationMacAdress);
+            destinationNode.setMacAdress(destinationMacAddress);
             networkGraph.addNetworkNode(destinationNode);
         }
 
         for (Filter filter : filterList) {
-            if (filter.contains(sourceMacAdress)) {
+            if (filter.contains(sourceMacAddress)) {
                 allowedSource = false;
             }
-            if (filter.contains(destinationMacAdress)) {
+            if (filter.contains(destinationMacAddress)) {
                 allowedDestination = false;
             }
         }
+
+        networkGraph.addNetworkEdge(sourceNode, destinationNode);
     }
 }
