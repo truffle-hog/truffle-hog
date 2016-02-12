@@ -42,7 +42,9 @@ public class CommandLogger {
      */
     public void addCommand(ICommand command, Instant startInstant) {
         // TODO: subtract truffle arrival from startInstant
-        waitingCommandMap.put(command, startInstant);
+       // waitingCommandMap.put(command, startInstant);
+
+        waitingCommandMap.put(command, Instant.now());
     }
 
     /**

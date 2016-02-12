@@ -64,9 +64,13 @@ public class ReplayLogger {
      * @param currentReplayLogFolder The folder where to save the replay logs to
      */
     public void saveReplayLog(ReplayLog replayLog, File currentReplayLogFolder) {
+        if (replayLog == null) {
+            return;
+        }
+
         try {
-            String fileName = replayLog.getStartInstant().getEpochSecond() + "-"
-                    + replayLog.getEndInstant().getEpochSecond() + ".replaylog";
+            String fileName = replayLog.getStartInstant().toEpochMilli() + "-"
+                    + replayLog.getEndInstant().toEpochMilli() + ".replaylog";
             String filePath = currentReplayLogFolder.getCanonicalPath() + File.separator + fileName;
             FileOutputStream fileOut = new FileOutputStream(filePath);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);

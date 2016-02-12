@@ -1,8 +1,7 @@
 package edu.kit.trufflehog.service.replaylogging;
 
-import edu.kit.trufflehog.model.graph.GraphProxy;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import edu.kit.trufflehog.model.graph.GraphProxy;
 
 /**
  * <p>
@@ -11,6 +10,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * </p>
  */
 public class SnapshotLogger {
+    private GraphProxy graphProxy;
 
     /**
      * <p>
@@ -21,6 +21,7 @@ public class SnapshotLogger {
      * @param graphProxy The proxy object that contains the graph so that the SnapshotLogger can take a snapshot of it.
      */
     public SnapshotLogger(GraphProxy graphProxy) {
+        this.graphProxy = graphProxy;
     }
 
     /**
@@ -31,6 +32,6 @@ public class SnapshotLogger {
      * @return A snapshot of the current graph.
      */
     public AbstractNetworkGraph takeSnapshot() {
-        throw new NotImplementedException();
+        return null; // FIXME: 2/12/16
     }
 }

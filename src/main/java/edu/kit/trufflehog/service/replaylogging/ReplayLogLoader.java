@@ -192,7 +192,7 @@ public class ReplayLogLoader {
                 closestInstant = time;
                 closestReplayLogFileIndex = j;
             } else {
-                if (Math.abs(time - instant.getEpochSecond()) < closestInstant) {
+                if (Math.abs(time - instant.toEpochMilli()) < closestInstant) {
                     closestInstant = time;
                     closestReplayLogFileIndex = j;
                 }
@@ -267,7 +267,7 @@ public class ReplayLogLoader {
 
                 // Find folder that contains replay logs for the given instant
                 long startTime = Long.parseLong(file.getName());
-                long instantTime = instant.getEpochSecond();
+                long instantTime = instant.toEpochMilli();
 
                 if (instantTime >= startTime) {
                     return file;
@@ -300,8 +300,8 @@ public class ReplayLogLoader {
         if (strict) {
             // Get all replay logs who contain the instant in their covered time interval
             List<ReplayLog> foundReplayLogs = replayLogs.stream()
-                    .filter(replayLog -> replayLog.getStartInstant().getEpochSecond() <= instant.getEpochSecond()
-                            && replayLog.getEndInstant().getEpochSecond() >= instant.getEpochSecond())
+                    .filter(replayLog -> replayLog.getStartInstant().toEpochMilli() <= instant.toEpochMilli()
+                            && replayLog.getEndInstant().toEpochMilli() >= instant.toEpochMilli())
                     .collect(Collectors.toList());
 
             if (foundReplayLogs.size() > 1) {
@@ -311,7 +311,7 @@ public class ReplayLogLoader {
             } else if (foundReplayLogs.isEmpty()) {
                 // No replay log has been found
                 throw new MissingResourceException("ReplayLog that matches time instant not found", "ReplayLog",
-                        instant.getEpochSecond() + "");
+                        instant.toEpochMilli() + "");
             } else {
                 // Exactly 1 replay log has been found
                 return foundReplayLogs.get(0);
@@ -320,8 +320,8 @@ public class ReplayLogLoader {
             ReplayLog foundReplayLog = null;
             int timeOffset = LOAD_TIME_LIMIT + 1;
             for (ReplayLog replayLog : replayLogs) {
-                long endOffset = replayLog.getEndInstant().getEpochSecond() - instant.getEpochSecond();
-                long startOffset = instant.getEpochSecond() - replayLog.getStartInstant().getEpochSecond();
+                long endOffset = replayLog.getEndInstant().toEpochMilli() - instant.toEpochMilli();
+                long startOffset = instant.toEpochMilli() - replayLog.getStartInstant().toEpochMilli();
 
                 if (endOffset > 0 && startOffset > 0) {
                     // Replay log contained time instant
@@ -345,7 +345,7 @@ public class ReplayLogLoader {
 
             if (foundReplayLog == null) {
                 throw new MissingResourceException("ReplayLog that matches time instant not found", "ReplayLog",
-                        instant.getEpochSecond() + "");
+                        instant.toEpochMilli() + "");
             }
 
             return foundReplayLog;

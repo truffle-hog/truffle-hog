@@ -14,12 +14,14 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
- * This class houses all test cases for the {@link CommandExecutor}
+ * <p>
+ *     This class houses all test cases for the {@link CommandExecutor}
+ * </p>
+ *
  * @author Mark Giraud
  * @version 1.0
  */
 public class CommandExecutorTest {
-
     private CommandExecutor executor;
 
     @Before
@@ -37,7 +39,8 @@ public class CommandExecutorTest {
      *     This test checks, if the {@link CommandExecutor} executes the received commands and if it is done in
      *     the correct order.
      * </p>
-     * @throws Exception
+     *
+     * @throws Exception Passes any errors that occurred during the test on
      */
     @Test
     public void testRun() throws Exception {
@@ -121,7 +124,8 @@ public class CommandExecutorTest {
      *     by sending command mock objects to the listener and then checking if they are run once by the
      *     service. (To check if they were received properly)
      * </p>
-     * @throws Exception
+     *
+     * @throws Exception Passes any errors that occurred during the test on
      */
     @Test
     public void testAsUserCommandListener() throws Exception {
@@ -152,7 +156,8 @@ public class CommandExecutorTest {
      *     by sending command mock objects to the listener and then checking if they are run once by the
      *     service. (To check if they were received properly)
      * </p>
-     * @throws Exception
+     *
+     * @throws Exception Passes any errors that occurred during the test on
      */
     @Test
     public void testAsTruffleCommandListener() throws Exception {

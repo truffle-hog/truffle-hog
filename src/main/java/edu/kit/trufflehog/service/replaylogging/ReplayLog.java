@@ -91,8 +91,8 @@ public class ReplayLog implements Serializable, Comparable<ReplayLog> {
 
     @Override
     public int compareTo(ReplayLog o) {
-        long thisMedianTime = (startInstant.getEpochSecond() + endInstant.getEpochSecond()) / 2;
-        long otherMedianTime = (o.getStartInstant().getEpochSecond() + o.getEndInstant().getEpochSecond()) / 2;
+        long thisMedianTime = (startInstant.toEpochMilli() + endInstant.toEpochMilli()) / 2;
+        long otherMedianTime = (o.getStartInstant().toEpochMilli() + o.getEndInstant().toEpochMilli()) / 2;
 
         return (int)(thisMedianTime - otherMedianTime);
     }

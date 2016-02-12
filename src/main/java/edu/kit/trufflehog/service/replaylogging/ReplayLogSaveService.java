@@ -16,7 +16,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * <p>
@@ -41,6 +41,12 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
     private Lock lock;
     private ScheduledFuture<?> scheduledFuture;
     private LoggedScheduledExecutor executorService;
+
+    /**
+     * <p>
+     *
+     * </p>
+     */
     private int LOGGING_INTERVAL;
 
     /**
@@ -61,7 +67,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
 
         this.lock = new ReentrantLock();
         this.executorService = executorService;
-        LOGGING_INTERVAL = 10000; //TODO: hook up with settings stuff
+        LOGGING_INTERVAL = 500;    //TODO: hook up with settings stuff
     }
 
     /**
@@ -77,12 +83,11 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
         lock.lock();
         startInstant = Instant.now();
         currentReplayLogFolder = new File(fileSystem.getReplayLogFolder() + File.separator +
-                startInstant.getEpochSecond());
+                startInstant.toEpochMilli());
         lock.unlock();
 
         currentReplayLogFolder.mkdir();
-
-        scheduledFuture = executorService.scheduleAtFixedRate(this, 0, LOGGING_INTERVAL, SECONDS);
+        scheduledFuture = executorService.scheduleAtFixedRate(this, LOGGING_INTERVAL, LOGGING_INTERVAL, MILLISECONDS);
         logger.debug("Recording replay logs..");
     }
 
