@@ -41,7 +41,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
     private Lock lock;
     private ScheduledFuture<?> scheduledFuture;
     private LoggedScheduledExecutor executorService;
-    private int createReplayLogInterval;
+    private int LOGGING_INTERVAL;
 
     /**
      * <p>
@@ -61,7 +61,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
 
         this.lock = new ReentrantLock();
         this.executorService = executorService;
-        createReplayLogInterval = 10000; //TODO: hook up with settings stuff
+        LOGGING_INTERVAL = 10000; //TODO: hook up with settings stuff
     }
 
     /**
@@ -82,7 +82,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
 
         currentReplayLogFolder.mkdir();
 
-        scheduledFuture = executorService.scheduleAtFixedRate(this, 0, createReplayLogInterval, SECONDS);
+        scheduledFuture = executorService.scheduleAtFixedRate(this, 0, LOGGING_INTERVAL, SECONDS);
         logger.debug("Recording replay logs..");
     }
 
