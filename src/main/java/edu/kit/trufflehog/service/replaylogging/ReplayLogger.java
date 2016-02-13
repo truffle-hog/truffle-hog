@@ -64,7 +64,7 @@ public class ReplayLogger {
      * @param currentReplayLogFolder The folder where to save the replay logs to
      */
     public void saveReplayLog(ReplayLog replayLog, File currentReplayLogFolder) {
-        if (replayLog == null) {
+        if (replayLog == null || replayLog.getCommands().isEmpty() || Thread.currentThread().isInterrupted()) {
             return;
         }
 
@@ -78,7 +78,7 @@ public class ReplayLogger {
             out.close();
             fileOut.close();
             logger.debug("Serialized replay log and saved at: " + filePath);
-        } catch(IOException e) {
+        } catch(NullPointerException | IOException e) {
             logger.error("Unable to serialize replay log: " + replayLog, e);
         }
     }

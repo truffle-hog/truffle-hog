@@ -44,7 +44,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
 
     /**
      * <p>
-     *
+     *     The time interval between two replay logs (so how long a replay log should be at most)
      * </p>
      */
     private int LOGGING_INTERVAL;
@@ -97,12 +97,15 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
      * </p>
      */
     public void stopRecord() {
+        scheduledFuture.cancel(true);
+        executorService.purge();
+        executorService.remove(this);
+
         // Lock here because instant could be used in the thread calling the receive method
         lock.lock();
         startInstant = null;
         lock.unlock();
 
-        scheduledFuture.cancel(true);
         logger.debug("Stopped recording replay logs..");
     }
 
