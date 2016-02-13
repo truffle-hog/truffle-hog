@@ -62,7 +62,7 @@ public class AddPacketDataCommand implements ITruffleCommand{
                 allowedDestination = false;
             }
         }
-
+        //TODO call legalisation method for nodes
         networkGraph.addNetworkEdge(sourceNode, destinationNode);
     }
 }
