@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.graph;
 
+import edu.kit.trufflehog.model.truffledatalog.TruffleLogger;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
 import java.io.Serializable;
@@ -10,8 +11,18 @@ import java.io.Serializable;
  * </p>
  */
 public class NetworkNode implements Serializable, INode {
-
 	private String ipAdress;
+    private String macAdress;
+    private String deviceName;
+    private int timeAdded;
+    private int lastUpdateTime;
+    private int packageCountIn;
+    private int packageCountOut;
+    private TruffleLogger truffleLogger;
+
+    NetworkNode() {
+        truffleLogger = new TruffleLogger();
+    }
 
 	public void setIpAdress(String ipAdress) {
 		this.ipAdress = ipAdress;
@@ -69,21 +80,15 @@ public class NetworkNode implements Serializable, INode {
 		return packageCountOut;
 	}
 
-	private String macAdress;
-	private String deviceName;
-	private int timeAdded;
-	private int lastUpdateTime;
-	private int packageCountIn;
-	private int packageCountOut;
-	//private TruffleLogger truffleLogger;
+    /**<p>
+       * Provides the internal logger to access logs and statistics.
+       * </p>
+       * @return {@link TruffleLogger} of this node
+     */
 
-//    /**<p>
-//     * Provides the internal logger to access logs and statistics.
-//     * </p>
-//     * @return {@link TruffleLogger} of this node
-//     */
-//	public TruffleLogger getLogger() {
-//	}
+	public TruffleLogger getLogger() {
+        return truffleLogger;
+	}
 
     /**
      * <p>
@@ -93,10 +98,6 @@ public class NetworkNode implements Serializable, INode {
      * @param truffle {@link Truffle} to log
      */
 	public void log(Truffle truffle) {
-
+        truffleLogger.log(truffle);
 	}
-
-    /*add getter for properties!
-     */
-
 }

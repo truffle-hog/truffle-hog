@@ -11,9 +11,20 @@ import java.io.Serializable;
  */
 public class NetworkEdge implements IConnection, Serializable {
 
+    private NetworkNode fromNode;
+    private NetworkNode toNode;
+
     private LongProperty totalPacketCount = new SimpleLongProperty();
     private LongProperty active = new SimpleLongProperty();
     private IntegerProperty connectionType = new SimpleIntegerProperty();
+
+    NetworkEdge(NetworkNode from, NetworkNode to) throws NullPointerException{
+        if (from == null || to == null) {
+            throw new NullPointerException("One of the Nodes does not exist!");
+        }
+        fromNode = from;
+        toNode = to;
+    }
 
     /**
      * <p>

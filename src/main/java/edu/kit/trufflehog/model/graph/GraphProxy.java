@@ -10,6 +10,13 @@ public class GraphProxy extends AbstractNetworkGraph {
 
 	private AbstractNetworkGraph networkGraph;
 
+    GraphProxy(AbstractNetworkGraph graph) throws NullPointerException{
+        if (graph == null) {
+            throw new NullPointerException("Graph is not existing!");
+        }
+        networkGraph = graph;
+    }
+
     /**
      * <p>
      *     Sets the new reference graph.
@@ -18,37 +25,39 @@ public class GraphProxy extends AbstractNetworkGraph {
      * @param graph INetworkGraph to refer to
      */
 	public void setGraph(AbstractNetworkGraph graph) {
-
+        if (graph != null) {
+            networkGraph = graph;
+        }
 	}
 
 	@Override
 	public void addNetworkNode(NetworkNode node) {
-
+        networkGraph.addNetworkNode(node);
 	}
 
 	@Override
 	public NetworkEdge addNetworkEdge(NetworkNode from, NetworkNode to) {
-		return null;
+        return networkGraph.addNetworkEdge(from, to);
 	}
 
 	@Override
 	public NetworkNode getNetworkNodeByMACAddress(String macAddress) {
-		throw new UnsupportedOperationException("Not implemented yet!");
+        return networkGraph.getNetworkNodeByMACAddress(macAddress);
 	}
 
 	@Override
 	public NetworkNode getNetworkNodeByIPAddress(String ipAddress) {
-		throw new UnsupportedOperationException("Not implemented yet!");
+        return networkGraph.getNetworkNodeByIPAddress(ipAddress);
 	}
 
 	@Override
 	public NetworkNode getNetworkNodeByDeviceName(String deviceName) {
-		throw new UnsupportedOperationException("Not implemented yet!");
+        return networkGraph.getNetworkNodeByDeviceName(deviceName);
 	}
 
 	@Override
 	public NetworkEdge getNetworkEdge(NetworkNode a, NetworkNode b) {
-		throw new UnsupportedOperationException("Not implemented yet!");
+        return networkGraph.getNetworkEdge(a, b);
 	}
 
 }

@@ -3,6 +3,7 @@ package edu.kit.trufflehog.model.truffledatalog;
 import edu.kit.trufflehog.model.graph.NetworkNode;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -14,12 +15,14 @@ import java.util.List;
  */
 public class TruffleLogger {
 
+    private List<Truffle> truffleLog;
     /**
      * <p>
      *     Creates a new TruffleLogger object.
      * </p>
      */
     public TruffleLogger() {
+        truffleLog = new LinkedList<Truffle>();
     }
 
     /**
