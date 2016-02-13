@@ -96,4 +96,27 @@ public class ReplayLog implements Serializable, Comparable<ReplayLog> {
 
         return (int)(thisMedianTime - otherMedianTime);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ReplayLog)) return false;
+
+        ReplayLog replayLog = (ReplayLog) o;
+
+        return !(snapshotGraph != null ? !snapshotGraph.equals(replayLog.snapshotGraph) : replayLog.snapshotGraph != null)
+                && !(commands != null ? !commands.equals(replayLog.commands) : replayLog.commands != null)
+                && !(startInstant != null ? !startInstant.equals(replayLog.startInstant) : replayLog.startInstant != null)
+                && !(endInstant != null ? !endInstant.equals(replayLog.endInstant) : replayLog.endInstant != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = snapshotGraph != null ? snapshotGraph.hashCode() : 0;
+        result = 31 * result + (commands != null ? commands.hashCode() : 0);
+        result = 31 * result + (startInstant != null ? startInstant.hashCode() : 0);
+        result = 31 * result + (endInstant != null ? endInstant.hashCode() : 0);
+        return result;
+    }
 }

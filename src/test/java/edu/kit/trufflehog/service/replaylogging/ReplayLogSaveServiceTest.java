@@ -89,6 +89,22 @@ public class ReplayLogSaveServiceTest {
         assertEquals(Math.abs(replayLogs.length - numberOfFiles) < 3, true);
     }
 
+
+    @Test
+    public void testReceive() throws Exception {
+
+    }
+
+    @Test
+    public void testStartRecord() throws Exception {
+
+    }
+
+    @Test
+    public void testStopRecord() throws Exception {
+
+    }
+
     /**
      * <p>
      *     Creates a number of replay logs

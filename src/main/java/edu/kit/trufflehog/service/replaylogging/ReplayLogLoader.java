@@ -27,28 +27,11 @@ public class ReplayLogLoader {
     private static final Logger logger = LogManager.getLogger(ReplayLogLoader.class);
 
     private FileSystem fileSystem;
-    private PriorityQueue<ReplayLog> replayLogs;
+    private SortedSet<ReplayLog> replayLogs;
 
-    /**
-     * <p>
-     *     The maximum number of data logs that can be loaded into memory
-     * </p>
-     */
-    private int MAX_BUFFER_SIZE;
-
-    /**
-     * <p>
-     *     The maximum number of data logs to deserialize at once
-     * </p>
-     */
-    private int MAX_BATCH_SIZE;
-
-    /**
-     * <p>
-     *     The maximum number of seconds a replay log's covered interval can deviate from the desired instant
-     * </p>
-     */
-    private int LOAD_TIME_LIMIT;
+    private int maxBufferSize;
+    private int maxBatchSize;
+    private int loadTimeLimit;
 
     /**
      * <p>
@@ -58,13 +41,44 @@ public class ReplayLogLoader {
      * @param fileSystem The fileSystem object that gives access to the locations where files are saved on the hard drive.
      *                   This is necessary to load ReplayLogs.
      */
-    public ReplayLogLoader(FileSystem fileSystem) {
+    public ReplayLogLoader(FileSystem fileSystem, int maxBufferSize, int maxBatchSize, int loadTimeLimit) {
         this.fileSystem = fileSystem;
-        this.replayLogs = new PriorityQueue<>();
+        this.replayLogs = new TreeSet<>();
 
-        MAX_BUFFER_SIZE = 200; //TODO: hook up with settings stuff
-        MAX_BATCH_SIZE = 20;   //TODO: hook up with settings stuff
-        LOAD_TIME_LIMIT = 3;   //TODO: hook up with settings stuff
+        this.maxBufferSize = maxBufferSize;
+        this.maxBatchSize = maxBatchSize;
+        this.loadTimeLimit = loadTimeLimit;
+    }
+
+    /**
+     *
+     * @param replayLog
+     * @return
+     */
+    public synchronized ReplayLog getNextReplayLog(ReplayLog replayLog) {
+        boolean returnNext = false;
+        for (ReplayLog replayLogLocal : replayLogs) {
+            if (replayLogLocal.equals(replayLog)) {
+                returnNext = true;
+            } else if (returnNext) {
+                return replayLogLocal;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * <p>
+     *     Returns the number of milliseconds from the Java epoch of 1970-01-01T00:00:00Z to the end of the last buffered
+     *     replay log.
+     * </p>
+     *
+     * @return The number of milliseconds from the Java epoch of 1970-01-01T00:00:00Z to the end of the last buffered
+     *     replay log
+     */
+    public synchronized long bufferedUntil() {
+        return replayLogs.last().getEndInstant().toEpochMilli();
     }
 
     /**
@@ -80,8 +94,9 @@ public class ReplayLogLoader {
      *
      * @param instant The time instant that should be used to load the ReplayLog objects. The ReplayLog objects closest to
      *                the time instant will be loaded.
+     * @return True if a replay log was found and loaded, else false
      */
-    public void loadData(Instant instant) {
+    public boolean loadData(Instant instant) {
         logger.debug("Loading new batch of replay logs.");
 
         // Get all files in folder
@@ -89,7 +104,7 @@ public class ReplayLogLoader {
         File[] files = replayLogFolder.listFiles();
         if (files == null || files.length <= 0) {
             logger.debug("No replay logs found at all.");
-            return;
+            return false;
         }
 
         // Get the folder whose time interval includes the given instant (So get the folder that contains the relevant
@@ -97,21 +112,21 @@ public class ReplayLogLoader {
         File selectedFolder = getReplayLogFolder(files, instant);
         if (selectedFolder == null) {
             logger.debug("No replay logs found for given instant.");
-            return;
+            return false;
         }
 
         // Get all replayLogs in folder
         File[] replayLogFiles = selectedFolder.listFiles();
         if (replayLogFiles == null || replayLogFiles.length == 0) {
             logger.debug("No replay logs found in folder for given instant.");
-            return;
+            return false;
         }
 
         // Get all replay log files found sorted in ascending order based on their middle playback time (end playback
         // time - start playback time)
         TreeMap<Long, File> validReplayLogFiles = getReplayLogMap(replayLogFiles);
 
-        // Get a list of all replay log files that should be deserialized. This is a number
+        // Get a list of all replay log files that should be deserialized.
         List<File> closestReplayLogs = getClosestReplayLog(instant, validReplayLogFiles);
 
         // Deserialize all replay logs in the list returned above
@@ -119,8 +134,10 @@ public class ReplayLogLoader {
             deserializeReplayLogs(closestReplayLogs);
 
             logger.debug("New batch of replay logs loaded.");
+            return true;
         } else {
             logger.debug("No replay logs to load found!");
+            return false;
         }
     }
 
@@ -148,9 +165,9 @@ public class ReplayLogLoader {
 
                 // Check if the priority queue is full, and if so remove the "oldest" replay log (the head of the
                 // queue since the queue is sorted in ascending order). The queue is considered full it contains
-                // more elements than is defined in MAX_BUFFER_SIZE
-                if (replayLogs.size() > MAX_BUFFER_SIZE) {
-                    replayLogs.poll();
+                // more elements than is defined in maxBufferSize
+                if (replayLogs.size() > maxBufferSize) {
+                    replayLogs.remove(replayLogs.first());
                 }
             } catch(IOException | ClassNotFoundException e) {
                 logger.error("Unable to deserialize a replay log", e);
@@ -178,7 +195,7 @@ public class ReplayLogLoader {
         List<File> fileList = new LinkedList<>();
 
         // Check if we can just directly return the received list because it is smaller than the batch size
-        if (validReplayLogs.size() <= MAX_BATCH_SIZE) {
+        if (validReplayLogs.size() <= maxBatchSize) {
             fileList.addAll(validReplayLogs.values());
             return fileList;
         }
@@ -201,12 +218,12 @@ public class ReplayLogLoader {
             j++;
         }
 
-        // Collect +- MAX_BATCH_SIZE replay logs which form the batch of replay logs that will be deserialized
+        // Collect + maxBatchSize replay logs which form the batch of replay logs that will be deserialized
         j = 0;
         for (File file : validReplayLogs.values()) {
-            long index = closestReplayLogFileIndex + j - 9;
-            if (index >= 0 && index < validReplayLogs.size()) {
-                if (j >= MAX_BATCH_SIZE) {
+            long index = closestReplayLogFileIndex + j;
+            if (index >= j && index < validReplayLogs.size()) {
+                if (j >= maxBatchSize) {
                     return fileList;
                 }
 
@@ -265,12 +282,14 @@ public class ReplayLogLoader {
                 Pattern p = Pattern.compile("([0-9]+)");
                 Matcher m = p.matcher(file.getName());
 
-                // Find folder that contains replay logs for the given instant
-                long startTime = Long.parseLong(file.getName());
-                long instantTime = instant.toEpochMilli();
+                if (m.matches()) {
+                    // Find folder that contains replay logs for the given instant
+                    long startTime = Long.parseLong(file.getName());
+                    long instantTime = instant.toEpochMilli();
 
-                if (instantTime >= startTime) {
-                    return file;
+                    if (instantTime >= startTime) {
+                        return file;
+                    }
                 }
             }
         }
@@ -292,7 +311,7 @@ public class ReplayLogLoader {
      *                the time instant will be returned.
      * @param strict If strict is set to true, than a replay log will only be returned if it strictly lies in the
      *               covered time interval of the replay log. If it is set to false, then a replay log will even be
-     *               returned if the time instant lies in +- {@link ReplayLogLoader#LOAD_TIME_LIMIT} of its covered interval.
+     *               returned if the time instant lies in + {@link ReplayLogLoadService#LOAD_TIME_LIMIT} of its covered interval.
      * @return The ReplayLog object closest in time to the given time instant.
      * @throws MissingResourceException Thrown when no appropriate replay log is found in memory.
      */
@@ -318,7 +337,8 @@ public class ReplayLogLoader {
             }
         } else {
             ReplayLog foundReplayLog = null;
-            int timeOffset = LOAD_TIME_LIMIT + 1;
+            int timeOffset = loadTimeLimit + 1;
+            int index = 0;
             for (ReplayLog replayLog : replayLogs) {
                 long endOffset = replayLog.getEndInstant().toEpochMilli() - instant.toEpochMilli();
                 long startOffset = instant.toEpochMilli() - replayLog.getStartInstant().toEpochMilli();
@@ -331,7 +351,7 @@ public class ReplayLogLoader {
                     startOffset = Math.abs(startOffset);
 
                     // Find replay log whose covered interval lies closest to the desired time instant
-                    if (endOffset <= LOAD_TIME_LIMIT || startOffset <= LOAD_TIME_LIMIT) {
+                    if (endOffset <= loadTimeLimit || startOffset <= loadTimeLimit) {
                         if (endOffset < startOffset && endOffset < timeOffset) {
                             foundReplayLog = replayLog;
                             timeOffset = (int) endOffset;
@@ -341,6 +361,8 @@ public class ReplayLogLoader {
                         }
                     }
                 }
+
+                index++;
             }
 
             if (foundReplayLog == null) {
