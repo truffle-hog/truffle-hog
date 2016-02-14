@@ -15,11 +15,6 @@ public class NetworkGraph extends DirectedSparseGraph<INode, IConnection> implem
     private HashMap networkNodes;
 
     @Override
-    public NetworkEdge addNetworkEdge(NetworkNode from, NetworkNode to) {
-        return null;
-    }
-
-    @Override
     public INode getNetworkNodeByMACAddress(long macAddress) {
         return null;
     }

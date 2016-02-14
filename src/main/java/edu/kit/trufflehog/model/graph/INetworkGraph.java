@@ -3,7 +3,7 @@ package edu.kit.trufflehog.model.graph;
 import edu.uci.ics.jung.graph.DirectedGraph;
 
 /**
- * Created by jan on 14.02.16.
+ * The Interface for Network Graphs used by TruffleHog
  */
 public interface INetworkGraph extends DirectedGraph<INode, IConnection> {
 
