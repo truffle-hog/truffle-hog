@@ -49,7 +49,7 @@ public class Main extends Application {
      */
 	@Override
 	public void start(Stage primaryStage) {
-		primaryStage = primaryStage;
+		Main.primaryStage = primaryStage;
 		primaryStage.setTitle("TruffleHog");
 		try {
 			this.presenter = Presenter.createPresenter();
@@ -68,7 +68,8 @@ public class Main extends Application {
 	}
 
 	/**
-	 * Getter for the primary JavaFX stage supplied by the system for use by the {@link Presenter}.
+	 * Getter for the primary JavaFX stage supplied by the system for use by the {@link Presenter}. As there can
+	 * must only be one primaryStage it is used in a static context.
 	 *
 	 * @return primaryStage
      */
