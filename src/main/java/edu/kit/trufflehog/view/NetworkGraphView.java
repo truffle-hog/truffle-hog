@@ -2,10 +2,11 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
-import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.INetworkGraphLayout;
+import edu.kit.trufflehog.model.graph.ILayoutFactory;
+import edu.kit.trufflehog.model.graph.INetworkGraph;
 import edu.kit.trufflehog.model.graph.INode;
+import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.visualization.RenderContext;
@@ -24,10 +25,10 @@ import java.util.Map;
 
 /**
  * <p>
- *     This class is an implementation of the {@link AbstractNetworkGraphView} abstraction. It is
- *     used to wrap a layout {@link INetworkGraphLayout} of the graph data model. Thereby it
+ *     This class is an implementation of the {@link NetworkGraphViewController} abstraction. It is
+ *     used to wrap a layout {@link Layout} of the graph data model. Thereby it
  *     can response to any changes in the layout that are reflected by modifications in the
- *     underlying data model {@link AbstractNetworkGraph}.
+ *     underlying data model {@link INetworkGraph}.
  * </p>
  * <p>
  *     The NetworkGraphView also incorporates an instance of an implementation of a
@@ -36,12 +37,12 @@ import java.util.Map;
  *
  *
  */
-public class NetworkGraphView extends AbstractNetworkGraphView {
+public class NetworkGraphView extends NetworkGraphViewController {
 
     /** The wrapped instance of the jung graph visualization. **/
     private VisualizationViewer<INode, IConnection> jungView;
     /** The factory used for refreshing the layout of the underlying graph. **/
-    private Transformer<AbstractNetworkGraph, INetworkGraphLayout> layoutFactory;
+    private Transformer<INetworkGraph, Layout<INode, IConnection>> layoutFactory;
 
     /**
      * <p>
@@ -51,8 +52,10 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
      *
      * @param layout the layout to be used for visualization of the graph
      */
-    public NetworkGraphView(final INetworkGraphLayout layout) {
-		throw new UnsupportedOperationException("Not implemented yet!");
+    public NetworkGraphView(final Layout<INode, IConnection> layout) {
+
+
+
     }
 
 	/**
@@ -62,9 +65,13 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 	 * @param layoutFactory the layout factory to be used for visualization of
 	 *                         the graph
 	 */
-	public NetworkGraphView(final Transformer<AbstractNetworkGraph,
-			INetworkGraphLayout> layoutFactory) {
-		throw new UnsupportedOperationException("Not implemented yet!");
+	public NetworkGraphView(final Transformer<INetworkGraph,
+			Layout<INode, IConnection>> layoutFactory, INetworkGraph graph) {
+
+		this.layoutFactory = layoutFactory;
+
+		jungView = new VisualizationViewer<>(layoutFactory.transform(graph));
+
 	}
 
     /**
@@ -76,9 +83,9 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
      * @param layout the layout to be used for visualization of the graph
      * @param layoutFactory the layout factory to be used for refreshing the layout
      */
-    public NetworkGraphView(final INetworkGraphLayout layout,
-                            final Transformer<AbstractNetworkGraph,
-                                    INetworkGraphLayout> layoutFactory) {
+    public NetworkGraphView(final Layout<INode, IConnection> layout,
+                            final Transformer<INetworkGraph,
+                                    Layout<INode, IConnection>> layoutFactory) {
 
 
 		throw new UnsupportedOperationException("Not implemented yet!");
@@ -328,12 +335,12 @@ public class NetworkGraphView extends AbstractNetworkGraphView {
 
 	/**
 	 * {@inheritDoc}
+	 * @param layoutFactory
 	 */
-    @Override
-    public final void setLayoutFactory(final Transformer<AbstractNetworkGraph,
-            INetworkGraphLayout> layoutFactory) {
-		throw new UnsupportedOperationException("Not implemented yet!");
-    }
+	@Override
+	public void setLayoutFactory(ILayoutFactory layoutFactory) {
+
+	}
 
 	/**
 	 * {@inheritDoc}

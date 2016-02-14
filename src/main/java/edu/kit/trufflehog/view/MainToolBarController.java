@@ -3,9 +3,8 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.ToolBarInteraction;
-import javafx.fxml.FXMLLoader;
+import edu.kit.trufflehog.view.controllers.ToolBarController;
 
-import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -33,16 +32,7 @@ public final class MainToolBarController extends
      */
     public MainToolBarController(final String fxmlFileName) {
 
-        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource
-				(fxmlFileName));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+        super(fxmlFileName);
     }
 
 	/**
