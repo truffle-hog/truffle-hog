@@ -1,7 +1,10 @@
 package edu.kit.trufflehog;
 
+import edu.kit.trufflehog.presenter.Presenter;
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import javax.management.InstanceAlreadyExistsException;
 // TODO below
 // import org.apache.logging.log4j.LogManager;
 // import org.apache.logging.log4j.Logger;
@@ -12,7 +15,8 @@ import javafx.stage.Stage;
  * </p>
  */
 public class Main extends Application {
-	private Stage primaryStage;
+	private static Stage primaryStage;
+	private Presenter presenter;
 
 	// TODO below
 	// private static final Logger logger = LogManager.getLogger(Main.class);
@@ -36,7 +40,6 @@ public class Main extends Application {
 	 */
 	@Override
 	public void init() {
-
 	}
 
 	/**
@@ -46,8 +49,14 @@ public class Main extends Application {
      */
 	@Override
 	public void start(Stage primaryStage) {
-		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("TruffleHog");
+		primaryStage = primaryStage;
+		primaryStage.setTitle("TruffleHog");
+		try {
+			this.presenter = Presenter.createPresenter();
+		} catch (InstanceAlreadyExistsException e) {
+			e.printStackTrace();
+		}
+		presenter.present();
 	}
 
 	/**
@@ -56,5 +65,14 @@ public class Main extends Application {
 	@Override
 	public void stop() {
 
+	}
+
+	/**
+	 * Getter for the primary JavaFX stage supplied by the system for use by the {@link Presenter}.
+	 *
+	 * @return primaryStage
+     */
+	public static Stage getPrimaryStage() {
+		return primaryStage;
 	}
 }
