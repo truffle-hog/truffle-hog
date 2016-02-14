@@ -65,6 +65,8 @@ public class CommandLoggerTest {
             IReplayCommand command = mock(AddPacketDataCommand.class);
             when(command.createdAt()).thenAnswer(invocation -> Instant.now());
 
+            Thread.sleep(3);
+
             commandLogger.addCommand(command, now);
         }
 
@@ -98,6 +100,8 @@ public class CommandLoggerTest {
                 IReplayCommand command = mock(AddPacketDataCommand.class);
                 when(command.createdAt()).thenAnswer(invocation -> Instant.now());
 
+                Thread.sleep(2);
+
                 commandLogger.addCommand(command, now);
             }
             commandLogger.swapMaps();
@@ -108,6 +112,8 @@ public class CommandLoggerTest {
             for (int j = 0; j < randomLength2; j++) {
                 IReplayCommand command = mock(AddPacketDataCommand.class);
                 when(command.createdAt()).thenAnswer(invocation -> Instant.now());
+
+                Thread.sleep(1);
 
                 commandLogger.addCommand(command, now);
             }

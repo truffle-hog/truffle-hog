@@ -18,6 +18,7 @@ public class AddPacketDataCommand implements ITruffleCommand{
     private INetworkGraph networkGraph = null;
     private List<Filter> filterList = null;
     private Truffle truffle = null;
+    private Instant createdAtInstant;
 
     /**
      * <p>
@@ -26,11 +27,13 @@ public class AddPacketDataCommand implements ITruffleCommand{
      * @param graph {@link INetworkGraph} to add data to
      * @param packet Truffle to get data from
      * @param filters List of filters to check
+     * // TODO: change visibility back to package local once the factory has been created. Without this as public it is hard to test
      */
-    AddPacketDataCommand(INetworkGraph graph,  Truffle packet, List<Filter> filters) {
+    public AddPacketDataCommand(INetworkGraph graph,  Truffle packet, List<Filter> filters) {
         networkGraph = graph;
         filterList = filters;
         truffle = packet;
+        createdAtInstant = Instant.now();
     }
 
     public void execute() {
@@ -39,6 +42,6 @@ public class AddPacketDataCommand implements ITruffleCommand{
 
     @Override
     public Instant createdAt() {
-        return null; //TODO implement
+        return createdAtInstant;
     }
 }

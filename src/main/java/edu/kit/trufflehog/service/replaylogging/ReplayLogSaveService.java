@@ -35,7 +35,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
     private File currentReplayLogFolder;
     private final INetworkGraph graph;
 
-    private ScheduledFuture<?> scheduledFuture;
+    private ScheduledFuture<?> saveServiceFuture;
     private final ScheduledExecutorService executorService;
     private boolean recording = false;
 
@@ -89,7 +89,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
         }
 
         currentReplayLogFolder.mkdir();
-        scheduledFuture = executorService.scheduleAtFixedRate(this, LOGGING_INTERVAL, LOGGING_INTERVAL, MILLISECONDS);
+        saveServiceFuture = executorService.scheduleAtFixedRate(this, LOGGING_INTERVAL, LOGGING_INTERVAL, MILLISECONDS);
         recording = true;
         logger.debug("Recording replay logs..");
     }
@@ -105,11 +105,20 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
             return;
         }
 
-        scheduledFuture.cancel(true);
+        saveServiceFuture.cancel(true);
 
         // Lock here because instant could be used in the thread calling the receive method
         synchronized (this) {
             startInstant = null;
+        }
+
+        // Sleep until the thread was terminated successfully
+        while (!saveServiceFuture.isDone()) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                logger.error("Unable to wait for replay log load service thread to finish", e);
+            }
         }
 
         logger.debug("Stopped recording replay logs..");

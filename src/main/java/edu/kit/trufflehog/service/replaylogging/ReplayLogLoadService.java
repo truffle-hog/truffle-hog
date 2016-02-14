@@ -35,7 +35,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
     private final GraphProxy graphProxy;
 
     private final ExecutorService executorService;
-    private Future<?> replayLogLoadServiceFuture;
+    private Future<?> loadServiceFuture;
     private boolean isPlaying;
 
     /**
@@ -108,7 +108,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      */
     public void play(Instant instant, boolean strict) {
         if (!isPlaying) {
-            this.replayLogLoadServiceFuture = executorService.submit(() -> run(instant, strict));
+            this.loadServiceFuture = executorService.submit(() -> run(instant, strict));
             isPlaying = true;
             logger.debug("Now playing replay logs from: " + instant);
         } else {
@@ -123,7 +123,17 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      */
     public void stop() {
         if (isPlaying) {
-            replayLogLoadServiceFuture.cancel(true);
+            loadServiceFuture.cancel(true);
+
+            // Sleep until the thread was terminated successfully
+            while (!loadServiceFuture.isDone()) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    logger.error("Unable to wait for replay log load service thread to finish", e);
+                }
+            }
+
             isPlaying = false;
             logger.debug("Stopped playing replay logs.");
         } else {
@@ -150,15 +160,6 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      */
     public void jumpToInstant(Instant instant, boolean strict) {
         stop();
-
-        // Sleep until the thread was terminated successfully
-        while (!replayLogLoadServiceFuture.isDone()) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                logger.error("Unable to wait for next replay log load service thread to finish", e);
-            }
-        }
 
         // Start it again!
         play(instant, strict);

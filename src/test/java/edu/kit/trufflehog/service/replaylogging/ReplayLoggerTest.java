@@ -35,7 +35,7 @@ public class ReplayLoggerTest {
     @Before
     public void setUp() throws Exception {
         replayLogger = new ReplayLogger();
-        replayLogFolder = new File("./test");
+        replayLogFolder = new File("./test-replaylogging");
         if (!replayLogFolder.exists()) {
             replayLogFolder.mkdir();
         }

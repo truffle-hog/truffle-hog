@@ -14,11 +14,15 @@ import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * <p>
  *     Tests the replay log saving service in various ways.
  * </p>
+ *
+ * @author Julian Brendl
+ * @version 1.0
  */
 public class ReplayLogSaveServiceTest {
     private FileSystem fileSystem;
@@ -34,9 +38,16 @@ public class ReplayLogSaveServiceTest {
      */
     @Before
     public void setUp() throws Exception {
-        fileSystem = new FileSystem();
+        fileSystem = mock(FileSystem.class);
+        when(fileSystem.getDataFolder()).thenAnswer(invocation -> new File("./test-data"));
+        when(fileSystem.getReplayLogFolder()).thenAnswer(invocation -> new File("./test-data/replaylogging"));
         loggedScheduledExecutor = new LoggedScheduledExecutor(1);
         replayLogSaveService = new ReplayLogSaveService(null, fileSystem, loggedScheduledExecutor);
+
+        File replayLogFolder = new File("./test-data/replaylogging");
+        if (!replayLogFolder.exists()) {
+            replayLogFolder.mkdirs();
+        }
     }
 
     /**
@@ -89,20 +100,30 @@ public class ReplayLogSaveServiceTest {
         assertEquals(true, Math.abs(replayLogs.length - numberOfFiles) < 3);
     }
 
-
+    /**
+     * <p>
+     *     Tests whether threads are correctly scheduled (meaning whether they are correctly started and stopped when
+     *     start and stop is called) - only works half
+     * </p>
+     *
+     * @throws Exception Passes any errors that occurred during the test on
+     */
     @Test
-    public void testReceive() throws Exception {
+    public void testStartStopRecord() throws Exception {
+        for (int i = 0; i < 100; i++) {
+            assertEquals(loggedScheduledExecutor.getQueue().size() == 0
+                    || loggedScheduledExecutor.getActiveCount() == 0, true);
 
-    }
+            replayLogSaveService.startRecord();
 
-    @Test
-    public void testStartRecord() throws Exception {
+            assertEquals(loggedScheduledExecutor.getQueue().size() == 1
+                    || loggedScheduledExecutor.getActiveCount() == 1, true);
 
-    }
+            replayLogSaveService.stopRecord();
 
-    @Test
-    public void testStopRecord() throws Exception {
-
+            assertEquals(loggedScheduledExecutor.getQueue().size() == 0
+                    || loggedScheduledExecutor.getActiveCount() == 0, true);
+        }
     }
 
     /**
@@ -117,7 +138,8 @@ public class ReplayLogSaveServiceTest {
     private void recordSession(int sleepTime, int loopMax) throws Exception {
         replayLogSaveService.startRecord();
         for (int i = 0; i < loopMax; i++) {
-            IReplayCommand command = mock(AddPacketDataCommand.class);
+            IReplayCommand command = new AddPacketDataCommand(null, null, null);
+
             replayLogSaveService.receive(command);
 
             Thread.sleep(sleepTime);
