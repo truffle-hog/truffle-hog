@@ -2,7 +2,7 @@ package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.IReplayCommand;
 import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
+import edu.kit.trufflehog.model.graph.INetworkGraph;
 import edu.kit.trufflehog.util.IListener;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +33,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
     private Instant startInstant;
     private final FileSystem fileSystem;
     private File currentReplayLogFolder;
-    private final AbstractNetworkGraph graph;
+    private final INetworkGraph graph;
 
     private ScheduledFuture<?> scheduledFuture;
     private final ScheduledExecutorService executorService;
@@ -55,7 +55,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
      * @param fileSystem The fileSystem object that gives access to the locations where files are saved on the hard drive.
      *                   This is necessary because of the ReplayLogger that needs to save ReplayLogs.
      */
-    public ReplayLogSaveService(AbstractNetworkGraph graph, FileSystem fileSystem,
+    public ReplayLogSaveService(INetworkGraph graph, FileSystem fileSystem,
                                 ScheduledExecutorService executorService) {
         this.commandLogger = new CommandLogger();
         this.replayLogger = new ReplayLogger();

@@ -2,7 +2,7 @@ package edu.kit.trufflehog.model;
 
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.truffledatalog.TruffleLogger;
-import edu.kit.trufflehog.service.replaylogging.ReplayLog;
+import edu.kit.trufflehog.service.replaylogging.ReplayLogSaveService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +27,7 @@ import java.net.URISyntaxException;
  *         <li>
  *             Replay log folder:
  *             <p>
- *                 This is where the {@link ReplayLog} objects are saved to.
+ *                 This is where the {@link ReplayLogSaveService} saves data to.
  *             </p>
  *         </li>
  *         <br></br>

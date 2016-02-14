@@ -1,8 +1,9 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.IReplayCommand;
-import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import org.apache.commons.collections4.map.LinkedMap;
+import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.model.graph.INetworkGraph;
 
 import java.io.Serializable;
 
@@ -22,7 +23,7 @@ import java.io.Serializable;
  * @version 1.0
  */
 class ReplayLog implements Serializable, Comparable<ReplayLog> {
-    private final AbstractNetworkGraph snapshotGraph;
+    private final INetworkGraph snapshotGraph;
     private final LinkedMap<IReplayCommand, Long> commands;
     private final Long startInstant;
     private final Long endInstant;
@@ -35,7 +36,7 @@ class ReplayLog implements Serializable, Comparable<ReplayLog> {
      * @param snapshotGraph The snapshot of the graph to include in the replay log.
      * @param commands The list of commands to include in the replay log.
      */
-    public ReplayLog(AbstractNetworkGraph snapshotGraph, LinkedMap<IReplayCommand, Long> commands) {
+    public ReplayLog(INetworkGraph snapshotGraph, LinkedMap<IReplayCommand, Long> commands) {
         this.snapshotGraph = snapshotGraph;
         this.commands = commands;
 
@@ -55,7 +56,7 @@ class ReplayLog implements Serializable, Comparable<ReplayLog> {
      *
      * @return The graph snapshot contained in this ReplayLog object.
      */
-    public AbstractNetworkGraph getGraphSnapshot() {
+    public INetworkGraph getGraphSnapshot() {
         return snapshotGraph;
     }
 

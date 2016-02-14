@@ -1,10 +1,11 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.IReplayCommand;
-import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
+import edu.kit.trufflehog.model.graph.INetworkGraph;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,7 +51,7 @@ class ReplayLogger {
      * @return A new ReplayLog object that is serializable and that contains the graph snapshot and the list of commands
      *          passed to the method.
      */
-    public ReplayLog createReplayLog(AbstractNetworkGraph snapshotGraph, LinkedMap<IReplayCommand, Long> commands) {
+    public ReplayLog createReplayLog(INetworkGraph snapshotGraph, LinkedMap<IReplayCommand, Long> commands) {
         return new ReplayLog(snapshotGraph, commands);
     }
 

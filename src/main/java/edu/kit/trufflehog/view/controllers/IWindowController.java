@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.view;
+package edu.kit.trufflehog.view.controllers;
 
 import javafx.scene.Scene;
 

@@ -1,7 +1,5 @@
 package edu.kit.trufflehog.model.configdata;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.Properties;
 
 /**

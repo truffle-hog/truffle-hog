@@ -242,8 +242,8 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
         // the buffer
         long startBuffering = replayLogDuration * START_BUFFER_X_REPLAY_LOGS_BEFORE;
 
-        // Set this graph as the 
-        graphProxy.setGraph(currentReplayLog.getGraphSnapshot());
+        // Set this graph as the graph to display
+        graphProxy.setActive(currentReplayLog.getGraphSnapshot());
 
         Future loadResult = null;
         Future<ReplayLog> bufferResult = null;
