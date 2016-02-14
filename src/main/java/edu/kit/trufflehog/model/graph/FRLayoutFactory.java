@@ -10,7 +10,7 @@ import org.apache.commons.collections15.Transformer;
 public class FRLayoutFactory implements ILayoutFactory{
 
     @Override
-    public INetworkGraphLayout transform(AbstractNetworkGraph iNetworkGraph) {
+    public INetworkGraphLayout transform(INetworkGraph iNetworkGraph) {
 
         return new FruchtermanReingoldLayout(iNetworkGraph);
     }

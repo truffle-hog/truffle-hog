@@ -1,9 +1,9 @@
-package edu.kit.trufflehog.view;
+package edu.kit.trufflehog.view.controllers;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
+import edu.kit.trufflehog.model.graph.INetworkGraph;
 import edu.kit.trufflehog.model.graph.INetworkGraphLayout;
 import edu.kit.trufflehog.model.graph.INode;
 import edu.kit.trufflehog.util.IListener;
@@ -14,12 +14,12 @@ import org.apache.commons.collections15.Transformer;
 
 /**
  * <p>
- * 		AbstractNetworkGraphView is the basic abstraction for every implementation of a network graph
+ * 		NetworkGraphViewController is the basic abstraction for every implementation of a network graph
  * 		view. By extending the Swing wrapper class {@link SwingNode} its possible to place
- * 		an instance of a AbstractNetworkGraphView into the existing javafx environment easily.
+ * 		an instance of a NetworkGraphViewController into the existing javafx environment easily.
  * </p>
  */
-public abstract class AbstractNetworkGraphView extends SwingNode
+public abstract class NetworkGraphViewController extends SwingNode
 		implements VisualizationServer<INode, IConnection>,
 		IViewController<GraphInteraction> {
 
@@ -66,6 +66,6 @@ public abstract class AbstractNetworkGraphView extends SwingNode
 	 * @param layoutFactory the layout factory for instantiating new layouts
 	 *                         of the given type
 	 */
-	public abstract void setLayoutFactory(Transformer<AbstractNetworkGraph, INetworkGraphLayout> layoutFactory);
+	public abstract void setLayoutFactory(Transformer<INetworkGraph, INetworkGraphLayout> layoutFactory);
 
 }

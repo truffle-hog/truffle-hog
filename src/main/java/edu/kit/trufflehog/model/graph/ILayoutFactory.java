@@ -7,5 +7,5 @@ import org.apache.commons.collections15.Transformer;
  *     Interface to interchange factories creating {@link INetworkGraphLayout} implementations.
  * </p>
  */
-public interface ILayoutFactory extends Transformer<AbstractNetworkGraph, INetworkGraphLayout> {
+public interface ILayoutFactory extends Transformer<INetworkGraph, INetworkGraphLayout> {
 }

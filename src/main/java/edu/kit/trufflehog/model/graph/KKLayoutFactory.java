@@ -10,7 +10,7 @@ import org.apache.commons.collections15.Transformer;
 public class KKLayoutFactory implements ILayoutFactory{
 
     @Override
-    public INetworkGraphLayout transform(AbstractNetworkGraph aNetworkGraph) {
-        return new KamadaKawaiLayout(aNetworkGraph);
+    public INetworkGraphLayout transform(INetworkGraph networkGraph) {
+        return new KamadaKawaiLayout(networkGraph);
     }
 }

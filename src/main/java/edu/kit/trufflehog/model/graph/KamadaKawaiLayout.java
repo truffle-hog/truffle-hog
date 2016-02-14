@@ -4,7 +4,7 @@ import edu.uci.ics.jung.algorithms.layout.KKLayout;
 
 /**
  * <p>
- *     Uses the Kamada-Kawai-algorithm from the jung library to present the {@link AbstractNetworkGraph}.
+ *     Uses the Kamada-Kawai-algorithm from the jung library to present the {@link INetworkGraph}.
  * </p>
 */
 public class KamadaKawaiLayout extends KKLayout<INode, IConnection> implements INetworkGraphLayout<INode, IConnection> {
@@ -14,9 +14,9 @@ public class KamadaKawaiLayout extends KKLayout<INode, IConnection> implements I
      *     Creates a new layout to present a given INetworkGraph.
      * </p>
      *
-     * @param graph {@link AbstractNetworkGraph} to be drawn.
+     * @param graph {@link INetworkGraph} to be drawn.
      */
-    public KamadaKawaiLayout(AbstractNetworkGraph graph) {
+    public KamadaKawaiLayout(INetworkGraph graph) {
         super(graph);
     }
 }

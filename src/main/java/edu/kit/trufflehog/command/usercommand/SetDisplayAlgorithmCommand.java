@@ -2,7 +2,7 @@ package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.graph.ILayoutFactory;
 import edu.kit.trufflehog.model.graph.INetworkGraphLayout;
-import edu.kit.trufflehog.view.AbstractNetworkGraphView;
+import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 
 /**
  * <p>
@@ -12,16 +12,16 @@ import edu.kit.trufflehog.view.AbstractNetworkGraphView;
  */
 public class SetDisplayAlgorithmCommand implements IUserCommand{
     private ILayoutFactory layoutFactory;
-    private AbstractNetworkGraphView graphView;
+    private NetworkGraphViewController graphView;
 
     /**
      * <p>
      *     Creates a new command.
      * </p>
      * @param factory {@link ILayoutFactory} implementation of the desired {@link INetworkGraphLayout} implementation
-     * @param view {@link AbstractNetworkGraphView} implementation managing the graph layouts
+     * @param view {@link NetworkGraphViewController} implementation managing the graph layouts
      */
-    SetDisplayAlgorithmCommand(ILayoutFactory factory, AbstractNetworkGraphView view) {
+    SetDisplayAlgorithmCommand(ILayoutFactory factory, NetworkGraphViewController view) {
         layoutFactory = factory;
         graphView = view;
     }

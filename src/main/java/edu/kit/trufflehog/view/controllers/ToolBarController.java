@@ -1,11 +1,14 @@
-package edu.kit.trufflehog.view;
+package edu.kit.trufflehog.view.controllers;
 
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.IInteraction;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.INotifier;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ToolBar;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -17,6 +20,20 @@ import javafx.scene.control.ToolBar;
  */
 public abstract class ToolBarController<I extends IInteraction> extends ToolBar
         implements IViewController<I> {
+
+    public ToolBarController(String fxmlFile) {
+
+        final FXMLLoader fxmlLoader =
+                new FXMLLoader(getClass().getResource(fxmlFile));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
     /** The wrapped instance of view controller notifier. **/
     private final INotifier<IUserCommand> viewControllerNotifier =
