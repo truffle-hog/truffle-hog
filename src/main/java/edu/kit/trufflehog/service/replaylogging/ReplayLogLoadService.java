@@ -36,6 +36,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
 
     private final ExecutorService executorService;
     private Future<?> replayLogLoadServiceFuture;
+    private boolean isPlaying;
 
     /**
      * <p>
@@ -80,6 +81,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
         this.executorService = executor;
         this.replayLogLoader = new ReplayLogLoader(fileSystem, MAX_BUFFER_SIZE, MAX_BATCH_SIZE, LOAD_TIME_LIMIT);
         this.graphProxy = graphProxy;
+        isPlaying = false;
 
         MAX_BUFFER_SIZE = 200; //TODO: hook up with settings stuff
         MAX_BATCH_SIZE = 20;   //TODO: hook up with settings stuff
@@ -98,7 +100,6 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     instant must be in memory, else false is returned.
      * </p>
      *
-     *
      * @param instant The instant in time from which to start playing
      * @param strict If strict is set to true, than a replay log will only be returned if it strictly lies in the
      *               covered time interval of the replay log. If it is set to false, then a replay log will even be
@@ -106,7 +107,13 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *               interval.
      */
     public void play(Instant instant, boolean strict) {
-        this.replayLogLoadServiceFuture = executorService.submit(() -> run(instant, strict));
+        if (!isPlaying) {
+            this.replayLogLoadServiceFuture = executorService.submit(() -> run(instant, strict));
+            isPlaying = true;
+            logger.debug("Now playing replay logs from: " + instant);
+        } else {
+            logger.debug("Cannot play, already playing.");
+        }
     }
 
     /**
@@ -115,7 +122,13 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      * </p>
      */
     public void stop() {
-        replayLogLoadServiceFuture.cancel(true);
+        if (isPlaying) {
+            replayLogLoadServiceFuture.cancel(true);
+            isPlaying = false;
+            logger.debug("Stopped playing replay logs.");
+        } else {
+            logger.debug("Cannot stop, already stopped.");
+        }
     }
 
     /**
@@ -123,10 +136,32 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     The current playback of the {@link ReplayLog}s will jump to the location in time closest to the given instant,
      *     if the playback is currently active.
      * </p>
+     * <p>
+     *     If strict is set, a replay log containing the given time instant must be returned, else false is returned.
+     *     If strict is false, a ReplayLog reasonably close in time to the given
+     *     instant must be in memory, else false is returned.
+     * </p>
      *
      * @param instant The instant in time to which to jump in the playback, if it is active.
+     * @param strict If strict is set to true, than a replay log will only be returned if it strictly lies in the
+     *               covered time interval of the replay log. If it is set to false, then a replay log will even be
+     *               returned if the time instant lies in +- {@link ReplayLogLoadService#LOAD_TIME_LIMIT} of its covered
+     *               interval.
      */
-    public void jumpToInstant(Instant instant) {
+    public void jumpToInstant(Instant instant, boolean strict) {
+        stop();
+
+        // Sleep until the thread was terminated successfully
+        while (!replayLogLoadServiceFuture.isDone()) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                logger.error("Unable to wait for next replay log load service thread to finish", e);
+            }
+        }
+
+        // Start it again!
+        play(instant, strict);
     }
 
     /**
@@ -211,6 +246,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
         graphProxy.setGraph(currentReplayLog.getGraphSnapshot());
 
         Future loadResult = null;
+        Future<ReplayLog> bufferResult = null;
         while (!Thread.currentThread().isInterrupted()) {
             // Determine whether a new thread should be started which would load new data from the hard drive into
             // memory. This submission into the thread pool will return a future which will be used later on to sync
@@ -222,7 +258,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
             }
 
             // Here we create a new thread to already fetch the next replay log from the buffer
-            Future<ReplayLog> bufferResult = executorService.submit(() ->
+            bufferResult = executorService.submit(() ->
                     replayLogLoader.getNextReplayLog(currentReplayLog));
 
             // This is the actual purpose of the thread - send the old commands out to all listeners via the notifier
@@ -274,6 +310,14 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
                 stop();
                 return;
             }
+        }
+
+        // Cancel all other threads that might be running after the interrupt on this thread
+        if (loadResult != null) {
+            loadResult.cancel(true);
+        }
+        if (bufferResult != null) {
+            bufferResult.cancel(true);
         }
     }
 }
