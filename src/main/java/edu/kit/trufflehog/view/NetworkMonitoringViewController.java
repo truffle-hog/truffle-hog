@@ -32,16 +32,7 @@ public class NetworkMonitoringViewController extends BorderPaneController<Networ
      */
     public NetworkMonitoringViewController(final String fxmlFileName) {
 
-        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource
-                (fxmlFileName));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+        super(fxmlFileName);
     }
 
 
