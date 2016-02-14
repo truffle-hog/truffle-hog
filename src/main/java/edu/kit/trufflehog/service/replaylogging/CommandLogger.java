@@ -1,7 +1,9 @@
 package edu.kit.trufflehog.service.replaylogging;
 
-import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.command.IReplayCommand;
 import org.apache.commons.collections4.map.LinkedMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
 
@@ -15,10 +17,12 @@ import java.time.Instant;
  * @author Julian Brendl
  * @version 1.0
  */
-public class CommandLogger {
-    private LinkedMap<ICommand, Instant> waitingCommandMap; // This is where commands are put
-    private LinkedMap<ICommand, Instant> commpressCommandMap; // This is where commands are compressed
-    private CommandCompressor commandCompressor;
+class CommandLogger {
+    private static final Logger logger = LogManager.getLogger(CommandLogger.class);
+
+    private LinkedMap<IReplayCommand, Long> waitingCommandMap; // This is where commands are put
+    private LinkedMap<IReplayCommand, Long> commpressCommandMap; // This is where commands are compressed
+    private final CommandCompressor commandCompressor;
 
     /**
      * <p>
@@ -40,11 +44,14 @@ public class CommandLogger {
      * @param command The command to add to the list that is to be processed.
      * @param startInstant The instant at which the recording session was started
      */
-    public void addCommand(ICommand command, Instant startInstant) {
-        // TODO: subtract truffle arrival from startInstant
-       // waitingCommandMap.put(command, startInstant);
+    public void addCommand(IReplayCommand command, Instant startInstant) {
+        long receivedAt = command.createdAt().toEpochMilli() - startInstant.toEpochMilli();
 
-        waitingCommandMap.put(command, Instant.now());
+        if (receivedAt > 0) {
+            waitingCommandMap.put(command, receivedAt);
+        } else {
+            logger.debug("Command created before logging was started, dropping command");
+        }
     }
 
     /**
@@ -57,7 +64,7 @@ public class CommandLogger {
      * </p>
      */
     public void swapMaps() {
-        LinkedMap<ICommand, Instant> tempMap = commpressCommandMap;
+        LinkedMap<IReplayCommand, Long> tempMap = commpressCommandMap;
         commpressCommandMap = waitingCommandMap;
         waitingCommandMap = tempMap;
         waitingCommandMap.clear();
@@ -73,7 +80,7 @@ public class CommandLogger {
      *
      * @return A list of compacted commands it received.
      */
-    public LinkedMap<ICommand, Instant> createCommandLog() {
+    public LinkedMap<IReplayCommand, Long> createCommandLog() {
         return commandCompressor.compressCommands(commpressCommandMap);
     }
 }

@@ -1,11 +1,10 @@
 package edu.kit.trufflehog.service.replaylogging;
 
-import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.command.IReplayCommand;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.Serializable;
-import java.time.Instant;
 
 /**
  * <p>
@@ -20,12 +19,13 @@ import java.time.Instant;
  * </p>
  *
  * @author Julian Brendl
+ * @version 1.0
  */
-public class ReplayLog implements Serializable, Comparable<ReplayLog> {
-    private AbstractNetworkGraph snapshotGraph;
-    private LinkedMap<ICommand, Instant> commands;
-    private Instant startInstant;
-    private Instant endInstant;
+class ReplayLog implements Serializable, Comparable<ReplayLog> {
+    private final AbstractNetworkGraph snapshotGraph;
+    private final LinkedMap<IReplayCommand, Long> commands;
+    private final Long startInstant;
+    private final Long endInstant;
 
     /**
      * <p>
@@ -35,13 +35,16 @@ public class ReplayLog implements Serializable, Comparable<ReplayLog> {
      * @param snapshotGraph The snapshot of the graph to include in the replay log.
      * @param commands The list of commands to include in the replay log.
      */
-    public ReplayLog(AbstractNetworkGraph snapshotGraph, LinkedMap<ICommand, Instant> commands) {
+    public ReplayLog(AbstractNetworkGraph snapshotGraph, LinkedMap<IReplayCommand, Long> commands) {
         this.snapshotGraph = snapshotGraph;
         this.commands = commands;
 
         if (!commands.isEmpty()) {
             startInstant = commands.get(commands.firstKey());
             endInstant = commands.get(commands.lastKey());
+        } else {
+            startInstant = null;
+            endInstant = null;
         }
     }
 
@@ -63,7 +66,7 @@ public class ReplayLog implements Serializable, Comparable<ReplayLog> {
      *
      * @return The command list contained in this ReplayLog object.
      */
-    public LinkedMap<ICommand, Instant> getCommands() {
+    public LinkedMap<IReplayCommand, Long> getCommands() {
         return commands;
     }
 
@@ -74,7 +77,7 @@ public class ReplayLog implements Serializable, Comparable<ReplayLog> {
      *
      * @return The point in time of when this ReplayLog object starts to contain graph data.
      */
-    public Instant getStartInstant() {
+    public long getStartInstant() {
         return startInstant;
     }
 
@@ -85,14 +88,14 @@ public class ReplayLog implements Serializable, Comparable<ReplayLog> {
      *
      * @return The point in time of when this ReplayLog object stops to contain graph data.
      */
-    public Instant getEndInstant() {
+    public long getEndInstant() {
         return endInstant;
     }
 
     @Override
     public int compareTo(ReplayLog o) {
-        long thisMedianTime = (startInstant.toEpochMilli() + endInstant.toEpochMilli()) / 2;
-        long otherMedianTime = (o.getStartInstant().toEpochMilli() + o.getEndInstant().toEpochMilli()) / 2;
+        long thisMedianTime = (startInstant + endInstant) / 2;
+        long otherMedianTime = (o.getStartInstant() + o.getEndInstant()) / 2;
 
         return (int)(thisMedianTime - otherMedianTime);
     }

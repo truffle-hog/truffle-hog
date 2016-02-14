@@ -1,9 +1,8 @@
 package edu.kit.trufflehog.service.replaylogging;
 
-import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.command.IReplayCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
-import edu.kit.trufflehog.model.graph.GraphProxy;
 import edu.kit.trufflehog.util.IListener;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.logging.log4j.LogManager;
@@ -26,18 +25,18 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * @author Julian Brendl
  * @version 1.0
  */
-public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
+public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable {
     private static final Logger logger = LogManager.getLogger(ReplayLogSaveService.class);
 
-    private CommandLogger commandLogger;
-    private SnapshotLogger snapshotLogger;
-    private ReplayLogger replayLogger;
+    private final CommandLogger commandLogger;
+    private final ReplayLogger replayLogger;
     private Instant startInstant;
-    private FileSystem fileSystem;
+    private final FileSystem fileSystem;
     private File currentReplayLogFolder;
+    private final AbstractNetworkGraph graph;
 
     private ScheduledFuture<?> scheduledFuture;
-    private ScheduledExecutorService executorService;
+    private final ScheduledExecutorService executorService;
     private boolean recording = false;
 
     /**
@@ -52,16 +51,17 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
      *     Creates a new ReplayLogSaveService object.
      * </p>
      *
-     * @param graphProxy The proxy object that contains the graph so that the SnapshotLogger can take a snapshot of it.
+     * @param graph The live graph so that the SnapshotLogger can take a snapshot of it.
      * @param fileSystem The fileSystem object that gives access to the locations where files are saved on the hard drive.
      *                   This is necessary because of the ReplayLogger that needs to save ReplayLogs.
      */
-    public ReplayLogSaveService(GraphProxy graphProxy, FileSystem fileSystem, ScheduledExecutorService executorService) {
+    public ReplayLogSaveService(AbstractNetworkGraph graph, FileSystem fileSystem,
+                                ScheduledExecutorService executorService) {
         this.commandLogger = new CommandLogger();
-        this.snapshotLogger = new SnapshotLogger(graphProxy);
         this.replayLogger = new ReplayLogger();
         this.fileSystem = fileSystem;
         this.currentReplayLogFolder = null;
+        this.graph = graph;
 
         this.executorService = executorService;
         LOGGING_INTERVAL = 500;    //TODO: hook up with settings stuff
@@ -134,8 +134,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
         }
 
         // Create a new replay log
-        LinkedMap<ICommand, Instant> compressedCommandList = commandLogger.createCommandLog();
-        AbstractNetworkGraph graph = snapshotLogger.takeSnapshot();
+        LinkedMap<IReplayCommand, Long> compressedCommandList = commandLogger.createCommandLog();
         ReplayLog replayLog = replayLogger.createReplayLog(graph, compressedCommandList);
 
         // Save the replay log to the disk
@@ -151,7 +150,7 @@ public class ReplayLogSaveService implements IListener<ICommand>, Runnable {
      * @param command The command to save
      */
     @Override
-    public synchronized void receive(ICommand command) {
+    public synchronized void receive(IReplayCommand command) {
         // Lock so that the list cannot be transferred while a command is being added to it. See the run method for more
         // Drop the command if we are currently not recording
         if (startInstant == null) {

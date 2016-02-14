@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,11 +24,11 @@ import java.util.stream.Collectors;
  * @author Julian Brendl
  * @version 1.0
  */
-public class ReplayLogLoader {
+class ReplayLogLoader {
     private static final Logger logger = LogManager.getLogger(ReplayLogLoader.class);
 
-    private FileSystem fileSystem;
-    private SortedSet<ReplayLog> replayLogs;
+    private final FileSystem fileSystem;
+    private final ConcurrentSkipListSet<ReplayLog> replayLogs;
 
     private int maxBufferSize;
     private int maxBatchSize;
@@ -43,7 +44,7 @@ public class ReplayLogLoader {
      */
     public ReplayLogLoader(FileSystem fileSystem, int maxBufferSize, int maxBatchSize, int loadTimeLimit) {
         this.fileSystem = fileSystem;
-        this.replayLogs = new TreeSet<>();
+        this.replayLogs = new ConcurrentSkipListSet<>();
 
         this.maxBufferSize = maxBufferSize;
         this.maxBatchSize = maxBatchSize;
@@ -58,7 +59,8 @@ public class ReplayLogLoader {
      * @param replayLog The {@link ReplayLog} before the one to find.
      * @return Gets the {@link ReplayLog} that comes after the given one in the set, if it is found. Otherwise returns null.
      */
-    public synchronized ReplayLog getNextReplayLog(ReplayLog replayLog) {
+    public ReplayLog getNextReplayLog(ReplayLog replayLog) {
+        // No need to synchronize because replayLogs is concurrent
         boolean returnNext = false;
         for (ReplayLog replayLogLocal : replayLogs) {
             if (replayLogLocal.equals(replayLog)) {
@@ -80,8 +82,9 @@ public class ReplayLogLoader {
      * @return The number of milliseconds from the Java epoch of 1970-01-01T00:00:00Z to the end of the last buffered
      *     replay log
      */
-    public synchronized long bufferedUntil() {
-        return replayLogs.last().getEndInstant().toEpochMilli();
+    public long bufferedUntil() {
+        // No need to synchronize because replayLogs is concurrent
+        return replayLogs.last().getEndInstant();
     }
 
     /**
@@ -100,6 +103,8 @@ public class ReplayLogLoader {
      * @return True if a replay log was found and loaded, else false
      */
     public boolean loadData(Instant instant) {
+        // No need to synchronize because replayLogs is concurrent
+
         logger.debug("Loading new batch of replay logs.");
 
         // Get all files in folder
@@ -340,8 +345,8 @@ public class ReplayLogLoader {
         ReplayLog foundReplayLog = null;
         int timeOffset = loadTimeLimit + 1;
         for (ReplayLog replayLog : replayLogs) {
-            long endOffset = replayLog.getEndInstant().toEpochMilli() - instant.toEpochMilli();
-            long startOffset = instant.toEpochMilli() - replayLog.getStartInstant().toEpochMilli();
+            long endOffset = replayLog.getEndInstant() - instant.toEpochMilli();
+            long startOffset = instant.toEpochMilli() - replayLog.getStartInstant();
 
             if (endOffset > 0 && startOffset > 0) {
                 // Replay log contained time instant
@@ -384,8 +389,8 @@ public class ReplayLogLoader {
     private ReplayLog getDataStrict(Instant instant) throws MissingResourceException {
         // Get all replay logs who contain the instant in their covered time interval
         List<ReplayLog> foundReplayLogs = replayLogs.stream()
-                .filter(replayLog -> replayLog.getStartInstant().toEpochMilli() <= instant.toEpochMilli()
-                        && replayLog.getEndInstant().toEpochMilli() >= instant.toEpochMilli())
+                .filter(replayLog -> replayLog.getStartInstant() <= instant.toEpochMilli()
+                        && replayLog.getEndInstant() >= instant.toEpochMilli())
                 .collect(Collectors.toList());
 
         if (foundReplayLogs.size() > 1) {

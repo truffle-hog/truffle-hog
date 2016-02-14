@@ -1,9 +1,7 @@
 package edu.kit.trufflehog.service.replaylogging;
 
-import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.command.IReplayCommand;
 import org.apache.commons.collections4.map.LinkedMap;
-
-import java.time.Instant;
 
 /**
  * <p>
@@ -12,7 +10,7 @@ import java.time.Instant;
  *     commands are packaged into 1 command that increments the counter by 50 and then returned as a single command.
  * </p>
  */
-public class CommandCompressor {
+class CommandCompressor {
 
     /**
      * <p>
@@ -30,7 +28,7 @@ public class CommandCompressor {
      * @param commands The commands to compress.
      * @return The compressed commands.
      */
-    public LinkedMap<ICommand, Instant> compressCommands(LinkedMap<ICommand, Instant> commands) {
+    public LinkedMap<IReplayCommand, Long> compressCommands(LinkedMap<IReplayCommand, Long> commands) {
         // TODO: This is just to make things work, if we decide to keep this functionality, we should implement it
         return commands;
     }

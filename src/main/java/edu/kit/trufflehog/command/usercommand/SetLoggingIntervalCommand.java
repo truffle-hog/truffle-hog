@@ -1,11 +1,11 @@
 package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
-import edu.kit.trufflehog.service.replaylogging.ReplayLogger;
+import edu.kit.trufflehog.service.replaylogging.ReplayLogSaveService;
 
 /**
  * <p>
- *     Command supposed to change the time interval of taking snapshots by the {@link ReplayLogger}.
+ *     Command supposed to change the time interval of taking snapshots by the {@link ReplayLogSaveService}.
  * </p>
  */
 public class SetLoggingIntervalCommand implements IUserCommand {

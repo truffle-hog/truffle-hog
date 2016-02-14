@@ -12,7 +12,7 @@ import java.io.Serializable;
  *     advisable to start a new thread to prevent starvation of other commands.
  * </p>
  */
-public interface ICommand<S> extends Serializable {
+public interface ICommand extends Serializable {
 
     /**
      * <p>

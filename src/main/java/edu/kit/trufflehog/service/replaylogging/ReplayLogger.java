@@ -1,13 +1,15 @@
 package edu.kit.trufflehog.service.replaylogging;
 
-import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.command.IReplayCommand;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
-import java.time.Instant;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * <p>
@@ -16,17 +18,17 @@ import java.time.Instant;
  * </p>
  * <p>
  *     The ReplayLogger saves the state of the graph through two things. It takes snapshots of the graph every X seconds
- *     through the {@link SnapshotLogger} and then saves all commands that occurred from that point on until the next
- *     snapshot is taken through the {@link CommandLogger}. Together these snapshots with the list of commands form a
- *     ReplayLog. When blocks of DataLogs that were saved consecutively are loaded back into memory, they can be used to
- *     reconstruct the graph by taking the snapshot as the original graph and then applying all commands that occurred
- *     back on the graph, in the order and interval they occurred. This is how old graphs can be viewed.
+ *     and then saves all commands that occurred from that point on until the next snapshot is taken through the
+ *     {@link CommandLogger}. Together these snapshots with the list of commands form a ReplayLog. When blocks of
+ *     DataLogs that were saved consecutively are loaded back into memory, they can be used to reconstruct the graph by
+ *     taking the snapshot as the original graph and then applying all commands that occurred back on the graph, in the
+ *     order and interval they occurred. This is how old graphs can be viewed.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public class ReplayLogger {
+class ReplayLogger {
     private static final Logger logger = LogManager.getLogger(ReplayLogger.class);
 
     /**
@@ -48,7 +50,7 @@ public class ReplayLogger {
      * @return A new ReplayLog object that is serializable and that contains the graph snapshot and the list of commands
      *          passed to the method.
      */
-    public ReplayLog createReplayLog(AbstractNetworkGraph snapshotGraph, LinkedMap<ICommand, Instant> commands) {
+    public ReplayLog createReplayLog(AbstractNetworkGraph snapshotGraph, LinkedMap<IReplayCommand, Long> commands) {
         return new ReplayLog(snapshotGraph, commands);
     }
 
@@ -66,8 +68,8 @@ public class ReplayLogger {
         }
 
         try {
-            String fileName = replayLog.getStartInstant().toEpochMilli() + "-"
-                    + replayLog.getEndInstant().toEpochMilli() + ".replaylog";
+            String fileName = replayLog.getStartInstant() + "-"
+                    + replayLog.getEndInstant() + ".replaylog";
             String filePath = currentReplayLogFolder.getCanonicalPath() + File.separator + fileName;
             FileOutputStream fileOut = new FileOutputStream(filePath);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);

@@ -1,7 +1,8 @@
 package edu.kit.trufflehog.service.replaylogging;
 
-import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.command.IReplayCommand;
 import edu.kit.trufflehog.model.FileSystem;
+import edu.kit.trufflehog.model.graph.GraphProxy;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import edu.kit.trufflehog.util.Notifier;
 import org.apache.logging.log4j.LogManager;
@@ -26,11 +27,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Julian Brendl
  * @version 1.0
  */
-public class ReplayLogLoadService extends Notifier<ICommand> {
+public class ReplayLogLoadService extends Notifier<IReplayCommand> {
     private static final Logger logger = LogManager.getLogger(ReplayLogLoadService.class);
 
-    private ReplayLogLoader replayLogLoader;
+    private final ReplayLogLoader replayLogLoader;
     private ReplayLog currentReplayLog = null;
+    private final GraphProxy graphProxy;
 
     private final ExecutorService executorService;
     private Future<?> replayLogLoadServiceFuture;
@@ -74,9 +76,10 @@ public class ReplayLogLoadService extends Notifier<ICommand> {
      *     Creates a new ReplayLogLoadService object.
      * </p>
      */
-    public ReplayLogLoadService(LoggedScheduledExecutor executor, FileSystem fileSystem) {
+    public ReplayLogLoadService(LoggedScheduledExecutor executor, FileSystem fileSystem, GraphProxy graphProxy) {
         this.executorService = executor;
         this.replayLogLoader = new ReplayLogLoader(fileSystem, MAX_BUFFER_SIZE, MAX_BATCH_SIZE, LOAD_TIME_LIMIT);
+        this.graphProxy = graphProxy;
 
         MAX_BUFFER_SIZE = 200; //TODO: hook up with settings stuff
         MAX_BATCH_SIZE = 20;   //TODO: hook up with settings stuff
@@ -197,12 +200,15 @@ public class ReplayLogLoadService extends Notifier<ICommand> {
 
         // Get the duration of one replay log for this instance (all replay logs in the same folder should have the
         // same duration)
-        long replayLogDuration = currentReplayLog.getEndInstant().toEpochMilli()
-                - currentReplayLog.getStartInstant().toEpochMilli();
+        long replayLogDuration = currentReplayLog.getEndInstant()
+                - currentReplayLog.getStartInstant();
 
         // Determine at how many milliseconds before the end of the buffered data we should start loading new data into
         // the buffer
         long startBuffering = replayLogDuration * START_BUFFER_X_REPLAY_LOGS_BEFORE;
+
+        // Set this graph as the 
+        graphProxy.setGraph(currentReplayLog.getGraphSnapshot());
 
         Future loadResult = null;
         while (!Thread.currentThread().isInterrupted()) {
@@ -210,7 +216,7 @@ public class ReplayLogLoadService extends Notifier<ICommand> {
             // memory. This submission into the thread pool will return a future which will be used later on to sync
             // both threads again.
             final long bufferedUntil = replayLogLoader.bufferedUntil();
-            if (bufferedUntil - currentReplayLog.getEndInstant().toEpochMilli() <= startBuffering && canLoad.get()) {
+            if (bufferedUntil - currentReplayLog.getEndInstant() <= startBuffering && canLoad.get()) {
                 loadResult = executorService.submit(() -> canLoad.set(replayLogLoader.
                         loadData(Instant.ofEpochMilli(bufferedUntil + (replayLogDuration / 2)))));
             }
@@ -220,7 +226,16 @@ public class ReplayLogLoadService extends Notifier<ICommand> {
                     replayLogLoader.getNextReplayLog(currentReplayLog));
 
             // This is the actual purpose of the thread - send the old commands out to all listeners via the notifier
-            currentReplayLog.getCommands().forEach((command, instantLocal) -> notifyListeners(command));
+            currentReplayLog.getCommands().forEach((command, timeUntilNextCommand) -> {
+                notifyListeners(command);
+
+                // Sleep for the same duration that the
+                try {
+                    Thread.sleep(timeUntilNextCommand);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
 
             // Now wait until the next replay log has been retrieved from the buffer
             ReplayLog replayLogTemp = null;
