@@ -14,7 +14,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by julianbrendl on 2/14/16.
+ * <p>
+ *     Tests the capabilities of the command logger, meaning whether it correctly manages its internal buffers.
+ * </p>
+ *
+ * @author Julian Brendl
+ * @version 1.0
  */
 public class CommandLoggerTest {
     private CommandLogger commandLogger;
@@ -44,6 +49,10 @@ public class CommandLoggerTest {
     }
 
     /**
+     * <p>
+     *     Tests whether commands were added correctly by checking that they are ordered by the time they were added
+     *     to the map FIFO style.
+     * </p>
      *
      * @throws Exception Passes any errors that occurred during the test on
      */
@@ -63,7 +72,7 @@ public class CommandLoggerTest {
 
         LinkedMap<IReplayCommand, Long> commands = commandLogger.createCommandLog();
 
-        assertEquals(commands.size(), randomLength);
+        assertEquals(randomLength, commands.size());
 
         long currentLong = commands.getValue(0);
         for (Long nextLong : commands.values()) {
@@ -73,14 +82,17 @@ public class CommandLoggerTest {
     }
 
     /**
+     * <p>
+     *     Swaps the internal buffers (which are maps) 10 times to sees if they were swapped correctly
+     * </p>
      *
-     * @throws Exception
+     * @throws Exception Passes any errors that occurred during the test on
      */
     @Test
     public void testSwapMaps() throws Exception {
-        Instant now =  Instant.now();
-
         for (int i = 0; i < 10; i++) {
+            Instant now =  Instant.now();
+
             int randomLength1 = (int) (Math.random() * 10) + 10;
             for (int j = 0; j < randomLength1; j++) {
                 IReplayCommand command = mock(AddPacketDataCommand.class);
@@ -90,7 +102,7 @@ public class CommandLoggerTest {
             }
             commandLogger.swapMaps();
             LinkedMap<IReplayCommand, Long> commands = commandLogger.createCommandLog();
-            assertEquals(commands.size(), randomLength1);
+            assertEquals(randomLength1, commands.size());
 
             int randomLength2 = (int) (Math.random() * 10) + 10;
             for (int j = 0; j < randomLength2; j++) {
@@ -101,16 +113,18 @@ public class CommandLoggerTest {
             }
             commandLogger.swapMaps();
             commands = commandLogger.createCommandLog();
-            assertEquals(commands.size(), randomLength2);
+            assertEquals(randomLength2, commands.size());
         }
     }
 
     /**
-     *
+     * <p>
+     *     Currently not much to test - since this just returns what it finds in the buffer
+     * </p>
      * @throws Exception
      */
     @Test
     public void testCreateCommandLog() throws Exception {
-
+        testAddCommand(); //TODO: either remove test or do correctly once command compressor is done
     }
 }

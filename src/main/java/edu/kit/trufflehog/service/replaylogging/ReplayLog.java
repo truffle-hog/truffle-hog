@@ -1,9 +1,8 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.IReplayCommand;
-import org.apache.commons.collections4.map.LinkedMap;
-import edu.kit.trufflehog.command.ICommand;
 import edu.kit.trufflehog.model.graph.INetworkGraph;
+import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.Serializable;
 
@@ -95,10 +94,7 @@ class ReplayLog implements Serializable, Comparable<ReplayLog> {
 
     @Override
     public int compareTo(ReplayLog o) {
-        long thisMedianTime = (startInstant + endInstant) / 2;
-        long otherMedianTime = (o.getStartInstant() + o.getEndInstant()) / 2;
-
-        return (int)(thisMedianTime - otherMedianTime);
+        return (int)(endInstant - o.getEndInstant());
     }
 
     @Override
@@ -112,7 +108,6 @@ class ReplayLog implements Serializable, Comparable<ReplayLog> {
                 && !(commands != null ? !commands.equals(replayLog.commands) : replayLog.commands != null)
                 && !(startInstant != null ? !startInstant.equals(replayLog.startInstant) : replayLog.startInstant != null)
                 && !(endInstant != null ? !endInstant.equals(replayLog.endInstant) : replayLog.endInstant != null);
-
     }
 
     @Override

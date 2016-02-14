@@ -86,7 +86,7 @@ public class ReplayLogSaveServiceTest {
 
         // There seems to be some concurrency lag which is causing 1 or 2 more replay logs to be created, after the
         // future.cancel() call has been made, not sure if this is an error or what not
-        assertEquals(Math.abs(replayLogs.length - numberOfFiles) < 3, true);
+        assertEquals(true, Math.abs(replayLogs.length - numberOfFiles) < 3);
     }
 
 
