@@ -9,13 +9,13 @@
  *     <li>
  *         The windows that will be placed on the screen. Every window class
  *         implements the
- *         {@link edu.kit.trufflehog.view.IWindowController} interface.
+ *         {@link edu.kit.trufflehog.view.controllers.IWindowController} interface.
  *     </li>
  *     <li>
  *         The views that are places into the windows. Views are showing
  *         buttons, menus, toolbars etc. as well as the graph visualization.
  *         Every view controller class implements the
- *         {@link edu.kit.trufflehog.view.IViewController}
+ *         {@link edu.kit.trufflehog.view.controllers.IViewController}
  *         interface. {@code IViewControllers}
  *     </li>
  *     </ul>
