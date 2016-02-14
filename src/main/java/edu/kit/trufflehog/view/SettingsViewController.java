@@ -3,9 +3,7 @@ package edu.kit.trufflehog.view;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.SettingsInteraction;
 import edu.kit.trufflehog.view.controllers.BorderPaneController;
-import javafx.fxml.FXMLLoader;
 
-import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 

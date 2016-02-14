@@ -1,9 +1,7 @@
 package edu.kit.trufflehog.model.graph;
 
-import edu.uci.ics.jung.graph.DirectedGraph;
-
 /**
- * Created by jan on 14.02.16.
+ * The Proxy interface to be used for switching the active graph.
  */
 public interface IGraphProxy {
 
