@@ -4,6 +4,7 @@ import edu.kit.trufflehog.model.filter.Filter;
 import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  *     Filter objects and marked accordingly.
  * </p>
  */
-public class AddPacketDataCommand implements ITruffleCommand{
+public class AddPacketDataCommand implements ITruffleCommand {
     private AbstractNetworkGraph networkGraph = null;
     private List<Filter> filterList = null;
     private Truffle truffle = null;
@@ -34,5 +35,10 @@ public class AddPacketDataCommand implements ITruffleCommand{
 
     public void execute() {
 
+    }
+
+    @Override
+    public Instant createdAt() {
+        return null; //TODO implement
     }
 }

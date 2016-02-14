@@ -1,6 +1,6 @@
 package edu.kit.trufflehog.service.replaylogging;
 
-import edu.kit.trufflehog.command.ICommand;
+import edu.kit.trufflehog.command.IReplayCommand;
 import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
@@ -12,8 +12,8 @@ import org.junit.Test;
 import java.io.File;
 import java.lang.reflect.Field;
 
-import static org.mockito.Mockito.mock;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 /**
  * <p>
@@ -117,7 +117,7 @@ public class ReplayLogSaveServiceTest {
     private void recordSession(int sleepTime, int loopMax) throws Exception {
         replayLogSaveService.startRecord();
         for (int i = 0; i < loopMax; i++) {
-            ICommand command = mock(AddPacketDataCommand.class);
+            IReplayCommand command = mock(AddPacketDataCommand.class);
             replayLogSaveService.receive(command);
 
             Thread.sleep(sleepTime);
