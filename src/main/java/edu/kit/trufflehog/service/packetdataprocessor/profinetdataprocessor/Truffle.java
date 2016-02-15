@@ -18,7 +18,7 @@ public class Truffle implements IPacketData {
 
     private final Map<Class<?>, HashMap<String, Object>> attributes = new HashMap<>();
 
-    private Truffle() {
+    Truffle() {
 
     }
 
@@ -58,9 +58,9 @@ public class Truffle implements IPacketData {
     public <T> T getAttribute(Class<T> attributeType, String attributeIdentifier) {
         HashMap<?, ?> attributeMap = attributes.get(attributeType);
 
-        if (attributeMap != null)
-            return (T) attributeMap.get(attributeIdentifier);
+        if (attributeMap == null)
+            return null;
 
-        return null;
+        return (T) attributeMap.get(attributeIdentifier);
     }
 }
