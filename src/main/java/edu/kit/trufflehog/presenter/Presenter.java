@@ -1,6 +1,12 @@
 package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.Main;
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.interaction.IInteraction;
+import edu.kit.trufflehog.view.MainViewController;
+import edu.kit.trufflehog.view.RootWindowController;
+import edu.kit.trufflehog.view.controllers.BorderPaneController;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -16,7 +22,7 @@ import static edu.kit.trufflehog.Main.*;
  * </p>
  */
 public class Presenter {
-
+    private static Presenter presenter;
     /**
      * <p>
      *     Creates a new instance of a Presenter. A presenter is a singelton, thus InstanceAlreadyExistsException is
@@ -28,7 +34,11 @@ public class Presenter {
      *         already exists.
      */
     public static Presenter createPresenter() throws InstanceAlreadyExistsException {
-        throw new NotImplementedException();
+        if (presenter != null) {
+            throw new InstanceAlreadyExistsException("Error, the presenter at an earlier stage. ");
+        }
+        presenter = new Presenter();
+        return presenter;
     }
 
     /**
@@ -45,11 +55,15 @@ public class Presenter {
      *      resources they need ect.
      *  </p>
      */
-    public void present() {
-        initGUI();
-    }
+    public void present() { initGUI(); }
 
     private void initGUI() {
         Stage primaryStage = getPrimaryStage();
+        MainViewController mainView = new MainViewController("mainView.fxml");
+        Scene mainScene = new Scene(mainView);
+        RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene);
+        primaryStage.setScene(mainScene);
+        primaryStage.show();
     }
+
 }

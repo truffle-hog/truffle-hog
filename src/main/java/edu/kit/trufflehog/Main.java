@@ -1,7 +1,10 @@
 package edu.kit.trufflehog;
 
 import edu.kit.trufflehog.presenter.Presenter;
+import edu.kit.trufflehog.view.MainViewController;
+import edu.kit.trufflehog.view.RootWindowController;
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -29,8 +32,7 @@ public class Main extends Application {
      * @param args command line arguments
      */
 	public static void main(String[] args) {
-		// TODO below
-		// logger.debug("example log at debug level");
+		launch(args);
 	}
 
 	/**
