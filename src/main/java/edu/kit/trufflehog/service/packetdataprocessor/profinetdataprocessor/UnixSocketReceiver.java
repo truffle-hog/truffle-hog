@@ -1,23 +1,38 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
+import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.command.trufflecommand.PluginNotRunningCommand;
+import edu.kit.trufflehog.model.filter.Filter;
+import edu.kit.trufflehog.model.graph.INetworkGraph;
+import edu.kit.trufflehog.view.NetworkGraphView;
+
+import java.util.List;
 
 /**
  * <p>
  *     This implementation of the {@link TruffleReceiver} uses a unix socket
  *     to communicate with the spp_profinet snort plugin.
  * </p>
+ *
+ * @author Mark Giraud
+ * @version 0.1
  */
 public class UnixSocketReceiver extends TruffleReceiver {
+
+    private final INetworkGraph graph;
+    private final List<Filter> filters;
+
+    private boolean connected = false;
 
     /**
      * <p>
      *     Creates the UnixSocketReceiver.
      * </p>
      */
-    public UnixSocketReceiver() {
-        throw new UnsupportedOperationException("Note implemented yet!");
+    public UnixSocketReceiver(INetworkGraph graph, List<Filter> filters) {
+        this.graph = graph;
+        this.filters = filters;
     }
 
     /**
@@ -35,14 +50,49 @@ public class UnixSocketReceiver extends TruffleReceiver {
      */
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not implemented yet!");
+
+        while(!Thread.interrupted()) {
+            synchronized (this) {
+                try {
+                    while (!connected) {
+                        this.wait();
+                    }
+
+                    notifyListeners(new AddPacketDataCommand(graph, getTruffle(), filters));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
     }
 
-    private native void initIPC() throws SnortPNPluginNotRunningException;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void connect() {
+        try {
+            openIPC();
 
-    private native void getTruffle();
-
-    private void sendStartPluginCommand() {
-        notifyListeners(new PluginNotRunningCommand());
+            connected = true;
+        } catch (SnortPNPluginNotRunningException e) {
+            notifyListeners(new PluginNotRunningCommand());
+        }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void disconnect() {
+        closeIPC();
+
+        connected = false;
+    }
+
+    private native void openIPC() throws SnortPNPluginNotRunningException;
+
+    private native void closeIPC();
+
+    private native Truffle getTruffle();
 }

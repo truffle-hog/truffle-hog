@@ -26,12 +26,13 @@ public class AddPacketDataCommand implements ITruffleCommand{
      * @param packet Truffle to get data from
      * @param filters List of filters to check
      */
-    AddPacketDataCommand(INetworkGraph graph,  Truffle packet, List<Filter> filters) {
+    public AddPacketDataCommand(INetworkGraph graph,  Truffle packet, List<Filter> filters) {
         networkGraph = graph;
         filterList = filters;
         truffle = packet;
     }
 
+    @Override
     public void execute() {
 
     }

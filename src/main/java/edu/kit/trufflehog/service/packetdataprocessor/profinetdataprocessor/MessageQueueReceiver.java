@@ -47,4 +47,14 @@ public class MessageQueueReceiver extends TruffleReceiver {
     private void sendStartPluginCommand() {
         throw new UnsupportedOperationException("Not implemented yet!");
     }
+
+    @Override
+    public void connect() {
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
+    public void disconnect() {
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
 }
