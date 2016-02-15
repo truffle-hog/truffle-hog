@@ -13,15 +13,24 @@ import java.util.Map;
  */
 public class Truffle implements IPacketData {
 
-    private Map<Class<?>, HashMap<String, Object>> attributes;
+    private final Map<Class<?>, HashMap<String, Object>> attributes = new HashMap<>();
 
     private Truffle() {
-        attributes.put(Integer.class, new HashMap<>());
-        attributes.put(String.class, new HashMap<>());
-        attributes.put(Long.class, new HashMap<>());
+
     }
 
-    private <T> void setAttribute(Class<T> attributeType, String attributeIdentifier, T value) {
+    /**
+     * <p>
+     *     This method adds a new element under the specified type and name to the Truffle.
+     * </p>
+     * @param attributeType The type of the element to add.
+     * @param attributeIdentifier The string identifier of the object.
+     * @param value The value to add under the identifier.
+     * @param <T> The Type of the element to add.
+     * @return The value of the previous mapping. If no element was mapped under the identifier then null is returned.
+     */
+    @SuppressWarnings("unchecked")
+    <T> T setAttribute(Class<T> attributeType, String attributeIdentifier, T value) {
         HashMap<String, Object> attributeMap = attributes.get(attributeType);
 
         if (attributeMap == null) {
@@ -29,7 +38,7 @@ public class Truffle implements IPacketData {
             attributes.put(attributeType, attributeMap);
         }
 
-        attributeMap.put(attributeIdentifier, value);
+        return (T) attributeMap.put(attributeIdentifier, value);
 
     }
 
@@ -41,6 +50,7 @@ public class Truffle implements IPacketData {
      * @param <T> The type of the attribute that is retrieved.
      * @return The value of the attribute or null if nothing was found under the specified identifier
      */
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getAttribute(Class<T> attributeType, String attributeIdentifier) {
         HashMap<?, ?> attributeMap = attributes.get(attributeType);
