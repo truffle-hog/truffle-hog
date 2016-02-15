@@ -1,7 +1,5 @@
 package edu.kit.trufflehog.service.replaylogging;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.time.Instant;
 import java.util.MissingResourceException;
 

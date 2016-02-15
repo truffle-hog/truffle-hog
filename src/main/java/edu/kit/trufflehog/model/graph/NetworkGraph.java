@@ -1,5 +1,7 @@
 package edu.kit.trufflehog.model.graph;
 
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -8,39 +10,37 @@ import java.util.HashMap;
  *     Stores {@link NetworkNode}s and {@link IConnection}s.
  * </p>
  */
-public class NetworkGraph extends AbstractNetworkGraph implements Serializable {
+public class NetworkGraph extends DirectedSparseGraph<INode, IConnection> implements INetworkGraph, Serializable {
 
     private HashMap networkNodes;
-    private NetworkNode networkNode;
-    private NetworkEdge networkEdge;
 
     @Override
-    public NetworkEdge addNetworkEdge(NetworkNode from, NetworkNode to) {
+    public INode getNetworkNodeByMACAddress(long macAddress) {
         return null;
     }
 
     @Override
-    public NetworkNode getNetworkNodeByMACAddress(String macAddress) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public INode getNetworkNodeByIPAddress(int ipAddress) {
+        return null;
     }
 
     @Override
-    public NetworkNode getNetworkNodeByIPAddress(String ipAddress) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public INode getNetworkNodeByDeviceName(String deviceName) {
+        return null;
     }
 
     @Override
-    public NetworkNode getNetworkNodeByDeviceName(String deviceName) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public INode getNetworkEdge(INode src, INode dest) {
+        return null;
     }
 
     @Override
-    public NetworkEdge getNetworkEdge(NetworkNode a, NetworkNode b) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public void addNetworkEdge(IConnection connection, INode from, INode to) {
+
     }
 
     @Override
-    public void addNetworkNode(NetworkNode node) {
+    public void addNetworkNode(INode node) {
 
     }
 }

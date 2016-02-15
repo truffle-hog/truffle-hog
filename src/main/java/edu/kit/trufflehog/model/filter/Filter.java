@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.filter;
 
 import edu.kit.trufflehog.command.ICommand;
+
 import java.io.Serializable;
 import java.util.LinkedList;
 
