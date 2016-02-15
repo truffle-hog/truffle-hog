@@ -51,7 +51,6 @@ public class GraphProxy implements INetworkGraph, IGraphProxy {
         activeGraph.addNetworkNode(node);
     }
 
-
     @Override
     public Collection<IConnection> getEdges() {
         return activeGraph.getEdges();

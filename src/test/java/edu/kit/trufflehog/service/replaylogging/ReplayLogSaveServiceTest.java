@@ -39,8 +39,9 @@ public class ReplayLogSaveServiceTest {
     @Before
     public void setUp() throws Exception {
         fileSystem = mock(FileSystem.class);
-        when(fileSystem.getDataFolder()).thenAnswer(invocation -> new File("./test-data"));
-        when(fileSystem.getReplayLogFolder()).thenAnswer(invocation -> new File("./test-data/replaylogging"));
+        when(fileSystem.getDataFolder()).thenAnswer(invocation -> new File("." + File.separator + "test-data"));
+        when(fileSystem.getReplayLogFolder()).thenAnswer(invocation -> new File("." + File.separator +
+                "test-data" + File.separator + "replaylogging"));
         loggedScheduledExecutor = new LoggedScheduledExecutor(1);
         replayLogSaveService = new ReplayLogSaveService(null, fileSystem, loggedScheduledExecutor);
 
@@ -107,22 +108,21 @@ public class ReplayLogSaveServiceTest {
      * </p>
      *
      * @throws Exception Passes any errors that occurred during the test on
+     *
+     * FIXME: THIS DOES NOT WORK :(
      */
     @Test
     public void testStartStopRecord() throws Exception {
         for (int i = 0; i < 100; i++) {
-            assertEquals(loggedScheduledExecutor.getQueue().size() == 0
-                    || loggedScheduledExecutor.getActiveCount() == 0, true);
+            assertEquals(loggedScheduledExecutor.getActiveCount() == 0, true);
 
             replayLogSaveService.startRecord();
 
-            assertEquals(loggedScheduledExecutor.getQueue().size() == 1
-                    || loggedScheduledExecutor.getActiveCount() == 1, true);
+            assertEquals(loggedScheduledExecutor.getActiveCount() == 1, true);
 
             replayLogSaveService.stopRecord();
 
-            assertEquals(loggedScheduledExecutor.getQueue().size() == 0
-                    || loggedScheduledExecutor.getActiveCount() == 0, true);
+            assertEquals(loggedScheduledExecutor.getActiveCount() == 0, true);
         }
     }
 

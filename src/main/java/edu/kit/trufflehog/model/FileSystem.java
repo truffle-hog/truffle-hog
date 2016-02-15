@@ -111,7 +111,7 @@ public class FileSystem {
      */
     public File getReplayLogFolder() {
         getDataFolder();
-        replayLogFolder = createFolder(replayLogFolder, "replay_data", dataFolder);
+        replayLogFolder = createFolder(replayLogFolder, "replaylogs", dataFolder);
 
         return replayLogFolder;
     }
@@ -139,7 +139,7 @@ public class FileSystem {
      */
     public File getTruffleDataLogFolder() {
         getDataFolder();
-        truffleDataLogFolder = createFolder(truffleDataLogFolder, "truffle_data_log", dataFolder);
+        truffleDataLogFolder = createFolder(truffleDataLogFolder, "truffledatalog", dataFolder);
 
         return truffleDataLogFolder;
     }
