@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.view;
+package edu.kit.trufflehog.view.controllers;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.util.Notifier;

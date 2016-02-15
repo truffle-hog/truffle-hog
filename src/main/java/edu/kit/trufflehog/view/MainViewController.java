@@ -2,9 +2,8 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.MainInteraction;
-import javafx.fxml.FXMLLoader;
+import edu.kit.trufflehog.view.controllers.BorderPaneController;
 
-import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -31,16 +30,7 @@ public class MainViewController extends BorderPaneController<MainInteraction> {
      */
     public MainViewController(final String fxmlFileName) {
 
-        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource
-                (fxmlFileName));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+        super(fxmlFileName);
     }
 
     /**
