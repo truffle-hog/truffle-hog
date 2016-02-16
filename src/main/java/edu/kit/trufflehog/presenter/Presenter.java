@@ -28,8 +28,7 @@ public class Presenter {
     private static Presenter presenter;
     /**
      * <p>
-     *     Creates a new instance of a Presenter. A presenter is a singelton, thus InstanceAlreadyExistsException is
-     *     thrown when an instance has already been created.
+     *     Creates a new instance of a singleton Presenter or returns it if it was created before. 
      * </p>
      *
      *
@@ -60,12 +59,15 @@ public class Presenter {
 
     private void initGUI() {
         Stage primaryStage = getPrimaryStage();
+
+        // setting up main window
         MainViewController mainView = new MainViewController("main_view.fxml");
         Scene mainScene = new Scene(mainView);
         RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene);
         primaryStage.setScene(mainScene);
         primaryStage.show();
 
+        // setting up general statistics overlay
         OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
         mainView.getChildren().add(generalStatisticsOverlay);
         AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
