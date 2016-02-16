@@ -75,7 +75,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
      *     This creates a new folder in the replaylog folder into which all recorded {@link ReplayLog}s will be saved.
      * </p>
      */
-    public void startRecord() {
+    public void startCapture() {
         if (recording) {
             logger.debug("Already recording replay logs.");
             return;
@@ -99,7 +99,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
      *     Stops the replay log saving functionality of TruffleHog.
      * </p>
      */
-    public void stopRecord() {
+    public void stopCapture() {
         if (!recording) {
             logger.debug("Already stopped recording replay logs.");
             return;

@@ -116,11 +116,11 @@ public class ReplayLogSaveServiceTest {
         for (int i = 0; i < 100; i++) {
             assertEquals(loggedScheduledExecutor.getActiveCount() == 0, true);
 
-            replayLogSaveService.startRecord();
+            replayLogSaveService.startCapture();
 
             assertEquals(loggedScheduledExecutor.getActiveCount() == 1, true);
 
-            replayLogSaveService.stopRecord();
+            replayLogSaveService.stopCapture();
 
             assertEquals(loggedScheduledExecutor.getActiveCount() == 0, true);
         }
@@ -136,7 +136,7 @@ public class ReplayLogSaveServiceTest {
      * @throws Exception Passes any errors that occurred during the test on
      */
     private void recordSession(int sleepTime, int loopMax) throws Exception {
-        replayLogSaveService.startRecord();
+        replayLogSaveService.startCapture();
         for (int i = 0; i < loopMax; i++) {
             IReplayCommand command = new AddPacketDataCommand(null, null, null);
 
@@ -144,6 +144,6 @@ public class ReplayLogSaveServiceTest {
 
             Thread.sleep(sleepTime);
         }
-        replayLogSaveService.stopRecord();
+        replayLogSaveService.stopCapture();
     }
 }

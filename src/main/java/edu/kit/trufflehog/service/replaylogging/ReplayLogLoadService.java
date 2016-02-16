@@ -78,15 +78,15 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      * </p>
      */
     public ReplayLogLoadService(LoggedScheduledExecutor executor, FileSystem fileSystem, GraphProxy graphProxy) {
-        this.executorService = executor;
-        this.replayLogLoader = new ReplayLogLoader(fileSystem, MAX_BUFFER_SIZE, MAX_BATCH_SIZE, LOAD_TIME_LIMIT);
-        this.graphProxy = graphProxy;
-        isPlaying = false;
-
         MAX_BUFFER_SIZE = 200; //TODO: hook up with settings stuff
         MAX_BATCH_SIZE = 20;   //TODO: hook up with settings stuff
         LOAD_TIME_LIMIT = 3;   //TODO: hook up with settings stuff
         START_BUFFER_X_REPLAY_LOGS_BEFORE = 5; //TODO: hook up with settings stuff
+
+        this.executorService = executor;
+        this.replayLogLoader = new ReplayLogLoader(fileSystem, MAX_BUFFER_SIZE, MAX_BATCH_SIZE, LOAD_TIME_LIMIT);
+        this.graphProxy = graphProxy;
+        isPlaying = false;
     }
 
     /**
