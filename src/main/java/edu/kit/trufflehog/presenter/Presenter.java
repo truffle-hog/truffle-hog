@@ -34,14 +34,11 @@ public class Presenter {
      *
      *
      * @return A new instance of the Presenter, if none already exists.
-     * @throws InstanceAlreadyExistsException Thrown if this method is called when an instance of the Presenter
-     *         already exists.
      */
-    public static Presenter createPresenter() throws InstanceAlreadyExistsException {
-        if (presenter != null) {
-            throw new InstanceAlreadyExistsException("Error, the presenter at an earlier stage. ");
+    public static Presenter createPresenter() {
+        if (Presenter.presenter == null) {
+            Presenter.presenter = new Presenter();
         }
-        presenter = new Presenter();
         return presenter;
     }
 
