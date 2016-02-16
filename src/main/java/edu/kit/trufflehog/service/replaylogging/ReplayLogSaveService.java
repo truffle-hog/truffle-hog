@@ -32,7 +32,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
     private final ReplayLogger replayLogger;
     private Instant startInstant;
     private final FileSystem fileSystem;
-    private File currentReplayLogFolder;
+    private CaptureSession currentSession;
     private final INetworkGraph graph;
 
     private ScheduledFuture<?> saveServiceFuture;
@@ -60,7 +60,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
         this.commandLogger = new CommandLogger();
         this.replayLogger = new ReplayLogger();
         this.fileSystem = fileSystem;
-        this.currentReplayLogFolder = null;
+        this.currentSession = null;
         this.graph = graph;
 
         this.executorService = executorService;
@@ -84,11 +84,15 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
         // Lock here because instant could be used in the thread calling the receive method
         synchronized (this) {
             startInstant = Instant.now();
-            currentReplayLogFolder = new File(fileSystem.getReplayLogFolder() + File.separator +
+            File currentReplayLogFolder = new File(fileSystem.getReplayLogFolder() + File.separator +
                     startInstant.toEpochMilli());
+            currentSession = new CaptureSession(currentReplayLogFolder, startInstant);
         }
 
-        currentReplayLogFolder.mkdir();
+        if (!currentSession.create()) {
+            logger.error("Unable to start a new capture session");
+        }
+
         saveServiceFuture = executorService.scheduleAtFixedRate(this, LOGGING_INTERVAL, LOGGING_INTERVAL, MILLISECONDS);
         recording = true;
         logger.debug("Recording replay logs..");
@@ -121,7 +125,12 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
             }
         }
 
-        logger.debug("Stopped recording replay logs..");
+        // End the current capture session, this renames the folder so that the folders name becomes
+        if (currentSession.finish()) {
+            logger.debug("Ended current capture session successfully");
+        } else {
+            logger.error("Unable to end current capture session successfully");
+        }
     }
 
     /**
@@ -147,7 +156,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
         ReplayLog replayLog = replayLogger.createReplayLog(graph, compressedCommandList);
 
         // Save the replay log to the disk
-        replayLogger.saveReplayLog(replayLog, currentReplayLogFolder);
+        replayLogger.saveReplayLog(replayLog, currentSession);
     }
 
     /**

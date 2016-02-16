@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.time.Instant;
 
 import static org.junit.Assert.assertEquals;
 
@@ -79,8 +80,8 @@ public class ReplayLoggerTest {
             }
 
             ReplayLog replayLog = replayLogger.createReplayLog(null, replayCommands);
-
-            replayLogger.saveReplayLog(replayLog, replayLogFolder);
+            CaptureSession captureSession = new CaptureSession(replayLogFolder, Instant.now());
+            replayLogger.saveReplayLog(replayLog, captureSession);
 
             // Find the file
             File[] replayLogs = replayLogFolder.listFiles();

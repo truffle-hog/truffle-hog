@@ -10,11 +10,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -59,59 +54,15 @@ class ReplayLogger {
         return new ReplayLog(snapshotGraph, commands);
     }
 
-    public boolean closeCaptureSession(File currentReplayLogFolder) {
-        File[] filesArray = currentReplayLogFolder.listFiles();
-
-        if (filesArray == null) {
-            return false;
-        }
-
-        List<File> fileList = Arrays.asList(filesArray);
-        final Pattern p = Pattern.compile("([0-9]+)-([0-9]+).replaylog");
-
-        Optional<File> fileOptional = fileList.stream()
-                .filter(fileTemp -> fileTemp.isFile()
-                        && p.matcher(fileTemp.getName()).matches())
-                .sorted((file1, file2) -> {
-                    // Check if the file matches the replay log file name structure
-                    Matcher m1 = p.matcher(file1.getName());
-                    Matcher m2 = p.matcher(file2.getName());
-
-                    // Get the middle time between the start and end time
-                    long endTime1 = Long.parseLong(m1.group(2));
-                    long endTime2 = Long.parseLong(m2.group(2));
-                    return (int) (endTime1 - endTime2);
-                })
-                .findFirst();
-
-        if (fileOptional.isPresent()) {
-            File file = fileOptional.get();
-            File parentFile = file.getParentFile();
-            String startTime = currentReplayLogFolder.getName();
-            // Check if the file matches the replay log file name structure
-            Matcher m = p.matcher(file.getName());
-
-            try {
-                return currentReplayLogFolder.renameTo(new File(parentFile.getCanonicalPath() +
-                        File.separator + startTime + "-" + m.group(2)));
-            } catch (IOException e) {
-                logger.error("Unable to rename capture session folder");
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
     /**
      * <p>
      *     Saves the {@link ReplayLog} object given on the hard drive so that it can be retrieved later.
      * </p>
      *
      * @param replayLog The replay log to save on the hard drive.
-     * @param currentReplayLogFolder The folder where to save the replay logs to
+     * @param captureSession The capture session to which the replay logs should be saved to
      */
-    public void saveReplayLog(ReplayLog replayLog, File currentReplayLogFolder) {
+    public void saveReplayLog(ReplayLog replayLog, CaptureSession captureSession) {
         if (replayLog == null || replayLog.getCommands().isEmpty() || Thread.currentThread().isInterrupted()) {
             return;
         }
@@ -119,7 +70,7 @@ class ReplayLogger {
         try {
             String fileName = replayLog.getStartInstant() + "-"
                     + replayLog.getEndInstant() + ".replaylog";
-            String filePath = currentReplayLogFolder.getCanonicalPath() + File.separator + fileName;
+            String filePath = captureSession.getSessionFolder().getCanonicalPath() + File.separator + fileName;
             FileOutputStream fileOut = new FileOutputStream(filePath);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(replayLog);

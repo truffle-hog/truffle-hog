@@ -1,0 +1,187 @@
+package edu.kit.trufflehog.service.replaylogging;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+/**
+ * <p>
+ *     The CaptureSession is the abstraction of a folder in which replay logs are contained. It provides
+ *     functionality that is shared among many classes of the replaylogging package. For instance, it can retrieve the
+ *     session's start and end times, the contained replay logs as a sorted list, etc.
+ * </p>
+ *
+ * @author Julian Brendl
+ * @version 1.0
+ */
+class CaptureSession implements ICaptureSession {
+    private static final Logger logger = LogManager.getLogger(ReplayLogSaveService.class);
+
+    private File replayLogsFolder;
+    private Instant startInstant;
+    private Instant endInstant;
+    private List<File> replayLogs;
+
+    /**
+     * <p>
+     *     Creates a new CaptureSession object. This constructor should ba called when a new session is created, and
+     *     does not exists yet. (i.e. new replay logs will be saved into it, and not loaded from it).
+     * </p>
+     *
+     * @param replayLogsFolder The parent folder of all replay logs in this capture session.
+     * @param startInstant The instant the capture was started.
+     */
+    public CaptureSession(File replayLogsFolder, Instant startInstant) {
+        this.replayLogsFolder = replayLogsFolder;
+        this.startInstant = startInstant;
+    }
+
+    /**
+     * <p>
+     *     Creates a new CaptureSession object. This constructor should be called when an already existing session
+     *     will be loaded into memory, and not when new replay logs will be saved into this session.
+     * </p>
+     *
+     * @param replayLogsFolder The parent folder of all replay logs in this capture session.
+     */
+    public CaptureSession(File replayLogsFolder) {
+        new CaptureSession(replayLogsFolder, null);
+    }
+
+    /**
+     * <p>
+     *     Loads all replay log files in the folder into a list and sorts them by their ending times.
+     * </p>
+     *
+     * @throws NullPointerException thrown when no replay log files are found in the session folder
+     */
+    private List<File> loadCaptureSessionSorted() throws NullPointerException {
+        File[] filesArray = replayLogsFolder.listFiles();
+
+        if (filesArray == null) {
+            throw new NullPointerException("No replay log files found in session folder.");
+        }
+
+        List<File> fileList = Arrays.asList(filesArray);
+        final Pattern p = Pattern.compile("([0-9]+)-([0-9]+).replaylog");
+
+        return fileList.stream()
+                .filter(fileTemp -> fileTemp.isFile()
+                        && p.matcher(fileTemp.getName()).matches())
+                .sorted((file1, file2) -> {
+                    // Sort files in ascending order by end times
+                    Matcher m1 = p.matcher(file1.getName());
+                    Matcher m2 = p.matcher(file2.getName());
+                    m1.matches();
+                    m2.matches();
+
+                    long endTime1 = Long.parseLong(m1.group(2));
+                    long endTime2 = Long.parseLong(m2.group(2));
+                    return (int) (endTime1 - endTime2);
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * <p>
+     *     Creates a new capture session on the hard drive.
+     * </p>
+     *
+     * @return True if the creation of a new capture session was successful, else false.
+     */
+    public boolean create() {
+        return replayLogsFolder.mkdir();
+    }
+
+    /**
+     * <p>
+     *     Finishes a new capture session on the hard drive.
+     * </p>
+     *
+     * @return True if the finishing of a new capture session was successful, else false.
+     */
+    public boolean finish() {
+        List<File> files;
+        try {
+            files = loadCaptureSessionSorted();
+        } catch (NullPointerException e) {
+            logger.error("Unable to load replay log files in session folder.", e);
+            return false;
+        }
+
+        File lastFile = files.get(files.size() - 1);
+
+        String startTime = replayLogsFolder.getName();
+        Pattern p = Pattern.compile("([0-9]+)-([0-9]+).replaylog");
+        Matcher m = p.matcher(lastFile.getName());
+        m.matches();
+        endInstant = Instant.ofEpochMilli(startInstant.toEpochMilli() + Long.parseLong(m.group(2)));
+
+        try {
+            return replayLogsFolder.renameTo(new File(replayLogsFolder.getParentFile().getCanonicalPath() +
+                    File.separator + startTime + "-" + endInstant.toEpochMilli()));
+        } catch (IOException e) {
+            logger.error("Unable to rename capture session folder", e);
+            return false;
+        }
+    }
+
+    /**
+     * <p>
+     *     Loads a capture session with an existing folder containing replay logs.
+     * </p>
+     *
+     * @return True if the loading operation was successful, else false.
+     */
+    public boolean load() {
+        if (!replayLogsFolder.exists() || !replayLogsFolder.isDirectory()) {
+            return false;
+        }
+
+        Pattern p = Pattern.compile("([0-9]+)-([0-9]+)");
+        Matcher m = p.matcher(replayLogsFolder.getName());
+
+        if (m.matches()) {
+            startInstant = Instant.ofEpochMilli(Long.parseLong(m.group(1)));
+            endInstant = Instant.ofEpochMilli(Long.parseLong(m.group(2)));
+
+            try {
+                replayLogs = loadCaptureSessionSorted();
+                return true;
+            } catch (NullPointerException e) {
+                logger.error("Unable to load replay log files in session folder.", e);
+                return false;
+            }
+        }
+
+        logger.error("Folder name of session folder does not have required format.");
+        return false;
+    }
+
+    @Override
+    public File getSessionFolder() {
+        return replayLogsFolder;
+    }
+
+    @Override
+    public Instant getStartInstant() {
+        return startInstant;
+    }
+
+    @Override
+    public Instant getEndInstant() {
+        return endInstant;
+    }
+
+    @Override
+    public List<File> getSortedReplayLogs() {
+        return replayLogs;
+    }
+}
