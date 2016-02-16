@@ -1,8 +1,12 @@
 package edu.kit.trufflehog.presenter;
 
+import edu.kit.trufflehog.Main;
+import javafx.stage.Stage;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.management.InstanceAlreadyExistsException;
+
+import static edu.kit.trufflehog.Main.*;
 
 /**
  * <p>
@@ -42,5 +46,10 @@ public class Presenter {
      *  </p>
      */
     public void present() {
+        initGUI();
+    }
+
+    private void initGUI() {
+        Stage primaryStage = getPrimaryStage();
     }
 }

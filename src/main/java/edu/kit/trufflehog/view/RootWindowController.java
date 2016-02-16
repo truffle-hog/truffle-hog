@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.view.controllers.IWindowController;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
