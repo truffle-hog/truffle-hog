@@ -1,8 +1,17 @@
 #ifndef TRUFFLEHOG_TRUFFLE_H
 #define TRUFFLEHOG_TRUFFLE_H
 
+/**
+ * @file
+ * @brief The structure of a Truffle that is sent via ipc.
+ */
+
 #include <stdint.h>
 
+/**
+ * @brief Houses specific information about the ether header
+ *
+ */
 struct EtherHeader
 {
 	uint64_t sourceMacAddress;
@@ -10,6 +19,9 @@ struct EtherHeader
 	uint16_t etherType;
 };
 
+/**
+ * @brief Houses specific information about the profinet frame
+ */
 struct Frame
 {
 	uint16_t frameID;

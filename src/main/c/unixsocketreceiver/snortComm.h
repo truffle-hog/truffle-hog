@@ -1,0 +1,10 @@
+#ifndef TRUFFLEHOG_SNORTCOMM_H
+#define TRUFFLEHOG_SNORTCOMM_H
+
+enum SnortComm
+{
+   CONNECT,
+   DISCONNECT
+};
+
+#endif
