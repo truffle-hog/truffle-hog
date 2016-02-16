@@ -2,6 +2,8 @@ package edu.kit.trufflehog.model.graph;
 import org.apache.commons.collections15.keyvalue.MultiKey;
 import org.apache.commons.collections15.map.MultiKeyMap;
 
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -10,51 +12,50 @@ import java.util.HashMap;
  *     Stores {@link NetworkNode}s and {@link IConnection}s.
  * </p>
  */
-public class NetworkGraph extends AbstractNetworkGraph implements Serializable {
+public class NetworkGraph extends DirectedSparseGraph<INode, IConnection> implements INetworkGraph, Serializable {
 
-    private HashMap<String, NetworkNode> networkNodes;
+    private MultiKeyMap networkNodes;
     private MultiKeyMap networkEdges;
 
     NetworkGraph() {
-        networkNodes = new HashMap<>();
-        networkEdges = new MultiKeyMap<>();
+        networkNodes = new MultiKeyMap();
+        networkEdges = new MultiKeyMap();
     }
 
     @Override
-    public NetworkEdge addNetworkEdge(NetworkNode from, NetworkNode to) throws NullPointerException{
-        if (from == null || to == null) throw new NullPointerException("Nodes do not exist!");
-        NetworkEdge edge = new NetworkEdge(from, to);
-        networkEdges.put(from, to, edge);
-
-        return edge;
+    public void addNetworkEdge(IConnection edge, INode src, INode dest) throws NullPointerException{
+        if (src == null) throw new NullPointerException("Source node is null!");
+        if (dest == null) throw new NullPointerException("Destination node from is null!");
+        if (edge == null) throw new NullPointerException("Edge is null!");
+        networkEdges.put(new MultiKey(src, dest), edge);
     }
 
     @Override
-    public NetworkNode getNetworkNodeByMACAddress(String macAddress) {
-        return networkNodes.get(macAddress);
+    public INode getNetworkNodeByMACAddress(long macAddress) {
+        return (INode) networkNodes.get(macAddress);
     }
 
     @Override
-    public NetworkNode getNetworkNodeByIPAddress(String ipAddress) {
-        return networkNodes.get(ipAddress);
+    public INode getNetworkNodeByIPAddress(int ipAddress) {
+        return (INode) networkNodes.get(ipAddress);
     }
 
     @Override
-    public NetworkNode getNetworkNodeByDeviceName(String deviceName) {
-        return networkNodes.get(deviceName);
+    public INode getNetworkNodeByDeviceName(String deviceName) {
+        return (INode) networkNodes.get(deviceName);
     }
 
     @Override
-    public NetworkEdge getNetworkEdge(NetworkNode a, NetworkNode b) {
-        return (NetworkEdge)networkEdges.get(a, b);
+    public IConnection getNetworkEdge(INode src, INode dest) {
+        return (IConnection) networkEdges.get(src, dest);
     }
 
     @Override
-    public void addNetworkNode(NetworkNode node) {
+    public void addNetworkNode(INode node) {
         if (node != null) {
-            networkNodes.put(node.getDeviceName(), node);
-            networkNodes.put(node.getIpAdress(), node);
-            networkNodes.put(node.getMacAdress(), node);
+            networkNodes.put(new MultiKey(node.getDeviceName()), node);
+            networkNodes.put(new MultiKey(node.getIpAdress()), node);
+            networkNodes.put(new MultiKey(node.getMacAdress()), node);
         }
     }
 }

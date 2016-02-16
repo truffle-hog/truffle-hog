@@ -11,8 +11,9 @@ import java.io.Serializable;
  * </p>
  */
 public class NetworkNode implements Serializable, INode {
-	private String ipAdress;
-    private String macAdress;
+
+	private int ipAdress;
+    private long macAdress;
     private String deviceName;
     private int timeAdded;
     private int lastUpdateTime;
@@ -24,58 +25,72 @@ public class NetworkNode implements Serializable, INode {
         truffleLogger = new TruffleLogger();
     }
 
-	public void setIpAdress(String ipAdress) {
+	@Override
+	public void setIpAdress(int ipAdress) {
 		this.ipAdress = ipAdress;
 	}
 
-	public void setMacAdress(String macAdress) {
+	@Override
+	public void setMacAdress(long macAdress) {
 		this.macAdress = macAdress;
 	}
 
+	@Override
 	public void setDeviceName(String deviceName) {
 		this.deviceName = deviceName;
 	}
 
+	@Override
 	public void setTimeAdded(int timeAdded) {
 		this.timeAdded = timeAdded;
 	}
 
+	@Override
 	public void setLastUpdateTime(int lastUpdateTime) {
 		this.lastUpdateTime = lastUpdateTime;
 	}
 
+	@Override
 	public void setPackageCountIn(int packageCountIn) {
 		this.packageCountIn = packageCountIn;
 	}
 
+	@Override
 	public void setPackageCountOut(int packageCountOut) {
 		this.packageCountOut = packageCountOut;
 	}
 
-	public String getIpAdress() {
+	@Override
+	public int getIpAdress() {
 		return ipAdress;
 	}
 
-	public String getMacAdress() {
+	@Override
+	public long getMacAdress() {
 		return macAdress;
 	}
 
+	@Override
 	public String getDeviceName() {
 		return deviceName;
 	}
 
+	@Override
 	public int getTimeAdded() {
 		return timeAdded;
 	}
 
+	@Override
 	public int getLastUpdateTime() {
 		return lastUpdateTime;
 	}
 
+	@Override
 	public int getPackageCountIn() {
 		return packageCountIn;
 	}
 
+	@Override
 	public int getPackageCountOut() {
 		return packageCountOut;
 	}
@@ -85,7 +100,6 @@ public class NetworkNode implements Serializable, INode {
        * </p>
        * @return {@link TruffleLogger} of this node
      */
-
 	public TruffleLogger getLogger() {
         return truffleLogger;
 	}
@@ -97,6 +111,7 @@ public class NetworkNode implements Serializable, INode {
      *
      * @param truffle {@link Truffle} to log
      */
+	@Override
 	public void log(Truffle truffle) {
         truffleLogger.log(truffle);
 	}

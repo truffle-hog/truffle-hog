@@ -1,6 +1,10 @@
 package edu.kit.trufflehog.model.graph;
 
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
+
 import java.io.Serializable;
 
 /**
@@ -32,6 +36,7 @@ public class NetworkEdge implements IConnection, Serializable {
      * </p>
      * @return total packet count
      */
+    @Override
     public final long getTotalPacketCount() {
         return totalPacketCount.get();
     }
@@ -43,6 +48,7 @@ public class NetworkEdge implements IConnection, Serializable {
      *
      * @param value New packet count value
      */
+    @Override
     public final void setTotalPacketCount(long value) {
         totalPacketCount.set(value);
     }
@@ -54,6 +60,7 @@ public class NetworkEdge implements IConnection, Serializable {
      *
      * @return total packet property
      */
+    @Override
     public LongProperty getTotalPacketCountProperty() {
         return totalPacketCount;
     }
@@ -65,6 +72,7 @@ public class NetworkEdge implements IConnection, Serializable {
      *
      * @return period of activity
      */
+    @Override
     public final long getActive() {
         return active.get();
     }
@@ -76,6 +84,7 @@ public class NetworkEdge implements IConnection, Serializable {
      *
      * @param value set new period of activity
      */
+    @Override
     public final void setActive(long value) {
         active.set(value);
     }
@@ -87,6 +96,7 @@ public class NetworkEdge implements IConnection, Serializable {
      *
      * @return period of activity property
      */
+    @Override
     public LongProperty getActiveProperty() {
         return active;
     }
@@ -98,6 +108,7 @@ public class NetworkEdge implements IConnection, Serializable {
      *
      * @return connection type
      */
+    @Override
     public final long getConnectionType() {
         return connectionType.get();
     }
@@ -109,6 +120,7 @@ public class NetworkEdge implements IConnection, Serializable {
      *
      * @param value New packet count value
      */
+    @Override
     public final void setConnectionType(int value) {
         connectionType.set(value);
     }
@@ -120,6 +132,7 @@ public class NetworkEdge implements IConnection, Serializable {
      *
      * @return connection type property
      */
+    @Override
     public IntegerProperty getConnectionTypeProperty() {
         return connectionType;
     }

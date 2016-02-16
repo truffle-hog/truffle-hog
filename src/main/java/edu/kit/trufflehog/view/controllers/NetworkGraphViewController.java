@@ -1,25 +1,24 @@
-package edu.kit.trufflehog.view;
+package edu.kit.trufflehog.view.controllers;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
-import edu.kit.trufflehog.model.graph.INetworkGraphLayout;
+import edu.kit.trufflehog.model.graph.ILayoutFactory;
 import edu.kit.trufflehog.model.graph.INode;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.INotifier;
+import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.visualization.VisualizationServer;
 import javafx.embed.swing.SwingNode;
-import org.apache.commons.collections15.Transformer;
 
 /**
  * <p>
- * 		AbstractNetworkGraphView is the basic abstraction for every implementation of a network graph
+ * 		NetworkGraphViewController is the basic abstraction for every implementation of a network graph
  * 		view. By extending the Swing wrapper class {@link SwingNode} its possible to place
- * 		an instance of a AbstractNetworkGraphView into the existing javafx environment easily.
+ * 		an instance of a NetworkGraphViewController into the existing javafx environment easily.
  * </p>
  */
-public abstract class AbstractNetworkGraphView extends SwingNode
+public abstract class NetworkGraphViewController extends SwingNode
 		implements VisualizationServer<INode, IConnection>,
 		IViewController<GraphInteraction> {
 
@@ -54,7 +53,7 @@ public abstract class AbstractNetworkGraphView extends SwingNode
 
 	/**
 	 * Refreshes the Layout of this graph, by reapplying a new instance of an
-	 * {@link INetworkGraphLayout}. New instances are created by the layout factory that is
+	 * {@link Layout}. New instances are created by the layout factory that is
 	 * set for this instance.
 	 */
 	public abstract void refreshLayout();
@@ -66,6 +65,6 @@ public abstract class AbstractNetworkGraphView extends SwingNode
 	 * @param layoutFactory the layout factory for instantiating new layouts
 	 *                         of the given type
 	 */
-	public abstract void setLayoutFactory(Transformer<AbstractNetworkGraph, INetworkGraphLayout> layoutFactory);
+	public abstract void setLayoutFactory(ILayoutFactory layoutFactory);
 
 }
