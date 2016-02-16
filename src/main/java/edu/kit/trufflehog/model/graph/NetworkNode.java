@@ -12,10 +12,10 @@ import java.io.Serializable;
 public class NetworkNode implements Serializable, INode {
 
 	// TODO MAKE ALLE FINALL!!!!
-	private String macAdress;
+	private Long macAdress;
 	private String deviceName;
-	private int timeAdded;
-	private int lastUpdateTime;
+	private long timeAdded;
+	private long lastUpdateTime;
 	private int packageCountIn;
 	private int packageCountOut;
 	private String ipAdress;
@@ -26,7 +26,7 @@ public class NetworkNode implements Serializable, INode {
 	}
 
 	@Override
-	public void setMacAdress(String macAdress) {
+	public void setMacAdress(Long macAdress) {
 		this.macAdress = macAdress;
 	}
 
@@ -36,12 +36,12 @@ public class NetworkNode implements Serializable, INode {
 	}
 
 	@Override
-	public void setTimeAdded(int timeAdded) {
+	public void setTimeAdded(long timeAdded) {
 		this.timeAdded = timeAdded;
 	}
 
 	@Override
-	public void setLastUpdateTime(int lastUpdateTime) {
+	public void setLastUpdateTime(long lastUpdateTime) {
 		this.lastUpdateTime = lastUpdateTime;
 	}
 
@@ -61,7 +61,7 @@ public class NetworkNode implements Serializable, INode {
 	}
 
 	@Override
-	public String getMacAdress() {
+	public Long getMacAdress() {
 		return macAdress;
 	}
 
@@ -71,12 +71,12 @@ public class NetworkNode implements Serializable, INode {
 	}
 
 	@Override
-	public int getTimeAdded() {
+	public long getTimeAdded() {
 		return timeAdded;
 	}
 
 	@Override
-	public int getLastUpdateTime() {
+	public long getLastUpdateTime() {
 		return lastUpdateTime;
 	}
 

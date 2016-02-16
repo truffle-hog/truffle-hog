@@ -1,7 +1,8 @@
 package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.Filter;
-import edu.kit.trufflehog.model.graph.AbstractNetworkGraph;
+import edu.kit.trufflehog.model.graph.IConnection;
+import edu.kit.trufflehog.model.graph.INetworkGraph;
 import edu.kit.trufflehog.model.graph.NetworkNode;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import org.junit.After;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.*;
 public class AddPacketDataCommandTest {
 
     private AddPacketDataCommand apdc;
-    private AbstractNetworkGraph graph;
+    private INetworkGraph graph;
     private Filter filter;
     private List<Filter> filterList;
     private IPacketData truffle;
@@ -28,14 +29,14 @@ public class AddPacketDataCommandTest {
     @Before
     public void setup() {
         truffle = mock(IPacketData.class);
-        when(truffle.getAttribute(String.class, "sourceMacAddress")).thenReturn("sourceTestAddress");
-        when(truffle.getAttribute(String.class, "destinationMacAddress")).thenReturn("destinationTestAddress");
+        when(truffle.getAttribute(Long.class, "sourceMacAddress")).thenReturn(1L);
+        when(truffle.getAttribute(Long.class, "destinationMacAddress")).thenReturn(2L);
 
         filter = new Filter();
         filterList = new LinkedList<>();
         filterList.add(filter);
 
-        graph = mock(AbstractNetworkGraph.class);
+        graph = mock(INetworkGraph.class);
 
         apdc = new AddPacketDataCommand(graph, truffle, filterList);
 
@@ -52,35 +53,37 @@ public class AddPacketDataCommandTest {
 
     @Test
     public void addTwoNewNodesByMacAddressToGraphTest() {
-        when(graph.getNetworkNodeByMACAddress("sourceTestAddress")).thenReturn(null);
-        when(graph.getNetworkNodeByMACAddress("destinationTestAddress")).thenReturn(null);
+        when(graph.getNetworkNodeByMACAddress(1L)).thenReturn(null);
+        when(graph.getNetworkNodeByMACAddress(2L)).thenReturn(null);
         apdc.execute();
-        verify(graph, times(1)).addNetworkEdge(any(NetworkNode.class), any(NetworkNode.class));
+        verify(graph, times(1)).addNetworkEdge(any(IConnection.class), any(NetworkNode.class), any(NetworkNode.class));
     }
 
     @Test
     public void addDestinationNodeByMacAddressToGraphTest() {
         NetworkNode testNode = mock(NetworkNode.class);
-        when(graph.getNetworkNodeByMACAddress("sourceTestAddress")).thenReturn(testNode);
+        when(graph.getNetworkNodeByMACAddress(1L)).thenReturn(testNode);
         apdc.execute();
-        verify(graph, times(1)).addNetworkEdge(eq(testNode), any(NetworkNode.class));
+        verify(graph, times(1)).addNetworkEdge(any(IConnection.class), eq(testNode), any(NetworkNode.class));
     }
 
     @Test
     public void addSourceNodeByMacAddressToGraphTest() {
         NetworkNode testNode = mock(NetworkNode.class);
-        when(graph.getNetworkNodeByMACAddress("destinationTestAddress")).thenReturn(testNode);
+        when(graph.getNetworkNodeByMACAddress(2L)).thenReturn(testNode);
         apdc.execute();
-        verify(graph, times(1)).addNetworkEdge(any(NetworkNode.class), eq(testNode));
+        verify(graph, times(1)).addNetworkEdge(any(IConnection.class), any(NetworkNode.class), eq(testNode));
     }
 
     @Test
     public void addNoNewNodesByMacAddressToGraphTest() {
         NetworkNode testNode = mock(NetworkNode.class);
         NetworkNode testNode2 = mock(NetworkNode.class);
-        when(graph.getNetworkNodeByMACAddress("sourceTestAddress")).thenReturn(testNode);
-        when(graph.getNetworkNodeByMACAddress("destinationTestAddress")).thenReturn(testNode2);
+        IConnection testEdge = mock(IConnection.class);
+        when(graph.getNetworkNodeByMACAddress(1L)).thenReturn(testNode);
+        when(graph.getNetworkNodeByMACAddress(2L)).thenReturn(testNode2);
+        when(graph.getNetworkEdge(testNode,testNode2)).thenReturn(testEdge);
         apdc.execute();
-        verify(graph, times(1)).addNetworkEdge(testNode, testNode2);
+        verify(graph, times(0)).addNetworkEdge(testEdge, testNode, testNode2);
     }
 }

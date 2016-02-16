@@ -30,7 +30,7 @@ public class NetworkGraph extends DirectedSparseGraph<INode, IConnection> implem
     }
 
     @Override
-    public INode getNetworkEdge(INode src, INode dest) {
+    public IConnection getNetworkEdge(INode src, INode dest) {
         return null;
     }
 

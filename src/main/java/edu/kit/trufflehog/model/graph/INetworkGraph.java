@@ -13,7 +13,7 @@ public interface INetworkGraph extends DirectedGraph<INode, IConnection> {
 
     INode getNetworkNodeByDeviceName(String deviceName);
 
-    INode getNetworkEdge(INode src, INode dest);
+    IConnection getNetworkEdge(INode src, INode dest);
 
     void addNetworkEdge(IConnection connection, INode from, INode to);
 

@@ -1,10 +1,8 @@
 package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.Filter;
-import edu.kit.trufflehog.model.graph.INetworkGraph;
-import edu.kit.trufflehog.model.graph.NetworkNode;
+import edu.kit.trufflehog.model.graph.*;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class AddPacketDataCommand implements ITruffleCommand{
      * @param filters List of filters to check
      */
 
-    AddPacketDataCommand(INetworkGraph graph,  Truffle packet, List<Filter> filters) {
+    AddPacketDataCommand(INetworkGraph graph,  IPacketData packet, List<Filter> filters) {
 
         networkGraph = graph;
         filterList = filters;
@@ -38,34 +36,47 @@ public class AddPacketDataCommand implements ITruffleCommand{
     }
 
     public void execute() {
-        String sourceMacAddress = truffle.getAttribute(String.class, "sourceMacAddress");
-        String destinationMacAddress = truffle.getAttribute(String.class, "destinationMacAddress");
-        Boolean allowedSource = true;
-        Boolean allowedDestination = true;
+        Long sourceMacAddress = truffle.getAttribute(Long.class, "sourceMacAddress");
+        Long destinationMacAddress = truffle.getAttribute(Long.class, "destinationMacAddress");
+        boolean allowedSource = true;
+        boolean allowedDestination = true;
+        IConnection edge;
 
-        NetworkNode sourceNode = networkGraph.getNetworkNodeByMACAddress(sourceMacAddress);
-        NetworkNode destinationNode = networkGraph.getNetworkNodeByMACAddress(destinationMacAddress);
+        INode sourceNode = networkGraph.getNetworkNodeByMACAddress(sourceMacAddress);
+        INode destinationNode = networkGraph.getNetworkNodeByMACAddress(destinationMacAddress);
 
-        if (sourceNode == null) {
+        if (sourceNode != null && destinationNode != null) {  //Connection is existing
+            edge = networkGraph.getNetworkEdge(sourceNode, destinationNode);
+        } else {  //Otherwise create a new one
+            edge = new NetworkEdge();
+            networkGraph.addNetworkEdge(edge, sourceNode, destinationNode);
+        }
+        if (sourceNode == null) {  //Creating new source node because it doesn´t exist
             sourceNode = new NetworkNode();
             sourceNode.setMacAdress(sourceMacAddress);
             networkGraph.addNetworkNode(sourceNode);
         }
-        if (destinationNode == null) {
+        if (destinationNode == null) {  //Creating new destination node because it doesn´t exist
             destinationNode = new NetworkNode();
             destinationNode.setMacAdress(destinationMacAddress);
             networkGraph.addNetworkNode(destinationNode);
         }
-
         for (Filter filter : filterList) {
-            if (filter.contains(sourceMacAddress)) {
+            if (filter.contains(sourceMacAddress.toString())) {
                 allowedSource = false;
             }
-            if (filter.contains(destinationMacAddress)) {
+            if (filter.contains(destinationMacAddress.toString())) {
                 allowedDestination = false;
             }
         }
         //TODO call legalisation method for nodes
-        networkGraph.addNetworkEdge(sourceNode, destinationNode);
+
+        sourceNode.setPackageCountOut(sourceNode.getPackageCountOut() + 1);
+        sourceNode.setLastUpdateTime(System.currentTimeMillis());
+
+        destinationNode.setPackageCountIn(destinationNode.getPackageCountIn() + 1);
+        destinationNode.setLastUpdateTime(System.currentTimeMillis());
+
+        edge.setTotalPacketCount(edge.getTotalPacketCount() + 1);
     }
 }

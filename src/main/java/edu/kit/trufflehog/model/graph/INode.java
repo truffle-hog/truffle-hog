@@ -9,15 +9,15 @@ import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truf
  */
 public interface INode {
 
-    void setIpAdress(String ipAdress);
+    void setIpAdress(String ipAddress);
 
-    void setMacAdress(String macAdress);
+    void setMacAdress(Long macAddress);
 
     void setDeviceName(String deviceName);
 
-    void setTimeAdded(int timeAdded);
+    void setTimeAdded(long timeAdded);
 
-    void setLastUpdateTime(int lastUpdateTime);
+    void setLastUpdateTime(long lastUpdateTime);
 
     void setPackageCountIn(int packageCountIn);
 
@@ -25,13 +25,13 @@ public interface INode {
 
     String getIpAdress();
 
-    String getMacAdress();
+    Long getMacAdress();
 
     String getDeviceName();
 
-    int getTimeAdded();
+    long getTimeAdded();
 
-    int getLastUpdateTime();
+    long getLastUpdateTime();
 
     int getPackageCountIn();
 

@@ -36,7 +36,7 @@ public class GraphProxy implements INetworkGraph, IGraphProxy {
     }
 
     @Override
-    public INode getNetworkEdge(INode src, INode dest) {
+    public IConnection getNetworkEdge(INode src, INode dest) {
         return activeGraph.getNetworkEdge(src, dest);
     }
 
