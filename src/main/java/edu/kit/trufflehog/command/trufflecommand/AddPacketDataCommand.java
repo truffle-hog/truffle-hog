@@ -16,7 +16,7 @@ import java.util.List;
  * </p>
  */
 public class AddPacketDataCommand implements ITruffleCommand{
-    private AbstractNetworkGraph networkGraph = null;
+    private INetworkGraph networkGraph = null;
     private List<Filter> filterList = null;
     private IPacketData truffle = null;
 
@@ -28,7 +28,7 @@ public class AddPacketDataCommand implements ITruffleCommand{
      * @param packet Truffle to get data from
      * @param filters List of filters to check
      */
-    AddPacketDataCommand(AbstractNetworkGraph graph, IPacketData packet, List<Filter> filters) {
+    AddPacketDataCommand(INetworkGraph graph, IPacketData packet, List<Filter> filters) {
         networkGraph = graph;
         filterList = filters;
         truffle = packet;
