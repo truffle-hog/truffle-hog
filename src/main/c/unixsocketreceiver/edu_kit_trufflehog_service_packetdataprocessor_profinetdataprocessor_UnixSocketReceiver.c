@@ -98,7 +98,7 @@ int openSocket()
 	int32_t len = strlen(socketData.address.sun_path) + sizeof(socketData.address.sun_family);
 	if (connect(socketData.socketFD, (struct sockaddr*) &socketData.address, len) < 0)
 	{
-		printf("ERROR: could not connect to socket\n");
+		printf("ERROR: could not connect to socket \"%s\", \"%d\"\n", socketData.address.sun_path, socketData.address.sun_family);
 		return -1;
 	}
 
