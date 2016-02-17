@@ -7,6 +7,7 @@
 #include "edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver.h"
 #include "truffle.h"
 #include "snortComm.h"
+#include "dbg.h"
 
 /////////////
 //         //
@@ -35,8 +36,6 @@ jint throwSnortPluginNotRunningException(JNIEnv*, char*);
 struct SocketData
 {
 	int socketFD;
-	char socketFile[108];
-
 	struct sockaddr_un address;
 };
 
@@ -51,70 +50,72 @@ struct SocketData
 struct SocketData socketData;
 
 /**
- * @brief Gets the socket file path and writes it to sockData.address.
+ * @brief Gets the socket file path and writes it to the given socket address.
  *
  * @param sockData the SocketData struct to write to
  *
  * @return Returns 0 on success and -1 on error.
  */
-int getSocketFile(struct SocketData *sockData)
+int writeSocketFile(struct sockaddr_un *sockAddress)
 {
+    memset((char *) sockAddress, 0, sizeof(*sockAddress));
+
 	char *homeDir;
 	if ((homeDir = getenv("HOME")) == NULL)
 	{
 		int uid = getuid();
 		struct passwd *pw = getpwuid(uid);
-		if (pw == NULL)
-			return -1;
+		check(pw != NULL, "getpwuid failed");
 
 		homeDir = pw->pw_dir;
 	}
 
-	if ((strlen(homeDir) + strlen(SOCKET_NAME)) > 107)
-		return -1;
+	char *socket_file = malloc(strlen(homeDir) + strlen(SOCKET_NAME) + 1);
+	check_mem(socket_file);
 
-	sockData->address.sun_path[0] = '\0';
+	socket_file[0] = '\0';
+    strcat(socket_file, homeDir);
+    strcat(socket_file, SOCKET_NAME);
+
+    strcpy(sockAddress->sun_path, socket_file);
+
+
+
+/*	sockData->address.sun_path[0] = '\0';
 	strcat(sockData->address.sun_path, homeDir);
-	strcat(sockData->address.sun_path, SOCKET_NAME);
+	strcat(sockData->address.sun_path, SOCKET_NAME);*/
 
 	return 0;
+
+error:
+    return -1;
+
 }
 
 int openSocket()
 {
-    printf("DEBUG: opening socket..\n");
+    debug("opening socket..");
+    int len;
+
+    socketData.socketFD = socket(AF_UNIX, SOCK_SEQPACKET, 0);
+    check(socketData.socketFD != -1, "could not create socket");
 
 	// Init socket data
-	getSocketFile(&socketData);
+	writeSocketFile(&socketData.address);
 	socketData.address.sun_family = AF_UNIX;
 
-	socketData.socketFD = socket(AF_UNIX, SOCK_SEQPACKET, 0);
-	if (socketData.socketFD < 0)
-	{
-		printf("ERROR: could not create socket!\n");
-		return -1;
-	}
-
-	int32_t len = strlen(socketData.address.sun_path) + sizeof(socketData.address.sun_family);
-	if (connect(socketData.socketFD, (struct sockaddr*) &socketData.address, len) < 0)
-	{
-		printf("ERROR: could not connect to socket \"%s\", \"%d\"\n", socketData.address.sun_path, socketData.address.sun_family);
-		return -1;
-	}
+    len = strlen(socketData.address.sun_path) + sizeof(socketData.address.sun_family);
+	check(!(connect(socketData.socketFD, (struct sockaddr *) &socketData.address, len) < 0),
+	          "could not connect to socket \'%s\', \'%d\'", socketData.address.sun_path, socketData.address.sun_family);
 
 	char *buf = "Hello Snort";
+	check(write(socketData.socketFD, buf, strlen(buf)), "error on sending \'Hello Snort\'");
 
-	int32_t check = write(socketData.socketFD, buf, strlen(buf));
-
-	if (check == -1)
-	{
-		printf("Error sending hello snort\n");
-		return -1;
-	}
-
-	printf("Successfully connected to snort");
-
+	debug("Successfully connected to snort");
 	return 0;
+
+error:
+    return -1;
 }
 
 /*
@@ -124,8 +125,12 @@ int openSocket()
  */
 JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_openIPC (JNIEnv *env, jobject thisObj)
 {
-	if (openSocket() < 0)
-		throwSnortPluginNotRunningException(env, "Nope");
+    debug("initializing unix socket receiver");
+
+    check(openSocket() != -1, "throwing exception, because we could not initialize the receiver");
+
+error:
+    throwSnortPluginNotRunningException(env, "Nope");
 }
 
 /*
@@ -149,7 +154,7 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
 	jclass truffleClass = (*env)->FindClass(env, truffleClassName);
 	if (truffleClass == NULL)
-		return throwNoClassDefError(env, truffleClassName);
+		throwNoClassDefError(env, truffleClassName);
 
 	jmethodID ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "(JJ)V");
 	if (ctor == NULL)
