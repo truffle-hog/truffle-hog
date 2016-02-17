@@ -53,11 +53,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		Main.primaryStage = primaryStage;
 		primaryStage.setTitle("TruffleHog");
-		try {
-			this.presenter = Presenter.createPresenter();
-		} catch (InstanceAlreadyExistsException e) {
-			e.printStackTrace();
-		}
+		this.presenter = Presenter.createPresenter();
 		presenter.present();
 	}
 

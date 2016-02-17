@@ -28,7 +28,7 @@ public class Presenter {
     private static Presenter presenter;
     /**
      * <p>
-     *     Creates a new instance of a singleton Presenter or returns it if it was created before. 
+     *     Creates a new instance of a singleton Presenter or returns it if it was created before.
      * </p>
      *
      *
