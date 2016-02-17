@@ -6,8 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -28,7 +27,7 @@ class CaptureSession implements ICaptureSession {
     private File replayLogsFolder;
     private Instant startInstant;
     private Instant endInstant;
-    private List<File> replayLogs;
+    private Map<Long, File> replayLogs;
 
     /**
      * <p>
@@ -53,7 +52,7 @@ class CaptureSession implements ICaptureSession {
      * @param replayLogsFolder The parent folder of all replay logs in this capture session.
      */
     public CaptureSession(File replayLogsFolder) {
-        new CaptureSession(replayLogsFolder, null);
+        this(replayLogsFolder, null);
     }
 
     /**
@@ -63,7 +62,7 @@ class CaptureSession implements ICaptureSession {
      *
      * @throws NullPointerException thrown when no replay log files are found in the session folder
      */
-    private List<File> loadCaptureSessionSorted() throws NullPointerException {
+    private TreeMap<Long, File> loadCaptureSessionSorted() throws NullPointerException {
         File[] filesArray = replayLogsFolder.listFiles();
 
         if (filesArray == null) {
@@ -73,20 +72,19 @@ class CaptureSession implements ICaptureSession {
         List<File> fileList = Arrays.asList(filesArray);
         final Pattern p = Pattern.compile("([0-9]+)-([0-9]+).replaylog");
 
+        // Map list to map with the replay log ending times as the key and sort this map
         return fileList.stream()
                 .filter(fileTemp -> fileTemp.isFile()
                         && p.matcher(fileTemp.getName()).matches())
-                .sorted((file1, file2) -> {
-                    // Sort files in ascending order by end times
-                    Matcher m1 = p.matcher(file1.getName());
-                    Matcher m2 = p.matcher(file2.getName());
-                    m1.matches();
-                    m2.matches();
-
-                    long endTime1 = Long.parseLong(m1.group(2));
-                    long endTime2 = Long.parseLong(m2.group(2));
-                    return (int) (endTime1 - endTime2);
-                }).collect(Collectors.toList());
+                .collect(Collectors.toMap(file -> {
+                    Matcher m = p.matcher(file.getName());
+                    m.matches();
+                    return Long.parseLong(m.group(2));
+                }, file -> file))
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1, TreeMap::new));
     }
 
     /**
@@ -108,7 +106,7 @@ class CaptureSession implements ICaptureSession {
      * @return True if the finishing of a new capture session was successful, else false.
      */
     public boolean finish() {
-        List<File> files;
+        TreeMap<Long, File> files;
         try {
             files = loadCaptureSessionSorted();
         } catch (NullPointerException e) {
@@ -116,9 +114,8 @@ class CaptureSession implements ICaptureSession {
             return false;
         }
 
-        File lastFile = files.get(files.size() - 1);
+        File lastFile = files.lastEntry().getValue();
 
-        String startTime = replayLogsFolder.getName();
         Pattern p = Pattern.compile("([0-9]+)-([0-9]+).replaylog");
         Matcher m = p.matcher(lastFile.getName());
         m.matches();
@@ -126,7 +123,7 @@ class CaptureSession implements ICaptureSession {
 
         try {
             return replayLogsFolder.renameTo(new File(replayLogsFolder.getParentFile().getCanonicalPath() +
-                    File.separator + startTime + "-" + endInstant.toEpochMilli()));
+                    File.separator + replayLogsFolder.getName() + "-" + endInstant.toEpochMilli()));
         } catch (IOException e) {
             logger.error("Unable to rename capture session folder", e);
             return false;
@@ -181,7 +178,7 @@ class CaptureSession implements ICaptureSession {
     }
 
     @Override
-    public List<File> getSortedReplayLogs() {
+    public Map<Long, File> getSortedReplayLogs() {
         return replayLogs;
     }
 }

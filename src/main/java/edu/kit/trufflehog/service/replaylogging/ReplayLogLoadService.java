@@ -2,7 +2,7 @@ package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.IReplayCommand;
 import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.model.graph.GraphProxy;
+import edu.kit.trufflehog.model.graph.IGraphProxy;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import edu.kit.trufflehog.util.Notifier;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +32,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
 
     private final ReplayLogLoader replayLogLoader;
     private ReplayLog currentReplayLog = null;
-    private final GraphProxy graphProxy;
+    private final IGraphProxy graphProxy;
 
     private final ExecutorService executorService;
     private Future<?> loadServiceFuture;
@@ -77,7 +77,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     Creates a new ReplayLogLoadService object.
      * </p>
      */
-    public ReplayLogLoadService(LoggedScheduledExecutor executor, FileSystem fileSystem, GraphProxy graphProxy) {
+    public ReplayLogLoadService(LoggedScheduledExecutor executor, FileSystem fileSystem, IGraphProxy graphProxy) {
         MAX_BUFFER_SIZE = 200; //TODO: hook up with settings stuff
         MAX_BATCH_SIZE = 20;   //TODO: hook up with settings stuff
         LOAD_TIME_LIMIT = 3;   //TODO: hook up with settings stuff

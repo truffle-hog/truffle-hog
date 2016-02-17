@@ -2,7 +2,7 @@ package edu.kit.trufflehog.service.replaylogging;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -49,5 +49,5 @@ public interface ICaptureSession {
      *
      * @return All replay log files sorted in ascending order based on their ending times.
      */
-    List<File> getSortedReplayLogs();
+    Map<Long, File> getSortedReplayLogs();
 }

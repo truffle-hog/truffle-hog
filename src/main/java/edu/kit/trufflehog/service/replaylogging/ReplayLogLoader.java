@@ -122,9 +122,10 @@ class ReplayLogLoader {
             return false;
         }
 
-        // Get all replay log files found sorted in ascending order based on their middle playback time (end playback
-        // time - start playback time)
-        TreeMap<Long, File> validReplayLogFiles = getReplayLogMap(replayLogFiles);
+        // Get all replay log files found sorted in ascending order based on their ending playback time
+        CaptureSession captureSession = new CaptureSession(selectedFolder);
+        captureSession.load();
+        Map<Long, File> validReplayLogFiles = captureSession.getSortedReplayLogs();
 
         // Get a list of all replay log files that should be deserialized.
         List<File> closestReplayLogs = getClosestReplayLog(instant, validReplayLogFiles);
@@ -167,16 +168,10 @@ class ReplayLogLoader {
             selectedFolder = selectedFolderOptional.get();
         }
 
-        // Get all replayLogs in folder
-        File[] replayLogFiles = selectedFolder.listFiles();
-        if (replayLogFiles == null || replayLogFiles.length == 0) {
-            logger.debug("No replay logs found in folder for given instant.");
-            return false;
-        }
-
-        // Get all replay log files found sorted in ascending order based on their middle playback time (end playback
-        // time - start playback time)
-        TreeMap<Long, File> validReplayLogFiles = getReplayLogMap(replayLogFiles);
+        // Get all replay log files found sorted in ascending order based on their ending playback time
+        CaptureSession captureSession = new CaptureSession(selectedFolder);
+        captureSession.load();
+        Map<Long, File> validReplayLogFiles = captureSession.getSortedReplayLogs();
 
         // Get a list of all replay log files that should be deserialized.
         List<File> closestReplayLogs = getClosestReplayLog(instant, validReplayLogFiles);
@@ -245,7 +240,7 @@ class ReplayLogLoader {
      *                        interest.
      * @return The batch of replay logs that should be deserialized.
      */
-    private List<File> getClosestReplayLog(Instant instant, TreeMap<Long, File> validReplayLogs) {
+    private List<File> getClosestReplayLog(Instant instant, Map<Long, File> validReplayLogs) {
         List<File> fileList = new LinkedList<>();
 
         // Check if we can just directly return the received list because it is smaller than the batch size
@@ -291,37 +286,7 @@ class ReplayLogLoader {
 
     /**
      * <p>
-     *     Gets all replay log files in the folder mapped to the median of their time interval that they represent.
-     *     That way it is easy later on to find the replay log of interest. These replay logs are sorted based
-     * </p>
-     *
-     * @param replayLogs All files in the replay log folder that was chosen in {@link #getReplayLogFolder(File[], Instant)}
-     * @return All files that are actual replay logs mapped to their median time interval value in a sorted map
-     */
-    private TreeMap<Long, File> getReplayLogMap(File[] replayLogs) {
-        TreeMap<Long, File> validReplayLogs = new TreeMap<>();
-
-        for (File replayLog : replayLogs) {
-            // Check if the file matches the replay log file name structure
-            Pattern p = Pattern.compile("([0-9]+)-([0-9]+).replaylog");
-            Matcher m = p.matcher(replayLog.getName());
-            if (m.matches()) {
-
-                // Get the middle time between the start and end time
-                long startTime = Long.parseLong(m.group(1));
-                long endTime = Long.parseLong(m.group(2));
-                long middleTime = (startTime + endTime) / 2;
-
-                validReplayLogs.put(middleTime, replayLog);
-            }
-        }
-
-        return validReplayLogs;
-    }
-
-    /**
-     * <p>
-     *     Gets the folder which most likely contains the replay logs that contain the graph at the given interval.
+     *     Gets the folder which should contain the replay logs that contain the graph at the given interval.
      * </p>
      *
      * @param files All replay log folders found
@@ -331,10 +296,19 @@ class ReplayLogLoader {
     private Optional<File> getReplayLogFolder(File[] files, Instant instant) {
         List<File> fileList = Arrays.asList(files);
         final long instantTime = instant.toEpochMilli();
+        final Pattern p = Pattern.compile("([0-9]+)-([0-9]+)");
         return fileList.stream()
-                .filter(fileTemp -> fileTemp.isDirectory() && Pattern.compile("([0-9]+)").matcher(fileTemp.getName()).matches())
-                .sorted((file1, file2) -> (int) (Long.parseLong(file1.getName()) - Long.parseLong(file2.getName())))
-                .filter(fileTemp -> instantTime <= Long.parseLong(fileTemp.getName()))
+                .filter(fileTemp -> {
+                    Matcher m = p.matcher(fileTemp.getName());
+                    if (fileTemp.isDirectory() && m.matches()) {
+                        long startTime = Long.parseLong(m.group(1));
+                        long endTime = Long.parseLong(m.group(2));
+
+                        return startTime <= instantTime && endTime >= instantTime;
+                    } else {
+                        return false;
+                    }
+                })
                 .findFirst();
     }
 

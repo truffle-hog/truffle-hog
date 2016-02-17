@@ -55,8 +55,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
      * @param fileSystem The fileSystem object that gives access to the locations where files are saved on the hard drive.
      *                   This is necessary because of the ReplayLogger that needs to save ReplayLogs.
      */
-    public ReplayLogSaveService(INetworkGraph graph, FileSystem fileSystem,
-                                ScheduledExecutorService executorService) {
+    public ReplayLogSaveService(INetworkGraph graph, FileSystem fileSystem, ScheduledExecutorService executorService) {
         this.commandLogger = new CommandLogger();
         this.replayLogger = new ReplayLogger();
         this.fileSystem = fileSystem;
