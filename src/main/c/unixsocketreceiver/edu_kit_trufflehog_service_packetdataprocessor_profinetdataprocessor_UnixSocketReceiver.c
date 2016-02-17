@@ -73,12 +73,15 @@ int writeSocketFile(struct sockaddr_un *sockAddress)
 	char *socket_file = malloc(strlen(homeDir) + strlen(SOCKET_NAME) + 1);
 	check_mem(socket_file);
 
+	check(strlen(socket_file) < 109, "the path to the socket is to long (%d) should be maximum 108 including nullbyte: %s", strlen(socket_file), socket_file);
+
 	socket_file[0] = '\0';
     strcat(socket_file, homeDir);
     strcat(socket_file, SOCKET_NAME);
 
     strcpy(sockAddress->sun_path, socket_file);
 
+    free(socket_file);
 
 
 /*	sockData->address.sun_path[0] = '\0';
@@ -88,6 +91,10 @@ int writeSocketFile(struct sockaddr_un *sockAddress)
 	return 0;
 
 error:
+
+    if (socket_file) {
+        free(socket_file);
+    }
     return -1;
 
 }
