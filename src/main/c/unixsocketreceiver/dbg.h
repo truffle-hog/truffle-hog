@@ -9,17 +9,17 @@
     #define debug(M, ...)
     #define debug_check(A, M, ...)
 #else
-    #define debug(M, ...) fprintf(stderr, "Trufflehog DEBUG %s:%d: " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+    #define debug(M, ...) fprintf(stderr, "TruffleHog [DEBUG] %s:%d: " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
     #define debug_check(A, M, ...) if(!(A)) { debug(M, ##__VA_ARGS__); errno=0; goto error; }
 #endif
 
 #define clean_errno() (errno == 0 ? "None" : strerror(errno))
 
-#define log_err(M, ...) fprintf(stderr, "Trufflehog [ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+#define log_err(M, ...) fprintf(stderr, "TruffleHog [ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
 
-#define log_warn(M, ...) fprintf(stderr, "Trufflehog [WARN] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+#define log_warn(M, ...) fprintf(stderr, "TruffleHog [WARN] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
 
-#define log_info(M, ...) fprintf(stderr, "Trufflehog [INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define log_info(M, ...) fprintf(stderr, "TruffleHog [INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 
 #define check(A, M, ...) if(!(A)) { log_err(M, ##__VA_ARGS__); errno=0; goto error; }
 
