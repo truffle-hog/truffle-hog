@@ -3,6 +3,7 @@ package edu.kit.trufflehog.presenter;
 import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.IInteraction;
+import edu.kit.trufflehog.view.MainToolBarController;
 import edu.kit.trufflehog.view.MainViewController;
 import edu.kit.trufflehog.view.OverlayViewController;
 import edu.kit.trufflehog.view.RootWindowController;
@@ -71,7 +72,17 @@ public class Presenter {
         OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
         mainView.getChildren().add(generalStatisticsOverlay);
         AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
-        AnchorPane.setLeftAnchor(generalStatisticsOverlay, 10d);
+        AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
+
+        // setting up menubar
+        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml");
+        mainView.getChildren().add(mainToolBarController);
+
+        // setting up node statistics overlay
+        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
+        mainView.getChildren().add(nodeStatisticsOverlay);
+        AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
+        AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
     }
 
 }

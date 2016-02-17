@@ -47,8 +47,7 @@ public class MainViewController extends AnchorPaneController<MainInteraction> {
      */
     @Override
     public final void addCommand(final MainInteraction interactor, final
-    IUserCommand
-            command) {
+    IUserCommand command) {
 
         interactionMap.put(interactor, command);
     }

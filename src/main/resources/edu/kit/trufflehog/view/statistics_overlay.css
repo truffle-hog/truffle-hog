@@ -5,3 +5,8 @@ root {
     -fx-background-color: #000000;
     -fx-background-radius: 1;
 }
+
+.text {
+    -fx-fill: aliceblue;
+    -fx-font-size: 120%;
+}
