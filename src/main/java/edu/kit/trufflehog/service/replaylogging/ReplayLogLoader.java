@@ -118,22 +118,34 @@ class ReplayLogLoader {
      *     itself.
      * </p>
      *
+     * @param selectedFolderOptional The {@link CaptureSession} folder wrapped in an {@link Optional} (i.e. the folder
+     *                               where the replay logs are located that should be loaded).
      * @param instant The time instant that should be used to load the ReplayLog objects. The ReplayLog objects closest to
      *                the time instant will be loaded.
      * @return True if a replay log was found and loaded, else false
      */
-    public boolean loadData(File selectedFolder, Instant instant) {
+    public boolean loadData(Optional<File> selectedFolderOptional, Instant instant) {
         // No need to synchronize because replayLogs is concurrent
 
-        // Get all replay logs in folder
-        File[] replayLogFiles = selectedFolder.listFiles();
-        if (replayLogFiles == null || replayLogFiles.length == 0) {
-            logger.debug("No replay logs found in folder for given instant.");
+        // Get the folder whose time interval includes the given instant
+        File selectedFolder;
+        if (!selectedFolderOptional.isPresent()) {
+            logger.debug("No replay logs found for given instant.");
             return false;
+        } else {
+            selectedFolder = selectedFolderOptional.get();
         }
 
-        // Now we actually choose the batch of replay logs to deserialize and deserialize them
-        return loadDataInternal(instant, selectedFolder);
+        // Get all replay log files found sorted in ascending order based on their ending playback time
+        CaptureSession captureSession = new CaptureSession(selectedFolder);
+        captureSession.load();
+        Map<Long, File> validReplayLogFiles = captureSession.getSortedReplayLogs();
+
+        // Get a list of all replay log files that should be deserialized.
+        List<File> closestReplayLogs = getClosestReplayLog(instant, validReplayLogFiles);
+
+        // Deserialize all replay logs in the list returned above
+        return deserializeReplayLogs(closestReplayLogs);
     }
 
     /**
@@ -162,35 +174,9 @@ class ReplayLogLoader {
         // Get the folder whose time interval includes the given instant (So get the folder that contains the relevant
         // replay logs
         Optional<File> selectedFolderOptional = getReplayLogFolder(files, instant);
-        File selectedFolder;
-        if (!selectedFolderOptional.isPresent()) {
-            logger.debug("No replay logs found for given instant.");
-            return false;
-        } else {
-            selectedFolder = selectedFolderOptional.get();
-        }
 
         // Now we actually choose the batch of replay logs to deserialize and deserialize them
-        return loadDataInternal(instant, selectedFolder);
-    }
-
-    /**
-     *
-     * @param instant
-     * @param selectedFolder
-     * @return
-     */
-    private boolean loadDataInternal(Instant instant, File selectedFolder) {
-        // Get all replay log files found sorted in ascending order based on their ending playback time
-        CaptureSession captureSession = new CaptureSession(selectedFolder);
-        captureSession.load();
-        Map<Long, File> validReplayLogFiles = captureSession.getSortedReplayLogs();
-
-        // Get a list of all replay log files that should be deserialized.
-        List<File> closestReplayLogs = getClosestReplayLog(instant, validReplayLogFiles);
-
-        // Deserialize all replay logs in the list returned above
-        return deserializeReplayLogs(closestReplayLogs);
+        return loadData(selectedFolderOptional, instant);
     }
 
     /**
