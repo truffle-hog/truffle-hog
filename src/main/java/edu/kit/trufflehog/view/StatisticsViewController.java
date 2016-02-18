@@ -37,8 +37,7 @@ public class StatisticsViewController extends BorderPaneController<StatisticsInt
      */
     @Override
     public final void addCommand(final StatisticsInteraction interactor, final
-    IUserCommand
-            command) {
+    IUserCommand command) {
 
         interactionMap.put(interactor, command);
     }
