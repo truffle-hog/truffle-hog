@@ -57,7 +57,7 @@ struct SocketData socketData;
  *
  * @return Returns 0 on success and -1 on error.
  */
-int getSocketFile(struct SocketData *sockData)
+int getSocketFile(char *sockFilePath)
 {
 	char *homeDir;
 	if ((homeDir = getenv("HOME")) == NULL)
@@ -71,9 +71,9 @@ int getSocketFile(struct SocketData *sockData)
 
 	check((strlen(homeDir) + strlen(SOCKET_NAME)) < 108, "socket file path is too long! Max length is 108 chars");
 
-	sockData->address.sun_path[0] = '\0';
-	strcat(sockData->address.sun_path, homeDir);
-	strcat(sockData->address.sun_path, SOCKET_NAME);
+	sockFilePath[0] = '\0';
+	strcat(sockFilePath, homeDir);
+	strcat(sockFilePath, SOCKET_NAME);
 
 	return 0;
 
@@ -86,7 +86,7 @@ int openSocket()
     debug("opening socket..");
 
 	// Init socket data
-	check(!getSocketFile(&socketData), "could not get the socket file");
+	check(!getSocketFile(socketData.address.sun_path), "could not get the socket file");
 	socketData.address.sun_family = AF_UNIX;
 
 	socketData.socketFD = socket(AF_UNIX, SOCK_SEQPACKET, 0);
@@ -125,12 +125,17 @@ error:
  */
 JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_openIPC (JNIEnv *env, jobject thisObj)
 {
-    debug("initializing unix socket receiver");
+	debug("initializing ipc");
 
     check(openSocket() != -1, "throwing exception, because we could not initialize the receiver");
 
+	debug("initialization done... returning to java");
+
+	return;
+
 error:
     throwSnortPluginNotRunningException(env, "Could not connect to snort!");
+	return;
 }
 
 /*
@@ -140,7 +145,13 @@ error:
  */
 JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_closeIPC(JNIEnv *env, jobject thisObj)
 {
-	//TODO close socket
+	char *buf = "Bye Snort";
+
+	check (write(socketData.socketFD, buf, strlen(buf)), "error on sending hello snort");
+
+error:
+	throwSnortPluginDisconnectFailedException(env, "failed to disconnect");
+	return;
 }
 
 /*
@@ -153,18 +164,28 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 	char *truffleClassName = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle";
 
 	jclass truffleClass = (*env)->FindClass(env, truffleClassName);
-	if (truffleClass == NULL)
+	check_to(truffleClass != NULL, noClass, "Truffle class could not be found");
 		throwNoClassDefError(env, truffleClassName);
 
 	jmethodID ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "(JJ)V");
-	if (ctor == NULL)
-		throwNoSuchMethodError(env, "Constructor for class Truffle not found");
+	check_to(ctor != NULL, noMethod, "constructor for class Truffle not found");
 
 	jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
 
 	//TODO fill truffle with data
 
 	return truffleObject;
+
+noClass:
+	throwNoClassDefError(env, truffleClassName);
+	return NULL;
+
+noMethod:
+	throwNoSuchMethodError(env, "Constructor for class Truffle not found");
+	return NULL;
+
+error:
+	return NULL;
 }
 
 
@@ -205,6 +226,17 @@ jint throwSnortPluginNotRunningException(JNIEnv *env, char *message)
 	char *className = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/SnortPNPluginNotRunningException";
 
 	exClass = (*env)->FindClass(env, className);
+	if (exClass == NULL)
+		return throwNoClassDefError(env, className);
+	return (*env)->ThrowNew(env, exClass, message);
+}
+
+jint throwSnortPluginDisconnectFailedException(JNIEnv *env, char *message)
+{
+	jclass exClass;
+	char *className = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/SnortPNPluginDisconnectFailedException";
+
+	exClass =(*env)->FindClass(env, className);
 	if (exClass == NULL)
 		return throwNoClassDefError(env, className);
 	return (*env)->ThrowNew(env, exClass, message);

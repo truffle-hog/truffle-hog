@@ -71,8 +71,11 @@ public class UnixSocketReceiver extends TruffleReceiver {
      */
     @Override
     public void connect() {
+
         try {
-            openIPC();
+            if (!connected) {
+                openIPC();
+            }
 
             connected = true;
         } catch (SnortPNPluginNotRunningException e) {
@@ -85,7 +88,10 @@ public class UnixSocketReceiver extends TruffleReceiver {
      */
     @Override
     public void disconnect() {
-        closeIPC();
+
+        if (connected) {
+            closeIPC();
+        }
 
         connected = false;
     }

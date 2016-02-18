@@ -1,10 +1,14 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
+import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.model.filter.Filter;
 import edu.kit.trufflehog.model.graph.INetworkGraph;
+import edu.kit.trufflehog.util.IListener;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,11 +28,16 @@ public class UnixSocketReceiverTest {
     UnixSocketReceiver receiver;
     List<Filter> mockedFilterList;
     Thread testRunner;
+    IListener<ITruffleCommand> mockedListener;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         mockedFilterList = new LinkedList<>();
         receiver = new UnixSocketReceiver(mock(INetworkGraph.class), mockedFilterList);
+
+        mockedListener = (IListener<ITruffleCommand>) mock(IListener.class);
+        receiver.addListener(mockedListener);
 
         testRunner = new Thread(receiver);
         testRunner.start();
@@ -43,19 +52,32 @@ public class UnixSocketReceiverTest {
         testRunner = null;
     }
 
-    @Test(expected = SnortPNPluginNotRunningException.class)
+    // TODO remove ignore
+    @Ignore
+    @Test
     public void testConnect_ifSnortNotRunning() throws Exception {
-        try {
-            receiver.connect();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        ArgumentCaptor<ITruffleCommand> argumentCaptor = ArgumentCaptor.forClass(ITruffleCommand.class);
+
+        receiver.connect();
+
+        verify(mockedListener).receive(argumentCaptor.capture());
+
+    }
+
+    @Test
+    public void testConnect_ifSnortRunning() throws Exception {
+
+        //TODO simulate a running snort by making a socket
 
     }
 
     @Test
     public void testDisconnect() throws Exception {
 
+        //TODO simulate a running snort and verify if the connect and disconnect process works
+
+        receiver.connect();
+
+        receiver.disconnect();
     }
 }

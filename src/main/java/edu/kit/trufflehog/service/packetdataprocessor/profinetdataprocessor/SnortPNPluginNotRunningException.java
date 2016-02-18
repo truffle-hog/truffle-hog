@@ -7,6 +7,10 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
  */
 public class SnortPNPluginNotRunningException extends Exception {
 
+    public SnortPNPluginNotRunningException() {
+        super();
+    }
+
     public SnortPNPluginNotRunningException(String message) {
         super(message);
     }
