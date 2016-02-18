@@ -99,6 +99,11 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     If strict is false, a ReplayLog reasonably close in time to the given
      *     instant must be in memory, else false is returned.
      * </p>
+     * <p>
+     *     This is done because there is a gap in time between different replay logs, and if the user happens to be
+     *     unlucky to select such a gap as the next replay log that should be played, than the system does not crash.
+     *     However since this does deviate from the expected behaviour it is made optional.
+     * </p>
      *
      * @param instant The instant in time from which to start playing
      * @param strict If strict is set to true, than a replay log will only be returned if it strictly lies in the
@@ -151,6 +156,11 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     If strict is false, a ReplayLog reasonably close in time to the given
      *     instant must be in memory, else false is returned.
      * </p>
+     * <p>
+     *     This is done because there is a gap in time between different replay logs, and if the user happens to be
+     *     unlucky to select such a gap as the next replay log that should be played, than the system does not crash.
+     *     However since this does deviate from the expected behaviour it is made optional.
+     * </p>
      *
      * @param instant The instant in time to which to jump in the playback, if it is active.
      * @param strict If strict is set to true, than a replay log will only be returned if it strictly lies in the
@@ -174,6 +184,11 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     If strict is set, a replay log containing the given time instant must be returned, else false is returned.
      *     If strict is false, a ReplayLog reasonably close in time to the given
      *     instant must be in memory, else false is returned.
+     * </p>
+     * <p>
+     *     This is done because there is a gap in time between different replay logs, and if the user happens to be
+     *     unlucky to select such a gap as the next replay log that should be played, than the system does not crash.
+     *     However since this does deviate from the expected behaviour it is made optional.
      * </p>
      *
      * @param instant The time instant that should be used to load the ReplayLog objects. The ReplayLog objects closest to
@@ -216,6 +231,11 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     If strict is set, a replay log containing the given time instant must be returned, else false is returned.
      *     If strict is false, a ReplayLog reasonably close in time to the given
      *     instant must be in memory, else false is returned.
+     * </p>
+     * <p>
+     *     This is done because there is a gap in time between different replay logs, and if the user happens to be
+     *     unlucky to select such a gap as the next replay log that should be played, than the system does not crash.
+     *     However since this does deviate from the expected behaviour it is made optional.
      * </p>
      *
      * @param instant The instant in time from which to start playing
