@@ -31,19 +31,19 @@ public class ReplayLogTest {
     @Test
     public void testCompareTo() throws Exception {
         // Check for less than
-        LinkedMap<IReplayCommand, Long> replayCommands1 = new LinkedMap<>();
+        LinkedMap<Long, IReplayCommand> replayCommands1 = new LinkedMap<>();
         IReplayCommand command1 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command1, 2L);
+        replayCommands1.put(2L, command1);
         IReplayCommand command2 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command2, 3L);
+        replayCommands1.put(3L, command2);
         INetworkGraph graph1 = mock(NetworkGraph.class);
         ReplayLog replayLog1 = new ReplayLog(graph1, replayCommands1);
 
-        LinkedMap<IReplayCommand, Long> replayCommands2 = new LinkedMap<>();
+        LinkedMap<Long, IReplayCommand> replayCommands2 = new LinkedMap<>();
         IReplayCommand command3 = mock(AddPacketDataCommand.class);
-        replayCommands2.put(command3, 1L);
+        replayCommands2.put(1L, command3);
         IReplayCommand command4 = mock(AddPacketDataCommand.class);
-        replayCommands2.put(command4, 4L);
+        replayCommands2.put(4L, command4);
         INetworkGraph graph2 = mock(NetworkGraph.class);
         ReplayLog replayLog2 = new ReplayLog(graph2, replayCommands2);
 
@@ -51,30 +51,30 @@ public class ReplayLogTest {
 
         // Check for greater than
         IReplayCommand command5 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command5, 8L);
+        replayCommands1.put(8L, command5);
         IReplayCommand command6 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command6, 23L);
+        replayCommands1.put(23L, command6);
         replayLog1 = new ReplayLog(graph1, replayCommands1);
 
         IReplayCommand command7 = mock(AddPacketDataCommand.class);
-        replayCommands2.put(command7, 0L);
+        replayCommands2.put(0L, command7);
         IReplayCommand command8 = mock(AddPacketDataCommand.class);
-        replayCommands2.put(command8, 22L);
+        replayCommands2.put(22L, command8);
         replayLog2 = new ReplayLog(graph2, replayCommands2);
 
         assertEquals(true, replayLog1.compareTo(replayLog2) > 0);
 
         // Check for equals
         IReplayCommand command9 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command9, 1L);
+        replayCommands1.put(1L, command9);
         IReplayCommand command10 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command10, 23L);
+        replayCommands1.put(23L, command10);
         replayLog1 = new ReplayLog(graph1, replayCommands1);
 
         IReplayCommand command11 = mock(AddPacketDataCommand.class);
-        replayCommands2.put(command11, 0L);
+        replayCommands2.put(0L, command11);
         IReplayCommand command12 = mock(AddPacketDataCommand.class);
-        replayCommands2.put(command12, 23L);
+        replayCommands2.put(23L, command12);
         replayLog2 = new ReplayLog(graph2, replayCommands2);
 
         assertEquals(true, replayLog1.compareTo(replayLog2) == 0);
@@ -90,33 +90,33 @@ public class ReplayLogTest {
     @Test
     public void testEquals() throws Exception {
         // Check for equality
-        LinkedMap<IReplayCommand, Long> replayCommands1 = new LinkedMap<>();
+        LinkedMap<Long, IReplayCommand> replayCommands1 = new LinkedMap<>();
         IReplayCommand command1 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command1, 2L);
+        replayCommands1.put(2L, command1);
         IReplayCommand command2 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command2, 3L);
+        replayCommands1.put(3L, command2);
         INetworkGraph graph1 = mock(NetworkGraph.class);
         ReplayLog replayLog1 = new ReplayLog(graph1, replayCommands1);
 
-        LinkedMap<IReplayCommand, Long> replayCommands2 = new LinkedMap<>();
+        LinkedMap<Long, IReplayCommand> replayCommands2 = new LinkedMap<>();
         IReplayCommand command3 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command3, 2L);
+        replayCommands1.put(2L, command3);
         IReplayCommand command4 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command4, 3L);
+        replayCommands1.put(3L, command4);
         ReplayLog replayLog2 = new ReplayLog(graph1, replayCommands1);
 
         assertEquals(true, replayLog1.equals(replayLog2));
 
         // Adding an already existing command, should still be true
         IReplayCommand command5 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command5, 3L);
+        replayCommands1.put(3L, command5);
         replayLog1 = new ReplayLog(graph1, replayCommands1);
 
         assertEquals(true, replayLog1.equals(replayLog2));
 
         // Check for inequality
         IReplayCommand command6 = mock(AddPacketDataCommand.class);
-        replayCommands1.put(command6, 8L);
+        replayCommands1.put(8L, command6);
         replayLog1 = new ReplayLog(graph1, replayCommands1);
 
         assertEquals(false, replayLog1.equals(replayLog2));

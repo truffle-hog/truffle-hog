@@ -72,12 +72,12 @@ public class CommandLoggerTest {
 
         commandLogger.swapMaps();
 
-        LinkedMap<IReplayCommand, Long> commands = commandLogger.createCommandLog();
+        LinkedMap<Long, IReplayCommand> commands = commandLogger.createCommandLog();
 
         assertEquals(randomLength, commands.size());
 
-        long currentLong = commands.getValue(0);
-        for (Long nextLong : commands.values()) {
+        long currentLong = commands.firstKey();
+        for (Long nextLong : commands.keySet()) {
             assertEquals(currentLong <= nextLong, true);
             currentLong = nextLong;
         }
@@ -105,7 +105,7 @@ public class CommandLoggerTest {
                 commandLogger.addCommand(command, now);
             }
             commandLogger.swapMaps();
-            LinkedMap<IReplayCommand, Long> commands = commandLogger.createCommandLog();
+            LinkedMap<Long, IReplayCommand> commands = commandLogger.createCommandLog();
             assertEquals(randomLength1, commands.size());
 
             int randomLength2 = (int) (Math.random() * 10) + 10;

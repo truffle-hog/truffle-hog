@@ -151,7 +151,7 @@ public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable
         }
 
         // Create a new replay log
-        LinkedMap<IReplayCommand, Long> compressedCommandList = commandLogger.createCommandLog();
+        LinkedMap<Long, IReplayCommand> compressedCommandList = commandLogger.createCommandLog();
         ReplayLog replayLog = replayLogger.createReplayLog(graph, compressedCommandList);
 
         // Save the replay log to the disk

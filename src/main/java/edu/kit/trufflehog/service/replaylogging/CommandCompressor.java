@@ -28,7 +28,7 @@ class CommandCompressor {
      * @param commands The commands to compress.
      * @return The compressed commands.
      */
-    public LinkedMap<IReplayCommand, Long> compressCommands(LinkedMap<IReplayCommand, Long> commands) {
+    public LinkedMap<Long, IReplayCommand> compressCommands(LinkedMap<Long, IReplayCommand> commands) {
         // TODO: This is just to make things work, if we decide to keep this functionality, we should implement it
         return commands;
     }

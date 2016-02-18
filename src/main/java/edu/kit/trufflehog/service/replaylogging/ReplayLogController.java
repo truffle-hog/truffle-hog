@@ -17,8 +17,8 @@ import java.time.Instant;
  * @version 1.0
  */
 public final class ReplayLogController {
-    private ReplayLogLoadService replayLogLoadService;
-    private ReplayLogSaveService replayLogSaveService;
+    private final ReplayLogLoadService replayLogLoadService;
+    private final ReplayLogSaveService replayLogSaveService;
 
     public ReplayLogController(FileSystem fileSystem, LoggedScheduledExecutor scheduledExecutor, IGraphProxy graphProxy,
                                INetworkGraph networkGraph) {
@@ -47,7 +47,7 @@ public final class ReplayLogController {
     }
 
     public IListener<IReplayCommand> asListener() {
-        return t -> replayLogSaveService.receive(t);
+        return replayLogSaveService::receive;
     }
 
     public void registerListener(IListener<IReplayCommand> listener) {

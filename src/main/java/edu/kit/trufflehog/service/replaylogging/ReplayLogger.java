@@ -50,7 +50,7 @@ class ReplayLogger {
      * @return A new ReplayLog object that is serializable and that contains the graph snapshot and the list of commands
      *          passed to the method.
      */
-    public ReplayLog createReplayLog(INetworkGraph snapshotGraph, LinkedMap<IReplayCommand, Long> commands) {
+    public ReplayLog createReplayLog(INetworkGraph snapshotGraph, LinkedMap<Long, IReplayCommand> commands) {
         return new ReplayLog(snapshotGraph, commands);
     }
 

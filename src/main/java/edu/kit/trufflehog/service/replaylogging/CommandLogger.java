@@ -20,8 +20,8 @@ import java.time.Instant;
 class CommandLogger {
     private static final Logger logger = LogManager.getLogger(CommandLogger.class);
 
-    private LinkedMap<IReplayCommand, Long> waitingCommandMap; // This is where commands are put
-    private LinkedMap<IReplayCommand, Long> commpressCommandMap; // This is where commands are compressed
+    private LinkedMap<Long, IReplayCommand> waitingCommandMap; // This is where commands are put
+    private LinkedMap<Long, IReplayCommand> commpressCommandMap; // This is where commands are compressed
     private final CommandCompressor commandCompressor;
 
     /**
@@ -46,7 +46,7 @@ class CommandLogger {
      */
     public void addCommand(IReplayCommand command, Instant startInstant) {
         if (command.createdAt().toEpochMilli() - startInstant.toEpochMilli() > 0) {
-            waitingCommandMap.put(command, command.createdAt().toEpochMilli());
+            waitingCommandMap.put(command.createdAt().toEpochMilli(), command);
         } else {
             logger.debug("Command created before logging was started, dropping command");
         }
@@ -62,7 +62,7 @@ class CommandLogger {
      * </p>
      */
     public void swapMaps() {
-        LinkedMap<IReplayCommand, Long> tempMap = commpressCommandMap;
+        LinkedMap<Long, IReplayCommand> tempMap = commpressCommandMap;
         commpressCommandMap = waitingCommandMap;
         waitingCommandMap = tempMap;
         waitingCommandMap.clear();
@@ -78,7 +78,7 @@ class CommandLogger {
      *
      * @return A list of compacted commands it received.
      */
-    public LinkedMap<IReplayCommand, Long> createCommandLog() {
+    public LinkedMap<Long, IReplayCommand> createCommandLog() {
         return commandCompressor.compressCommands(commpressCommandMap);
     }
 }

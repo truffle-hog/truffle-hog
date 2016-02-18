@@ -23,7 +23,7 @@ import java.io.Serializable;
  */
 class ReplayLog implements Serializable, Comparable<ReplayLog> {
     private final INetworkGraph snapshotGraph;
-    private final LinkedMap<IReplayCommand, Long> commands;
+    private final LinkedMap<Long, IReplayCommand> commands;
     private final Long startInstant;
     private final Long endInstant;
 
@@ -35,13 +35,13 @@ class ReplayLog implements Serializable, Comparable<ReplayLog> {
      * @param snapshotGraph The snapshot of the graph to include in the replay log.
      * @param commands The list of commands to include in the replay log.
      */
-    public ReplayLog(INetworkGraph snapshotGraph, LinkedMap<IReplayCommand, Long> commands) {
+    public ReplayLog(INetworkGraph snapshotGraph, LinkedMap<Long, IReplayCommand> commands) {
         this.snapshotGraph = snapshotGraph;
         this.commands = commands;
 
         if (!commands.isEmpty()) {
-            startInstant = commands.get(commands.firstKey());
-            endInstant = commands.get(commands.lastKey());
+            startInstant = commands.firstKey();
+            endInstant = commands.lastKey();
         } else {
             startInstant = null;
             endInstant = null;
@@ -66,7 +66,7 @@ class ReplayLog implements Serializable, Comparable<ReplayLog> {
      *
      * @return The command list contained in this ReplayLog object.
      */
-    public LinkedMap<IReplayCommand, Long> getCommands() {
+    public LinkedMap<Long, IReplayCommand> getCommands() {
         return commands;
     }
 

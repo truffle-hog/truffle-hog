@@ -37,6 +37,6 @@ public class Debug {
         graphProxy = mock(GraphProxy.class);
 
         loaderService = new ReplayLogLoadService(executor, fileSystem, graphProxy);
-        loaderService.play(Instant.ofEpochMilli(1455736020080L), false);
+        loaderService.play(Instant.ofEpochMilli(1455788579688L), false);
     }
 }

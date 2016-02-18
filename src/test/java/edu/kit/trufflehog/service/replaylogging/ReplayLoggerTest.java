@@ -70,13 +70,13 @@ public class ReplayLoggerTest {
     public void testSaveReplayLog() throws Exception {
         int randomLength = (int) (Math.random() * 10) + 10;
         for (int i = 0; i < randomLength; i++) {
-            LinkedMap<IReplayCommand, Long> replayCommands = new LinkedMap<>();
+            LinkedMap<Long, IReplayCommand> replayCommands = new LinkedMap<>();
 
             // Generate "random" replay log
             int randomLength2 = (int) (Math.random() * 10) + 1;
             for (int j = 0; j < randomLength2; j++) {
                 long randomTime = (long) (Math.random() * 3);
-                replayCommands.put(null, randomTime);
+                replayCommands.put(randomTime, null);
             }
 
             ReplayLog replayLog = replayLogger.createReplayLog(null, replayCommands);

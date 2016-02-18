@@ -102,12 +102,14 @@ class CaptureSession implements ICaptureSession {
 
     /**
      * <p>
-     *     Finishes a new capture session on the hard drive.
+     *     Finishes a new capture session on the hard drive. This means a folder is renamed to the start time of the
+     *     first replay log dash the end time of the last replay log it contains.
      * </p>
      *
      * @return True if the finishing of a new capture session was successful, else false.
      */
     public boolean finish() {
+        // Get all replay logs in folder sorted by their ending times (which are the keys)
         TreeMap<Long, File> files;
         try {
             files = loadCaptureSessionSorted();
@@ -116,19 +118,25 @@ class CaptureSession implements ICaptureSession {
             return false;
         }
 
+        // Do this to extract the first group from the regex
         File firstFile = files.firstEntry().getValue();
-
         Pattern p = Pattern.compile("([0-9]+)-([0-9]+).replaylog");
         Matcher m = p.matcher(firstFile.getName());
-        m.matches();
-        startInstant = Instant.ofEpochMilli(Long.parseLong(m.group(1)));
-        endInstant = Instant.ofEpochMilli(files.lastEntry().getKey());
 
-        try {
-            return replayLogsFolder.renameTo(new File(replayLogsFolder.getParentFile().getCanonicalPath() +
-                    File.separator + startInstant.toEpochMilli() + "-" + endInstant.toEpochMilli()));
-        } catch (IOException e) {
-            logger.error("Unable to rename capture session folder", e);
+        if (m.matches()) {
+            startInstant = Instant.ofEpochMilli(Long.parseLong(m.group(1)));
+            endInstant = Instant.ofEpochMilli(files.lastEntry().getKey());
+
+            // Rename the folder to the start time of the first replay log dash the end time of the last replay log
+            try {
+                return replayLogsFolder.renameTo(new File(replayLogsFolder.getParentFile().getCanonicalPath() +
+                        File.separator + startInstant.toEpochMilli() + "-" + endInstant.toEpochMilli()));
+            } catch (IOException e) {
+                logger.error("Unable to rename capture session folder", e);
+                return false;
+            }
+        } else {
+            logger.error("Very strange error occurred - first replay log does not match regex");
             return false;
         }
     }
@@ -152,6 +160,7 @@ class CaptureSession implements ICaptureSession {
             startInstant = Instant.ofEpochMilli(Long.parseLong(m.group(1)));
             endInstant = Instant.ofEpochMilli(Long.parseLong(m.group(2)));
 
+            // Put the actual replay logs on the hard drive into File objects
             try {
                 replayLogs = loadCaptureSessionSorted();
                 return true;
