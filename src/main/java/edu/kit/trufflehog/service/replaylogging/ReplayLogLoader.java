@@ -328,7 +328,8 @@ class ReplayLogLoader {
      *                the time instant will be returned.
      * @param strict If strict is set to true, than a replay log will only be returned if it strictly lies in the
      *               covered time interval of the replay log. If it is set to false, then a replay log will even be
-     *               returned if the time instant lies in + {@link ReplayLogLoadService#LOAD_TIME_LIMIT} of its covered interval.
+     *               returned if the time instant lies in +- {@link ReplayLogLoadService#LOAD_TIME_LIMIT} of its covered
+     *               interval.
      * @return The ReplayLog object closest in time to the given time instant.
      * @throws MissingResourceException Thrown when no appropriate replay log is found in memory.
      */
