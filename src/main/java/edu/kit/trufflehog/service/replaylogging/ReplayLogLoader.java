@@ -90,21 +90,6 @@ class ReplayLogLoader {
 
     /**
      * <p>
-     *     Returns the number of milliseconds from the Java epoch of 1970-01-01T00:00:00Z to the start of the first
-     *     buffered replay log.
-     * </p>
-     *
-     * @return The number of milliseconds from the Java epoch of 1970-01-01T00:00:00Z to the start of the first
-     *     buffered replay log
-     */
-    public long bufferedFrom() {
-        // No need to synchronize because replayLogs is concurrent
-
-        return replayLogs.first().getStartInstant();
-    }
-
-    /**
-     * <p>
      *     Gets all capture sessions as files that are found on the hard drive
      * </p>
      *
