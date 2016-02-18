@@ -21,7 +21,11 @@
 
 #define log_info(M, ...) fprintf(stderr, "TruffleHog [INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 
-#define check(A, M, ...) if(!(A)) { log_err(M, ##__VA_ARGS__); errno=0; goto error; }
+#define goto_error(L) goto L
+
+#define check_to(A, L, M, ...) if(!(A)) { log_err(M, ##__VA_ARGS__); errno=0; goto_error(L); }
+
+#define check(A, M, ...) check_to((A), error, M, ##__VA_ARGS__)
 
 #define sentinel(M, ...)  { log_err(M, ##__VA_ARGS__); errno=0; goto error; }
 
