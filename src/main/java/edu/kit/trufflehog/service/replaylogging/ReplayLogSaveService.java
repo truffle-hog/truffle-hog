@@ -54,6 +54,7 @@ class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable {
      * @param graph The live graph so that the SnapshotLogger can take a snapshot of it.
      * @param fileSystem The fileSystem object that gives access to the locations where files are saved on the hard drive.
      *                   This is necessary because of the ReplayLogger that needs to save ReplayLogs.
+     * @param executorService The thread pool to which the replay logging threads will be submitted to
      */
     public ReplayLogSaveService(INetworkGraph graph, FileSystem fileSystem, ScheduledExecutorService executorService) {
         this.commandLogger = new CommandLogger();

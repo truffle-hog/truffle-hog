@@ -97,7 +97,7 @@ class ReplayLogLoader {
      */
     public synchronized File[] getAvailableSessions() throws NullPointerException {
         // This is synchronized because this method is called by the getAllCaptureSessions method in the
-        // IReplayLogController, which could be called from outside this thread
+        // IReplayLoggingController, which could be called from outside this thread
 
         // Get all files in folder
         File replayLogFolder = fileSystem.getReplayLogFolder();

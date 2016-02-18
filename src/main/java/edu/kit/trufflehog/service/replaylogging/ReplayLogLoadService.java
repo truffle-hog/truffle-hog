@@ -74,19 +74,23 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
      */
     private long START_BUFFER_X_REPLAY_LOGS_BEFORE;
 
-
     /**
      * <p>
      *     Creates a new ReplayLogLoadService object.
      * </p>
+     *
+     * @param executorService The thread pool to which the replay logging threads will be submitted to
+     * @param fileSystem The fileSystem object that gives access to the locations where files are saved on the hard drive.
+     *                   This is necessary because of the ReplayLogger that needs to save ReplayLogs.
+     * @param graphProxy The graph proxy object that is used to control what graph is being displayed
      */
-    public ReplayLogLoadService(LoggedScheduledExecutor executor, FileSystem fileSystem, IGraphProxy graphProxy) {
+    public ReplayLogLoadService(LoggedScheduledExecutor executorService, FileSystem fileSystem, IGraphProxy graphProxy) {
         MAX_BUFFER_SIZE = 200; //TODO: hook up with settings stuff
         MAX_BATCH_SIZE = 20;   //TODO: hook up with settings stuff
         LOAD_TIME_LIMIT = 50;   //TODO: hook up with settings stuff
         START_BUFFER_X_REPLAY_LOGS_BEFORE = 5; //TODO: hook up with settings stuff
 
-        this.executorService = executor;
+        this.executorService = executorService;
         this.replayLogLoader = new ReplayLogLoader(fileSystem, MAX_BUFFER_SIZE, MAX_BATCH_SIZE, LOAD_TIME_LIMIT);
         this.graphProxy = graphProxy;
         isPlaying = false;

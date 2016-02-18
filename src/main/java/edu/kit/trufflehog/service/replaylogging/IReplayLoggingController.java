@@ -7,12 +7,15 @@ import java.util.List;
 
 /**
  * <p>
+ *     The IReplayLoggingController is the abstraction from the whole replay logging service. It serves as a simple facade
+ *     to the whole package and gives access to the key methods that are available outside the package. Through it, the
+ *     entire replay logging can be easily controlled.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public interface IReplayLogController {
+public interface IReplayLoggingController {
 
     /**
      * <p>
