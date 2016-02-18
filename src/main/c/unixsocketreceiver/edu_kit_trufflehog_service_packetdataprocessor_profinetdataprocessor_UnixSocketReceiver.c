@@ -104,12 +104,6 @@ int openSocket()
 	      socketData.address.sun_path,
 	      socketData.address.sun_family);
 
-	char buf[] = "Hello Snort";
-
-	check(write(socketData.socketFD, buf, strlen(buf)), "error on sending \"hello snort\"");
-
-	debug("Successfully connected to snort");
-
 	// end of connect to snort
 
 	return 0;
@@ -129,6 +123,13 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
 
     check(openSocket() != -1, "throwing exception, because we could not initialize the receiver");
 
+	check(write(socketData.socketFD, &TRUFFLEHOG_CONNECT_REQUEST, sizeof(TRUFFLEHOG_CONNECT_REQUEST)), "error writing connect request");
+
+	int buffer = -1;
+	check(read(socketData.socketFD, &buffer, sizeof(buffer)), "error reading from socket");
+
+	check(buffer == SNORT_CONNECT_RESPONSE, "incorrect snort response");
+
 	debug("initialization done... returning to java");
 
 	return;
@@ -145,9 +146,12 @@ error:
  */
 JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_closeIPC(JNIEnv *env, jobject thisObj)
 {
-	char *buf = "Bye Snort";
+	check (write(socketData.socketFD, &TRUFFLEHOG_DISCONNECT_REQUEST, sizeof(TRUFFLEHOG_DISCONNECT_REQUEST)), "error on sending disconnect request");
 
-	check (write(socketData.socketFD, buf, strlen(buf)), "error on sending hello snort");
+	int buffer = -1;
+	check(read(socketData.socketFD, &buffer, sizeof(int)) >= 0, "error reading from socket");
+
+	check(buffer == SNORT_DISCONNECT_RESPONSE, "error, wrong message received");
 
 error:
 	throwSnortPluginDisconnectFailedException(env, "failed to disconnect");
