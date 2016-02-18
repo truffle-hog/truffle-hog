@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Julian Brendl
  * @version 1.0
  */
-public class ReplayLogLoadService extends Notifier<IReplayCommand> {
+class ReplayLogLoadService extends Notifier<IReplayCommand> {
     private static final Logger logger = LogManager.getLogger(ReplayLogLoadService.class);
 
     private final ReplayLogLoader replayLogLoader;
@@ -35,6 +35,8 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
     private final ExecutorService executorService;
     private Future<?> loadServiceFuture;
     private boolean isPlaying;
+    private final AtomicBoolean canLoad = new AtomicBoolean(true);
+
 
     /**
      * <p>
@@ -223,8 +225,6 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *               interval.
      */
     public void run(long instant, boolean strict) {
-        final AtomicBoolean canLoad = new AtomicBoolean(true);
-
         // Load the very first replay log. If none is found, stop right here
         if (currentReplayLog == null && !load(instant, strict)) {
             logger.error("Stopped running because no replay logs were found");
@@ -238,7 +238,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
 
         // Determine at how many milliseconds before the end of the buffered data we should start loading new data into
         // the buffer
-        long startBuffering = replayLogDuration * START_BUFFER_X_REPLAY_LOGS_BEFORE;
+        final long startBuffering = replayLogDuration * START_BUFFER_X_REPLAY_LOGS_BEFORE;
 
         // Set this graph as the graph to display
         graphProxy.setActive(currentReplayLog.getGraphSnapshot());
@@ -258,64 +258,25 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
             // Here we create a new thread to already fetch the next replay log from the buffer
             bufferResult = executorService.submit(() -> replayLogLoader.getNextReplayLog(currentReplayLog));
 
-            long previousFireTime = currentReplayLog.getCommands().firstKey();
-
             // This is the actual purpose of the thread - send the old commands out to all listeners via the notifier
-            for (Map.Entry<Long, IReplayCommand> entry : currentReplayLog.getCommands().entrySet()) {
-                notifyListeners(entry.getValue());
+            fireCommands();
 
-                // Sleep for the same interval that it took the next replay log to be sent off
-                try {
-                    Thread.sleep(entry.getKey() - previousFireTime);
-                } catch (InterruptedException e) {
-                    logger.error("Thread was interrupted while firing commands from replay logger", e);
-                }
-
-                previousFireTime = entry.getKey();
-            }
-
-            // Now wait until the next replay log has been retrieved from the buffer
-            ReplayLog replayLogTemp;
-            try {
-                replayLogTemp = bufferResult.get(500, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                replayLogTemp = null;
-                logger.error("Unable to wait for next replay log from buffer", e);
-            }
-
-            // Check if the retrieved replay log is null or not, if it is then wait for the loading of new replay logs
-            // from the hard drive if that is still in process. Otherwise there is nothing more the play and we are done
-            if (replayLogTemp != null) {
-                currentReplayLog = replayLogTemp;
-            } else {
-                // If we did load new replay logs into the buffer, wait for them to finish loading and get the next replay
-                // log after the last one
-                if (loadResult != null) {
-                    try {
-                        // Wait until loaded from hard drive
-                        loadResult.get(1000, TimeUnit.MILLISECONDS);
-
-                        // If the loading operation was successful, canLoad will be true and we can get the next
-                        // replay log, if every thing is in order
-                        if (canLoad.get()) {
-                            currentReplayLog = replayLogLoader.getNextReplayLog(currentReplayLog);
-                        } else {
-                            currentReplayLog = null;
-                        }
-                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                        currentReplayLog = null;
-                        logger.error("Unable to wait for next replay log to be loaded from hard drive", e);
-                    }
-                }
-            }
-
-            // If the loading operation was not successful, or if it did load some replay logs but not the next one,
-            // then we cannot continue and interrupt to launch exit sequence
-            if (currentReplayLog == null) {
-                Thread.currentThread().interrupt();
-            }
+            handleNextReplayLog(bufferResult, loadResult);
         }
 
+        terminateRun(loadResult, bufferResult);
+    }
+
+    /**
+     * <p>
+     *     Ends all threads involved in the replay log loading process
+     * </p>
+     *
+     * @param bufferResult The future returned from the thread fetching the next replay log from the buffer
+     * @param loadResult The future returned from the thread fetching the next batch of replay logs from the hard drive
+     *                   (if this is null, it means the thread was not started)
+     */
+    private void terminateRun(Future<ReplayLog> bufferResult, Future loadResult) {
         // Cancel all other threads that might be running after the interrupt on this thread
         if (loadResult != null) {
             loadResult.cancel(true);
@@ -325,5 +286,79 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
         }
 
         stop();
+    }
+
+    /**
+     * <p>
+     *     Fires the commands contained in the current replay log.
+     * </p>
+     */
+    private void fireCommands() {
+        long previousFireTime = currentReplayLog.getCommands().firstKey();
+
+        for (Map.Entry<Long, IReplayCommand> entry : currentReplayLog.getCommands().entrySet()) {
+            notifyListeners(entry.getValue());
+
+            // Sleep for the same interval that it took the next replay log to be sent off
+            try {
+                Thread.sleep(entry.getKey() - previousFireTime);
+            } catch (InterruptedException e) {
+                logger.error("Thread was interrupted while firing commands from replay logger", e);
+            }
+
+            previousFireTime = entry.getKey();
+        }
+    }
+
+    /**
+     * <p>
+     *     Sets the next replay log that should be played, or interrupts the thread if none is found.
+     * </p>
+     *
+     * @param bufferResult The future returned from the thread fetching the next replay log from the buffer
+     * @param loadResult The future returned from the thread fetching the next batch of replay logs from the hard drive
+     *                   (if this is null, it means the thread was not started)
+     */
+    private void handleNextReplayLog(Future<ReplayLog> bufferResult, Future loadResult) {
+        // Now wait until the next replay log has been retrieved from the buffer
+        ReplayLog replayLogTemp;
+        try {
+            replayLogTemp = bufferResult.get(500, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            replayLogTemp = null;
+            logger.error("Unable to wait for next replay log from buffer", e);
+        }
+
+        // Check if the retrieved replay log is null or not, if it is then wait for the loading of new replay logs
+        // from the hard drive if that is still in process. Otherwise there is nothing more the play and we are done
+        if (replayLogTemp != null) {
+            currentReplayLog = replayLogTemp;
+        } else {
+            // If we did load new replay logs into the buffer, wait for them to finish loading and get the next replay
+            // log after the last one
+            if (loadResult != null) {
+                try {
+                    // Wait until loaded from hard drive
+                    loadResult.get(1000, TimeUnit.MILLISECONDS);
+
+                    // If the loading operation was successful, canLoad will be true and we can get the next
+                    // replay log, if every thing is in order
+                    if (canLoad.get()) {
+                        currentReplayLog = replayLogLoader.getNextReplayLog(currentReplayLog);
+                    } else {
+                        currentReplayLog = null;
+                    }
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    currentReplayLog = null;
+                    logger.error("Unable to wait for next replay log to be loaded from hard drive", e);
+                }
+            }
+        }
+
+        // If the loading operation was not successful, or if it did load some replay logs but not the next one,
+        // then we cannot continue and interrupt to launch exit sequence
+        if (currentReplayLog == null) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

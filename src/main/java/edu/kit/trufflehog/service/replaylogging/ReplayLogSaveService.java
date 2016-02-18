@@ -25,7 +25,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * @author Julian Brendl
  * @version 1.0
  */
-public class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable {
+class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable {
     private static final Logger logger = LogManager.getLogger(ReplayLogSaveService.class);
 
     private final CommandLogger commandLogger;

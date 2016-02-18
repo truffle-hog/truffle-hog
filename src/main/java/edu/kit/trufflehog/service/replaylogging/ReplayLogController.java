@@ -14,7 +14,7 @@ import edu.kit.trufflehog.util.IListener;
  * @author Julian Brendl
  * @version 1.0
  */
-public final class ReplayLogController {
+public final class ReplayLogController implements IReplayLogController {
     private final ReplayLogLoadService replayLogLoadService;
     private final ReplayLogSaveService replayLogSaveService;
 
@@ -24,34 +24,42 @@ public final class ReplayLogController {
         replayLogLoadService = new ReplayLogLoadService(scheduledExecutor, fileSystem, graphProxy);
     }
 
+    @Override
     public void startPlay(long instant, boolean strict) {
         replayLogLoadService.play(instant, strict);
     }
 
+    @Override
     public void stopPlay() {
         replayLogLoadService.stop();
     }
 
+    @Override
     public void jumpToInstant(long instant, boolean strict) {
         replayLogLoadService.jumpToInstant(instant, strict);
     }
 
+    @Override
     public void startCapture() {
         replayLogSaveService.startCapture();
     }
 
+    @Override
     public void stopCapture() {
         replayLogSaveService.stopCapture();
     }
 
+    @Override
     public IListener<IReplayCommand> asListener() {
         return replayLogSaveService::receive;
     }
 
+    @Override
     public void registerListener(IListener<IReplayCommand> listener) {
         replayLogLoadService.addListener(listener);
     }
 
+    @Override
     public void unregisterListener(IListener<IReplayCommand> listener) {
         replayLogLoadService.removeListener(listener);
     }
