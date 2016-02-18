@@ -92,15 +92,18 @@ class ReplayLogLoader {
      *     Gets all capture sessions as files that are found on the hard drive
      * </p>
      *
-     * @return all capture sessions as files that are found on the hard drive
+     * @return All capture sessions as files that are found on the hard drive
+     * @throws NullPointerException Thrown if no capture sessions were found
      */
-    public File[] getAvailableSessions() {
+    public synchronized File[] getAvailableSessions() throws NullPointerException {
+        // This is synchronized because this method is called by the getAllCaptureSessions method in the
+        // IReplayLogController, which could be called from outside this thread
+
         // Get all files in folder
         File replayLogFolder = fileSystem.getReplayLogFolder();
         File[] files = replayLogFolder.listFiles();
         if (files == null || files.length <= 0) {
-            logger.debug("No replay logs found at all.");
-            return null;
+            throw new NullPointerException("No replay logs found at all (no capture sessions found).");
         }
 
         return files;

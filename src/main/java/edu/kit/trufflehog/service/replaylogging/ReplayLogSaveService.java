@@ -99,7 +99,9 @@ class ReplayLogSaveService implements IListener<IReplayCommand>, Runnable {
 
     /**
      * <p>
-     *     Stops the replay log saving functionality of TruffleHog.
+     *     Stops the replay log saving functionality of TruffleHog which among other things renames the created folder
+     *     to the start time of the first replay log dash the stop time of the last replay log. (E.g. 131234234234 ->
+     *     131234234250-131234238593)
      * </p>
      */
     public void stopCapture() {

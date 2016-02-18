@@ -7,6 +7,8 @@ import edu.kit.trufflehog.model.graph.INetworkGraph;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import edu.kit.trufflehog.util.IListener;
 
+import java.util.List;
+
 /**
  * <p>
  * </p>
@@ -30,6 +32,11 @@ public final class ReplayLogController implements IReplayLogController {
     }
 
     @Override
+    public void startPlay(ICaptureSession captureSession, boolean strict) {
+        replayLogLoadService.play(captureSession, strict);
+    }
+
+    @Override
     public void stopPlay() {
         replayLogLoadService.stop();
     }
@@ -37,6 +44,11 @@ public final class ReplayLogController implements IReplayLogController {
     @Override
     public void jumpToInstant(long instant, boolean strict) {
         replayLogLoadService.jumpToInstant(instant, strict);
+    }
+
+    @Override
+    public List<ICaptureSession> getAllCaptureSessions() {
+        return replayLogLoadService.getAllCaptureSessions();
     }
 
     @Override

@@ -8,6 +8,9 @@ import edu.kit.trufflehog.util.Notifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.concurrent.*;
@@ -124,6 +127,33 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
 
     /**
      * <p>
+     *     Starts the playback of the {@link ReplayLog}s. The graph snapshot will be loaded and the subsequent commands
+     *     will be executed on that snapshot.
+     * </p>
+     * <p>
+     *     If strict is true, a replay log containing the given time instant must be returned, else false is returned.
+     *     If strict is false, a ReplayLog reasonably close in time to the given
+     *     instant must be in memory, else false is returned.
+     * </p>
+     * <p>
+     *     This is done because there is a small gap in time between different replay logs, usually between 25-50 milliseconds
+     *     because the logger needs time to execute as well. If the user happens to be unlucky to select such a gap as
+     *     the next replay log that should be played, than the system does not crash. However since this does deviate
+     *     from the expected behaviour it is made optional.
+     * </p>
+     *
+     * @param captureSession The {@link ICaptureSession} to playback
+     * @param strict If strict is set to true, than a replay log will only be returned if it strictly lies in the
+     *               covered time interval of the replay log. If it is set to false, then a replay log will even be
+     *               returned if the time instant lies in +- {@link ReplayLogLoadService#LOAD_TIME_LIMIT} of its covered
+     *               interval.
+     */
+    public void play(ICaptureSession captureSession, boolean strict) {
+        play(captureSession.getStartInstant().getEpochSecond(), strict);
+    }
+
+    /**
+     * <p>
      *     Stops the playback of the {@link ReplayLog}s if it was in progress.
      * </p>
      */
@@ -175,6 +205,26 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
 
         // Start it again!
         play(instant, strict);
+    }
+
+    /**
+     * <p>
+     *     Gets all {@link ICaptureSession}s found on the hard drive.
+     * </p>
+     *
+     * @return All {@link ICaptureSession}s found on the hard drive.
+     */
+    public List<ICaptureSession> getAllCaptureSessions() {
+        File[] captureSessionFiles = replayLogLoader.getAvailableSessions();
+
+        List<ICaptureSession> captureSessionList = new LinkedList<>();
+        for (File file : captureSessionFiles) {
+            CaptureSession captureSession = new CaptureSession(file);
+            captureSession.load();
+            captureSessionList.add(captureSession);
+        }
+
+        return captureSessionList;
     }
 
     /**
