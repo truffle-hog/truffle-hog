@@ -95,7 +95,7 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     will be executed on that snapshot.
      * </p>
      * <p>
-     *     If strict is set, a replay log containing the given time instant must be returned, else false is returned.
+     *     If strict is true, a replay log containing the given time instant must be returned, else false is returned.
      *     If strict is false, a ReplayLog reasonably close in time to the given
      *     instant must be in memory, else false is returned.
      * </p>
@@ -152,7 +152,7 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     if the playback is currently active.
      * </p>
      * <p>
-     *     If strict is set, a replay log containing the given time instant must be returned, else false is returned.
+     *     If strict is true, a replay log containing the given time instant must be returned, else false is returned.
      *     If strict is false, a ReplayLog reasonably close in time to the given
      *     instant must be in memory, else false is returned.
      * </p>
@@ -181,7 +181,7 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     needed. It does this through the {@link ReplayLogLoader}.
      * </p>
      * <p>
-     *     If strict is set, a replay log containing the given time instant must be returned, else false is returned.
+     *     If strict is true, a replay log containing the given time instant must be returned, else false is returned.
      *     If strict is false, a ReplayLog reasonably close in time to the given
      *     instant must be in memory, else false is returned.
      * </p>
@@ -228,7 +228,7 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *     playback graph.
      * </p>
      * <p>
-     *     If strict is set, a replay log containing the given time instant must be returned, else false is returned.
+     *     If strict is true, a replay log containing the given time instant must be returned, else false is returned.
      *     If strict is false, a ReplayLog reasonably close in time to the given
      *     instant must be in memory, else false is returned.
      * </p>
