@@ -43,9 +43,14 @@ public class UnixSocketReceiverTest {
         testRunner = null;
     }
 
-    @Test
-    public void testConnect() throws Exception {
-        receiver.connect();
+    @Test(expected = SnortPNPluginNotRunningException.class)
+    public void testConnect_ifSnortNotRunning() throws Exception {
+        try {
+            receiver.connect();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

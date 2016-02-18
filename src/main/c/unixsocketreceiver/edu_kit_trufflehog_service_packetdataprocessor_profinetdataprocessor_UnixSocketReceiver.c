@@ -49,76 +49,69 @@ struct SocketData
 // The socket file descriptor
 struct SocketData socketData;
 
+
 /**
- * @brief Gets the socket file path and writes it to the given socket address.
+ * @brief Gets the socket file path and writes it to sockData.address.
  *
  * @param sockData the SocketData struct to write to
  *
  * @return Returns 0 on success and -1 on error.
  */
-int writeSocketFile(struct sockaddr_un *sockAddress)
+int getSocketFile(struct SocketData *sockData)
 {
-    memset((char *) sockAddress, 0, sizeof(*sockAddress));
-
 	char *homeDir;
 	if ((homeDir = getenv("HOME")) == NULL)
 	{
 		int uid = getuid();
 		struct passwd *pw = getpwuid(uid);
-		check(pw != NULL, "getpwuid failed");
+		check(pw != NULL, "couldn't get user home dir");
 
 		homeDir = pw->pw_dir;
 	}
 
-	char *socket_file = malloc(strlen(homeDir) + strlen(SOCKET_NAME) + 1);
-	check_mem(socket_file);
+	check((strlen(homeDir) + strlen(SOCKET_NAME)) < 108, "socket file path is too long! Max length is 108 chars");
 
-	check(strlen(socket_file) < 109, "the path to the socket is to long (%d) should be maximum 108 including nullbyte: %s", strlen(socket_file), socket_file);
-
-	socket_file[0] = '\0';
-    strcat(socket_file, homeDir);
-    strcat(socket_file, SOCKET_NAME);
-
-    strcpy(sockAddress->sun_path, socket_file);
-
-    free(socket_file);
-
-
-/*	sockData->address.sun_path[0] = '\0';
+	sockData->address.sun_path[0] = '\0';
 	strcat(sockData->address.sun_path, homeDir);
-	strcat(sockData->address.sun_path, SOCKET_NAME);*/
+	strcat(sockData->address.sun_path, SOCKET_NAME);
 
 	return 0;
 
 error:
-
-    if (socket_file) {
-        free(socket_file);
-    }
     return -1;
-
 }
 
 int openSocket()
 {
     debug("opening socket..");
-    int len;
-
-    socketData.socketFD = socket(AF_UNIX, SOCK_SEQPACKET, 0);
-    check(socketData.socketFD != -1, "could not create socket");
 
 	// Init socket data
-	writeSocketFile(&socketData.address);
+	check(!getSocketFile(&socketData), "could not get the socket file");
 	socketData.address.sun_family = AF_UNIX;
 
-    len = strlen(socketData.address.sun_path) + sizeof(socketData.address.sun_family);
-	check(!(connect(socketData.socketFD, (struct sockaddr *) &socketData.address, len) < 0),
-	          "could not connect to socket \'%s\', \'%d\'", socketData.address.sun_path, socketData.address.sun_family);
+	socketData.socketFD = socket(AF_UNIX, SOCK_SEQPACKET, 0);
+	if (socketData.socketFD < 0)
+	{
+		printf("ERROR: could not create socket!\n");
+		return -1;
+	}
+	// end of init socket data
 
-	char *buf = "Hello Snort";
-	check(write(socketData.socketFD, buf, strlen(buf)), "error on sending \'Hello Snort\'");
+    // connect to snort
+	int32_t len = strlen(socketData.address.sun_path) + sizeof(socketData.address.sun_family);
+	check(!(connect(socketData.socketFD, (struct sockaddr*) &socketData.address, len) < 0),
+	      "could not connect to socket \'%s\', \'%d\'",
+	      socketData.address.sun_path,
+	      socketData.address.sun_family);
+
+	char buf[] = "Hello Snort";
+
+	check(write(socketData.socketFD, buf, strlen(buf)), "error on sending \"hello snort\"");
 
 	debug("Successfully connected to snort");
+
+	// end of connect to snort
+
 	return 0;
 
 error:
@@ -137,7 +130,7 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
     check(openSocket() != -1, "throwing exception, because we could not initialize the receiver");
 
 error:
-    throwSnortPluginNotRunningException(env, "Nope");
+    throwSnortPluginNotRunningException(env, "Could not connect to snort!");
 }
 
 /*
