@@ -78,7 +78,9 @@ public class UnixSocketReceiver extends TruffleReceiver {
             }
 
             connected = true;
-            this.notifyAll();
+            synchronized (this) {
+                this.notifyAll();
+            }
         } catch (SnortPNPluginNotRunningException e) {
             notifyListeners(new PluginNotRunningCommand());
         }
@@ -90,11 +92,14 @@ public class UnixSocketReceiver extends TruffleReceiver {
     @Override
     public void disconnect() {
 
-        if (connected) {
-            closeIPC();
+        connected = false;
+
+        synchronized (this) {
+            if (connected) {
+                closeIPC();
+            }
         }
 
-        connected = false;
     }
 
     private native void openIPC() throws SnortPNPluginNotRunningException;
