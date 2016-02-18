@@ -7,8 +7,6 @@ import edu.kit.trufflehog.model.graph.INetworkGraph;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import edu.kit.trufflehog.util.IListener;
 
-import java.time.Instant;
-
 /**
  * <p>
  * </p>
@@ -26,7 +24,7 @@ public final class ReplayLogController {
         replayLogLoadService = new ReplayLogLoadService(scheduledExecutor, fileSystem, graphProxy);
     }
 
-    public void startPlay(Instant instant, boolean strict) {
+    public void startPlay(long instant, boolean strict) {
         replayLogLoadService.play(instant, strict);
     }
 
@@ -34,7 +32,7 @@ public final class ReplayLogController {
         replayLogLoadService.stop();
     }
 
-    public void jumpToInstant(Instant instant, boolean strict) {
+    public void jumpToInstant(long instant, boolean strict) {
         replayLogLoadService.jumpToInstant(instant, strict);
     }
 

@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.regex.Matcher;
@@ -113,7 +112,7 @@ class ReplayLogLoader {
      *     needed.
      * </p>
      * <p>
-     *     This method should not be confused with {@link #getData(Instant, boolean)}. {@link #getData(Instant, boolean)}
+     *     This method should not be confused with {@link #getData(long, boolean)}. {@link #getData(long, boolean)}
      *     gets the desired ReplayLog object from the already loaded ReplayLog objects and does not load any ReplayLog
      *     itself.
      * </p>
@@ -124,7 +123,7 @@ class ReplayLogLoader {
      *                the time instant will be loaded.
      * @return True if a replay log was found and loaded, else false
      */
-    public boolean loadData(Optional<File> selectedFolderOptional, Instant instant) {
+    public boolean loadData(Optional<File> selectedFolderOptional, long instant) {
         // No need to synchronize because replayLogs is concurrent
 
         // Get the folder whose time interval includes the given instant
@@ -154,7 +153,7 @@ class ReplayLogLoader {
      *     needed.
      * </p>
      * <p>
-     *     This method should not be confused with {@link #getData(Instant, boolean)}. {@link #getData(Instant, boolean)}
+     *     This method should not be confused with {@link #getData(long, boolean)}. {@link #getData(long, boolean)}
      *     gets the desired ReplayLog object from the already loaded ReplayLog objects and does not load any ReplayLog
      *     itself.
      * </p>
@@ -163,7 +162,7 @@ class ReplayLogLoader {
      *                the time instant will be loaded.
      * @return True if a replay log was found and loaded, else false
      */
-    public boolean loadData(Instant instant) {
+    public boolean loadData(long instant) {
         // No need to synchronize because replayLogs is concurrent
 
         logger.debug("Loading new batch of replay logs.");
@@ -239,7 +238,7 @@ class ReplayLogLoader {
      *                        interest.
      * @return The batch of replay logs that should be deserialized.
      */
-    private List<File> getClosestReplayLog(Instant instant, Map<Long, File> validReplayLogs) {
+    private List<File> getClosestReplayLog(long instant, Map<Long, File> validReplayLogs) {
         List<File> fileList = new LinkedList<>();
 
         // Check if we can just directly return the received list because it is smaller than the batch size
@@ -257,7 +256,7 @@ class ReplayLogLoader {
                 closestInstant = time;
                 closestReplayLogFileIndex = j;
             } else {
-                if (Math.abs(time - instant.toEpochMilli()) < closestInstant) {
+                if (Math.abs(time - instant) < closestInstant) {
                     closestInstant = time;
                     closestReplayLogFileIndex = j;
                 }
@@ -292,9 +291,8 @@ class ReplayLogLoader {
      * @param instant The time instant for which to find a replay log
      * @return An optional containing the wanted folder if it was found.
      */
-    private Optional<File> getReplayLogFolder(File[] files, Instant instant) {
+    private Optional<File> getReplayLogFolder(File[] files, final long instant) {
         List<File> fileList = Arrays.asList(files);
-        final long instantTime = instant.toEpochMilli();
         final Pattern p = Pattern.compile("([0-9]+)-([0-9]+)");
         return fileList.stream()
                 .filter(fileTemp -> {
@@ -303,7 +301,7 @@ class ReplayLogLoader {
                         long startTime = Long.parseLong(m.group(1));
                         long endTime = Long.parseLong(m.group(2));
 
-                        return startTime <= instantTime && endTime >= instantTime;
+                        return startTime <= instant && endTime >= instant;
                     } else {
                         return false;
                     }
@@ -329,7 +327,7 @@ class ReplayLogLoader {
      * @return The ReplayLog object closest in time to the given time instant.
      * @throws MissingResourceException Thrown when no appropriate replay log is found in memory.
      */
-    public ReplayLog getData(Instant instant, boolean strict) throws MissingResourceException {
+    public ReplayLog getData(long instant, boolean strict) throws MissingResourceException {
         if (strict) {
             return getData(instant, 0);
         } else {
@@ -347,21 +345,21 @@ class ReplayLogLoader {
      * @return The ReplayLog object that contains the given instant in its interval.
      * @throws MissingResourceException Thrown when no appropriate replay log is found in memory.
      */
-    private ReplayLog getData(final Instant instant, final long loadTimeLimit) throws MissingResourceException {
+    private ReplayLog getData(final long instant, final long loadTimeLimit) throws MissingResourceException {
         // Get all replay logs who contain the instant in their covered time interval
         return replayLogs.stream()
-                .filter(replayLog -> replayLog.getStartInstant() - loadTimeLimit <= instant.toEpochMilli()
-                        && replayLog.getEndInstant() + loadTimeLimit >= instant.toEpochMilli())
+                .filter(replayLog -> replayLog.getStartInstant() - loadTimeLimit <= instant
+                        && replayLog.getEndInstant() + loadTimeLimit >= instant)
                 .reduce((replaylog1, replaylog2) -> {
                     // We make a sorted map here to easily find the replay log with the smallest offset
                     TreeMap<Long, ReplayLog> map = new TreeMap<>();
-                    map.put(Math.abs(replaylog1.getEndInstant() - instant.toEpochMilli()), replaylog1);
-                    map.put(Math.abs(instant.toEpochMilli() - replaylog1.getStartInstant()), replaylog1);
-                    map.put(Math.abs(replaylog2.getEndInstant() - instant.toEpochMilli()), replaylog2);
-                    map.put(Math.abs(instant.toEpochMilli() - replaylog2.getStartInstant()), replaylog2);
+                    map.put(Math.abs(replaylog1.getEndInstant() - instant), replaylog1);
+                    map.put(Math.abs(instant - replaylog1.getStartInstant()), replaylog1);
+                    map.put(Math.abs(replaylog2.getEndInstant() - instant), replaylog2);
+                    map.put(Math.abs(instant - replaylog2.getStartInstant()), replaylog2);
                     return map.firstEntry().getValue();
                 })
                 .orElseThrow(() -> new MissingResourceException("ReplayLog that matches time instant not found",
-                "ReplayLog", instant.toEpochMilli() + ""));
+                "ReplayLog", instant + ""));
     }
 }

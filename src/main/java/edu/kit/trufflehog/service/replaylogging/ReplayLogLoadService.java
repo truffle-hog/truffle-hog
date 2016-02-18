@@ -8,7 +8,6 @@ import edu.kit.trufflehog.util.Notifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.concurrent.*;
@@ -105,7 +104,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *               returned if the time instant lies in +- {@link ReplayLogLoadService#LOAD_TIME_LIMIT} of its covered
      *               interval.
      */
-    public void play(Instant instant, boolean strict) {
+    public void play(long instant, boolean strict) {
         if (!isPlaying) {
             this.loadServiceFuture = executorService.submit(() -> run(instant, strict));
             isPlaying = true;
@@ -157,7 +156,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *               returned if the time instant lies in +- {@link ReplayLogLoadService#LOAD_TIME_LIMIT} of its covered
      *               interval.
      */
-    public void jumpToInstant(Instant instant, boolean strict) {
+    public void jumpToInstant(long instant, boolean strict) {
         stop();
 
         // Start it again!
@@ -183,7 +182,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *               interval.
      * @return True if a replay log was found and loaded, else false
      */
-    private boolean load(Instant instant, boolean strict) {
+    private boolean load(long instant, boolean strict) {
         try {
             currentReplayLog = replayLogLoader.getData(instant, strict);
             return true;
@@ -223,7 +222,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
      *               returned if the time instant lies in +- {@link ReplayLogLoadService#LOAD_TIME_LIMIT} of its covered
      *               interval.
      */
-    public void run(Instant instant, boolean strict) {
+    public void run(long instant, boolean strict) {
         final AtomicBoolean canLoad = new AtomicBoolean(true);
 
         // Load the very first replay log. If none is found, stop right here
@@ -253,7 +252,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
             final long bufferedUntil = replayLogLoader.bufferedUntil();
             if (bufferedUntil - currentReplayLog.getEndInstant() <= startBuffering && canLoad.get()) {
                 loadResult = executorService.submit(() -> canLoad.set(replayLogLoader.
-                        loadData(Instant.ofEpochMilli(bufferedUntil + (replayLogDuration / 2)))));
+                        loadData(bufferedUntil + (replayLogDuration / 2))));
             }
 
             // Here we create a new thread to already fetch the next replay log from the buffer
