@@ -319,9 +319,10 @@ class ReplayLogLoader {
      *     instant must be in memory, else a MissingResourceException is thrown.
      * </p>
      * <p>
-     *     This is done because there is a gap in time between different replay logs, and if the user happens to be
-     *     unlucky to select such a gap as the next replay log that should be played, than the system does not crash.
-     *     However since this does deviate from the expected behaviour it is made optional.
+     *     This is done because there is a small gap in time between different replay logs, usually between 25-50 milliseconds
+     *     because the logger needs time to execute as well. If the user happens to be unlucky to select such a gap as
+     *     the next replay log that should be played, than the system does not crash. However since this does deviate
+     *     from the expected behaviour it is made optional.
      * </p>
      *
      * @param instant The time instant that should be used to get the ReplayLog object. The ReplayLog object closest to
