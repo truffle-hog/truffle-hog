@@ -78,6 +78,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
             }
 
             connected = true;
+            this.notifyAll();
         } catch (SnortPNPluginNotRunningException e) {
             notifyListeners(new PluginNotRunningCommand());
         }
