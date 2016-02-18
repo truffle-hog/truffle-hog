@@ -213,13 +213,19 @@ class ReplayLogLoadService extends Notifier<IReplayCommand> {
 
     /**
      * <p>
-     *     Gets all {@link ICaptureSession}s found on the hard drive.
+     *     Gets all {@link ICaptureSession}s found on the hard drive, or null if none were found.
      * </p>
      *
-     * @return All {@link ICaptureSession}s found on the hard drive.
+     * @return All {@link ICaptureSession}s found on the hard drive, or null if none were found.
      */
     public List<ICaptureSession> getAllCaptureSessions() {
-        File[] captureSessionFiles = replayLogLoader.getAvailableSessions();
+        File[] captureSessionFiles;
+        try {
+            captureSessionFiles = replayLogLoader.getAvailableSessions();
+        } catch (NullPointerException e) {
+            logger.error("Unable to get all capture sessions", e);
+            return null;
+        }
 
         List<ICaptureSession> captureSessionList = new LinkedList<>();
         for (File file : captureSessionFiles) {

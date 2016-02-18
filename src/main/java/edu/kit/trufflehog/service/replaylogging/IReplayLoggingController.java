@@ -101,10 +101,10 @@ public interface IReplayLoggingController {
 
     /**
      * <p>
-     *     Gets all {@link ICaptureSession}s found on the hard drive.
+     *     Gets all {@link ICaptureSession}s found on the hard drive, or null if none were found.
      * </p>
      *
-     * @return All {@link ICaptureSession}s found on the hard drive.
+     * @return All {@link ICaptureSession}s found on the hard drive, or null if none were found.
      */
     List<ICaptureSession> getAllCaptureSessions();
 

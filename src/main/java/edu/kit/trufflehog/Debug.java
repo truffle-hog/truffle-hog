@@ -4,10 +4,9 @@ package edu.kit.trufflehog;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.graph.GraphProxy;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
-import edu.kit.trufflehog.service.replaylogging.ReplayLogLoadService;
+import edu.kit.trufflehog.service.replaylogging.ReplayLoggingController;
 
 import java.io.File;
-import java.time.Instant;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -19,7 +18,7 @@ public class Debug {
     private FileSystem fileSystem;
     private GraphProxy graphProxy;
     private LoggedScheduledExecutor executor;
-    private ReplayLogLoadService loaderService;
+    private ReplayLoggingController loggingController;
 
     public static void main(String[] args) {
         new Debug();
@@ -36,7 +35,7 @@ public class Debug {
 
         graphProxy = mock(GraphProxy.class);
 
-        loaderService = new ReplayLogLoadService(executor, fileSystem, graphProxy);
-        loaderService.play(Instant.ofEpochMilli(1455788579688L), false);
+        loggingController = new ReplayLoggingController(fileSystem, executor, graphProxy, null);
+        loggingController.startPlay(1455788579688L, false);
     }
 }
