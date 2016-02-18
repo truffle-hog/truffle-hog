@@ -2,7 +2,7 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.MainInteraction;
-import edu.kit.trufflehog.view.controllers.BorderPaneController;
+import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Map;
  *     Menu Bar.
  * </p>
  */
-public class MainViewController extends BorderPaneController<MainInteraction> {
+public class MainViewController extends AnchorPaneController<MainInteraction> {
 
 	/** The commands that are mapped to their interactions. **/
     private final Map<MainInteraction, IUserCommand> interactionMap =
@@ -47,8 +47,7 @@ public class MainViewController extends BorderPaneController<MainInteraction> {
      */
     @Override
     public final void addCommand(final MainInteraction interactor, final
-    IUserCommand
-            command) {
+    IUserCommand command) {
 
         interactionMap.put(interactor, command);
     }

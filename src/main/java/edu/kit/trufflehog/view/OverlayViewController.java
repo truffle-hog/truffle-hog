@@ -2,7 +2,7 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.OverlayInteraction;
-import edu.kit.trufflehog.view.controllers.BorderPaneController;
+import edu.kit.trufflehog.view.controllers.GridPaneController;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Map;
  *     as a floating (slightly transparent) view on top of the main view.
  * </p>
  */
-public class OverlayViewController extends BorderPaneController<OverlayInteraction> {
+public class OverlayViewController extends GridPaneController<OverlayInteraction> {
 
 	/** The commands that are mapped to their interactions. **/
     private final Map<OverlayInteraction, IUserCommand> interactionMap =
