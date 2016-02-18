@@ -54,7 +54,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
 
     /**
      * <p>
-     *     The maximum number of seconds a replay log's covered interval can deviate from the desired instant
+     *     The maximum number of milliseconds a replay log's covered interval can deviate from the desired instant
      * </p>
      */
     private int LOAD_TIME_LIMIT;
@@ -80,7 +80,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
     public ReplayLogLoadService(LoggedScheduledExecutor executor, FileSystem fileSystem, IGraphProxy graphProxy) {
         MAX_BUFFER_SIZE = 200; //TODO: hook up with settings stuff
         MAX_BATCH_SIZE = 20;   //TODO: hook up with settings stuff
-        LOAD_TIME_LIMIT = 3;   //TODO: hook up with settings stuff
+        LOAD_TIME_LIMIT = 50;   //TODO: hook up with settings stuff
         START_BUFFER_X_REPLAY_LOGS_BEFORE = 5; //TODO: hook up with settings stuff
 
         this.executorService = executor;

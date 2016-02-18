@@ -78,7 +78,9 @@ class CaptureSession implements ICaptureSession {
                         && p.matcher(fileTemp.getName()).matches())
                 .collect(Collectors.toMap(file -> {
                     Matcher m = p.matcher(file.getName());
-                    m.matches();
+
+                    //noinspection ResultOfMethodCallIgnored
+                    m.matches(); // Call this just so that we can all m.group(2), we know it matches because of the filter step
                     return Long.parseLong(m.group(2));
                 }, file -> file))
                 .entrySet()
@@ -114,16 +116,17 @@ class CaptureSession implements ICaptureSession {
             return false;
         }
 
-        File lastFile = files.lastEntry().getValue();
+        File firstFile = files.firstEntry().getValue();
 
         Pattern p = Pattern.compile("([0-9]+)-([0-9]+).replaylog");
-        Matcher m = p.matcher(lastFile.getName());
+        Matcher m = p.matcher(firstFile.getName());
         m.matches();
-        endInstant = Instant.ofEpochMilli(startInstant.toEpochMilli() + Long.parseLong(m.group(2)));
+        startInstant = Instant.ofEpochMilli(Long.parseLong(m.group(1)));
+        endInstant = Instant.ofEpochMilli(files.lastEntry().getKey());
 
         try {
             return replayLogsFolder.renameTo(new File(replayLogsFolder.getParentFile().getCanonicalPath() +
-                    File.separator + replayLogsFolder.getName() + "-" + endInstant.toEpochMilli()));
+                    File.separator + startInstant.toEpochMilli() + "-" + endInstant.toEpochMilli()));
         } catch (IOException e) {
             logger.error("Unable to rename capture session folder", e);
             return false;

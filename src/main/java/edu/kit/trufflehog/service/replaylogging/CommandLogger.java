@@ -45,10 +45,8 @@ class CommandLogger {
      * @param startInstant The instant at which the recording session was started
      */
     public void addCommand(IReplayCommand command, Instant startInstant) {
-        long receivedAt = command.createdAt().toEpochMilli() - startInstant.toEpochMilli();
-
-        if (receivedAt > 0) {
-            waitingCommandMap.put(command, receivedAt);
+        if (command.createdAt().toEpochMilli() - startInstant.toEpochMilli() > 0) {
+            waitingCommandMap.put(command, command.createdAt().toEpochMilli());
         } else {
             logger.debug("Command created before logging was started, dropping command");
         }
