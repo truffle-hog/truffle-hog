@@ -311,10 +311,9 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
             }
 
             // If the loading operation was not successful, or if it did load some replay logs but not the next one,
-            // then we cannot continue and quit
+            // then we cannot continue and interrupt to launch exit sequence
             if (currentReplayLog == null) {
-                stop();
-                return;
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -325,5 +324,7 @@ public class ReplayLogLoadService extends Notifier<IReplayCommand> {
         if (bufferResult != null) {
             bufferResult.cancel(true);
         }
+
+        stop();
     }
 }
