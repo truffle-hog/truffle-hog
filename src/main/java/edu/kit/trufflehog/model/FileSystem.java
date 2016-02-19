@@ -64,6 +64,7 @@ public class FileSystem {
     private File dataFolder = null;
     private File replayLogFolder = null;
     private File configFolder = null;
+    private File filterFolder = null;
     private File truffleDataLogFolder = null;
     private File logFolder = null;
 
@@ -126,6 +127,20 @@ public class FileSystem {
     public File getConfigFolder() {
         getDataFolder();
         configFolder = createFolder(configFolder, "config", dataFolder);
+
+        return configFolder;
+    }
+
+    /**
+     * <p>
+     *     Returns the File object of the config folder, or creates the folder if it does not exist yet.
+     * </p>
+     *
+     * @return The corresponding File object of the config folder.
+     */
+    public File getFilterFolder() {
+        getConfigFolder();
+        filterFolder = createFolder(filterFolder, "filters", configFolder);
 
         return configFolder;
     }

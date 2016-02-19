@@ -85,6 +85,19 @@ public class FileSystemTest {
 
     /**
      * <p>
+     *     Tests if the filter folder is created correctly.
+     * </p>
+     *
+     * @throws Exception Passes any errors that occurred during the test on
+     */
+    @Test
+    public void testGetFilterFolder() throws Exception {
+        boolean fileExists = fileSystem.getFilterFolder().exists();
+        assertEquals(fileExists, true);
+    }
+
+    /**
+     * <p>
      *     Tests if the truffle_data_log folder is created correctly.
      * </p>
      *

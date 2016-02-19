@@ -28,15 +28,13 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    testCompile 'org.mockito:mockito-all:1.8.4'
-
-    // general
+    // General
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.logging.log4j:log4j-core:2.5'
     compile 'org.apache.logging.log4j:log4j-api:2.5'
+    compile 'org.jdom:jdom:2.0.2'
 
-    //jung
+    // JUNG
     compile 'org.apache.commons:commons-collections4:4.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'colt:colt:1.2.0'
@@ -44,6 +42,7 @@ dependencies {
     compile 'net.sf.jung:jung-graph-impl:2.0.1'
     compile 'net.sf.jung:jung-visualization:2.0.1'
 
+    // Testing
     testCompile 'org.apache.commons:commons-collections4:4.1'
     testCompile 'commons-io:commons-io:2.4'
     testCompile 'org.apache.commons:commons-lang3:3.4'
@@ -53,6 +52,9 @@ dependencies {
     testCompile 'net.sf.jung:jung-visualization:2.0.1'
     testCompile 'org.apache.logging.log4j:log4j-core:2.5'
     testCompile 'org.apache.logging.log4j:log4j-api:2.5'
+    testCompile 'org.jdom:jdom:2.0.2'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'org.mockito:mockito-all:1.8.4'
 }
 
 jar {
