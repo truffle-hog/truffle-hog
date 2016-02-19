@@ -4,7 +4,10 @@ package edu.kit.trufflehog.view;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.ToolBarInteraction;
 import edu.kit.trufflehog.view.controllers.ToolBarController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -45,5 +48,17 @@ public final class MainToolBarController extends
                            final IUserCommand command) {
 
         interactionMap.put(interaction, command);
+    }
+
+    @FXML protected void openSettingsWindow(ActionEvent event) {
+        Stage settingsStage = new Stage();
+        SettingsViewController settingsView = new SettingsViewController("settings_view.fxml");
+        Scene settingsScene = new Scene(settingsView);
+        settingsStage.setScene(settingsScene);
+        settingsStage.show();
+    }
+
+    @FXML protected void openFilterWindow(ActionEvent event) {
+
     }
 }
