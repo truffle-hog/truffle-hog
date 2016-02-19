@@ -7,11 +7,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 /**
- * TODO
+ * This class is a custom JavaFX {@link Button} needed for nicely displaying just a icon instead of text and background.
  */
 public class ImageButton extends Button {
 
-    private final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5, 5, 5, 5;";
+    private final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-opacity: 0.75; -fx-padding: 5, 5, 5, 5;";
     private final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-opacity: 50%; -fx-padding: 5, 5, 5, 5;";
 
     public ImageButton(String imageurl) {
