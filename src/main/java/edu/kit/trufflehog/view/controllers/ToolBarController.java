@@ -6,6 +6,7 @@ import edu.kit.trufflehog.interaction.IInteraction;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.INotifier;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.ToolBar;
 
 import java.io.IOException;
@@ -21,8 +22,8 @@ import java.io.IOException;
 public abstract class ToolBarController<I extends IInteraction> extends ToolBar
         implements IViewController<I> {
 
-    public ToolBarController(String fxmlFile) {
-
+    public ToolBarController(String fxmlFile, Node... items) {
+        super(items);
         final FXMLLoader fxmlLoader =
                 new FXMLLoader(getClass().getResource(fxmlFile));
         fxmlLoader.setRoot(this);

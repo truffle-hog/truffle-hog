@@ -5,6 +5,5 @@
 
 <fx:root prefHeight="40.0" prefWidth="200.0" styleClass="background" stylesheets="@main_toolbar.css" type="ToolBar" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
   <items>
-      <Button layoutX="10.0"  onAction="#openSettingsWindow" layoutY="13.0" mnemonicParsing="true" text="_Settings" textFill="#f2f9ff"/>
   </items>
 </fx:root>

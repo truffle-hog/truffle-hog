@@ -6,6 +6,7 @@ import edu.kit.trufflehog.interaction.ToolBarInteraction;
 import edu.kit.trufflehog.view.controllers.ToolBarController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -35,9 +36,9 @@ public final class MainToolBarController extends
      * </p>
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
-    public MainToolBarController(final String fxmlFileName) {
+    public MainToolBarController(final String fxmlFileName, Node... items) {
+        super(fxmlFileName, items);
 
-        super(fxmlFileName);
     }
 
 	/**
@@ -50,12 +51,5 @@ public final class MainToolBarController extends
         interactionMap.put(interaction, command);
     }
 
-    @FXML protected void openSettingsWindow(ActionEvent event) {
-        Stage settingsStage = new Stage();
-        SettingsViewController settingsView = new SettingsViewController("settings_view.fxml");
-        Scene settingsScene = new Scene(settingsView);
-        settingsStage.setScene(settingsScene);
-        settingsStage.show();
-    }
 
 }

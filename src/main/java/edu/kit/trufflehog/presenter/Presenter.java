@@ -3,11 +3,11 @@ package edu.kit.trufflehog.presenter;
 import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.IInteraction;
-import edu.kit.trufflehog.view.MainToolBarController;
-import edu.kit.trufflehog.view.MainViewController;
-import edu.kit.trufflehog.view.OverlayViewController;
-import edu.kit.trufflehog.view.RootWindowController;
+import edu.kit.trufflehog.view.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -76,8 +76,21 @@ public class Presenter {
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
 
         // setting up menubar
-        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml");
+        Button settingsButton = new ImageButton("cog-3x.png");
+        // TODO das ist ein bisschen hässlich. geht leider afaik nicht anders mit eigen gebauten javafx-nodes.
+        settingsButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Stage settingsStage = new Stage();
+                SettingsViewController settingsView = new SettingsViewController("settings_view.fxml");
+                Scene settingsScene = new Scene(settingsView);
+                settingsStage.setScene(settingsScene);
+                settingsStage.show();
+            }
+        });
+        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml", settingsButton);
         mainView.getChildren().add(mainToolBarController);
+
 
         // setting up node statistics overlay
         OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
