@@ -7,8 +7,12 @@ import edu.kit.trufflehog.view.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -69,6 +73,15 @@ public class Presenter {
                         RootWindowController.class.getResourceAsStream("icon.png")));
         primaryStage.show();
 
+        // CTRL+Q for program quitting
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN), new Runnable() {
+
+            @Override
+            public void run() {
+                primaryStage.close();
+            }
+        });
+
         // setting up general statistics overlay
         OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
         mainView.getChildren().add(generalStatisticsOverlay);
@@ -86,6 +99,36 @@ public class Presenter {
                 Scene settingsScene = new Scene(settingsView);
                 settingsStage.setScene(settingsScene);
                 settingsStage.show();
+                // CTRL+W for closing
+                settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN), new Runnable() {
+
+                    @Override
+                    public void run() {
+                        settingsStage.close();
+                    }
+                });
+                // CTRL+S triggers info about program settings saving
+                settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN), new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Relax, no need to save anything here");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Oops. Seems you wanted to save the configuration bei pressing CTRL+S. This" +
+                                " is not necessary thanks to the awesome always up-to-date saving design of TruffleHog.");
+                        alert.showAndWait();
+                    }
+                });
+            }
+        });
+
+        // setting up keyboard shortcut
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN), new Runnable() {
+
+            @Override
+            public void run() {
+                settingsButton.fire();
             }
         });
         MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml", settingsButton);
