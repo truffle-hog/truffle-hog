@@ -7,12 +7,10 @@ import edu.kit.trufflehog.view.MainToolBarController;
 import edu.kit.trufflehog.view.MainViewController;
 import edu.kit.trufflehog.view.OverlayViewController;
 import edu.kit.trufflehog.view.RootWindowController;
-import edu.kit.trufflehog.view.controllers.BorderPaneController;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.management.InstanceAlreadyExistsException;
 
@@ -66,6 +64,9 @@ public class Presenter {
         Scene mainScene = new Scene(mainView);
         RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene);
         primaryStage.setScene(mainScene);
+        primaryStage.getIcons().add(
+                new Image(
+                        RootWindowController.class.getResourceAsStream("icon.png")));
         primaryStage.show();
 
         // setting up general statistics overlay

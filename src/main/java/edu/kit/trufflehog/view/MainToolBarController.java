@@ -58,7 +58,4 @@ public final class MainToolBarController extends
         settingsStage.show();
     }
 
-    @FXML protected void openFilterWindow(ActionEvent event) {
-
-    }
 }
