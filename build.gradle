@@ -65,23 +65,6 @@ jar {
     }
 }
 
-sourceSets {
-    unitTest {
-        java {
-            compileClasspath += main.output + test.output
-            runtimeClasspath += main.output + test.output
-            srcDir file('src/test/java')
-        }
-
-        resources.srcDir file('src/test/resources')
-    }
-}
-
-configurations {
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
-}
-
 jacocoTestReport {
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report
