@@ -2,6 +2,5 @@ root {
     display: block;
 }
 .background {
-    /*-fx-background-color: rgba(0, 17, 61, 0.1);*/
-    -fx-background-color: #9E9E9E;
+    -fx-background-color: rgba(0, 17, 61, 0.1);
 }
