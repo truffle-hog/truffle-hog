@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.model.graph;
+package edu.kit.trufflehog.model.network.graph;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;

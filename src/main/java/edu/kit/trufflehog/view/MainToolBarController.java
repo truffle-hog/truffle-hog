@@ -4,6 +4,7 @@ package edu.kit.trufflehog.view;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.ToolBarInteraction;
 import edu.kit.trufflehog.view.controllers.ToolBarController;
+import javafx.fxml.FXML;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -21,6 +22,7 @@ public final class MainToolBarController extends
     /** The commands that are mapped to their interactions. **/
     private final Map<ToolBarInteraction, IUserCommand> interactionMap =
             new EnumMap<>(ToolBarInteraction.class);
+
 
     /**
      * <p>

@@ -13,8 +13,8 @@ public enum ToolBarInteraction implements IInteraction {
 	DISCONNECT_SNORT,
 	/** Refresh the graph layout. **/
 	REFRESH_LAYOUT,
-	/** Start recording the currently monitored network communication. **/
+	/** Start networkreplay the currently monitored network communication. **/
 	RECORD_START,
-	/** Stop recording the currently monitored network communication. **/
+	/** Stop networkreplay the currently monitored network communication. **/
 	RECORD_STOP;
 }
