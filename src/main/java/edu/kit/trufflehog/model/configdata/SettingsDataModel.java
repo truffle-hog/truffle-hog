@@ -15,7 +15,9 @@ import org.jdom2.output.XMLOutputter;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
@@ -138,7 +140,13 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
             File resourceFile = null;
             URL url = classLoader.getResource(filePath);
             if (url != null) {
-                resourceFile = new File(url.getFile());
+
+                // Decode from URL style to get rid of illegal characters in string like %20 etc.
+                try {
+                    resourceFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    logger.error("Unable to decode URL to string", e);
+                }
             } else {
                 logger.error("Unable to get config file from resources");
             }
@@ -146,7 +154,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
             // Copy the file to data/config
             try {
                 if (resourceFile != null) {
-                    Files.copy(resourceFile.toPath(), configFile.toPath());
+                    Files.copy(resourceFile.getCanonicalFile().toPath(), configFile.getCanonicalFile().toPath());
                 }
             } catch (IOException e) {
                 logger.error("Unable to copy " + CONFIG_FILE_NAME + " from resources to data folder", e);

@@ -63,28 +63,30 @@ public class SettingsDataModelTest {
         executorService = null;
         fileSystem = null;
         configDataModel = null;
-
-        if (fileSystem.getConfigFolder().exists()) {
-            FileUtils.deleteDirectory(fileSystem.getConfigFolder());
-            fileSystem.getConfigFolder().mkdir();
-        }
     }
 
     /**
      * <p>
-     *     Performs the same test as {@link SettingsDataModelTest#testGet()} but with the config file not existing
+     *     Tests whether the resource file is copied correctly if it does not exist
      * </p>
      *
      * @throws Exception Passes any errors that occurred during the test on
      */
     @Test
-    public void testGetWithNoFile() throws Exception{
+    public void testStartWithNoFile() throws Exception{
         this.fileSystem = mock(FileSystem.class);
         when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
         when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config-error-test"));
         this.configDataModel = new ConfigDataModel(fileSystem, executorService);
 
-        testGet();
+        boolean exists = new File(fileSystem.getConfigFolder()  + File.separator + "system_config.xml").exists();
+
+        if (fileSystem.getConfigFolder().exists()) {
+            FileUtils.deleteDirectory(fileSystem.getConfigFolder());
+            fileSystem.getConfigFolder().mkdir();
+        }
+
+        assertEquals(true, exists);
     }
 
     /**
