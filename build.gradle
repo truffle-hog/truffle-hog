@@ -57,6 +57,12 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.8.4'
 }
 
+test.dependsOn processTestResources
+
+test {
+    check
+}
+
 jar {
     manifest {
         attributes 'Main-Class': 'edu.kit.trufflehog.Main'
