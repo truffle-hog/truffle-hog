@@ -6,24 +6,26 @@ import edu.kit.trufflehog.interaction.IInteraction;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.INotifier;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.TabPane;
 
 import java.io.IOException;
 
+
 /**
  * <p>
- *     The ToolBarController is the Basic ToolBar class that will be
- *     used by every ToolBar implementation in the application. Extending the
- *     javafx {@link ToolBar} it can be placed on every javafx Component.
+ *      The Basic abstraction for all TabPane controllers. Every abstraction
+ *      for javafx Components wraps a {@link ViewControllerNotifier} instance
+ *      for implementation of the specific operations of the INotifier
+ *      interface.
  * </p>
- * @param <I> The type of interactions to be used on this toolbar
+ *
+ * @param <I> The type of interaction to be used in the ViewController
  */
-public abstract class ToolBarController<I extends IInteraction> extends ToolBar
-        implements IViewController<I> {
+public abstract class TabPaneController<I extends IInteraction> extends
+        TabPane implements IViewController<I> {
 
-    public ToolBarController(String fxmlFile, Node... items) {
-        super(items);
+    public TabPaneController(String fxmlFile) {
+
         final FXMLLoader fxmlLoader =
                 new FXMLLoader(getClass().getResource(fxmlFile));
         fxmlLoader.setRoot(this);
@@ -34,13 +36,14 @@ public abstract class ToolBarController<I extends IInteraction> extends ToolBar
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+
     }
 
     /** The wrapped instance of view controller notifier. **/
     private final INotifier<IUserCommand> viewControllerNotifier =
             new ViewControllerNotifier();
 
-    /**
+	/**
      * {@inheritDoc}
      */
     @Override
@@ -49,7 +52,7 @@ public abstract class ToolBarController<I extends IInteraction> extends ToolBar
         return viewControllerNotifier.addListener(listener);
     }
 
-    /**
+	/**
      * {@inheritDoc}
      */
     @Override
@@ -57,11 +60,12 @@ public abstract class ToolBarController<I extends IInteraction> extends ToolBar
         return viewControllerNotifier.removeListener(listener);
     }
 
-    /**
+	/**
      * {@inheritDoc}
      */
     @Override
     public final void notifyListeners(final IUserCommand message) {
         viewControllerNotifier.notifyListeners(message);
     }
+
 }

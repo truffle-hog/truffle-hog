@@ -3,10 +3,11 @@ root {
 }
 .overlaybackground {
     -fx-background-color: #000000;
-    -fx-background-radius: 1;
+    -fx-background-radius: 2;
 }
 
 .text {
-    -fx-fill: aliceblue;
-    -fx-font-size: 120%;
+    -fx-fill: white;
+    -fx-opacity: 87%;
+    -fx-font-size: 110%;
 }

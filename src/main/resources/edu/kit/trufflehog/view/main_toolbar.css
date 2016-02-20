@@ -5,5 +5,9 @@ root {
     -fx-background-color: rgba(0, 17, 61, 0.0);
 }
 .button {
-    -fx-background-color: rgba(52, 58, 83, 0.7);
+    -fx-background-color: transparent;
+    -fx-opacity: 87%;
+    -fx-background-image: url("cog-3x.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }

@@ -2,7 +2,7 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.SettingsInteraction;
-import edu.kit.trufflehog.view.controllers.BorderPaneController;
+import edu.kit.trufflehog.view.controllers.TabPaneController;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
  *     interaction with the settings.
  * </p>
  */
-public class SettingsViewController extends BorderPaneController<SettingsInteraction> {
+public class SettingsViewController extends TabPaneController<SettingsInteraction> {
 
 	/** The commands that are mapped to their interactions. **/
     private final Map<SettingsInteraction, IUserCommand> interactionMap =

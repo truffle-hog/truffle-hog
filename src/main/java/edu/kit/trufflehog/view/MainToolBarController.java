@@ -4,7 +4,11 @@ package edu.kit.trufflehog.view;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.ToolBarInteraction;
 import edu.kit.trufflehog.view.controllers.ToolBarController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -32,9 +36,9 @@ public final class MainToolBarController extends
      * </p>
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
-    public MainToolBarController(final String fxmlFileName) {
+    public MainToolBarController(final String fxmlFileName, Node... items) {
+        super(fxmlFileName, items);
 
-        super(fxmlFileName);
     }
 
 	/**
@@ -46,4 +50,6 @@ public final class MainToolBarController extends
 
         interactionMap.put(interaction, command);
     }
+
+
 }
