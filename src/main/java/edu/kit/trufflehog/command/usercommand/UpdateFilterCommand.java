@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.filter.Filter;
-import edu.kit.trufflehog.model.graph.INetworkGraph;
+import edu.kit.trufflehog.model.network.INetworkWritingPort;
 
 import java.util.List;
 
@@ -11,18 +11,20 @@ import java.util.List;
  * </p>
  */
 public class UpdateFilterCommand implements IUserCommand {
-    private INetworkGraph networkGraph = null;
+
+    // TODO make those final and not null as default!!!!!
+    private INetworkWritingPort network = null;
     private List<Filter> filterList = null;
 
     /**
      * <p>
      *     Creates new command, provides a graph to work on and the filters to check.
      * </p>
-     * @param graph {@link INetworkGraph} to add data to
+     * @param port {@link INetworkWritingPort} to write data to
      * @param filters List of filters to check
      */
-    UpdateFilterCommand(INetworkGraph graph, List<Filter> filters) {
-        networkGraph = graph;
+    UpdateFilterCommand(INetworkWritingPort port, List<Filter> filters) {
+        network = port;
         filterList = filters;
     }
 

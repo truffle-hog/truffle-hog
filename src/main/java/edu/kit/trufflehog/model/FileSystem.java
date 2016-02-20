@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.model;
 
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
-import edu.kit.trufflehog.model.truffledatalog.TruffleLogger;
+import edu.kit.trufflehog.model.network.truffledatalog.TruffleLogger;
 import edu.kit.trufflehog.service.replaylogging.ReplayLog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
