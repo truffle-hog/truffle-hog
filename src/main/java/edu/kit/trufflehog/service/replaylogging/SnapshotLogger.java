@@ -1,11 +1,11 @@
 package edu.kit.trufflehog.service.replaylogging;
 
-import edu.kit.trufflehog.model.graph.INetworkGraph;
+import edu.kit.trufflehog.model.network.INetwork;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * <p>
- *      The SnapshotLogger takes the current graph from the {@link GraphProxy} and takes a snapshot of it. This snapshot
+ *      The SnapshotLogger takes the current graph from the {@link INetwork} and takes a snapshot of it. This snapshot
  *      is then given to the {@link ReplayLogger} to help generate a {@link ReplayLog}.
  * </p>
  */
@@ -13,13 +13,13 @@ public class SnapshotLogger {
 
     /**
      * <p>
-     *     Creates a new SnapshotLogger object with a {@link GraphProxy} object. The GraphProxy object contains the
+     *     Creates a new SnapshotLogger object with a {@link INetwork} object. The GraphProxy object contains the
      *     graph (after the proxy design pattern) so that the SnapshotLogger can take a snapshot of the graph.
      * </p>
      *
      * @param graphProxy The proxy object that contains the graph so that the SnapshotLogger can take a snapshot of it.
      */
-    public SnapshotLogger(GraphProxy graphProxy) {
+    public SnapshotLogger(INetwork graphProxy) {
     }
 
     /**
@@ -29,7 +29,7 @@ public class SnapshotLogger {
      *
      * @return A snapshot of the current graph.
      */
-    public INetworkGraph takeSnapshot() {
+    public INetwork takeSnapshot() {
         throw new NotImplementedException();
     }
 }
