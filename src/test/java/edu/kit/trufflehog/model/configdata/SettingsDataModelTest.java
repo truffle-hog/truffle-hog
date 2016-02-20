@@ -77,8 +77,15 @@ public class SettingsDataModelTest {
         this.fileSystem = mock(FileSystem.class);
         when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
         when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config-error-test"));
-        this.configDataModel = new ConfigDataModel(fileSystem, executorService);
 
+        if (fileSystem.getConfigFolder().exists()) {
+            FileUtils.deleteDirectory(fileSystem.getConfigFolder());
+            fileSystem.getConfigFolder().mkdir();
+        } else {
+            fileSystem.getConfigFolder().mkdir();
+        }
+
+        this.configDataModel = new ConfigDataModel(fileSystem, executorService);
         boolean exists = new File(fileSystem.getConfigFolder()  + File.separator + "system_config.xml").exists();
 
         if (fileSystem.getConfigFolder().exists()) {
