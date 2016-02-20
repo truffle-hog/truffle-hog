@@ -1,7 +1,8 @@
 package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.Filter;
-import edu.kit.trufflehog.model.graph.INetworkGraph;
+import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
 import java.util.List;
@@ -13,23 +14,24 @@ import java.util.List;
  *     Filter objects and marked accordingly.
  * </p>
  */
-public class AddPacketDataCommand implements ITruffleCommand{
-    private INetworkGraph networkGraph = null;
-    private List<Filter> filterList = null;
-    private Truffle truffle = null;
+public class AddPacketDataCommand implements ITruffleCommand {
+
+    private final INetworkWritingPort writingPort;
+    private final List<Filter> filterList;
+    private final IPacketData data;
 
     /**
      * <p>
      *     Creates new command, provides a graph to work on and the filters to check along with the Truffle.
      * </p>
-     * @param graph {@link INetworkGraph} to add data to
+     * @param writingPort {@link INetworkWritingPort} to add data to
      * @param packet Truffle to get data from
      * @param filters List of filters to check
      */
-    AddPacketDataCommand(INetworkGraph graph,  Truffle packet, List<Filter> filters) {
-        networkGraph = graph;
+    AddPacketDataCommand(INetworkWritingPort writingPort, Truffle packet, List<Filter> filters) {
+        this.writingPort = writingPort;
         filterList = filters;
-        truffle = packet;
+        this.data = packet;
     }
 
     public void execute() {

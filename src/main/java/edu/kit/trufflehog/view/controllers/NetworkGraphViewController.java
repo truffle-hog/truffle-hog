@@ -2,12 +2,10 @@ package edu.kit.trufflehog.view.controllers;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
-import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.ILayoutFactory;
-import edu.kit.trufflehog.model.graph.INode;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.INotifier;
-import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.visualization.VisualizationServer;
 import javafx.embed.swing.SwingNode;
 
@@ -51,20 +49,6 @@ public abstract class NetworkGraphViewController extends SwingNode
 		viewControllerNotifier.notifyListeners(message);
 	}
 
-	/**
-	 * Refreshes the Layout of this graph, by reapplying a new instance of an
-	 * {@link Layout}. New instances are created by the layout factory that is
-	 * set for this instance.
-	 */
-	public abstract void refreshLayout();
 
-	/**
-	 * Specifies a new layout factory for this graph. The type of layout factory determines
-	 * which layout will be reinstantiated to refresh the graph view.
-	 *
-	 * @param layoutFactory the layout factory for instantiating new layouts
-	 *                         of the given type
-	 */
-	public abstract void setLayoutFactory(ILayoutFactory layoutFactory);
 
 }
