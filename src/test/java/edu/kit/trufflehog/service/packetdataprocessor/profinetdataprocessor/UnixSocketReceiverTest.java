@@ -2,7 +2,7 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.model.filter.Filter;
-import edu.kit.trufflehog.model.graph.INetworkGraph;
+import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import edu.kit.trufflehog.util.IListener;
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class UnixSocketReceiverTest {
     @Before
     public void setUp() throws Exception {
         mockedFilterList = new LinkedList<>();
-        receiver = new UnixSocketReceiver(mock(INetworkGraph.class), mockedFilterList);
+        receiver = new UnixSocketReceiver(mock(INetworkWritingPort.class), mockedFilterList);
 
         mockedListener = (IListener<ITruffleCommand>) mock(IListener.class);
         receiver.addListener(mockedListener);
@@ -76,9 +76,11 @@ public class UnixSocketReceiverTest {
 
         //TODO simulate a running snort and verify if the connect and disconnect process works
 
+        receiver.addListener(System.out::println);
+
         receiver.connect();
 
-        receiver.addListener(System.out::println);
+        Thread.sleep(500);
 
         receiver.disconnect();
 

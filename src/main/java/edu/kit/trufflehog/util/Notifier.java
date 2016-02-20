@@ -20,6 +20,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @param <M> The type of message to receive.
  */
 public abstract class Notifier<M> implements INotifier<M> {
+
+    /**
+     * This needs to be a concurrent queue! Do not change!
+     */
     private final Collection<IListener<M>> listeners = new ConcurrentLinkedQueue<>();
 
     @Override

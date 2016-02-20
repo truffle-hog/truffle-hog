@@ -150,10 +150,28 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
 {
 	check (write(socketData.socketFD, &TRUFFLEHOG_DISCONNECT_REQUEST, sizeof(TRUFFLEHOG_DISCONNECT_REQUEST)), "error on sending disconnect request");
 
+	fd_set fdSet;
+	struct timeval timeout;
+
+	FD_ZERO(&fdSet);
+	FD_SET(socketData.socketFD, &fdSet);
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 100000;
+	
+	int rv = select(socketData.socketFD, &fdSet, NULL, NULL, &timeout);
+	if (rv == -1)
+		perror("select");
+	else
+	{
+		check(rv != 0, "timeout occurred");
+
 	int buffer = -1;
 	check(read(socketData.socketFD, (void*) &buffer, sizeof(int)) >= 0, "error reading from socket");
 
 	check(buffer == SNORT_DISCONNECT_RESPONSE, "error, wrong message received");
+	}
+
+	return;
 
 error:
 	throwSnortPluginDisconnectFailedException(env, "failed to disconnect");
@@ -163,11 +181,38 @@ error:
 int getNextTruffle(JNIEnv *env, Truffle *truffle)
 {
 
-	check(read(socketData.socketFD, (void*) (truffle), sizeof(Truffle)) == sizeof(Truffle), "could not read the correct number of bytes from the socket");
+	debug("reading truffle");
+
+    fd_set fdSet;
+    struct timeval timeout;
+
+    FD_ZERO(&fdSet);
+    FD_SET(socketData.socketFD, &fdSet);
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 100000;
+
+    int rv = select(socketData.socketFD, &fdSet, NULL, NULL, &timeout);
+    if (rv == -1)
+    	perror("select");
+    else
+    {
+        check_to(rv != 0, noMessageReceived, "timeout occurred");
+        ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
+
+        if (len < 0)
+		    goto noMessageReceived;
+	    else if (len != sizeof(Truffle))
+		    goto error;
+	}
+
+	return 0;
 
 error:
 	throwReceiverReadError(env, "could not read the correct number of bytes from the socket");
 	return -1;
+noMessageReceived:
+	debug("No message received.\n\n\n\n");
+	return -2;
 }
 
 /*
@@ -189,7 +234,7 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
 	Truffle truffle;
 
-	check(getNextTruffle(env, &truffle) >= 0, "getNextTruffle failed");
+	check(getNextTruffle(env, &truffle) >= 0, "getNextTruffle failed!");
 
 	return truffleObject;
 

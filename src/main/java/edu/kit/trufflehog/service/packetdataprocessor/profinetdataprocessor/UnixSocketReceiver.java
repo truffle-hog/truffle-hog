@@ -4,7 +4,7 @@ import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.command.trufflecommand.ReceiverErrorCommand;
 import edu.kit.trufflehog.model.filter.Filter;
-import edu.kit.trufflehog.model.graph.INetworkGraph;
+import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +22,7 @@ import java.util.concurrent.*;
  */
 public class UnixSocketReceiver extends TruffleReceiver {
 
-    private final INetworkGraph graph;
+    private final INetworkWritingPort networkWritingPort;
     private final List<Filter> filters;
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private final Logger logger = LogManager.getLogger();
@@ -35,8 +35,8 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *     Creates the UnixSocketReceiver.
      * </p>
      */
-    public UnixSocketReceiver(INetworkGraph graph, List<Filter> filters) {
-        this.graph = graph;
+    public UnixSocketReceiver(INetworkWritingPort networkWritingPort, List<Filter> filters) {
+        this.networkWritingPort = networkWritingPort;
         this.filters = filters;
     }
 
@@ -63,16 +63,10 @@ public class UnixSocketReceiver extends TruffleReceiver {
                         this.wait();
                     }
 
-
-
-                    Future<Truffle> future = executor.submit(this::getTruffle);
-
-                    notifyListeners(new AddPacketDataCommand(graph, future.get(1, TimeUnit.SECONDS), filters));
+                    notifyListeners(new AddPacketDataCommand(networkWritingPort, null, filters));
                 } catch (InterruptedException e) {
                     logger.debug("UnixSocketReceiver interrupted. Exiting...");
                     Thread.currentThread().interrupt();
-                } catch (ExecutionException | TimeoutException e) {
-                    logger.error(e);
                 }
             }
         }
@@ -127,7 +121,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                 });
 
                 try {
-                    future.get(1, TimeUnit.SECONDS);
+                    future.get(5, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
                     logger.error(e);
                 } catch (ExecutionException e) {
