@@ -107,6 +107,7 @@ public class Presenter {
         mainView.getChildren().add(nodeStatisticsOverlay);
         AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
+        nodeStatisticsOverlay.setVisible(false);
     }
 
 }
