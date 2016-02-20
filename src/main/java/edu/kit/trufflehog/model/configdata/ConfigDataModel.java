@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutorService;
  * @author Julian Brendl
  * @version 1.0
  */
-public class ConfigDataModel implements IConfig {
+public class ConfigDataModel implements IConfigData {
     private IConfigDataModel<StringProperty> settingsDataModel;
 
     /**

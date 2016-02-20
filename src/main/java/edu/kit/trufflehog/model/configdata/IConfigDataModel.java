@@ -1,7 +1,5 @@
 package edu.kit.trufflehog.model.configdata;
 
-import java.util.Properties;
-
 /**
  * <p>
  *     The IConfigDataModel is an abstraction to any "settings fetch service". In other words, any class that
@@ -29,7 +27,7 @@ public interface IConfigDataModel<T> {
      *
      * @param classType The type of the object. For example, "007" could be of type java.lang.Integer, that way
      *                  one knows that "007" can be parsed into a real integer value of 007.
-     * @param key The key of the value to get in the currently loaded {@link Properties} object.
+     * @param key The key of the value that should be retrieved.
      * @return The value mapped to the key, if it exists, else null.
      */
     T get(Class classType, String key);
@@ -40,7 +38,7 @@ public interface IConfigDataModel<T> {
      *     does not exist.
      * </p>
      *
-     * @param key The key of the value to get in the currently loaded {@link Properties} object.
+     * @param key The key of the value that should be retrieved.
      * @return The value mapped to the key, if it exists, else null.
      */
     default T get(String key) {

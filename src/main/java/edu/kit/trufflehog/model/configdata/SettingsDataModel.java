@@ -52,10 +52,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
     public SettingsDataModel(FileSystem fileSystem, ExecutorService executorService) throws FileNotFoundException {
         this.fileSystem = fileSystem;
         this.executorService = executorService;
-        //this.settingsFile = getSettingsFile();
-        this.settingsFile = new File("./src/test/resources/data/config/system_config.xml");
-
-        settingsMap = new HashMap<>();
+        this.settingsFile = getSettingsFile();
     }
 
     /**
@@ -65,6 +62,8 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      */
     @Override
     public void load() {
+        settingsMap = new HashMap<>();
+
         try {
             // Set up the XML parser
             SAXBuilder saxBuilder = new SAXBuilder();
@@ -171,7 +170,9 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
 
         StringProperty stringProperty = new SimpleStringProperty(value);
         stringProperty.addListener((observable, oldValue, newValue) -> {
-            executorService.submit(() -> updateSettingsFile(typeClass, key, oldValue, newValue));
+            if (newValue != null) {
+                executorService.submit(() -> updateSettingsFile(typeClass, key, oldValue, newValue));
+            }
         });
 
         propertyMap.put(key, stringProperty);
@@ -188,6 +189,8 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      * @param newValue The new value, that should overwrite the old value.
      */
     private synchronized void updateSettingsFile(Class typeClass, String key, String oldValue, String newValue) {
+        // synchronized because this always runs in its own thread
+
         try {
             SAXBuilder saxBuilder = new SAXBuilder();
             Document document = saxBuilder.build(settingsFile);
@@ -217,22 +220,30 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
             }
 
             // Get the only one we found
-            entries.get(0).setText(newValue);
+            entries.get(0).getChild("value").setText(newValue);
 
             // Save the new XML to the file
             XMLOutputter xmlOutput = new XMLOutputter();
-            PrintWriter writer = new PrintWriter("the-file-name.txt", "UTF-8");
+            PrintWriter writer = new PrintWriter(settingsFile, "UTF-8");
             xmlOutput.setFormat(Format.getPrettyFormat());
             xmlOutput.output(document, writer);
             writer.close();
 
+            logger.debug("Changed key: " + key + " of type: " + typeClass.getName() + " from old value: " + oldValue
+                    + " to new value: " + newValue);
         } catch (JDOMException | IOException e) {
-            logger.error("Error updating the system_config.xml file", e);
+            logger.error("Error updating the system_config.xml file for key: " + key + " of type: "
+                    + typeClass.getName(), e);
         }
     }
 
     @Override
     public StringProperty get(Class typeClass, String key) {
-        return settingsMap.get(typeClass).get(key);
+        Map<String, StringProperty> propertyMap = settingsMap.get(typeClass);
+        if (propertyMap != null) {
+            return propertyMap.get(key);
+        }
+
+        return null;
     }
 }

@@ -1,23 +1,21 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <trufflehog>
-    <head>
-        <trufflehog-version>1.0</trufflehog-version>
-        <type>settings</type>
-    </head>
-    <data>
-        <entry type="java.lang.Integer">
-            <key>test-integer</key>
-            <value>007</value>
-        </entry>
-
-        <entry type="java.lang.String">
-            <key>test-string</key>
-            <value>hello world</value>
-        </entry>
-
-        <entry type="java.lang.Boolean">
-            <key>test-boolean</key>
-            <value>true</value>
-        </entry>
-    </data>
+  <head>
+    <trufflehog-version>1.0</trufflehog-version>
+    <type>settings</type>
+  </head>
+  <data>
+    <entry type="java.lang.Integer">
+      <key>test-integer</key>
+      <value>007</value>
+    </entry>
+    <entry type="java.lang.String">
+      <key>test-string</key>
+      <value>hello world</value>
+    </entry>
+    <entry type="java.lang.Boolean">
+      <key>test-boolean</key>
+      <value>true</value>
+    </entry>
+  </data>
 </trufflehog>

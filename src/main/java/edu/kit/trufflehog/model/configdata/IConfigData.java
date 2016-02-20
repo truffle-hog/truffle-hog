@@ -6,7 +6,7 @@ import java.util.Properties;
 
 /**
  * <p>
- *     Through the IConfig interface it is possible to get any configuration that is required by TruffleHog
+ *     Through the IConfigData interface it is possible to get any configuration that is required by TruffleHog
  *     at the start. These configurations could be settings from the settings menu, previously configured filters
  *     etc.
  * </p>
@@ -14,7 +14,7 @@ import java.util.Properties;
  * @author Julian Brendl
  * @version 1.0
  */
-public interface IConfig {
+public interface IConfigData {
     /**
      * <p>
      *     Gets the value mapped to the given key in the currently loaded {@link Properties} object, or null if the key
