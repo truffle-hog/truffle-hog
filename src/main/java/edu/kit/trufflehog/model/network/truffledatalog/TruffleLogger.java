@@ -1,6 +1,6 @@
-package edu.kit.trufflehog.model.truffledatalog;
+package edu.kit.trufflehog.model.network.truffledatalog;
 
-import edu.kit.trufflehog.model.graph.NetworkNode;
+import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
 import java.util.List;
