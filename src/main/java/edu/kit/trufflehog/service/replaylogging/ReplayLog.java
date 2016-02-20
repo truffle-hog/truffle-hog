@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.command.ICommand;
-import edu.kit.trufflehog.model.graph.INetworkGraph;
+import edu.kit.trufflehog.model.network.INetwork;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -29,7 +29,7 @@ public class ReplayLog implements Serializable {
      * @param snapshotGraph The snapshot of the graph to include in the replay log.
      * @param commands The list of commands to include in the replay log.
      */
-    public ReplayLog(INetworkGraph snapshotGraph, List<ICommand> commands) {
+    public ReplayLog(INetwork snapshotGraph, List<ICommand> commands) {
     }
 
     /**
@@ -39,7 +39,7 @@ public class ReplayLog implements Serializable {
      *
      * @return The graph snapshot contained in this ReplayLog object.
      */
-    public INetworkGraph getGraphSnapshot() {
+    public INetwork getGraphSnapshot() {
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 
