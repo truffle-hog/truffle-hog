@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.util;
 
 import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedList;
 
 /**
  * <p>
@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @param <M> The type of message to receive.
  */
 public abstract class Notifier<M> implements INotifier<M> {
-    private final Collection<IListener<M>> listeners = new ConcurrentLinkedQueue<>();
+    private final Collection<IListener<M>> listeners = new LinkedList<>();
 
     @Override
     public boolean addListener(IListener<M> listener) {

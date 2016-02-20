@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
     <Appenders>
-        <File name="fileAppenderTruffleHog" fileName="logs/edu.kit.trufflehog.log" append="true">
+        <File name="fileAppenderTruffleHog" fileName="data/log/edu.kit.trufflehog.log" append="true">
             <PatternLayout pattern="%d %-5p [%t] %C{10} (%F:%L) - %m%n"/>
         </File>
         <Console name="CONSOLE" target="SYSTEM_OUT">
