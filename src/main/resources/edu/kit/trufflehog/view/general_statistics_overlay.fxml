@@ -15,10 +15,10 @@
    <columnConstraints>
       <ColumnConstraints />
       <ColumnConstraints minWidth="10.0" prefWidth="150.0" />
+      <ColumnConstraints minWidth="10.0" prefWidth="150.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" />
@@ -27,9 +27,12 @@
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>
    <children>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Network population: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Network correlation ratio: " GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Population: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Correlation ratio: " GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Packages per second: " GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Text layoutX="20.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="1379" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+      <Text layoutX="20.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="19" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+      <Text layoutX="20.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="47%" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
    </children>
 
 </fx:root>

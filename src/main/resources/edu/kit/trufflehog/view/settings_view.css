@@ -1,0 +1,6 @@
+root {
+    display: block;
+}
+.text {
+    -fx-opacity: 87%;
+}
