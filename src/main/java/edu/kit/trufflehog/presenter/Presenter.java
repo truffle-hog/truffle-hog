@@ -89,7 +89,7 @@ public class Presenter {
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
 
         // setting up menubar
-        Button settingsButton = new ImageButton("cog-3x.png");
+        Button settingsButton = new ImageButton("gear.png");
         // TODO das ist ein bisschen hässlich. geht leider afaik nicht anders mit eigen gebauten javafx-nodes.
         settingsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -101,15 +101,13 @@ public class Presenter {
                 settingsStage.show();
                 // CTRL+W for closing
                 settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN), new Runnable() {
-
                     @Override
                     public void run() {
                         settingsStage.close();
                     }
                 });
-                // CTRL+S triggers info about program settings saving
+                        // CTRL+S triggers info about program settings saving
                 settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN), new Runnable() {
-
                     @Override
                     public void run() {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -140,6 +138,7 @@ public class Presenter {
         mainView.getChildren().add(nodeStatisticsOverlay);
         AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
+        nodeStatisticsOverlay.setVisible(false);
     }
 
 }
