@@ -1,22 +1,21 @@
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.Main;
-import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.interaction.IInteraction;
+import edu.kit.trufflehog.model.FileSystem;
+import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.IConfigData;
 import edu.kit.trufflehog.view.MainToolBarController;
 import edu.kit.trufflehog.view.MainViewController;
 import edu.kit.trufflehog.view.OverlayViewController;
 import edu.kit.trufflehog.view.RootWindowController;
-import edu.kit.trufflehog.view.controllers.BorderPaneController;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.management.InstanceAlreadyExistsException;
+import java.util.concurrent.ScheduledExecutorService;
 
-import static edu.kit.trufflehog.Main.*;
+import static edu.kit.trufflehog.Main.getPrimaryStage;
 
 /**
  * <p>
@@ -26,7 +25,13 @@ import static edu.kit.trufflehog.Main.*;
  * </p>
  */
 public class Presenter {
+    private static final Logger logger = LogManager.getLogger(Presenter.class);
+
     private static Presenter presenter;
+    private final IConfigData configData;
+    private final FileSystem fileSystem;
+    private final ScheduledExecutorService executorService;
+
     /**
      * <p>
      *     Creates a new instance of a singleton Presenter or returns it if it was created before.
@@ -48,6 +53,17 @@ public class Presenter {
      * </p>
      */
     private Presenter() {
+        this.fileSystem = new FileSystem();
+        this.executorService = new LoggedScheduledExecutor(10);
+
+        IConfigData configDataTemp;
+        try {
+            configDataTemp = new ConfigDataModel(fileSystem, executorService);
+        } catch (NullPointerException e ) {
+            configDataTemp = null;
+            logger.error("Unable to set config data model", e);
+        }
+        configData = configDataTemp;
     }
 
     /**

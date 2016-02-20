@@ -3,8 +3,9 @@ package edu.kit.trufflehog.model.configdata;
 import edu.kit.trufflehog.model.FileSystem;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.FileNotFoundException;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -19,6 +20,8 @@ import java.util.concurrent.ExecutorService;
  * @version 1.0
  */
 public class ConfigDataModel implements IConfigData {
+    private static final Logger logger = LogManager.getLogger(ConfigDataModel.class);
+
     private IConfigDataModel<StringProperty> settingsDataModel;
 
     /**
@@ -28,9 +31,9 @@ public class ConfigDataModel implements IConfigData {
      *
      * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
      * @param executorService The executor service used by TruffleHog to manage the multi-threading.
-     * @throws FileNotFoundException Thrown when the config files are not found or when there are too many.
+     * @throws NullPointerException Thrown when it was impossible to get config data for some reason.
      */
-    public ConfigDataModel(FileSystem fileSystem, ExecutorService executorService) throws FileNotFoundException {
+    public ConfigDataModel(FileSystem fileSystem, ExecutorService executorService) throws NullPointerException{
         settingsDataModel = new SettingsDataModel(fileSystem, executorService);
     }
 

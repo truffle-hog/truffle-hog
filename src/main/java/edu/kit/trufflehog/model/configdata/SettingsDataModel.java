@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  */
 class SettingsDataModel implements IConfigDataModel<StringProperty> {
-    private static final Logger logger = LogManager.getLogger(ConfigDataModel.class);
+    private static final Logger logger = LogManager.getLogger(SettingsDataModel.class);
 
     private FileSystem fileSystem;
     private ExecutorService executorService;
