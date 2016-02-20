@@ -4,6 +4,7 @@ import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +63,28 @@ public class SettingsDataModelTest {
         executorService = null;
         fileSystem = null;
         configDataModel = null;
+
+        if (fileSystem.getConfigFolder().exists()) {
+            FileUtils.deleteDirectory(fileSystem.getConfigFolder());
+            fileSystem.getConfigFolder().mkdir();
+        }
+    }
+
+    /**
+     * <p>
+     *     Performs the same test as {@link SettingsDataModelTest#testGet()} but with the config file not existing
+     * </p>
+     *
+     * @throws Exception Passes any errors that occurred during the test on
+     */
+    @Test
+    public void testGetWithNoFile() throws Exception{
+        this.fileSystem = mock(FileSystem.class);
+        when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
+        when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config-error-test"));
+        this.configDataModel = new ConfigDataModel(fileSystem, executorService);
+
+        testGet();
     }
 
     /**

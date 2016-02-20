@@ -13,10 +13,10 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +40,8 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
     private File settingsFile;
     private Map<Class, Map<String, StringProperty>> settingsMap = new HashMap<>();
 
+    private static final String CONFIG_FILE_NAME = "system_config.xml";
+
     /**
      * <p>
      *     Creates a new SettingsDataModel object.
@@ -47,12 +49,16 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      *
      * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
      * @param executorService The executor service used by TruffleHog to manage the multi-threading.
-     * @throws FileNotFoundException Thrown when the config files are not found or when there are too many.
+     * @throws NullPointerException Thrown when it was impossible to get the config file for some reason.
      */
-    public SettingsDataModel(FileSystem fileSystem, ExecutorService executorService) throws FileNotFoundException {
+    public SettingsDataModel(FileSystem fileSystem, ExecutorService executorService) throws NullPointerException {
         this.fileSystem = fileSystem;
         this.executorService = executorService;
         this.settingsFile = getSettingsFile();
+
+        if (settingsFile == null) {
+            throw new NullPointerException("Unable to get config file");
+        }
     }
 
     /**
@@ -99,37 +105,56 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
                         addToMap(typeClass, key, value);
                     });
         } catch (JDOMException | IOException e) {
-            logger.error("Error while parsing the system_config.xml file", e);
+            logger.error("Error while parsing the " + CONFIG_FILE_NAME + " file", e);
         }
     }
 
     /**
      * <p>
-     *     Gets the settings file where all system settings are located. If no file is found, or if too many files
-     *     are found, FileNotFoundException is thrown.
+     *     Gets the settings file where all system settings are located. If none is found, it copies the default
+     *     settings file from the resources folder into the data folder. If something goes wrong, null is returned.
      * </p>
      *
      * @return The settings file where all system settings are located
-     * @throws FileNotFoundException Thrown when the system_config.xml file is not found or when there is more than one.
      */
-    private File getSettingsFile() throws FileNotFoundException {
-        File configFolder = fileSystem.getConfigFolder();
-        File[] files = configFolder.listFiles();
-
-        if (files == null) {
-            throw new FileNotFoundException("system_config.xml file not found");
+    private File getSettingsFile() {
+        // Get config file
+        File configFile;
+        try {
+            configFile = new File(fileSystem.getConfigFolder().getCanonicalPath() + File.separator + CONFIG_FILE_NAME);
+        } catch (IOException e) {
+            logger.error("Unable to get canonical path to data/config folder", e);
+            return null;
         }
 
-        List<File> fileList = Arrays.asList(files);
-        fileList = fileList.stream()
-                .filter(file -> file.getName().equals("system_config.xml"))
-                .collect(Collectors.toList());
+        // If it is null, copy the config file from resources into the data/config
+        if (!configFile.exists()) {
+            // Set file path to the default file in resources
+            ClassLoader classLoader = getClass().getClassLoader();
+            String filePath = "edu" + File.separator + "kit" + File.separator + "trufflehog" + File.separator + "config"
+                     + File.separator + CONFIG_FILE_NAME;
 
-        if (fileList.size() != 1) {
-            throw new FileNotFoundException("More than one system_config.xml file found");
+            // Get the file from the resources
+            File resourceFile = null;
+            URL url = classLoader.getResource(filePath);
+            if (url != null) {
+                resourceFile = new File(url.getFile());
+            } else {
+                logger.error("Unable to get config file from resources");
+            }
+
+            // Copy the file to data/config
+            try {
+                if (resourceFile != null) {
+                    Files.copy(resourceFile.toPath(), configFile.toPath());
+                }
+            } catch (IOException e) {
+                logger.error("Unable to copy " + CONFIG_FILE_NAME + " from resources to data folder", e);
+                return null;
+            }
         }
 
-        return fileList.get(0);
+        return configFile;
     }
 
     /**
@@ -232,7 +257,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
             logger.debug("Changed key: " + key + " of type: " + typeClass.getName() + " from old value: " + oldValue
                     + " to new value: " + newValue);
         } catch (JDOMException | IOException e) {
-            logger.error("Error updating the system_config.xml file for key: " + key + " of type: "
+            logger.error("Error updating the " + CONFIG_FILE_NAME + " file for key: " + key + " of type: "
                     + typeClass.getName(), e);
         }
     }
