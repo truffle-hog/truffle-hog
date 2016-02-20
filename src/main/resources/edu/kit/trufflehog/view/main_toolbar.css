@@ -7,7 +7,6 @@ root {
 .button {
     -fx-background-color: transparent;
     -fx-opacity: 87%;
-    -fx-background-image: url("cog-3x.png");
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 }
