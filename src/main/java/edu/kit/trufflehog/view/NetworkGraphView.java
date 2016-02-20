@@ -329,23 +329,6 @@ public class NetworkGraphView extends NetworkGraphViewController {
 	 * {@inheritDoc}
 	 */
     @Override
-    public final void refreshLayout() {
-		throw new UnsupportedOperationException("Not implemented yet!");
-    }
-
-	/**
-	 * {@inheritDoc}
-	 * @param layoutFactory
-	 */
-	@Override
-	public void setLayoutFactory(ILayoutFactory layoutFactory) {
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-    @Override
     public void addCommand(final GraphInteraction interaction,
                            final IUserCommand command) {
 		throw new UnsupportedOperationException("Not implemented yet!");

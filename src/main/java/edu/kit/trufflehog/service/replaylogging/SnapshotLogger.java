@@ -1,7 +1,6 @@
 package edu.kit.trufflehog.service.replaylogging;
 
 import edu.kit.trufflehog.model.graph.INetworkGraph;
-import edu.kit.trufflehog.model.graph.GraphProxy;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**

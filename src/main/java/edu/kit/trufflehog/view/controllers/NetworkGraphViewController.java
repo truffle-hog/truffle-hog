@@ -51,20 +51,6 @@ public abstract class NetworkGraphViewController extends SwingNode
 		viewControllerNotifier.notifyListeners(message);
 	}
 
-	/**
-	 * Refreshes the Layout of this graph, by reapplying a new instance of an
-	 * {@link Layout}. New instances are created by the layout factory that is
-	 * set for this instance.
-	 */
-	public abstract void refreshLayout();
 
-	/**
-	 * Specifies a new layout factory for this graph. The type of layout factory determines
-	 * which layout will be reinstantiated to refresh the graph view.
-	 *
-	 * @param layoutFactory the layout factory for instantiating new layouts
-	 *                         of the given type
-	 */
-	public abstract void setLayoutFactory(ILayoutFactory layoutFactory);
 
 }
