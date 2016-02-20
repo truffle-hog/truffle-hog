@@ -3,9 +3,6 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.suppliers.TestedOn;
-import org.mockito.cglib.transform.impl.InterceptFieldCallback;
-import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 
 import static org.junit.Assert.*;
 
