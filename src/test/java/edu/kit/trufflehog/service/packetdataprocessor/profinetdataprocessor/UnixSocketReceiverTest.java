@@ -40,7 +40,7 @@ public class UnixSocketReceiverTest {
         receiver.addListener(mockedListener);
 
         testRunner = new Thread(receiver);
-        testRunner.start();
+        //testRunner.start();
     }
 
     @After
@@ -78,12 +78,12 @@ public class UnixSocketReceiverTest {
 
         receiver.addListener(System.out::println);
 
+        testRunner.start();
+
         receiver.connect();
 
-        Thread.sleep(500);
+        Thread.sleep(2000);
 
         receiver.disconnect();
-
-        //receiver.disconnect();
     }
 }

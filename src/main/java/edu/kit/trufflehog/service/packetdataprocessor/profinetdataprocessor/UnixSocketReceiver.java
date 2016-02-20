@@ -58,12 +58,17 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
         while(!Thread.interrupted()) {
             synchronized (this) {
+
                 try {
                     while (!connected) {
                         this.wait();
                     }
 
-                    notifyListeners(new AddPacketDataCommand(networkWritingPort, null, filters));
+                    Truffle truffle = getTruffle();
+
+                    if (truffle != null) {
+                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filters));
+                    }
                 } catch (InterruptedException e) {
                     logger.debug("UnixSocketReceiver interrupted. Exiting...");
                     Thread.currentThread().interrupt();
@@ -79,27 +84,17 @@ public class UnixSocketReceiver extends TruffleReceiver {
     public void connect() {
 
         if (!connected) {
-            Future<Void> future = executor.submit(() -> {
-                openIPC();
-                return null;
-            });
 
             try {
-                future.get(1, TimeUnit.SECONDS);
+                openIPC();
 
                 connected = true;
 
                 synchronized (this) {
                     this.notifyAll();
                 }
-            } catch (InterruptedException e) {
-                logger.error(e);
-            } catch (ExecutionException e) {
-                logger.error(e);
-                notifyListeners(new ReceiverErrorCommand("Snort does not seem to be running!"));
-            } catch (TimeoutException e) {
-                logger.error(e);
-                notifyListeners(new ReceiverErrorCommand("Connect took too long!"));
+            } catch (SnortPNPluginNotRunningException e) {
+                notifyListeners(new ReceiverErrorCommand("Snort plugin doesn't seem to be running."));
             }
         }
     }
@@ -114,22 +109,11 @@ public class UnixSocketReceiver extends TruffleReceiver {
             connected = false;
 
             synchronized (this) {
-
-                Future<Void> future = executor.submit(() -> {
-                    closeIPC();
-                    return null;
-                });
-
                 try {
-                    future.get(5, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
+                    closeIPC();
+                } catch (SnortPNPluginDisconnectFailedException e) {
                     logger.error(e);
-                } catch (ExecutionException e) {
-                    logger.error(e);
-                    notifyListeners(new ReceiverErrorCommand("Disconnect failed for some reason. See logs for more info."));
-                } catch (TimeoutException e) {
-                    logger.error(e);
-                    notifyListeners(new ReceiverErrorCommand("Disconnect took too long!"));
+                    notifyListeners(new ReceiverErrorCommand("Couldn't disconnect from plugin correctly."));
                 }
             }
         }
@@ -137,7 +121,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
     private native void openIPC() throws SnortPNPluginNotRunningException;
 
-    private native void closeIPC();
+    private native void closeIPC() throws SnortPNPluginDisconnectFailedException;
 
     private native Truffle getTruffle();
 }

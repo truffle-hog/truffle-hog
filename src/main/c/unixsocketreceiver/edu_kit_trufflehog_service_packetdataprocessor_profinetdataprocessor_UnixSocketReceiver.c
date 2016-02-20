@@ -148,34 +148,48 @@ error:
  */
 JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_closeIPC(JNIEnv *env, jobject thisObj)
 {
+    debug("starting disconnect sequence");
+
 	check (write(socketData.socketFD, &TRUFFLEHOG_DISCONNECT_REQUEST, sizeof(TRUFFLEHOG_DISCONNECT_REQUEST)), "error on sending disconnect request");
 
-	fd_set fdSet;
-	struct timeval timeout;
+/*
+    fd_set fdSet;
+    struct timeval timeout;
 
-	FD_ZERO(&fdSet);
-	FD_SET(socketData.socketFD, &fdSet);
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 100000;
-	
-	int rv = select(socketData.socketFD, &fdSet, NULL, NULL, &timeout);
-	if (rv == -1)
-		perror("select");
-	else
-	{
-		check(rv != 0, "timeout occurred");
+    FD_ZERO(&fdSet);
+    FD_SET(socketData.socketFD, &fdSet);
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 10000000;
 
-	int buffer = -1;
-	check(read(socketData.socketFD, (void*) &buffer, sizeof(int)) >= 0, "error reading from socket");
+    int rv = select(socketData.socketFD, &fdSet, NULL, NULL, &timeout);
+    debug("RV: %d", rv);
+    if (rv == -1)
+    {
+    	perror("select");
+    	goto error;
+    }
+    else
+    {
+        check_to(rv != 0, timeout, "timeout occurred");
+*/
+	    int buffer = -1;
+	    check(read(socketData.socketFD, (void*) &buffer, sizeof(int)) >= 0, "error reading from socket");
 
-	check(buffer == SNORT_DISCONNECT_RESPONSE, "error, wrong message received");
-	}
+	    check(buffer == SNORT_DISCONNECT_RESPONSE, "error, wrong message received");
+
+    //}
+
+    debug("disconnect successful");
 
 	return;
 
 error:
 	throwSnortPluginDisconnectFailedException(env, "failed to disconnect");
 	return;
+
+timeout:
+    throwSnortPluginDisconnectFailedException(env, "failed to disconnect (took too long)");
+    return;
 }
 
 int getNextTruffle(JNIEnv *env, Truffle *truffle)
@@ -189,7 +203,7 @@ int getNextTruffle(JNIEnv *env, Truffle *truffle)
     FD_ZERO(&fdSet);
     FD_SET(socketData.socketFD, &fdSet);
     timeout.tv_sec = 0;
-    timeout.tv_usec = 100000;
+    timeout.tv_usec = 1000000;
 
     int rv = select(socketData.socketFD, &fdSet, NULL, NULL, &timeout);
     if (rv == -1)
@@ -211,7 +225,7 @@ error:
 	throwReceiverReadError(env, "could not read the correct number of bytes from the socket");
 	return -1;
 noMessageReceived:
-	debug("No message received.\n\n\n\n");
+	debug("No message received. Canceling wait...");
 	return -2;
 }
 
