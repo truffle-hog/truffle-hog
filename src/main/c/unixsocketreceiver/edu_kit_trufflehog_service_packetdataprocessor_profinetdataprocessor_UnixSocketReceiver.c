@@ -26,6 +26,8 @@
 jint throwNoClassDefError(JNIEnv*, char*);
 jint throwNoSuchMethodError(JNIEnv*, char*);
 jint throwSnortPluginNotRunningException(JNIEnv*, char*);
+jint throwSnortPluginDisconnectFailedException(JNIEnv *, char *);
+jint throwReceiverReadError(JNIEnv *, char *);
 
 /////////////
 //         //
@@ -126,7 +128,7 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
 	check(write(socketData.socketFD, &TRUFFLEHOG_CONNECT_REQUEST, sizeof(TRUFFLEHOG_CONNECT_REQUEST)), "error writing connect request");
 
 	int buffer = -1;
-	check(read(socketData.socketFD, &buffer, sizeof(buffer)), "error reading from socket");
+	check(read(socketData.socketFD, (void*) &buffer, sizeof(buffer)), "error reading from socket");
 
 	check(buffer == SNORT_CONNECT_RESPONSE, "incorrect snort response");
 
@@ -149,13 +151,23 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
 	check (write(socketData.socketFD, &TRUFFLEHOG_DISCONNECT_REQUEST, sizeof(TRUFFLEHOG_DISCONNECT_REQUEST)), "error on sending disconnect request");
 
 	int buffer = -1;
-	check(read(socketData.socketFD, &buffer, sizeof(int)) >= 0, "error reading from socket");
+	check(read(socketData.socketFD, (void*) &buffer, sizeof(int)) >= 0, "error reading from socket");
 
 	check(buffer == SNORT_DISCONNECT_RESPONSE, "error, wrong message received");
 
 error:
 	throwSnortPluginDisconnectFailedException(env, "failed to disconnect");
 	return;
+}
+
+int getNextTruffle(JNIEnv *env, Truffle *truffle)
+{
+
+	check(read(socketData.socketFD, (void*) (truffle), sizeof(Truffle)) == sizeof(Truffle), "could not read the correct number of bytes from the socket");
+
+error:
+	throwReceiverReadError(env, "could not read the correct number of bytes from the socket");
+	return -1;
 }
 
 /*
@@ -169,14 +181,15 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
 	jclass truffleClass = (*env)->FindClass(env, truffleClassName);
 	check_to(truffleClass != NULL, noClass, "Truffle class could not be found");
-		throwNoClassDefError(env, truffleClassName);
 
-	jmethodID ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "(JJ)V");
+	jmethodID ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "()V");
 	check_to(ctor != NULL, noMethod, "constructor for class Truffle not found");
 
 	jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
 
-	//TODO fill truffle with data
+	Truffle truffle;
+
+	check(getNextTruffle(env, &truffle) >= 0, "getNextTruffle failed");
 
 	return truffleObject;
 
@@ -239,6 +252,17 @@ jint throwSnortPluginDisconnectFailedException(JNIEnv *env, char *message)
 {
 	jclass exClass;
 	char *className = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/SnortPNPluginDisconnectFailedException";
+
+	exClass =(*env)->FindClass(env, className);
+	if (exClass == NULL)
+		return throwNoClassDefError(env, className);
+	return (*env)->ThrowNew(env, exClass, message);
+}
+
+jint throwReceiverReadError(JNIEnv *env, char *message)
+{
+	jclass exClass;
+	char *className = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/ReceiverReadError";
 
 	exClass =(*env)->FindClass(env, className);
 	if (exClass == NULL)

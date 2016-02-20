@@ -2,12 +2,14 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
-import edu.kit.trufflehog.command.trufflecommand.PluginNotRunningCommand;
+import edu.kit.trufflehog.command.trufflecommand.ReceiverErrorCommand;
 import edu.kit.trufflehog.model.filter.Filter;
 import edu.kit.trufflehog.model.graph.INetworkGraph;
-import edu.kit.trufflehog.view.NetworkGraphView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * <p>
@@ -22,6 +24,9 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
     private final INetworkGraph graph;
     private final List<Filter> filters;
+    private final ExecutorService executor = Executors.newCachedThreadPool();
+    private final Logger logger = LogManager.getLogger();
+
 
     private boolean connected = false;
 
@@ -42,7 +47,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *
      * <p>
      *     Tries to connect to the spp_profinet process.
-     *     If the connection failed a {@link PluginNotRunningCommand} is sent to all listeners.
+     *     If the connection failed a {@link ReceiverErrorCommand} is sent to all listeners.
      *     Otherwise the service starts receiving packet data from the spp_profinet snort plugin,
      *     packs the data into {@link Truffle} objects and then generates {@link ITruffleCommand} objects and sends
      *     them to all listeners.
@@ -58,9 +63,16 @@ public class UnixSocketReceiver extends TruffleReceiver {
                         this.wait();
                     }
 
-                    notifyListeners(new AddPacketDataCommand(graph, getTruffle(), filters));
+
+
+                    Future<Truffle> future = executor.submit(this::getTruffle);
+
+                    notifyListeners(new AddPacketDataCommand(graph, future.get(1, TimeUnit.SECONDS), filters));
                 } catch (InterruptedException e) {
+                    logger.debug("UnixSocketReceiver interrupted. Exiting...");
                     Thread.currentThread().interrupt();
+                } catch (ExecutionException | TimeoutException e) {
+                    logger.error(e);
                 }
             }
         }
@@ -72,17 +84,29 @@ public class UnixSocketReceiver extends TruffleReceiver {
     @Override
     public void connect() {
 
-        try {
-            if (!connected) {
+        if (!connected) {
+            Future<Void> future = executor.submit(() -> {
                 openIPC();
-            }
+                return null;
+            });
 
-            connected = true;
-            synchronized (this) {
-                this.notifyAll();
+            try {
+                future.get(1, TimeUnit.SECONDS);
+
+                connected = true;
+
+                synchronized (this) {
+                    this.notifyAll();
+                }
+            } catch (InterruptedException e) {
+                logger.error(e);
+            } catch (ExecutionException e) {
+                logger.error(e);
+                notifyListeners(new ReceiverErrorCommand("Snort does not seem to be running!"));
+            } catch (TimeoutException e) {
+                logger.error(e);
+                notifyListeners(new ReceiverErrorCommand("Connect took too long!"));
             }
-        } catch (SnortPNPluginNotRunningException e) {
-            notifyListeners(new PluginNotRunningCommand());
         }
     }
 
@@ -92,14 +116,29 @@ public class UnixSocketReceiver extends TruffleReceiver {
     @Override
     public void disconnect() {
 
-        connected = false;
+        if (connected) {
+            connected = false;
 
-        synchronized (this) {
-            if (connected) {
-                closeIPC();
+            synchronized (this) {
+
+                Future<Void> future = executor.submit(() -> {
+                    closeIPC();
+                    return null;
+                });
+
+                try {
+                    future.get(1, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    logger.error(e);
+                } catch (ExecutionException e) {
+                    logger.error(e);
+                    notifyListeners(new ReceiverErrorCommand("Disconnect failed for some reason. See logs for more info."));
+                } catch (TimeoutException e) {
+                    logger.error(e);
+                    notifyListeners(new ReceiverErrorCommand("Disconnect took too long!"));
+                }
             }
         }
-
     }
 
     private native void openIPC() throws SnortPNPluginNotRunningException;

@@ -78,6 +78,10 @@ public class UnixSocketReceiverTest {
 
         receiver.connect();
 
+        receiver.addListener(System.out::println);
+
         receiver.disconnect();
+
+        //receiver.disconnect();
     }
 }
