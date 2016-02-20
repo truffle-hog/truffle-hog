@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.model.graph;
+package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 

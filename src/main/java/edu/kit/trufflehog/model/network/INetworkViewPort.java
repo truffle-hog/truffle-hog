@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.model.network;
 
-import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.INode;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.beans.property.IntegerProperty;
@@ -60,14 +60,14 @@ public interface INetworkViewPort extends Layout<INode, IConnection> {
     LongProperty getViewTimeProperty();
 
     /**
-     * Refreshes the Layout of this graph, by reapplying a new instance of an
+     * Refreshes the Layout of the underlying graph, by reapplying a new instance of an
      * {@link Layout}. New instances are created by the layout factory that is
      * set for this instance.
      */
     void refreshLayout();
 
     /**
-     * Specifies a new layout factory for this graph. The type of layout factory determines
+     * Specifies a new layout factory for the underlying graph. The type of layout factory determines
      * which layout will be reinstantiated to refresh the graph layout.
      *
      * @param layoutFactory the layout factory for instantiating new layouts
@@ -77,7 +77,8 @@ public interface INetworkViewPort extends Layout<INode, IConnection> {
 
 
     /**
-     * Intersects the underlying graph of this viewport with the given graph.
+     * Intersects the underlying graph of this viewport with the given graph. Meaning only common nodes and
+     * connections with the given graph will remain in the underlying graph.
      * @param graph
      */
     void graphIntersection(Graph<INode, IConnection> graph);

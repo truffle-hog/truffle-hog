@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.model.graph.jungconcurrent;/*
+package edu.kit.trufflehog.model.network.graph.jungconcurrent;/*
  * Created on Jul 21, 2005
  *
  * Copyright (c) 2005, the JUNG Project and the Regents of the University

@@ -7,6 +7,7 @@ import edu.kit.trufflehog.model.network.INetworkWritingPort;
 
 /**
  * This Class inhabits several NetworkFrames that a Network session can be recorded on.
+ * TODO implement
  */
 public class NetworkTape implements INetworkTape {
 

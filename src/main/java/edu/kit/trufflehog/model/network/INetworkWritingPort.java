@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.model.network;
 
-import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.INode;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
 
 /**
  * This interface has the sole functionality for writing new network data incoming.

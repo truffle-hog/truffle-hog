@@ -1,8 +1,8 @@
 package edu.kit.trufflehog.model.network.recording;
 
-import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.INode;
-import edu.kit.trufflehog.model.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.*;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.animation.KeyFrame;
@@ -13,7 +13,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
 
 /**
- *
+ * TODO implmeent
  */
 public class NetworkDevice implements INetworkDevice {
 
@@ -23,7 +23,6 @@ public class NetworkDevice implements INetworkDevice {
     private Timeline frameWriter;
 
     private boolean isRecording = false;
-    private boolean isPlayBack = false;
     private boolean isLive = true;
 
     private INetwork replayNetwork;
@@ -86,7 +85,7 @@ public class NetworkDevice implements INetworkDevice {
 
         viewPortSwitch.setActiveViewPort(viewPort);
 
-        isPlayBack = true;
+        isLive = false;
         this.playTape = graphTape;
         playTape.setCurrentReadingFrame(0);
 
@@ -148,18 +147,7 @@ public class NetworkDevice implements INetworkDevice {
     }
 
     @Override
-    public BooleanProperty isPlayBackProperty() {
-        // TODO implmeent
-        return null;
-    }
-
-    @Override
-    public boolean isPlayBack() {
-        return isPlayBack;
-    }
-
-    @Override
-    public boolean isPositionPlayback() {
+    public boolean isMovableDuringPlayback() {
         return false;
     }
 

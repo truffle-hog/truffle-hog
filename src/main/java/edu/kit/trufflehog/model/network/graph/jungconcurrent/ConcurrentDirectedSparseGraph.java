@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.model.graph.jungconcurrent;
+package edu.kit.trufflehog.model.network.graph.jungconcurrent;
 
 import edu.uci.ics.jung.graph.*;
 import edu.uci.ics.jung.graph.util.EdgeType;

@@ -78,7 +78,7 @@ public interface INetworkDevice {
     int getPlaybackFrame();
 
     /**
-     * Returns the property that inhabits the total frames that are currently on the playback tape.
+     * Returns the property that inhabits the total framecount that are currently on the playback tape.
      * @return
      */
     IntegerProperty getPlaybackFrameCountProperty();
@@ -89,17 +89,28 @@ public interface INetworkDevice {
      */
     int getPlaybackFrameCount();
 
+    /**
+     * @return Whether or not the device is recording
+     */
     BooleanProperty isRecordingProperty();
 
+    /**
+     * @return Whether or not the device is recording
+     */
     boolean isRecording();
 
+    /**
+     * @return Whether or not the device is showing live
+     */
     BooleanProperty isLiveProperty();
 
+    /**
+     * @return Whether or not the device is showing live
+     */
     boolean isLive();
 
-    BooleanProperty isPlayBackProperty();
-
-    boolean isPlayBack();
-
-    boolean isPositionPlayback();
+    /**
+     * @return Whether or not the user is able to move the Nodes during playback // TODO Maybe a better method name
+     */
+    boolean isMovableDuringPlayback();
 }

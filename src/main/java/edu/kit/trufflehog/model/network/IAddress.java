@@ -42,9 +42,11 @@ public interface IAddress {
     @Override
     String toString();
 
+    /** Must be overwritten to adhere to the interfaces contract. **/
     @Override
     int hashCode();
 
+    /** Must be overwritten to adhere to the interfaces contract. **/
     @Override
     boolean equals(Object o);
 }

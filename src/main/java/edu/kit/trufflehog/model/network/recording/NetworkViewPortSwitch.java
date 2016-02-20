@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.model.network.recording;
 
-import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.INode;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 /**
- * Created by jan on 20.02.16.
+ * TODO Implement
  */
 public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
 

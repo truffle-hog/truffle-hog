@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.model.graph;
+package edu.kit.trufflehog.model.network.graph;
 
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;

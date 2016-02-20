@@ -1,7 +1,6 @@
-package edu.kit.trufflehog.model.graph.jungconcurrent;
+package edu.kit.trufflehog.model.network.graph.jungconcurrent;
 
 
-import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.util.RandomLocationTransformer;
 import edu.uci.ics.jung.algorithms.util.IterativeContext;
 import edu.uci.ics.jung.graph.Graph;
