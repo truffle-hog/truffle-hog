@@ -130,39 +130,52 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
         }
 
         // If it is null, copy the config file from resources into the data/config
-        if (!configFile.exists()) {
-            // Set file path to the default file in resources
-            ClassLoader classLoader = getClass().getClassLoader();
-            String filePath = "edu" + File.separator + "kit" + File.separator + "trufflehog" + File.separator + "config"
-                     + File.separator + CONFIG_FILE_NAME;
-
-            // Get the file from the resources
-            File resourceFile = null;
-            URL url = classLoader.getResource(filePath);
-            if (url != null) {
-
-                // Decode from URL style to get rid of illegal characters in string like %20 etc.
-                try {
-                    resourceFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    logger.error("Unable to decode URL to string", e);
-                }
-            } else {
-                logger.error("Unable to get config file from resources");
-            }
-
-            // Copy the file to data/config
-            try {
-                if (resourceFile != null) {
-                    Files.copy(resourceFile.getCanonicalFile().toPath(), configFile.getCanonicalFile().toPath());
-                }
-            } catch (IOException e) {
-                logger.error("Unable to copy " + CONFIG_FILE_NAME + " from resources to data folder", e);
-                return null;
-            }
+        if (!configFile.exists() && !copyConfigFileToDataFolder(configFile)) {
+            return null;
         }
 
         return configFile;
+    }
+
+    /**
+     * <p>
+     *     Copies the system_config.xml from the resources folder into the data folder.
+     * </p>
+     *
+     * @param configFile The file object to which to copy the config file
+     * @return True if the copy operation was successful, else false
+     */
+    private boolean copyConfigFileToDataFolder(File configFile) {
+        // Set file path to the default file in resources
+        ClassLoader classLoader = getClass().getClassLoader();
+        String filePath = "edu" + File.separator + "kit" + File.separator + "trufflehog" + File.separator + "config"
+                 + File.separator + CONFIG_FILE_NAME;
+
+        // Get the file from the resources
+        File resourceFile = null;
+        URL url = classLoader.getResource(filePath);
+        if (url != null) {
+
+            // Decode from URL style to get rid of illegal characters in string like %20 etc.
+            try {
+                resourceFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                logger.error("Unable to decode URL to string", e);
+            }
+        } else {
+            logger.error("Unable to get config file from resources");
+        }
+
+        // Copy the file to data/config
+        try {
+            if (resourceFile != null) {
+                Files.copy(resourceFile.getCanonicalFile().toPath(), configFile.getCanonicalFile().toPath());
+            }
+        } catch (IOException e) {
+            logger.error("Unable to copy " + CONFIG_FILE_NAME + " from resources to data folder", e);
+            return false;
+        }
+        return true;
     }
 
     /**
