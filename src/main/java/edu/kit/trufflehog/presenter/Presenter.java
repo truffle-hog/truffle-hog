@@ -75,7 +75,7 @@ public class Presenter {
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
 
         // setting up menubar
-        Button settingsButton = new ImageButton("cog-3x.png");
+        Button settingsButton = new ImageButton("gear.png");
         // TODO das ist ein bisschen hässlich. geht leider afaik nicht anders mit eigen gebauten javafx-nodes.
         settingsButton.setOnAction(event -> {
             Stage settingsStage = new Stage();
