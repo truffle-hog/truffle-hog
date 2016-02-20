@@ -37,7 +37,7 @@ public class FrameHandler implements EventHandler<ActionEvent> {
 
         playFrame.getViewPort().getGraph().getVertices().stream().forEach(node -> {
             replayLayout.getWritingPort().writeNode(node);
-            if (graphDevice.isPositionPlayback()) {
+            if (graphDevice.isMovableDuringPlayback()) {
                 replayLayout.getViewPort().setLocation(node, playFrame.getViewPort().transform(node));
             }
         });
