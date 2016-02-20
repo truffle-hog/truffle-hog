@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.model.network.graph;
 
-import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentFRLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
