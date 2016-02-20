@@ -59,10 +59,6 @@ dependencies {
 
 test.dependsOn processTestResources
 
-test {
-    check
-}
-
 jar {
     manifest {
         attributes 'Main-Class': 'edu.kit.trufflehog.Main'
