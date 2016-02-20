@@ -265,22 +265,40 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
                 return;
             }
 
-            // Get the only one we found
-            entries.get(0).getChild("value").setText(newValue);
-
-            // Save the new XML to the file
-            XMLOutputter xmlOutput = new XMLOutputter();
-            PrintWriter writer = new PrintWriter(settingsFile, "UTF-8");
-            xmlOutput.setFormat(Format.getPrettyFormat());
-            xmlOutput.output(document, writer);
-            writer.close();
-
-            logger.debug("Changed key: " + key + " of type: " + typeClass.getName() + " from old value: " + oldValue
-                    + " to new value: " + newValue);
+            saveNewValue(typeClass, key, oldValue, newValue, document, entries.get(0));
         } catch (JDOMException | IOException e) {
             logger.error("Error updating the " + CONFIG_FILE_NAME + " file for key: " + key + " of type: "
                     + typeClass.getName(), e);
         }
+    }
+
+    /**
+     * <p>
+     *     Actually make the change to the XML and save it to the hard drive.
+     * </p>
+     *
+     * @param typeClass The type of the value (i.e. String, Integer or Boolean are examples)
+     * @param key The key mapped to the value, classic key value mapping.
+     * @param oldValue The old value that should be updated.
+     * @param newValue The new value, that should overwrite the old value.
+     * @param document The document object that represent the parsed XML.
+     * @param entry The entry that should be updated in the XML file.
+     * @throws IOException Thrown if something goes wrong during the write operation.
+     */
+    private void saveNewValue(Class typeClass, String key, String oldValue, String newValue, Document document
+            , Element entry) throws IOException {
+        // Get the only one we found
+        entry.getChild("value").setText(newValue);
+
+        // Save the new XML to the file
+        XMLOutputter xmlOutput = new XMLOutputter();
+        PrintWriter writer = new PrintWriter(settingsFile, "UTF-8");
+        xmlOutput.setFormat(Format.getPrettyFormat());
+        xmlOutput.output(document, writer);
+        writer.close();
+
+        logger.debug("Changed key: " + key + " of type: " + typeClass.getName() + " from old value: " + oldValue
+                + " to new value: " + newValue);
     }
 
     @Override
