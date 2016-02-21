@@ -152,33 +152,6 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
 
 	check (write(socketData.socketFD, &TRUFFLEHOG_DISCONNECT_REQUEST, sizeof(TRUFFLEHOG_DISCONNECT_REQUEST)), "error on sending disconnect request");
 
-/*
-    fd_set fdSet;
-    struct timeval timeout;
-
-    FD_ZERO(&fdSet);
-    FD_SET(socketData.socketFD, &fdSet);
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 10000000;
-
-    int rv = select(socketData.socketFD, &fdSet, NULL, NULL, &timeout);
-    debug("RV: %d", rv);
-    if (rv == -1)
-    {
-    	perror("select");
-    	goto error;
-    }
-    else
-    {
-        check_to(rv != 0, timeout, "timeout occurred");
-*/
-	    int buffer = -1;
-	    check(read(socketData.socketFD, (void*) &buffer, sizeof(int)) >= 0, "error reading from socket");
-
-	    check(buffer == SNORT_DISCONNECT_RESPONSE, "error, wrong message received");
-
-    //}
-
     debug("disconnect successful");
 
 	return;
@@ -197,27 +170,12 @@ int getNextTruffle(JNIEnv *env, Truffle *truffle)
 
 	debug("reading truffle");
 
-    fd_set fdSet;
-    struct timeval timeout;
+    ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
 
-    FD_ZERO(&fdSet);
-    FD_SET(socketData.socketFD, &fdSet);
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 1000000;
-
-    int rv = select(socketData.socketFD, &fdSet, NULL, NULL, &timeout);
-    if (rv == -1)
-    	perror("select");
-    else
-    {
-        check_to(rv != 0, noMessageReceived, "timeout occurred");
-        ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
-
-        if (len < 0)
-		    goto noMessageReceived;
-	    else if (len != sizeof(Truffle))
-		    goto error;
-	}
+    if (len < 0)
+		goto noMessageReceived;
+    else if (len != sizeof(Truffle))
+        goto error;
 
 	return 0;
 
@@ -225,8 +183,28 @@ error:
 	throwReceiverReadError(env, "could not read the correct number of bytes from the socket");
 	return -1;
 noMessageReceived:
-	debug("No message received. Canceling wait...");
+	debug("read failed");
 	return -2;
+}
+
+
+/**
+ * @brief Gets the class id by name
+ *
+ * @param env the java environment
+ * @param className the name of the class to get
+ *
+ * @return Returns the class id on success and NULL on error.
+ */
+jclass getClassByName(JNIEnv *env, char *className)
+{
+    jclass clazz = (*env)->FindClass(env, className);
+    check(clazz != NULL, "class not found");
+
+    return clazz;
+error:
+    throwNoClassDefError(env, className);
+    return NULL;
 }
 
 /*
@@ -242,7 +220,7 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 	check_to(truffleClass != NULL, noClass, "Truffle class could not be found");
 
 	jmethodID ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "()V");
-	check_to(ctor != NULL, noMethod, "constructor for class Truffle not found");
+	check_to(ctor != NULL, noCtor, "constructor for class Truffle not found");
 
 	jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
 
@@ -250,13 +228,37 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
 	check(getNextTruffle(env, &truffle) >= 0, "getNextTruffle failed!");
 
+    // get method
+    jmethodID setAttributeMID = (*env)->GetMethodID(env, truffleClass, "setAttribute", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
+    check_to(setAttributeMID != 0, noSetAttribute, "setAttribute method not found");
+
+    // get the long class
+    jclass longClass = getClassByName(env, "java/lang/Long");
+    check(longClass != NULL, "could not get long class");
+
+    // create the id string
+
+    jstring idStr = (*env)->NewStringUTF(env, "sourceMacAddress");
+    check(idStr != NULL, "could not create id string");
+
+    jlong srcMacAddr = (jlong) truffle.etherHeader.sourceMacAddress; //TODO NEED TO CREATE AN ACTUAL LONG OBJECT!!!
+
+    debug("calling setAttribute...");
+    check((*env)->CallObjectMethod(env, truffleObject, setAttributeMID, longClass, idStr, srcMacAddr) != NULL, "could not call setAttribute");
+
+	truffle.etherHeader.destMacAddress;
+
 	return truffleObject;
 
 noClass:
 	throwNoClassDefError(env, truffleClassName);
 	return NULL;
 
-noMethod:
+noSetAttribute:
+    throwNoSuchMethodError(env, "SetAttribute method not found");
+    return NULL;
+
+noCtor:
 	throwNoSuchMethodError(env, "Constructor for class Truffle not found");
 	return NULL;
 
