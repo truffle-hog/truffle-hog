@@ -15,7 +15,9 @@ public interface INetworkGraph extends DirectedGraph<INode, IConnection> {
 
     IConnection getNetworkEdge(INode src, INode dest);
 
-    void addNetworkEdge(IConnection connection, INode from, INode to);
+    void addNetworkEdge(IConnection connection);
+
+    void addNetworkEdge(INode from, INode to);
 
     void addNetworkNode(INode node);
 }

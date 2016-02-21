@@ -15,19 +15,28 @@ import java.io.Serializable;
  */
 public class NetworkEdge implements IConnection, Serializable {
 
-    private NetworkNode fromNode;
-    private NetworkNode toNode;
+    private INode srcNode;
+    private INode destNode;
 
     private LongProperty totalPacketCount = new SimpleLongProperty();
     private LongProperty active = new SimpleLongProperty();
     private IntegerProperty connectionType = new SimpleIntegerProperty();
 
-    NetworkEdge(NetworkNode from, NetworkNode to) throws NullPointerException{
-        if (from == null || to == null) {
-            throw new NullPointerException("One of the Nodes does not exist!");
-        }
-        fromNode = from;
-        toNode = to;
+    NetworkEdge(INode src, INode dest) throws NullPointerException{
+        if (src == null) throw new NullPointerException("Source node is null!");
+        if (dest == null) throw new NullPointerException("Destination node is null!");
+        srcNode = src;
+        destNode = dest;
+    }
+
+    @Override
+    public INode getSource() {
+        return srcNode;
+    }
+
+    @Override
+    public INode getDestination() {
+        return destNode;
     }
 
     /**

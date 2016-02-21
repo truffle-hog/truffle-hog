@@ -10,6 +10,10 @@ import javafx.beans.property.LongProperty;
  */
 public interface IConnection {
 
+    INode getSource();
+
+    INode getDestination();
+
     long getTotalPacketCount();
 
     void setTotalPacketCount(long value);

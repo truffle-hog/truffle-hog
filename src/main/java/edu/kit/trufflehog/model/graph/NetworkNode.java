@@ -12,8 +12,8 @@ import java.io.Serializable;
  */
 public class NetworkNode implements Serializable, INode {
 
-	private int ipAdress;
-    private long macAdress;
+	private int ipAddress;
+    private long macAddress;
     private String deviceName;
     private int timeAdded;
     private int lastUpdateTime;
@@ -25,14 +25,13 @@ public class NetworkNode implements Serializable, INode {
         truffleLogger = new TruffleLogger();
     }
 
-	@Override
-	public void setIpAdress(int ipAdress) {
-		this.ipAdress = ipAdress;
+	public void setIpAddress(int ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 
 	@Override
-	public void setMacAdress(long macAdress) {
-		this.macAdress = macAdress;
+	public void setMaxAddress(long macAddress) {
+		this.macAddress = macAddress;
 	}
 
 	@Override
@@ -61,13 +60,13 @@ public class NetworkNode implements Serializable, INode {
 	}
 
 	@Override
-	public int getIpAdress() {
-		return ipAdress;
+	public int getIpAddress() {
+		return ipAddress;
 	}
 
 	@Override
-	public long getMacAdress() {
-		return macAdress;
+	public long getMacAddress() {
+		return macAddress;
 	}
 
 	@Override

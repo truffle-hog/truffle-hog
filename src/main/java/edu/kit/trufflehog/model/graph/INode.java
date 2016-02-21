@@ -9,9 +9,9 @@ import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truf
  */
 public interface INode {
 
-    void setIpAdress(int ipAdress);
+    void setIpAddress(int ipAddress);
 
-    void setMacAdress(long macAdress);
+    void setMaxAddress(long macAddress);
 
     void setDeviceName(String deviceName);
 
@@ -23,9 +23,9 @@ public interface INode {
 
     void setPackageCountOut(int packageCountOut);
 
-    int getIpAdress();
+    int getIpAddress();
 
-    long getMacAdress();
+    long getMacAddress();
 
     String getDeviceName();
 

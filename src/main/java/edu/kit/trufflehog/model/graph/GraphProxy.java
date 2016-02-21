@@ -43,13 +43,17 @@ public class GraphProxy implements INetworkGraph, IGraphProxy {
     }
 
     @Override
-    public void addNetworkEdge(IConnection connection, INode from, INode to) {
-        activeGraph.addNetworkEdge(connection, from, to);
+    public void addNetworkEdge(IConnection connection) throws NullPointerException {
+        activeGraph.addNetworkEdge(connection);
     }
 
     @Override
-    public void addNetworkNode(INode node) {
+    public void addNetworkEdge(INode from, INode to) throws NullPointerException {
+        activeGraph.addNetworkEdge(from, to);
+    }
 
+    @Override
+    public void addNetworkNode(INode node) throws NullPointerException {
         activeGraph.addNetworkNode(node);
     }
 
