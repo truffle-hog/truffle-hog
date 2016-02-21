@@ -38,4 +38,9 @@ public class AddPacketDataCommand implements ITruffleCommand {
     public void execute() {
 
     }
+
+    @Override
+    public String toString() {
+        return data.toString();
+    }
 }

@@ -167,9 +167,6 @@ timeout:
 
 int getNextTruffle(JNIEnv *env, Truffle *truffle)
 {
-
-	debug("reading truffle");
-
     ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
 
     if (len < 0)
@@ -207,6 +204,17 @@ error:
     return NULL;
 }
 
+jobject createObjectWithStdCtor(JNIEnv *env, jclass *clazz)
+{
+    jmethodID ctor = (*env)->GetMethodID(env, *clazz, "<init>", "()V");
+    check(ctor != NULL, "could not get standard ctor");
+
+    return (*env)->NewObject(env, *clazz, ctor);
+
+error:
+    return NULL;
+}
+
 /*
  * Class:     edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver
  * Method:    getTruffle
@@ -224,29 +232,95 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
 	jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
 
+	check(truffleObject != NULL, "could not create Truffle");
+
 	Truffle truffle;
 
 	check(getNextTruffle(env, &truffle) >= 0, "getNextTruffle failed!");
+
+    jstring idStr;
 
     // get method
     jmethodID setAttributeMID = (*env)->GetMethodID(env, truffleClass, "setAttribute", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
     check_to(setAttributeMID != 0, noSetAttribute, "setAttribute method not found");
 
+
+    ///////////////////////////
+    // start of long objects //
+    ///////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////
     // get the long class
     jclass longClass = getClassByName(env, "java/lang/Long");
     check(longClass != NULL, "could not get long class");
 
-    // create the id string
+    // get the long ctor
+    jmethodID longCtor = (*env)->GetMethodID(env, longClass, "<init>", "(J)V");
+    check(longCtor != NULL, "Could not fetch long ctor");
+    //////////////////////////////////////////////////////////////////////////////////////
 
-    jstring idStr = (*env)->NewStringUTF(env, "sourceMacAddress");
-    check(idStr != NULL, "could not create id string");
+    /////////// start of setAttribute(Long.class, "sourceMacAddress", srcAddr) ///////////
+    // create the long object for srcMacAddr
+    jobject srcMacAddr = (*env)->NewObject(env, longClass, longCtor, truffle.etherHeader.sourceMacAddress);
+    check(srcMacAddr != NULL, "Could not create srcMacAddr Long object");
 
-    jlong srcMacAddr = (jlong) truffle.etherHeader.sourceMacAddress; //TODO NEED TO CREATE AN ACTUAL LONG OBJECT!!!
+    // create the id string for sourceMacAddress
+    idStr = (*env)->NewStringUTF(env, "sourceMacAddress");
+    check(idStr != NULL, "could not create id string for sourceMacAddress");
 
-    debug("calling setAttribute...");
-    check((*env)->CallObjectMethod(env, truffleObject, setAttributeMID, longClass, idStr, srcMacAddr) != NULL, "could not call setAttribute");
+    (*env)->CallObjectMethod(env, truffleObject, setAttributeMID, longClass, idStr, srcMacAddr);
+    idStr = NULL;
+    /////////// end of setAttribute(Long.class, "sourceMacAddress", srcAddr) ///////////
 
-	truffle.etherHeader.destMacAddress;
+
+    /////////// start of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
+    // create the id string for destMacAddress
+    idStr = (*env)->NewStringUTF(env, "destMacAddress");
+    check(idStr != NULL, "could not create id string for destMacAddress");
+
+    // create the long object for destMacAddr
+    jobject destMacAddr = (*env)->NewObject(env, longClass, longCtor, truffle.etherHeader.destMacAddress);
+    check(destMacAddr != NULL, "could not create destMacAddr Long object");
+
+    (*env)->CallObjectMethod(env, truffleObject, setAttributeMID, longClass, idStr, destMacAddr);
+    idStr = NULL;
+    /////////// end of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
+
+    /////////////////////////
+    // end of long objects //
+    /////////////////////////
+
+
+    ////////////////////////////
+    // start of short objects //
+    ////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    // get the short class
+    jclass shortClass = getClassByName(env, "java/lang/Short");
+    check(shortClass != NULL, "could not get short class");
+
+    // get the long ctor
+    jmethodID shortCtor = (*env)->GetMethodID(env, shortClass, "<init>", "(S)V");
+    check(shortCtor != NULL, "Could not fetch short ctor");
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    /////////// start of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
+    // create the id string for destMacAddress
+    idStr = (*env)->NewStringUTF(env, "etherType");
+    check(idStr != NULL, "could not create id string for etherType");
+
+    // create the long object for destMacAddr
+    jobject etherType = (*env)->NewObject(env, shortClass, shortCtor, truffle.etherHeader.etherType);
+    check(etherType != NULL, "could not create etherType Short object");
+
+    (*env)->CallObjectMethod(env, truffleObject, setAttributeMID, shortClass, idStr, etherType);
+    idStr = NULL;
+    /////////// end of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
+
+    //////////////////////////
+    // end of short objects //
+    //////////////////////////
 
 	return truffleObject;
 
