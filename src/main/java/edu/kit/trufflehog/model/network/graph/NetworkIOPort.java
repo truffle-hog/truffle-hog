@@ -1,8 +1,7 @@
 package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.IAddress;
-import edu.kit.trufflehog.model.network.INetworkReadingPort;
-import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.uci.ics.jung.graph.Graph;
 
 import java.util.Map;
@@ -11,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by jan on 22.02.16.
  */
-public class NetworkIOPort implements INetworkWritingPort, INetworkReadingPort {
+public class NetworkIOPort implements INetworkIOPort {
 
     private final Graph<INode, IConnection> delegate;
 

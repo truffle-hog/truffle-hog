@@ -95,7 +95,6 @@ public class Presenter {
 
         // track the live network on the given viewportswitch
         networkObservationDevice.goLive(liveNetwork, viewPortSwitch);
-
     }
 
     private void initGUI() {

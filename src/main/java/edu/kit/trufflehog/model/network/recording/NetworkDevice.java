@@ -24,8 +24,6 @@ public class NetworkDevice implements INetworkDevice {
     private boolean isRecording = false;
     private boolean isLive = true;
 
-    private INetworkTape networkTape;
-
     private boolean userLocation = false;
     private IntegerProperty playbackFrameProperty = new SimpleIntegerProperty(0);
     private IntegerProperty playbackFrameCountProperty = new SimpleIntegerProperty(0);

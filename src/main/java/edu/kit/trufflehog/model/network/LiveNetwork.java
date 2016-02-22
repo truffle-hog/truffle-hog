@@ -11,8 +11,7 @@ import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedS
  */
 public class LiveNetwork implements INetwork {
 
-    private final NetworkIOPort ioPort;
-
+    private final INetworkIOPort ioPort;
     private final INetworkViewPort viewPort;
 
     public LiveNetwork(ConcurrentDirectedSparseGraph<INode, IConnection> graph) {
