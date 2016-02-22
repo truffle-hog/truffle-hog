@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.network.recording;
 
 import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
@@ -12,12 +13,12 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
 
+
 /**
  * TODO implmeent
  */
 public class NetworkDevice implements INetworkDevice {
 
-    private INetworkTape playTape;
     private Timeline frameWriter;
 
     private boolean isRecording = false;
@@ -30,7 +31,7 @@ public class NetworkDevice implements INetworkDevice {
     private IntegerProperty playbackFrameCountProperty = new SimpleIntegerProperty(0);
 
     @Override
-    public boolean record(final INetwork network, final INetworkTape tape, final int framerate) {
+    public boolean record(final INetworkViewPort network, final INetworkTape tape, final int framerate) {
 
         // TODO check if there is an ongoin recording on the given tape
 /*        if (tape.isRecording) {
@@ -60,7 +61,11 @@ public class NetworkDevice implements INetworkDevice {
     }
 
     @Override
-    public void play(INetworkTape tape, INetworkViewPortSwitch viewPortSwitch) {
+    public void play(final INetworkTape tape, final INetworkViewPortSwitch viewPortSwitch) {
+
+        if (tape.frameCount() == 0) {
+            return;
+        }
 
         playbackFrameCountProperty.set(tape.frameCount() - 1);
 
@@ -70,14 +75,14 @@ public class NetworkDevice implements INetworkDevice {
         viewPortSwitch.setActiveViewPort(replayNetwork.getViewPort());
 
         isLive = false;
-        this.playTape = tape;
-        playTape.setCurrentReadingFrame(0);
+       // this.playTape = tape;
+        tape.setCurrentReadingFrame(0);
 
         // TODO Take the real framel ength!!! instead of 100 - --- the   -1    PROBLEM
         final long frameLength = 1000 / tape.getFrameRate();
 
 
-        final Timeline frameReader = new Timeline(new KeyFrame(Duration.millis(42), new FrameHandler(playTape, this, replayNetwork)));
+        final Timeline frameReader = new Timeline(new KeyFrame(Duration.millis(42), new FrameHandler(tape, replayNetwork)));
         // frameReader.setCycleCount(playTape.frameCount() - 1);Timeline.INDEFINITE
         frameReader.setCycleCount(Timeline.INDEFINITE);
         frameReader.play();
@@ -135,17 +140,4 @@ public class NetworkDevice implements INetworkDevice {
         return false;
     }
 
-    @Override
-    public INetworkTape removeNetworkTape() {
-
-        final INetworkTape temp = playTape;
-        playTape = new NetworkTape();
-
-        return temp;
-    }
-
-    @Override
-    public INetworkTape getNetworkTape() {
-        return playTape;
-    }
 }

@@ -54,7 +54,7 @@ public class Presenter {
      */
     public void present() {
 
-        initGUI();
+    //    initGUI();
         initNetwork();
     }
 
@@ -64,9 +64,10 @@ public class Presenter {
 
         // TODO Ctor injection with the Ports that are within the networks
         final INetwork liveNetwork = new LiveNetwork(new ConcurrentDirectedSparseGraph<>());
+/*
         // initialize the replay network that will be written on by a networkTape if the device plays a replay
         final INetwork replayNetwork = new ReplayNetwork(new ConcurrentDirectedSparseGraph<>());
-
+*/
         // initialize the writing port switch that use the writing port of the live network
         // as their initial default writing port
         final INetworkWritingPortSwitch writingPortSwitch = new NetworkWritingPortSwitch(liveNetwork.getWritingPort());
@@ -81,25 +82,19 @@ public class Presenter {
 
         // intialize the network device which is capable of recording and replaying any ongoing network session
         // on serveral screens
-        final INetworkDevice networkObservationDevice = new NetworkDevice(readingPortSwitch, writingPortSwitch, viewPortSwitch);
+        final INetworkDevice networkObservationDevice = new NetworkDevice();
 
-
-        final INetworkTape tape = new NetworkTape();
+        // create a new empty tape to record something on
+        final INetworkTape tape = new NetworkTape(24);
         // Tell the network observation device to start recording the
-        // given network with 25fps on recording port 0
-        networkObservationDevice.record(liveNetwork, tape, 25);
+        // given network with 25fps on the created tape
+        networkObservationDevice.record(liveNetwork.getViewPort(), tape, 25);
 
         // play that ongoing recording on the given viewportswitch
         networkObservationDevice.play(tape, viewPortSwitch);
 
         // track the live network on the given viewportswitch
         networkObservationDevice.goLive(liveNetwork, viewPortSwitch);
-
-
-
-
-
-
 
     }
 

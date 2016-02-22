@@ -1,6 +1,8 @@
 package edu.kit.trufflehog.model.network.recording;
 
 import edu.kit.trufflehog.model.network.INetwork;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
@@ -8,43 +10,48 @@ import javafx.event.EventHandler;
 public class FrameHandler implements EventHandler<ActionEvent> {
 
     private final INetworkTape playTape;
-    private final INetworkDevice graphDevice;
     private final INetwork replayLayout;
+    private final BooleanProperty movableNodesProperty = new SimpleBooleanProperty(true);
 
-    public FrameHandler(INetworkTape playTape, INetworkDevice currentFrame, INetwork replayLayout) {
+    public FrameHandler(INetworkTape playTape, INetwork replayLayout) {
 
         this.playTape = playTape;
-        this.graphDevice = currentFrame;
         this.replayLayout = replayLayout;
+    }
+
+    public BooleanProperty getMovableNodesProperty() {
+        return movableNodesProperty;
+    }
+
+    public boolean getMovableNodes() {
+        return movableNodesProperty.get();
     }
 
     @Override
     public void handle(ActionEvent event) {
 
-        //playTape.setCurrentReadingFrame(graphDevice.getPlaybackFrame());
         final INetworkTape.INetworkFrame playFrame = playTape.getCurrentReadingFrame();
 
-        replayLayout.getViewPort().setMaxConnectionSize(playFrame.getViewPort().getMaxConnectionSize());
-        replayLayout.getViewPort().setMaxThroughput(playFrame.getViewPort().getMaxThroughput());
-        replayLayout.getViewPort().setViewTime(playFrame.getViewPort().getViewTime());
+        replayLayout.getViewPort().setMaxConnectionSize(playFrame.getMaxConnectionSize());
+        replayLayout.getViewPort().setMaxThroughput(playFrame.getMaxThroughput());
+        replayLayout.getViewPort().setViewTime(playFrame.getViewTime());
 
-        if (playFrame.getViewPort().getGraph().getVertexCount() < replayLayout.getViewPort().getGraph().getVertexCount() ||
-                playFrame.getViewPort().getGraph().getEdgeCount() < replayLayout.getViewPort().getGraph().getVertexCount()) {
+        if (playFrame.getGraph().getVertexCount() < replayLayout.getViewPort().getGraph().getVertexCount() ||
+                playFrame.getGraph().getEdgeCount() < replayLayout.getViewPort().getGraph().getVertexCount()) {
 
-            replayLayout.getViewPort().graphIntersection(playFrame.getViewPort().getGraph());
+            replayLayout.getViewPort().graphIntersection(playFrame.getGraph());
         }
 
 
-        playFrame.getViewPort().getGraph().getVertices().stream().forEach(node -> {
+        playFrame.getGraph().getVertices().stream().forEach(node -> {
             replayLayout.getWritingPort().writeNode(node);
-            if (graphDevice.isMovableDuringPlayback()) {
-                replayLayout.getViewPort().setLocation(node, playFrame.getViewPort().transform(node));
+            if (getMovableNodes()) {
+                replayLayout.getViewPort().setLocation(node, playFrame.transform(node));
             }
         });
 
-        playFrame.getViewPort().getGraph().getEdges().stream().forEach(edge -> {
+        playFrame.getGraph().getEdges().stream().forEach(edge -> {
             replayLayout.getWritingPort().writeConnection(edge);
         });
-
     }
 }

@@ -13,11 +13,20 @@ import java.io.Serializable;
  *     communication.
  * </p>
  */
-public class NetworkEdge implements IConnection, Serializable {
+public class NetworkConnection implements IConnection, Serializable {
 
     private LongProperty totalPacketCount = new SimpleLongProperty();
     private LongProperty active = new SimpleLongProperty();
     private IntegerProperty connectionType = new SimpleIntegerProperty();
+
+    private final INode src;
+    private final INode dest;
+
+    public NetworkConnection(IConnection edge) {
+
+        this.src = edge.getSrc();
+        this.dest = edge.getDest();
+    }
 
     /**
      * <p>
@@ -124,5 +133,15 @@ public class NetworkEdge implements IConnection, Serializable {
     @Override
     public IntegerProperty getConnectionTypeProperty() {
         return connectionType;
+    }
+
+    @Override
+    public INode getSrc() {
+        return src;
+    }
+
+    @Override
+    public INode getDest() {
+        return dest;
     }
 }

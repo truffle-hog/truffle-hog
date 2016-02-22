@@ -28,4 +28,7 @@ public interface IConnection {
 
     IntegerProperty getConnectionTypeProperty();
 
+    INode getSrc();
+
+    INode getDest();
 }

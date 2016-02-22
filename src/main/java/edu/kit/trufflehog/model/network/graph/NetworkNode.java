@@ -20,6 +20,9 @@ public class NetworkNode implements Serializable, INode {
 	private int packageCountOut;
 	private String ipAdress;
 
+	public NetworkNode(INode node) {
+	}
+
 	@Override
 	public void setIpAdress(String ipAdress) {
 		this.ipAdress = ipAdress;
