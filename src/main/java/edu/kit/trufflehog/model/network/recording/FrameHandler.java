@@ -21,7 +21,7 @@ public class FrameHandler implements EventHandler<ActionEvent> {
     @Override
     public void handle(ActionEvent event) {
 
-        playTape.setCurrentReadingFrame(graphDevice.getPlaybackFrame());
+        //playTape.setCurrentReadingFrame(graphDevice.getPlaybackFrame());
         final INetworkTape.INetworkFrame playFrame = playTape.getCurrentReadingFrame();
 
         replayLayout.getViewPort().setMaxConnectionSize(playFrame.getViewPort().getMaxConnectionSize());

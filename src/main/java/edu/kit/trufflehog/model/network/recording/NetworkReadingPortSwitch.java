@@ -9,6 +9,7 @@ import edu.kit.trufflehog.model.network.graph.INode;
  * TODO implement
  */
 public class NetworkReadingPortSwitch implements INetworkReadingPortSwitch {
+
     public NetworkReadingPortSwitch(INetworkReadingPort readingPort) {
     }
 

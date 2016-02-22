@@ -6,6 +6,7 @@ import edu.kit.trufflehog.model.network.graph.INode;
 
 // TODO implement
 public class NetworkWritingPortSwitch implements INetworkWritingPortSwitch {
+
     public NetworkWritingPortSwitch(INetworkWritingPort writingPort) {
     }
 

@@ -17,7 +17,13 @@ import java.awt.geom.Point2D;
  */
 public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
 
+    //private final INetworkDevice attachedDevice;
+    private INetworkViewPort activeViewport;
+
     public NetworkViewPortSwitch(INetworkViewPort viewPort) {
+
+
+
     }
 
     @Override

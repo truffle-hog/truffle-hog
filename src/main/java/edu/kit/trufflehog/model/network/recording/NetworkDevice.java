@@ -1,9 +1,9 @@
 package edu.kit.trufflehog.model.network.recording;
 
+import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
-import edu.kit.trufflehog.model.network.*;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -18,15 +18,10 @@ import javafx.util.Duration;
 public class NetworkDevice implements INetworkDevice {
 
     private INetworkTape playTape;
-
-
     private Timeline frameWriter;
 
     private boolean isRecording = false;
     private boolean isLive = true;
-
-    private INetwork replayNetwork;
-    private INetwork liveNetwork;
 
     private INetworkTape networkTape;
 
@@ -34,34 +29,23 @@ public class NetworkDevice implements INetworkDevice {
     private IntegerProperty playbackFrameProperty = new SimpleIntegerProperty(0);
     private IntegerProperty playbackFrameCountProperty = new SimpleIntegerProperty(0);
 
-    private final INetworkWritingPortSwitch writingPortSwitch;
-    private final INetworkReadingPortSwitch readingPortSwitch;
-    private final INetworkViewPortSwitch viewPortSwitch;
-
-    public NetworkDevice(INetwork liveNetwork) {
-
-        writingPortSwitch = new NetworkWritingPortSwitch(liveNetwork.getWritingPort());
-        readingPortSwitch = new NetworkReadingPortSwitch(liveNetwork.getReadingPort());
-        viewPortSwitch = new NetworkViewPortSwitch(liveNetwork.getViewPort());
-
-        this.liveNetwork = liveNetwork;
-    }
-
     @Override
-    public boolean record(int framerate) {
+    public boolean record(final INetwork network, final INetworkTape tape, final int framerate) {
 
-        if (isRecording) {
+        // TODO check if there is an ongoin recording on the given tape
+/*        if (tape.isRecording) {
             return false;
-        }
+        }*/
 
+        // TODO set the isRecording value on the tape to true
         isRecording = true;
         long frameLength = 1000 / framerate;
 
-        playTape.write(this.getLiveNetwork());
+        tape.write(network);
 
         frameWriter = new Timeline(new KeyFrame(Duration.millis(frameLength), event -> {
-            playTape.write(this.getLiveNetwork());
-            playbackFrameCountProperty.set(playTape.frameCount() - 1);
+            tape.write(network);
+            playbackFrameCountProperty.set(tape.frameCount() - 1);
         }));
         frameWriter.setCycleCount(Timeline.INDEFINITE);
         frameWriter.play();
@@ -70,27 +54,27 @@ public class NetworkDevice implements INetworkDevice {
     }
 
     @Override
-    public void goLive() {
+    public void goLive(INetwork network, INetworkViewPortSwitch port) {
 
-        viewPortSwitch.setActiveViewPort(getLiveNetwork().getViewPort());
+        port.setActiveViewPort(network.getViewPort());
     }
 
     @Override
-    public void play(INetworkTape graphTape, INetworkViewPort viewPort) {
+    public void play(INetworkTape tape, INetworkViewPortSwitch viewPortSwitch) {
 
-        playbackFrameCountProperty.set(graphTape.frameCount() - 1);
+        playbackFrameCountProperty.set(tape.frameCount() - 1);
 
         final Graph<INode, IConnection> replayViewGraph = new ConcurrentDirectedSparseGraph<>();
-        replayNetwork = new ReplayNetwork(replayViewGraph);
+        final INetwork replayNetwork = new ReplayNetwork(replayViewGraph);
 
-        viewPortSwitch.setActiveViewPort(viewPort);
+        viewPortSwitch.setActiveViewPort(replayNetwork.getViewPort());
 
         isLive = false;
-        this.playTape = graphTape;
+        this.playTape = tape;
         playTape.setCurrentReadingFrame(0);
 
         // TODO Take the real framel ength!!! instead of 100 - --- the   -1    PROBLEM
-        final long frameLength = 1000 / graphTape.getFrameRate();
+        final long frameLength = 1000 / tape.getFrameRate();
 
 
         final Timeline frameReader = new Timeline(new KeyFrame(Duration.millis(42), new FrameHandler(playTape, this, replayNetwork)));
@@ -149,16 +133,6 @@ public class NetworkDevice implements INetworkDevice {
     @Override
     public boolean isMovableDuringPlayback() {
         return false;
-    }
-
-    @Override
-    public INetwork getLiveNetwork() {
-        return liveNetwork;
-    }
-
-    @Override
-    public INetwork getReplayNetwork() {
-        return replayNetwork;
     }
 
     @Override
