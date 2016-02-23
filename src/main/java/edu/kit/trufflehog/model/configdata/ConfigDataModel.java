@@ -1,72 +1,68 @@
 package edu.kit.trufflehog.model.configdata;
 
-import java.util.Properties;
+import edu.kit.trufflehog.model.FileSystem;
+import javafx.beans.property.Property;
+import javafx.beans.property.StringProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.ExecutorService;
 
 /**
  * <p>
- *     The ConfigDataModel mainly manages the GUI state using java property files. It also manages what the gui
- *     displays (e.g. labels etc.). It can save the GUI state and load it back. To do so, each GUI window is mapped to
- *     its own ConfigDatatModel from which it loads its display settings. Thus it is easy to change the language for
- *     example, since only the underlying property file has to be exchanged.
+ *     The ConfigDataModel saves all configurations of TruffleHog into an xml file and continuously updates it.
+ *     This is done through the JavaFX {@link Property} object using its bindings. Further more, filter options are
+ *     stored separately from the xml file. At the start of the program, everything is loaded from the hard drive into
+ *     memory.
  * </p>
- * <p>
- *     Multiple property objects can be loaded at once, however one has to be always marked as the current object.
- *     This way it is easy to switch between different configurations (for example switch languages).
- * </p>
+ *
+ * @author Julian Brendl
+ * @version 1.0
  */
-public abstract class ConfigDataModel {
+public class ConfigDataModel implements IConfigData {
+    private static final Logger logger = LogManager.getLogger(ConfigDataModel.class);
+
+    private IConfigDataModel<StringProperty> settingsDataModel;
+
     /**
      * <p>
      *     Creates a new ConfigDataModel object.
      * </p>
+     *
+     * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
+     * @param executorService The executor service used by TruffleHog to manage the multi-threading.
+     * @throws NullPointerException Thrown when it was impossible to get config data for some reason.
      */
-    public ConfigDataModel() {
+    public ConfigDataModel(FileSystem fileSystem, ExecutorService executorService) throws NullPointerException{
+        settingsDataModel = new SettingsDataModel(fileSystem, executorService);
     }
 
     /**
      * <p>
-     *     Gets the value mapped to the given key in the currently loaded {@link Properties} object, or null if the key
-     *     does not exist.
+     *     Loads all settings that are stored on the hard drive into the program.
      * </p>
-     *
-     * @param key The key of the value to get in the currently loaded {@link Properties} object.
-     * @return The value mapped to the key, if it exists, else null.
      */
-    public String getProperty(String key) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public void load() {
+        settingsDataModel.load();
+        loadFilters();
     }
 
     /**
      * <p>
-     *      Adds a new property key value pair to the currently loaded {@link Properties} object.
+     *     Loads all filters found on the hard drive into memory.
      * </p>
-     *
-     * @param key The key to add to the currently loaded Properties object.
-     * @param value The value to match with the given key.
      */
-    public void setProperty(String key, String value) {
+    private void loadFilters() {
+
     }
 
-    /**
-     * <p>
-     *     Sets a {@link Properties} object that has been loaded into memory as the current Properties object. That
-     *     means that {@link #setProperty(String, String)} and {@link #getProperty(String)} now apply to that property
-     *     file.
-     * </p>
-     *
-     * @param name The name of the property file to set as the current property file.
-     */
-    public void setPropertiesFile(String name) {
+    @Override
+    public StringProperty getSetting(Class typeClass, String key) {
+        return settingsDataModel.get(typeClass, key);
     }
 
-    /**
-     * <p>
-     *      Loads a new property file into memory. It is put on the list of loaded property files in the ConfigDataModel
-     *      and can now be selected as the current {@link Properties} object.
-     * </p>
-     *
-     * @param path The path to the property file to load into memory.
-     */
-    public void loadPropertyFile(String path) {
+    @Override
+    public String getFilter(String key) {
+        return null;
     }
 }

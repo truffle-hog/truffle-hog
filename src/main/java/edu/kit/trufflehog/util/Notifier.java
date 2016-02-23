@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.util;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
