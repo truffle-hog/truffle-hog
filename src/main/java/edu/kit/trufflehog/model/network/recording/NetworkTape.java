@@ -4,7 +4,6 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
-import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
@@ -106,7 +105,7 @@ public class NetworkTape implements INetworkTape {
 
             liveNetworkViewPort.getGraph().getVertices().stream().forEach(node -> {
 
-                final INode copyNode = new NetworkNode(node);
+                final INode copyNode = node.createDeepCopy();
                 final Point2D transform = liveNetworkViewPort.transform(node);
                 nodeMap.put(copyNode, new Point2D.Double(transform.getX(), transform.getY()));
                 nodes.put(copyNode, copyNode);
