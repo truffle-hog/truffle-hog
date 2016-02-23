@@ -2,8 +2,12 @@ package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.Filter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.MacAddress;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.NetworkConnection;
+import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
 import java.util.List;
 
@@ -28,13 +32,27 @@ public class AddPacketDataCommand implements ITruffleCommand {
      * @param packet Truffle to get data from
      * @param filters List of filters to check
      */
-    AddPacketDataCommand(INetworkWritingPort writingPort, Truffle packet, List<Filter> filters) {
+    AddPacketDataCommand(INetworkWritingPort writingPort, IPacketData packet, List<Filter> filters) {
         this.writingPort = writingPort;
         filterList = filters;
         this.data = packet;
     }
 
     public void execute() {
+
+        final MacAddress sourceAddress = new MacAddress(data.getAttribute(Long.class, "ether_source"));
+        final MacAddress destAddress = new MacAddress(data.getAttribute(Long.class, "ether_dest"));
+
+/*        if (writingPort.exists(sourceAddress)) {
+
+        }*/
+
+
+        final INode sourceNode = new NetworkNode(sourceAddress);
+        final INode destNode = new NetworkNode(destAddress);
+        final IConnection connection = new NetworkConnection(sourceNode, destNode);
+
+        writingPort.writeConnection(connection);
 
     }
 }

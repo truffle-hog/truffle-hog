@@ -9,10 +9,17 @@ import java.io.Serializable;
  *     Interface used to represent nodes in the graph.
  * </p>
  */
-public interface INode extends Comparable<INode>, IComposition, Serializable {
+public interface INode extends IComposition, Serializable {
 
     IAddress getAddress();
 
     INode createDeepCopy();
+
+    /**
+     * Updates this node with the given node
+     * @param update the node that updates this node
+     * @return true if the update was successful and values changes, false otherwise
+     */
+    boolean update(INode update);
 
 }

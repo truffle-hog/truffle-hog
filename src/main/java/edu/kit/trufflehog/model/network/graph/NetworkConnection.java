@@ -52,17 +52,6 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
         return hashcode;
     }
 
-    @Override
-    public int compareTo(IConnection o) {
-
-        final int sourceCompare = getSrc().compareTo(o.getSrc());
-
-        if (sourceCompare == 0) {
-            return getDest().compareTo(o.getDest());
-        } else {
-            return sourceCompare;
-        }
-    }
 
     @Override
     public String name() {
@@ -90,5 +79,15 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
         });
 
         return copy;
+    }
+
+    @Override
+    public boolean update(IConnection update) {
+        return false;
+    }
+
+    @Override
+    public boolean update(IComponent update) {
+        return false;
     }
 }

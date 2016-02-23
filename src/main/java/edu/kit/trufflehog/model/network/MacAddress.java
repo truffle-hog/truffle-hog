@@ -1,15 +1,17 @@
 package edu.kit.trufflehog.model.network;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Created by jan on 19.02.16.
  */
 public class MacAddress implements IAddress {
 
-    //private final byte[] addressByteArray;
+    private final byte[] addressByteArray;
 
     private int[] intArray = null;
 
@@ -18,7 +20,6 @@ public class MacAddress implements IAddress {
     private final int hashcode;
 
     private String addressString = null;
-
 
     public MacAddress(long address) {
 
@@ -29,6 +30,10 @@ public class MacAddress implements IAddress {
         this.address = address;
 
         hashcode = (new Long(this.address)).hashCode();
+
+        byte[] bytes = ByteBuffer.allocate(8).putLong(0, this.address).array();
+
+        addressByteArray = Arrays.copyOfRange(bytes, 2, 8);
     }
 
 /*    public MacAddress(byte[] address) {
@@ -53,7 +58,7 @@ public class MacAddress implements IAddress {
 
     @Override
     public byte[] toByteArray() {
-        return null;
+        return addressByteArray;
     }
 
     @Override
@@ -93,38 +98,12 @@ public class MacAddress implements IAddress {
         //return Arrays.equals(this.toByteArray(), other.toByteArray());
     }
 
-
-    @Override
-    public int compareTo(IAddress o) {
-
-/*        if (size() > o.size()) {
-            return ;
-        } else if (size() < o.size()) {
-            return -1;
-        }*/
-
-        if (size() != o.size()) {
-            return size() - o.size();
-        }
-
-        // so sizes are same
-
-        for (int i = 0; i < this.toIntArray().length; i++) {
-
-            if (this.toIntArray()[i] != o.toIntArray()[i]) {
-                return this.toIntArray()[i] - o.toIntArray()[i];
-            }
-        }
-
-        return 0;
-    }
-
     @Override
     public String toString() {
 
         if (addressString == null) {
 
-            String myMacString = Long.toHexString(address);
+/*            String myMacString = Long.toHexString(address);
 
             myMacString = StringUtils.leftPad(myMacString, 12, '0');
 
@@ -133,7 +112,10 @@ public class MacAddress implements IAddress {
             for (int i = 2; i < 17; i += 3) {
                 macBuilder.insert(i, ':');
             }
-            this.addressString = macBuilder.toString();
+            this.addressString = macBuilder.toString();*/
+
+            this. addressString = Arrays.asList(ArrayUtils.toObject(toByteArray())).stream().
+                    map(b -> String.format("%02x", b)).collect(Collectors.joining(":"));
         }
 
         return addressString;

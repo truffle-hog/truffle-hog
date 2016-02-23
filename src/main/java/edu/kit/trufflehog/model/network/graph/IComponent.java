@@ -16,4 +16,12 @@ public interface IComponent extends Serializable {
     boolean isMutable();
 
     IComponent createDeepCopy();
+
+    /**
+     * Updates this component with the given component
+     * @param update the component to update this component
+     * @return true if the update was successfull and values changed, false if there were no changes
+     *          or f the component is immutable, thus cannot be updated
+     */
+    boolean update(IComponent update);
 }

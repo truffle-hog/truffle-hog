@@ -1,8 +1,12 @@
 package edu.kit.trufflehog.model.network;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -51,21 +55,21 @@ public class MacAddressTest {
     }
 
     @Test
+    public void testToByteArray() throws Exception {
+
+        final IAddress addressh = new MacAddress(0x220022002200L);
+
+        System.out.println(Arrays.asList(ArrayUtils.toObject(addressh.toByteArray())).
+                stream().map(b -> String.format("%02X", b)).collect(Collectors.joining(":")));
+
+    }
+
+    @Test
     public void testToIntArray() throws Exception {
 
         final IAddress addressh = new MacAddress(0x000001000002L);
 
         assertArrayEquals(new int[] {0x000001, 0x000002}, addressh.toIntArray());
-
-    }
-
-    @Test
-    public void testCompareTo() throws Exception {
-
-        final IAddress smaller = new MacAddress(small);
-        final IAddress bigger = new MacAddress(middle);
-
-        assertEquals(-255, smaller.compareTo(bigger));
 
     }
 

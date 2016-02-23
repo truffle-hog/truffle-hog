@@ -43,17 +43,46 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 		return node;
 	}
 
+    /**
+     * Updates the given component if it existis in this node
+     * @param update the component to update this component
+     * @return true if it exists and was updated, false otherwise
+     */
+    @Override
+    public boolean update(IComponent update) {
+
+        final IComponent existing = getComponent(update.getClass());
+
+        if (existing == null) {
+            return false;
+        }
+
+        return existing.update(update);
+    }
+
+    @Override
+    public boolean update(INode update) {
+
+        if (!this.equals(update)) {
+            return false;
+        }
+
+        update.getComponents().stream().forEach(c -> {
+
+            if (c.isMutable()) {
+                final IComponent existing = getComponent(c.getClass());
+                existing.update(c);
+            }
+        });
+
+        return true;
+
+    }
+
     @Override
     public String toString() {
         return address.toString();
     }
-
-
-
-	@Override
-	public int compareTo(INode o) {
-		return this.getAddress().compareTo(o.getAddress());
-	}
 
 
 	@Override

@@ -5,7 +5,7 @@ package edu.kit.trufflehog.model.network;
  *
  * A MacAddress implementation has to override hashcode and equals to adhere to the contract of this interface
  */
-public interface IAddress extends Comparable<IAddress> {
+public interface IAddress {
 
     /**
      * Returns this address as byte array.

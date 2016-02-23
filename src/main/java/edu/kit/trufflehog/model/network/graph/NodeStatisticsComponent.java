@@ -48,4 +48,9 @@ public class NodeStatisticsComponent implements IComponent {
 
         return copy;
     }
+
+    @Override
+    public boolean update(IComponent update) {
+        return false;
+    }
 }

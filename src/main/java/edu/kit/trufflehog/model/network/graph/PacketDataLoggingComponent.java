@@ -44,6 +44,12 @@ public class PacketDataLoggingComponent implements IComponent {
     @Override
     public IComponent createDeepCopy() {
 
+        // because IPacketData is immutable, do not have to copy them explicitly
         return new PacketDataLoggingComponent(dataList);
+    }
+
+    @Override
+    public boolean update(IComponent update) {
+        return false;
     }
 }

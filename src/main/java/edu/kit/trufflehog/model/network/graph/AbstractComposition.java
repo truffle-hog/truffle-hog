@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.network.graph;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -46,5 +47,10 @@ public abstract class AbstractComposition implements IComposition {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public Collection<? extends IComponent> getComponents() {
+        return components.values();
     }
 }
