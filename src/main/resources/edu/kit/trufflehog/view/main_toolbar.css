@@ -1,0 +1,9 @@
+root {
+    display: block;
+}
+.background {
+    -fx-background-color: rgba(0, 17, 61, 0.0);
+}
+.button {
+    -fx-background-color: rgba(52, 58, 83, 0.7);
+}

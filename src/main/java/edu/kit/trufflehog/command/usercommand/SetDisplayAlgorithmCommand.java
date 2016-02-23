@@ -1,8 +1,11 @@
 package edu.kit.trufflehog.command.usercommand;
 
-import edu.kit.trufflehog.model.graph.ILayoutFactory;
-import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.graph.Graph;
+import org.apache.commons.collections15.Transformer;
 
 
 /**
@@ -12,23 +15,23 @@ import edu.uci.ics.jung.algorithms.layout.Layout;
  * </p>
  */
 public class SetDisplayAlgorithmCommand implements IUserCommand{
-    private ILayoutFactory layoutFactory;
-    private NetworkGraphViewController graphView;
+    private Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory;
+    private INetworkViewPort viewPort;
 
     /**
      * <p>
      *     Creates a new command.
      * </p>
-     * @param factory {@link ILayoutFactory} implementation of the desired {@link Layout} implementation
-     * @param view {@link NetworkGraphViewController} implementation managing the graph layouts
+     * @param factory {@link Transformer} implementation of the desired {@link Layout} implementation
+     * @param viewPort {@link INetworkViewPort} implementation managing the graph layouts
      */
-    SetDisplayAlgorithmCommand(ILayoutFactory factory, NetworkGraphViewController view) {
+    public SetDisplayAlgorithmCommand(Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> factory, INetworkViewPort viewPort) {
         layoutFactory = factory;
-        graphView = view;
+        this.viewPort = viewPort;
     }
 
     @Override
     public void execute() {
-        graphView.setLayoutFactory(layoutFactory);
+        viewPort.setLayoutFactory(layoutFactory);
     }
 }
