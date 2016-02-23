@@ -1,10 +1,5 @@
 package edu.kit.trufflehog.model.network.graph;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
-
 import java.io.Serializable;
 
 /**
@@ -15,124 +10,27 @@ import java.io.Serializable;
  */
 public class NetworkConnection implements IConnection, Serializable {
 
-    private LongProperty totalPacketCount = new SimpleLongProperty();
-    private LongProperty active = new SimpleLongProperty();
-    private IntegerProperty connectionType = new SimpleIntegerProperty();
-
     private final INode src;
     private final INode dest;
+
+    private final int hashcode;
 
     public NetworkConnection(IConnection edge) {
 
         this.src = edge.getSrc();
         this.dest = edge.getDest();
+        this.hashcode = edge.hashCode();
     }
 
-    /**
-     * <p>
-     *     Getter for the total packet count
-     * </p>
-     * @return total packet count
-     */
-    @Override
-    public final long getTotalPacketCount() {
-        return totalPacketCount.get();
-    }
+    public NetworkConnection(INode networkNodeSrc, INode networkNodeDest) {
+        src = networkNodeSrc;
+        dest = networkNodeDest;
 
-    /**
-     * <p>
-     *     Setter for the total packet count
-     * </p>
-     *
-     * @param value New packet count value
-     */
-    @Override
-    public final void setTotalPacketCount(long value) {
-        totalPacketCount.set(value);
-    }
+        int result = 17;
+        result = result + 31 * this.src.hashCode();
+        result = result + 31 * this.dest.hashCode();
+        hashcode = result;
 
-    /**
-     * <p>
-     *     Getter for the total packet count property
-     * </p>
-     *
-     * @return total packet property
-     */
-    @Override
-    public LongProperty getTotalPacketCountProperty() {
-        return totalPacketCount;
-    }
-
-    /**
-     * <p>
-     *     Getter for the period of activity
-     * </p>
-     *
-     * @return period of activity
-     */
-    @Override
-    public final long getActive() {
-        return active.get();
-    }
-
-    /**
-     * <p>
-     *     Setter for the period of activity
-     * </p>
-     *
-     * @param value set new period of activity
-     */
-    @Override
-    public final void setActive(long value) {
-        active.set(value);
-    }
-
-    /**
-     * <p>
-     *     Getter for the period of activity property
-     * </p>
-     *
-     * @return period of activity property
-     */
-    @Override
-    public LongProperty getActiveProperty() {
-        return active;
-    }
-
-    /**
-     * <p>
-     *     Getter for the connection type
-     * </p>
-     *
-     * @return connection type
-     */
-    @Override
-    public final long getConnectionType() {
-        return connectionType.get();
-    }
-
-    /**
-     * <p>
-     *     Setter for the connection type
-     * </p>
-     *
-     * @param value New packet count value
-     */
-    @Override
-    public final void setConnectionType(int value) {
-        connectionType.set(value);
-    }
-
-    /**
-     * <p>
-     *     Getter for connection type property
-     * </p>
-     *
-     * @return connection type property
-     */
-    @Override
-    public IntegerProperty getConnectionTypeProperty() {
-        return connectionType;
     }
 
     @Override
@@ -143,5 +41,28 @@ public class NetworkConnection implements IConnection, Serializable {
     @Override
     public INode getDest() {
         return dest;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (!(o instanceof IConnection)) {
+            return false;
+        }
+
+        final IConnection other = (IConnection) o;
+
+        return getDest().equals(other.getDest()) && getSrc().equals(other.getSrc());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return hashcode;
+    }
+
+    @Override
+    public int compareTo(IConnection o) {
+        return 0;
     }
 }

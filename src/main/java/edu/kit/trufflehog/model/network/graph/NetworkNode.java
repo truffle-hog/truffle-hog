@@ -1,6 +1,6 @@
 package edu.kit.trufflehog.model.network.graph;
 
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
+import edu.kit.trufflehog.model.network.IAddress;
 
 import java.io.Serializable;
 
@@ -11,112 +11,28 @@ import java.io.Serializable;
  */
 public class NetworkNode implements Serializable, INode {
 
-	// TODO MAKE ALLE FINALL!!!!
-	private String macAdress;
-	private String deviceName;
-	private int timeAdded;
-	private int lastUpdateTime;
-	private int packageCountIn;
-	private int packageCountOut;
-	private String ipAdress;
+	private final IAddress address;
+	private final int hashcode;
+
+	public NetworkNode(IAddress address) {
+
+		this.address = address;
+		this.hashcode = address.hashCode();
+	}
 
 	public NetworkNode(INode node) {
+		this.address = node.getAddress();
+		this.hashcode = node.hashCode();
+	}
+
+
+	@Override
+	public IAddress getAddress() {
+		return address;
 	}
 
 	@Override
-	public void setIpAdress(String ipAdress) {
-		this.ipAdress = ipAdress;
+	public int compareTo(INode o) {
+		return this.getAddress().compareTo(o.getAddress());
 	}
-
-	@Override
-	public void setMacAdress(String macAdress) {
-		this.macAdress = macAdress;
-	}
-
-	@Override
-	public void setDeviceName(String deviceName) {
-		this.deviceName = deviceName;
-	}
-
-	@Override
-	public void setTimeAdded(int timeAdded) {
-		this.timeAdded = timeAdded;
-	}
-
-	@Override
-	public void setLastUpdateTime(int lastUpdateTime) {
-		this.lastUpdateTime = lastUpdateTime;
-	}
-
-	@Override
-	public void setPackageCountIn(int packageCountIn) {
-		this.packageCountIn = packageCountIn;
-	}
-
-	@Override
-	public void setPackageCountOut(int packageCountOut) {
-		this.packageCountOut = packageCountOut;
-	}
-
-	@Override
-	public String getIpAdress() {
-		return ipAdress;
-	}
-
-	@Override
-	public String getMacAdress() {
-		return macAdress;
-	}
-
-	@Override
-	public String getDeviceName() {
-		return deviceName;
-	}
-
-	@Override
-	public int getTimeAdded() {
-		return timeAdded;
-	}
-
-	@Override
-	public int getLastUpdateTime() {
-		return lastUpdateTime;
-	}
-
-	@Override
-	public int getPackageCountIn() {
-		return packageCountIn;
-	}
-
-	@Override
-	public int getPackageCountOut() {
-		return packageCountOut;
-	}
-
-
-	//private TruffleLogger truffleLogger;
-
-//    /**<p>
-//     * Provides the internal logger to access logs and statistics.
-//     * </p>
-//     * @return {@link TruffleLogger} of this node
-//     */
-//	public TruffleLogger getLogger() {
-//	}
-
-    /**
-     * <p>
-     *     Logs a Truffle package with the internal TruffleLogger.
-     * </p>
-     *
-     * @param truffle {@link Truffle} to log
-     */
-	@Override
-	public void log(Truffle truffle) {
-
-	}
-
-    /*add getter for properties!
-     */
-
 }

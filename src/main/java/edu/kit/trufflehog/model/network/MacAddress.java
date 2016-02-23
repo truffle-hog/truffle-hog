@@ -1,28 +1,37 @@
 package edu.kit.trufflehog.model.network;
 
-import java.nio.ByteBuffer;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
 
 /**
  * Created by jan on 19.02.16.
  */
 public class MacAddress implements IAddress {
 
-    private final long addressLong;
+    //private final byte[] addressByteArray;
 
-    private final byte[] addressByteArray;
+    private int[] intArray = null;
 
- //   private final String addressString; // TODO implment
+    private final long address;
 
     private final int hashcode;
 
+    private String addressString = null;
 
 
-/*    public MacAddress(long address) {
+    public MacAddress(long address) {
 
-        // TODO implement to split the address into bytes and call the byte ctor accordingly
-    }*/
+        if (address > 0xFFFFFFFFFFFFL || address < 0) {
+            throw new IllegalArgumentException("the address is too big or in wrong format");
+        }
 
-    public MacAddress(byte[] address) {
+        this.address = address;
+
+        hashcode = (new Long(this.address)).hashCode();
+    }
+
+/*    public MacAddress(byte[] address) {
 
         if (address.length != 6) {
             throw new IllegalArgumentException("A mac address has to consist of exactly 6 byte");
@@ -36,43 +45,29 @@ public class MacAddress implements IAddress {
         }
         hashcode = result;
 
-        this.addressLong = bytesToLong(this.addressByteArray);
-    }
+        addressString = StringConversion.bytesToHex(addressByteArray, ':');
+    //    addressString = Arrays.asList(ArrayUtils.toObject(addressByteArray)).
+    //            stream().map(b -> StringUtils.leftPad(Integer.toHexString(b).substring(Integer.toHexString(b)), 2, '0')).collect(Collectors.joining(":"));
+    }*/
 
-/*
-    public MacAddress(String address) {
-
-        // TODO implment to parse the string and call the byte constructur accordingly
-    }
-*/
-
-    private byte[] longToBytes(long x) {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.putLong(x);
-        return buffer.array();
-    }
-
-    private long bytesToLong(byte[] bytes) {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.put(bytes);
-        buffer.flip();//need flip
-        return buffer.getLong();
-    }
 
     @Override
     public byte[] toByteArray() {
-        return addressByteArray;
+        return null;
     }
 
     @Override
-    public int toInt() {
-        throw new UnsupportedOperationException("A Mac address cannot be represented as an integer because" +
-                                                " an integer has only 32 bits and needed is 48 bits");
-    }
+    public int[] toIntArray() {
 
-    @Override
-    public long toLong() {
-        return addressLong;
+        if (intArray == null) {
+
+            intArray = new int[2];
+
+            intArray[0] = (int) (address >>> 24);
+            intArray[1] = (int) (address & 0x0000000000FFFFFFL);
+
+        }
+        return Arrays.copyOf(intArray, 2);
     }
 
     @Override
@@ -83,5 +78,64 @@ public class MacAddress implements IAddress {
     @Override
     public int hashCode() {
         return hashcode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (!(o instanceof IAddress)) {
+            return false;
+        }
+        final IAddress other = (IAddress) o;
+
+        return Arrays.equals(this.toIntArray(), other.toIntArray());
+
+        //return Arrays.equals(this.toByteArray(), other.toByteArray());
+    }
+
+
+    @Override
+    public int compareTo(IAddress o) {
+
+/*        if (size() > o.size()) {
+            return ;
+        } else if (size() < o.size()) {
+            return -1;
+        }*/
+
+        if (size() != o.size()) {
+            return size() - o.size();
+        }
+
+        // so sizes are same
+
+        for (int i = 0; i < this.toIntArray().length; i++) {
+
+            if (this.toIntArray()[i] != o.toIntArray()[i]) {
+                return this.toIntArray()[i] - o.toIntArray()[i];
+            }
+        }
+
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+
+        if (addressString == null) {
+
+            String myMacString = Long.toHexString(address);
+
+            myMacString = StringUtils.leftPad(myMacString, 12, '0');
+
+            final StringBuilder macBuilder = new StringBuilder(myMacString);
+
+            for (int i = 2; i < 17; i += 3) {
+                macBuilder.insert(i, ':');
+            }
+            this.addressString = macBuilder.toString();
+        }
+
+        return addressString;
     }
 }
