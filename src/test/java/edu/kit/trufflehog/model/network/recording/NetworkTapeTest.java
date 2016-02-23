@@ -62,8 +62,6 @@ public class NetworkTapeTest {
 
 
         System.out.println(tape.toString());
-
-
     }
 
     @Test
