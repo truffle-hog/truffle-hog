@@ -43,6 +43,11 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 		return node;
 	}
 
+    @Override
+    public String toString() {
+        return address.toString();
+    }
+
 
 
 	@Override

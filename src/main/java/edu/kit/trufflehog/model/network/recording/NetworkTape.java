@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * This Class inhabits several NetworkFrames that a Network session can be recorded on.
@@ -78,6 +79,12 @@ public class NetworkTape implements INetworkTape {
     @Override
     public int getFrameRate() {
         return frameRate;
+    }
+
+    @Override
+    public String toString() {
+
+        return "---\n" + frames.stream().map(Object::toString).collect(Collectors.joining("\n---\n")) + "\n---";
     }
 
     public static class NetworkFrame implements INetworkFrame {
@@ -250,6 +257,11 @@ public class NetworkTape implements INetworkTape {
         @Override
         public Point2D transform(INode iNode) {
             return nodeMap.get(iNode);
+        }
+
+        @Override
+        public String toString() {
+            return frame.toString();
         }
     }
 }
