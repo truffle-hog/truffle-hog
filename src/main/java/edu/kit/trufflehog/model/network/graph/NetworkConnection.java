@@ -1,28 +1,19 @@
 package edu.kit.trufflehog.model.network.graph;
 
-import java.io.Serializable;
-
 /**
  * <p>
  *     Edge in the graph to represent a relation between two devices. Stores important statistics about the ongoing
  *     communication.
  * </p>
  */
-public class NetworkConnection implements IConnection, Serializable {
+public class NetworkConnection extends AbstractComposition implements IConnection {
 
     private final INode src;
     private final INode dest;
 
     private final int hashcode;
-
-    public NetworkConnection(IConnection edge) {
-
-        this.src = edge.getSrc();
-        this.dest = edge.getDest();
-        this.hashcode = edge.hashCode();
-    }
-
     public NetworkConnection(INode networkNodeSrc, INode networkNodeDest) {
+
         src = networkNodeSrc;
         dest = networkNodeDest;
 
@@ -63,6 +54,41 @@ public class NetworkConnection implements IConnection, Serializable {
 
     @Override
     public int compareTo(IConnection o) {
-        return 0;
+
+        final int sourceCompare = getSrc().compareTo(o.getSrc());
+
+        if (sourceCompare == 0) {
+            return getDest().compareTo(o.getDest());
+        } else {
+            return sourceCompare;
+        }
+    }
+
+    @Override
+    public String name() {
+        return "Network Connection";
+    }
+
+    @Override
+    public boolean isMutable() {
+        return true;
+    }
+
+    @Override
+    public IConnection createDeepCopy() {
+
+        final IConnection copy = new NetworkConnection(getSrc().createDeepCopy(), getDest().createDeepCopy());
+
+        components.values().stream().forEach(component -> {
+            if (component.isMutable()) {
+
+                copy.addComponent(component.createDeepCopy());
+
+            } else {
+                copy.addComponent(component);
+            }
+        });
+
+        return copy;
     }
 }

@@ -3,7 +3,6 @@ package edu.kit.trufflehog.model.network.recording;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
@@ -124,7 +123,7 @@ public class NetworkTape implements INetworkTape {
 /*                long result = 17;
                 result = 31 * result + source.getID();
                 result = 31 * result + dest.getID();*/
-                final IConnection connectionCopy = new NetworkConnection(edge);
+                final IConnection connectionCopy = edge.createDeepCopy();
                 frame.addEdge(connectionCopy, connectionCopy.getSrc(), connectionCopy.getDest());
             });
 

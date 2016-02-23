@@ -3,21 +3,19 @@ package edu.kit.trufflehog.model.network.graph;
 import edu.kit.trufflehog.model.network.IAddress;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 /**
  * <p>
  *     Node in the graph to represent a device in the network. Stores important device data and logs.
  * </p>
  */
-public class NetworkNode implements Serializable, INode {
+public class NetworkNode extends AbstractComposition implements Serializable, INode, IComposition {
 
 	private final IAddress address;
 	private final int hashcode;
 
-	private final HashMap<Class<? extends IComponent>, IComponent> components = new HashMap<>();
-
 	public NetworkNode(IAddress address) {
+        super();
 
 		this.address = address;
 		this.hashcode = address.hashCode();
@@ -45,44 +43,7 @@ public class NetworkNode implements Serializable, INode {
 		return node;
 	}
 
-	@Override
-	public <T extends IComponent> void addComponent(T component) {
 
-		if (components.containsKey(component.getClass())) {
-			throw new RuntimeException("the Node already maintains this component type,"
-					+ "you cannot add two components of the same class name: " + component);
-		}
-		components.put(component.getClass(), component);
-	}
-
-	@Override
-	public void removeComponent(Class<? extends IComponent> type) {
-
-		components.remove(type);
-	}
-
-	@Override
-	public <T extends IComponent> T getComponent(Class<T> componentType) {
-
-		if (componentType == null) {
-			throw new NullPointerException("componentType must not be null");
-		}
-
-		final IComponent component = components.get(componentType);
-
-		if (component != null) {
-
-			// Safe to suppress unchecked as every value in the components
-			// map that will be retrieved by the according class type will
-			// be a component of that exact type
-			@SuppressWarnings("unchecked")
-			T existing = (T) component;
-
-			return existing;
-		} else {
-			return null;
-		}
-	}
 
 	@Override
 	public int compareTo(INode o) {
@@ -92,7 +53,7 @@ public class NetworkNode implements Serializable, INode {
 
 	@Override
 	public String name() {
-		return null;
+		return "Network Node";
 	}
 
 	@Override
