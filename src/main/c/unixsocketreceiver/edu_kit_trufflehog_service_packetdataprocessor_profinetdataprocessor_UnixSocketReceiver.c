@@ -150,7 +150,9 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
 {
     debug("starting disconnect sequence");
 
-	check (write(socketData.socketFD, &TRUFFLEHOG_DISCONNECT_REQUEST, sizeof(TRUFFLEHOG_DISCONNECT_REQUEST)), "error on sending disconnect request");
+	check(write(socketData.socketFD, &TRUFFLEHOG_DISCONNECT_REQUEST, sizeof(TRUFFLEHOG_DISCONNECT_REQUEST)), "error on sending disconnect request");
+
+    check(close(socketData.socketFD) == 0, "could not close socket!");
 
     debug("disconnect successful");
 
@@ -159,12 +161,14 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
 error:
 	throwSnortPluginDisconnectFailedException(env, "failed to disconnect");
 	return;
-
-timeout:
-    throwSnortPluginDisconnectFailedException(env, "failed to disconnect (took too long)");
-    return;
 }
 
+/**
+ * @brief Gets the next truffle struct from the socket.
+ *
+ * @param env the java environment pointer.
+ * @param the truffle struct to fill the data in.
+ */
 int getNextTruffle(JNIEnv *env, Truffle *truffle)
 {
     ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
