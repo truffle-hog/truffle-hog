@@ -154,6 +154,8 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
 
     check(close(socketData.socketFD) == 0, "could not close socket!");
 
+    memset(&socketData, 0, sizeof(struct SocketData));
+
     debug("disconnect successful");
 
 	return;
