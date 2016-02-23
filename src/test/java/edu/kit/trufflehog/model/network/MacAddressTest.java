@@ -57,7 +57,11 @@ public class MacAddressTest {
     @Test
     public void testToByteArray() throws Exception {
 
-        final IAddress addressh = new MacAddress(0x220022002200L);
+        final IAddress addressh = new MacAddress(0xFF0022002200L);
+
+        final byte[] bytes = new byte[] {(byte)0xFF, 0x00, 0x22, 0x00, 0x22, 0x00};
+
+        assertArrayEquals(bytes, addressh.toByteArray());
 
         System.out.println(Arrays.asList(ArrayUtils.toObject(addressh.toByteArray())).
                 stream().map(b -> String.format("%02X", b)).collect(Collectors.joining(":")));
