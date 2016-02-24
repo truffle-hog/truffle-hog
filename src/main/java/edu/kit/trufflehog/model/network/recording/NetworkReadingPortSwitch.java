@@ -10,26 +10,30 @@ import edu.kit.trufflehog.model.network.graph.INode;
  */
 public class NetworkReadingPortSwitch implements INetworkReadingPortSwitch {
 
+    private INetworkReadingPort activePort;
+
     public NetworkReadingPortSwitch(INetworkReadingPort readingPort) {
+
+        activePort = readingPort;
     }
 
     @Override
     public INetworkReadingPort getActiveReadingPort() {
-        return null;
+        return activePort;
     }
 
     @Override
     public void setActiveReadingPort(INetworkReadingPort port) {
-
+        activePort = port;
     }
 
     @Override
     public INode getNetworkNodeByAddress(IAddress address) {
-        return null;
+        return getActiveReadingPort().getNetworkNodeByAddress(address);
     }
 
     @Override
     public IConnection getNetworkConnectionByAddress(IAddress source, IAddress dest) {
-        return null;
+        return getActiveReadingPort().getNetworkConnectionByAddress(source, dest);
     }
 }

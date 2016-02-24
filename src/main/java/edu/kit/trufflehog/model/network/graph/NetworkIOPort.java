@@ -38,6 +38,8 @@ public class NetworkIOPort implements INetworkIOPort {
 
         delegate.addVertex(node);
         idNodeMap.put(node.getAddress(), node);
+
+        System.out.println(delegate);
     }
 
     @Override

@@ -44,16 +44,14 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final MacAddress sourceAddress = new MacAddress(data.getAttribute(Long.class, "ether_source"));
         final MacAddress destAddress = new MacAddress(data.getAttribute(Long.class, "ether_dest"));
 
-/*        if (writingPort.exists(sourceAddress)) {
-
-        }*/
-
 
         final INode sourceNode = new NetworkNode(sourceAddress);
         final INode destNode = new NetworkNode(destAddress);
         final IConnection connection = new NetworkConnection(sourceNode, destNode);
 
-        writingPort.writeConnection(connection);
+        writingPort.writeNode(sourceNode);
+        writingPort.writeNode(destNode);
 
+        writingPort.writeConnection(connection);
     }
 }

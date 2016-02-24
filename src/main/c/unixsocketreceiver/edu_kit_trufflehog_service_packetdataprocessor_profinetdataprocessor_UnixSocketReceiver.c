@@ -39,6 +39,9 @@ struct SocketData
 	struct sockaddr_un address;
 };
 
+jmethodID truffleCtor;
+jclass truffleClass;
+
 
 //////////////////////
 //                  //
@@ -130,13 +133,33 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
 
 	check(buffer == SNORT_CONNECT_RESPONSE, "incorrect snort response");
 
+/*
+    char *truffleClassName = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle";
+
+    truffleClass = (*env)->FindClass(env, truffleClassName);
+    check_to(truffleClass != NULL, noClass, "Truffle class could not be found");
+
+    truffleCtor = (*env)->GetMethodID(env, truffleClass, "<init>", "(JJ)V");
+    check_to(truffleCtor != NULL, noMethod, "constructor for class Truffle not found");*/
+
+
 	debug("initialization done... returning to java");
+
 
 	return;
 
 error:
     throwSnortPluginNotRunningException(env, "Could not connect to snort!");
 	return;
+
+/*noClass:
+	throwNoClassDefError(env, truffleClassName);
+	return;
+
+noMethod:
+	throwNoSuchMethodError(env, "Constructor for class Truffle not found");
+	return;*/
+
 }
 
 /*
@@ -176,20 +199,21 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
 	char *truffleClassName = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle";
 
-	jclass truffleClass = (*env)->FindClass(env, truffleClassName);
-	check_to(truffleClass != NULL, noClass, "Truffle class could not be found");
-		throwNoClassDefError(env, truffleClassName);
+	jclass tClass = (*env)->FindClass(env, truffleClassName);
+	check_to(tClass != NULL, noClass, "Truffle class could not be found");
 
-	jmethodID ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "(JJ)V");
+	jmethodID ctor = (*env)->GetMethodID(env, tClass, "<init>", "(JJ)V");
 	check_to(ctor != NULL, noMethod, "constructor for class Truffle not found");
 
 	//jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
 
-    jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor, truffle.etherHeader.sourceMacAddress, truffle.etherHeader.destMacAddress);
+    jobject truffleObject = (*env)->NewObject(env, tClass, ctor, truffle.etherHeader.sourceMacAddress, truffle.etherHeader.destMacAddress);
+   // jobject truffleObject = (*env)->NewObject(env, truffleClass, truffleCtor, truffle.etherHeader.sourceMacAddress, truffle.etherHeader.destMacAddress);
 
 	//TODO fill truffle with data
 
 	return truffleObject;
+
 
 noClass:
 	throwNoClassDefError(env, truffleClassName);

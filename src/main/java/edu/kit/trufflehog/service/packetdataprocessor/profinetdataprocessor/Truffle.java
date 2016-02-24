@@ -16,13 +16,12 @@ import java.util.Map;
  */
 public class Truffle implements IPacketData {
 
-    private final Map<Class<?>, HashMap<String, Object>> attributes = new HashMap<>();
+    private final Map<Class<?>, Map<String, Object>> attributes = new HashMap<>();
 
-    Truffle(long sourceMacID, long destinationMacID) {
+    public Truffle(long sourceMacID, long destinationMacID) {
 
         setAttribute(Long.class, "ether_source", sourceMacID);
         setAttribute(Long.class, "ether_dest", destinationMacID);
-
     }
 
     /**
@@ -37,7 +36,8 @@ public class Truffle implements IPacketData {
      */
     @SuppressWarnings("unchecked")
     <T> T setAttribute(Class<T> attributeType, String attributeIdentifier, T value) {
-        HashMap<String, Object> attributeMap = attributes.get(attributeType);
+
+        Map<String, Object> attributeMap = attributes.get(attributeType);
 
         if (attributeMap == null) {
             attributeMap = new HashMap<>();
@@ -59,7 +59,8 @@ public class Truffle implements IPacketData {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getAttribute(Class<T> attributeType, String attributeIdentifier) {
-        HashMap<?, ?> attributeMap = attributes.get(attributeType);
+
+        final Map<?, ?> attributeMap = attributes.get(attributeType);
 
         if (attributeMap == null)
             return null;

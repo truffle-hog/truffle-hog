@@ -79,6 +79,25 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 
     }
 
+	@Override
+	public int hashCode() {
+
+		return hashcode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+
+		if (!(o instanceof INode)) {
+			return false;
+		}
+
+		final INode other = (INode) o;
+
+		return getAddress().equals(other.getAddress());
+
+	}
+
     @Override
     public String toString() {
         return address.toString();

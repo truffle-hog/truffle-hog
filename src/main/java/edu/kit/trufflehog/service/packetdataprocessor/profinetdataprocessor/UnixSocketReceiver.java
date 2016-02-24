@@ -58,7 +58,9 @@ public class UnixSocketReceiver extends TruffleReceiver {
                         this.wait();
                     }
 
-                    notifyListeners(new AddPacketDataCommand(writingPort, getTruffle(), filters));
+                    final Truffle truffle = getTruffle();
+
+                    notifyListeners(new AddPacketDataCommand(writingPort, truffle, filters));
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
