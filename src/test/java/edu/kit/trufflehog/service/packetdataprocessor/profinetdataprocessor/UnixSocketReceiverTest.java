@@ -21,7 +21,12 @@ import static org.mockito.Mockito.*;
  *     This class contains all tests for {@link UnixSocketReceiver}
  * </p>
  *
- * @author Mark
+ * <p>
+ *     These tests only work if snort is running and are all ignored for unit testing.
+ *     Further investigation is needed to check if automated unit tests might be possible.
+ * </p>
+ *
+ * @author Mark Giraud
  */
 public class UnixSocketReceiverTest {
 
@@ -40,7 +45,7 @@ public class UnixSocketReceiverTest {
         receiver.addListener(mockedListener);
 
         testRunner = new Thread(receiver);
-        testRunner.start();
+        //testRunner.start();
     }
 
     @After
@@ -52,7 +57,6 @@ public class UnixSocketReceiverTest {
         testRunner = null;
     }
 
-    // TODO remove ignore
     @Ignore
     @Test
     public void testConnect_ifSnortNotRunning() throws Exception {
@@ -64,19 +68,25 @@ public class UnixSocketReceiverTest {
 
     }
 
+    /**
+     * This test only works if snort is running and is ignored for travis.
+     * Further investigation is needed to check if automated unit tests might be possible.
+     *
+     * @throws Exception
+     */
+    @Ignore
     @Test
-    public void testConnect_ifSnortRunning() throws Exception {
-
-        //TODO simulate a running snort by making a socket
-
-    }
-
-    @Test
-    public void testDisconnect() throws Exception {
+    public void testReceiver() throws Exception {
 
         //TODO simulate a running snort and verify if the connect and disconnect process works
 
+        receiver.addListener(System.out::println);
+
+        testRunner.start();
+
         receiver.connect();
+
+        Thread.sleep(2000);
 
         receiver.disconnect();
     }

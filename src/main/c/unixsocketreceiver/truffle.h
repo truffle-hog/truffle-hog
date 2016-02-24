@@ -30,13 +30,13 @@ struct Frame
 	long long cycleCounter;
 };
 
-typedef struct Truffle
+typedef struct Truffle_t
 {
 	uint64_t flags;
 
 	struct EtherHeader etherHeader;
 
 	struct Frame frame;
-} Truffle_t;
+} Truffle;
 
 #endif

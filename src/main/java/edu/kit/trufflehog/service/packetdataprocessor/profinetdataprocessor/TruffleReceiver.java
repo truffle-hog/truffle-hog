@@ -3,7 +3,7 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.util.INotifier;
 import edu.kit.trufflehog.util.Notifier;
-import edu.kit.trufflehog.command.trufflecommand.PluginNotRunningCommand;
+import edu.kit.trufflehog.command.trufflecommand.ReceiverErrorCommand;
 
 /**
  * <p>
@@ -15,6 +15,9 @@ import edu.kit.trufflehog.command.trufflecommand.PluginNotRunningCommand;
  * <p>
  *     Possible implementations: {@link UnixSocketReceiver}, {@link MessageQueueReceiver}
  * </p>
+ *
+ * @author Mark Giraud
+ * @version 1.0
  */
 public abstract class TruffleReceiver extends Notifier<ITruffleCommand> implements INotifier<ITruffleCommand>, Runnable {
 
@@ -25,7 +28,7 @@ public abstract class TruffleReceiver extends Notifier<ITruffleCommand> implemen
     /**
      * <p>
      *     This method connects the {@link TruffleReceiver} to the snort process.
-     *     If the connection failed a {@link PluginNotRunningCommand} is sent to all listeners.
+     *     If the connection failed a {@link ReceiverErrorCommand} is sent to all listeners.
      * </p>
      */
     public abstract void connect();

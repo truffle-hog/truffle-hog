@@ -26,6 +26,8 @@
 jint throwNoClassDefError(JNIEnv*, char*);
 jint throwNoSuchMethodError(JNIEnv*, char*);
 jint throwSnortPluginNotRunningException(JNIEnv*, char*);
+jint throwSnortPluginDisconnectFailedException(JNIEnv *, char *);
+jint throwReceiverReadError(JNIEnv *, char *);
 
 /////////////
 //         //
@@ -38,9 +40,6 @@ struct SocketData
 	int socketFD;
 	struct sockaddr_un address;
 };
-
-jmethodID truffleCtor;
-jclass truffleClass;
 
 
 //////////////////////
@@ -129,37 +128,17 @@ JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profi
 	check(write(socketData.socketFD, &TRUFFLEHOG_CONNECT_REQUEST, sizeof(TRUFFLEHOG_CONNECT_REQUEST)), "error writing connect request");
 
 	int buffer = -1;
-	check(read(socketData.socketFD, &buffer, sizeof(buffer)), "error reading from socket");
+	check(read(socketData.socketFD, (void*) &buffer, sizeof(buffer)), "error reading from socket");
 
 	check(buffer == SNORT_CONNECT_RESPONSE, "incorrect snort response");
 
-/*
-    char *truffleClassName = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle";
-
-    truffleClass = (*env)->FindClass(env, truffleClassName);
-    check_to(truffleClass != NULL, noClass, "Truffle class could not be found");
-
-    truffleCtor = (*env)->GetMethodID(env, truffleClass, "<init>", "(JJ)V");
-    check_to(truffleCtor != NULL, noMethod, "constructor for class Truffle not found");*/
-
-
 	debug("initialization done... returning to java");
-
 
 	return;
 
 error:
     throwSnortPluginNotRunningException(env, "Could not connect to snort!");
 	return;
-
-/*noClass:
-	throwNoClassDefError(env, truffleClassName);
-	return;
-
-noMethod:
-	throwNoSuchMethodError(env, "Constructor for class Truffle not found");
-	return;*/
-
 }
 
 /*
@@ -169,16 +148,77 @@ noMethod:
  */
 JNIEXPORT void JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_closeIPC(JNIEnv *env, jobject thisObj)
 {
-	check (write(socketData.socketFD, &TRUFFLEHOG_DISCONNECT_REQUEST, sizeof(TRUFFLEHOG_DISCONNECT_REQUEST)), "error on sending disconnect request");
+    debug("starting disconnect sequence");
 
-	int buffer = -1;
-	check(read(socketData.socketFD, &buffer, sizeof(int)) >= 0, "error reading from socket");
+	check(write(socketData.socketFD, &TRUFFLEHOG_DISCONNECT_REQUEST, sizeof(TRUFFLEHOG_DISCONNECT_REQUEST)), "error on sending disconnect request");
 
-	check(buffer == SNORT_DISCONNECT_RESPONSE, "error, wrong message received");
+    check(close(socketData.socketFD) == 0, "could not close socket!");
+
+    memset(&socketData, 0, sizeof(struct SocketData));
+
+    debug("disconnect successful");
+
+	return;
 
 error:
 	throwSnortPluginDisconnectFailedException(env, "failed to disconnect");
 	return;
+}
+
+/**
+ * @brief Gets the next truffle struct from the socket.
+ *
+ * @param env the java environment pointer.
+ * @param the truffle struct to fill the data in.
+ */
+int getNextTruffle(JNIEnv *env, Truffle *truffle)
+{
+    ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
+
+    if (len < 0)
+		goto noMessageReceived;
+    else if (len != sizeof(Truffle))
+        goto error;
+
+	return 0;
+
+error:
+	throwReceiverReadError(env, "could not read the correct number of bytes from the socket");
+	return -1;
+noMessageReceived:
+	debug("read failed");
+	return -2;
+}
+
+
+/**
+ * @brief Gets the class id by name
+ *
+ * @param env the java environment
+ * @param className the name of the class to get
+ *
+ * @return Returns the class id on success and NULL on error.
+ */
+jclass getClassByName(JNIEnv *env, char *className)
+{
+    jclass clazz = (*env)->FindClass(env, className);
+    check(clazz != NULL, "class not found");
+
+    return clazz;
+error:
+    throwNoClassDefError(env, className);
+    return NULL;
+}
+
+jobject createObjectWithStdCtor(JNIEnv *env, jclass *clazz)
+{
+    jmethodID ctor = (*env)->GetMethodID(env, *clazz, "<init>", "()V");
+    check(ctor != NULL, "could not get standard ctor");
+
+    return (*env)->NewObject(env, *clazz, ctor);
+
+error:
+    return NULL;
 }
 
 /*
@@ -188,38 +228,117 @@ error:
  */
 JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_getTruffle(JNIEnv *env, jobject thisObj)
 {
-
-    Truffle_t truffle;
-
-    memset((void*) &truffle, 0, sizeof(Truffle_t));
-
-    ssize_t readCount = read(socketData.socketFD, (void*) (&truffle), sizeof(Truffle_t));
-    (void) readCount;
-
-
 	char *truffleClassName = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle";
 
-	jclass tClass = (*env)->FindClass(env, truffleClassName);
-	check_to(tClass != NULL, noClass, "Truffle class could not be found");
+	jclass truffleClass = (*env)->FindClass(env, truffleClassName);
+	check_to(truffleClass != NULL, noClass, "Truffle class could not be found");
 
-	jmethodID ctor = (*env)->GetMethodID(env, tClass, "<init>", "(JJ)V");
-	check_to(ctor != NULL, noMethod, "constructor for class Truffle not found");
+	jmethodID ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "()V");
+	check_to(ctor != NULL, noCtor, "constructor for class Truffle not found");
 
-	//jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
+	jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
 
-    jobject truffleObject = (*env)->NewObject(env, tClass, ctor, truffle.etherHeader.sourceMacAddress, truffle.etherHeader.destMacAddress);
-   // jobject truffleObject = (*env)->NewObject(env, truffleClass, truffleCtor, truffle.etherHeader.sourceMacAddress, truffle.etherHeader.destMacAddress);
+	check(truffleObject != NULL, "could not create Truffle");
 
-	//TODO fill truffle with data
+	Truffle truffle;
+
+	check(getNextTruffle(env, &truffle) >= 0, "getNextTruffle failed!");
+
+    jstring idStr;
+
+    // get method
+    jmethodID setAttributeMID = (*env)->GetMethodID(env, truffleClass, "setAttribute", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
+    check_to(setAttributeMID != 0, noSetAttribute, "setAttribute method not found");
+
+
+    ///////////////////////////
+    // start of long objects //
+    ///////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    // get the long class
+    jclass longClass = getClassByName(env, "java/lang/Long");
+    check(longClass != NULL, "could not get long class");
+
+    // get the long ctor
+    jmethodID longCtor = (*env)->GetMethodID(env, longClass, "<init>", "(J)V");
+    check(longCtor != NULL, "Could not fetch long ctor");
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    /////////// start of setAttribute(Long.class, "sourceMacAddress", srcAddr) ///////////
+    // create the long object for srcMacAddr
+    jobject srcMacAddr = (*env)->NewObject(env, longClass, longCtor, truffle.etherHeader.sourceMacAddress);
+    check(srcMacAddr != NULL, "Could not create srcMacAddr Long object");
+
+    // create the id string for sourceMacAddress
+    idStr = (*env)->NewStringUTF(env, "sourceMacAddress");
+    check(idStr != NULL, "could not create id string for sourceMacAddress");
+
+    (*env)->CallObjectMethod(env, truffleObject, setAttributeMID, longClass, idStr, srcMacAddr);
+    idStr = NULL;
+    /////////// end of setAttribute(Long.class, "sourceMacAddress", srcAddr) ///////////
+
+
+    /////////// start of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
+    // create the id string for destMacAddress
+    idStr = (*env)->NewStringUTF(env, "destMacAddress");
+    check(idStr != NULL, "could not create id string for destMacAddress");
+
+    // create the long object for destMacAddr
+    jobject destMacAddr = (*env)->NewObject(env, longClass, longCtor, truffle.etherHeader.destMacAddress);
+    check(destMacAddr != NULL, "could not create destMacAddr Long object");
+
+    (*env)->CallObjectMethod(env, truffleObject, setAttributeMID, longClass, idStr, destMacAddr);
+    idStr = NULL;
+    /////////// end of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
+
+    /////////////////////////
+    // end of long objects //
+    /////////////////////////
+
+
+    ////////////////////////////
+    // start of short objects //
+    ////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    // get the short class
+    jclass shortClass = getClassByName(env, "java/lang/Short");
+    check(shortClass != NULL, "could not get short class");
+
+    // get the long ctor
+    jmethodID shortCtor = (*env)->GetMethodID(env, shortClass, "<init>", "(S)V");
+    check(shortCtor != NULL, "Could not fetch short ctor");
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    /////////// start of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
+    // create the id string for destMacAddress
+    idStr = (*env)->NewStringUTF(env, "etherType");
+    check(idStr != NULL, "could not create id string for etherType");
+
+    // create the long object for destMacAddr
+    jobject etherType = (*env)->NewObject(env, shortClass, shortCtor, truffle.etherHeader.etherType);
+    check(etherType != NULL, "could not create etherType Short object");
+
+    (*env)->CallObjectMethod(env, truffleObject, setAttributeMID, shortClass, idStr, etherType);
+    idStr = NULL;
+    /////////// end of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
+
+    //////////////////////////
+    // end of short objects //
+    //////////////////////////
 
 	return truffleObject;
-
 
 noClass:
 	throwNoClassDefError(env, truffleClassName);
 	return NULL;
 
-noMethod:
+noSetAttribute:
+    throwNoSuchMethodError(env, "SetAttribute method not found");
+    return NULL;
+
+noCtor:
 	throwNoSuchMethodError(env, "Constructor for class Truffle not found");
 	return NULL;
 
@@ -274,6 +393,17 @@ jint throwSnortPluginDisconnectFailedException(JNIEnv *env, char *message)
 {
 	jclass exClass;
 	char *className = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/SnortPNPluginDisconnectFailedException";
+
+	exClass =(*env)->FindClass(env, className);
+	if (exClass == NULL)
+		return throwNoClassDefError(env, className);
+	return (*env)->ThrowNew(env, exClass, message);
+}
+
+jint throwReceiverReadError(JNIEnv *env, char *message)
+{
+	jclass exClass;
+	char *className = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/ReceiverReadError";
 
 	exClass =(*env)->FindClass(env, className);
 	if (exClass == NULL)

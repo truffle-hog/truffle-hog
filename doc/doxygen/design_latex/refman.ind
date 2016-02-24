@@ -2,32 +2,32 @@
 
   \item {add\+Change\+Listener}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{43}
+		\hyperpage{44}
   \item {add\+Command}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Command\+Logger}, 
 		\hyperpage{15}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+I\+View\+Controller}, 
-		\hyperpage{32}
+		\hyperpage{34}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Main\+Tool\+Bar\+Controller}, 
 		\hyperpage{37}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Main\+View\+Controller}, 
-		\hyperpage{37}
+		\hyperpage{38}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{43}
+		\hyperpage{44}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Monitoring\+View\+Controller}, 
 		\hyperpage{46}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Overlay\+View\+Controller}, 
 		\hyperpage{49}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Settings\+View\+Controller}, 
-		\hyperpage{60}
+		\hyperpage{59}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Statistics\+View\+Controller}, 
-		\hyperpage{62}
+		\hyperpage{61}
   \item {add\+I\+P\+Regex}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::filter\+::\+Filter}, 
-		\hyperpage{22}
+		\hyperpage{24}
   \item {add\+Listener}
     \subitem {edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier}, 
-		\hyperpage{30}
+		\hyperpage{31}
     \subitem {edu\+::kit\+::trufflehog\+::util\+::\+Notifier}, 
 		\hyperpage{48}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Abstract\+Network\+Graph\+View}, 
@@ -38,34 +38,22 @@
 		\hyperpage{62}
   \item {add\+M\+A\+C\+Regex}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::filter\+::\+Filter}, 
-		\hyperpage{22}
+		\hyperpage{24}
   \item {add\+Name\+Regex}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::filter\+::\+Filter}, 
-		\hyperpage{22}
+		\hyperpage{24}
   \item {add\+Network\+Edge}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph}, 
 		\hyperpage{10}
-    \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy}, 
-		\hyperpage{25}
-    \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Graph}, 
-		\hyperpage{41}
-    \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Graph\+Switch}, 
-		\hyperpage{41}
   \item {add\+Network\+Node}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph}, 
 		\hyperpage{10}
-    \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy}, 
-		\hyperpage{25}
-    \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Graph}, 
-		\hyperpage{41}
-    \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Graph\+Switch}, 
-		\hyperpage{41}
   \item {add\+Post\+Render\+Paintable}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{43}
+		\hyperpage{44}
   \item {add\+Pre\+Render\+Paintable}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{43}
+		\hyperpage{44}
   \item {as\+Truffle\+Command\+Listener}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::executor\+::\+Command\+Executor}, 
 		\hyperpage{14}
@@ -98,13 +86,13 @@
 		\hyperpage{18}
   \item {contains}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::filter\+::\+Filter}, 
-		\hyperpage{22}
+		\hyperpage{24}
   \item {create\+Command\+Log}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Command\+Logger}, 
 		\hyperpage{15}
   \item {create\+Data\+Log}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger}, 
-		\hyperpage{52}
+		\hyperpage{53}
   \item {create\+Presenter}
     \subitem {edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter}, 
 		\hyperpage{50}
@@ -119,7 +107,7 @@
 
   \item {E\+X\+I\+T}
     \subitem {edu\+::kit\+::trufflehog\+::interaction\+::\+Main\+Interaction}, 
-		\hyperpage{36}
+		\hyperpage{37}
   \item {edu.\+kit.\+trufflehog.\+command}, \hyperpage{7}
   \item {edu.\+kit.\+trufflehog.\+command.\+I\+Command$<$ S $>$}, 
 		\hyperpage{26}
@@ -128,26 +116,26 @@
   \item {edu.\+kit.\+trufflehog.\+command.\+queue.\+Command\+Queue\+Manager}, 
 		\hyperpage{16}
   \item {edu.\+kit.\+trufflehog.\+command.\+queue.\+I\+Command\+Queue}, 
-		\hyperpage{26}
+		\hyperpage{27}
   \item {edu.\+kit.\+trufflehog.\+command.\+trufflecommand.\+Add\+Packet\+Data\+Command}, 
 		\hyperpage{12}
   \item {edu.\+kit.\+trufflehog.\+command.\+trufflecommand.\+I\+Truffle\+Command}, 
-		\hyperpage{31}
+		\hyperpage{33}
   \item {edu.\+kit.\+trufflehog.\+command.\+trufflecommand.\+Plugin\+Not\+Running\+Command}, 
 		\hyperpage{49}
   \item {edu.\+kit.\+trufflehog.\+command.\+usercommand.\+Display\+Node\+Info\+Command}, 
 		\hyperpage{19}
   \item {edu.\+kit.\+trufflehog.\+command.\+usercommand.\+I\+User\+Command}, 
-		\hyperpage{31}
+		\hyperpage{33}
   \item {edu.\+kit.\+trufflehog.\+command.\+usercommand.\+Set\+Display\+Algorithm\+Command}, 
 		\hyperpage{58}
   \item {edu.\+kit.\+trufflehog.\+command.\+usercommand.\+Set\+Logging\+Interval\+Command}, 
 		\hyperpage{58}
   \item {edu.\+kit.\+trufflehog.\+command.\+usercommand.\+Update\+Filter\+Command}, 
-		\hyperpage{66}
+		\hyperpage{65}
   \item {edu.\+kit.\+trufflehog.\+interaction}, \hyperpage{7}
   \item {edu.\+kit.\+trufflehog.\+interaction.\+Graph\+Interaction}, 
-		\hyperpage{24}
+		\hyperpage{25}
   \item {edu.\+kit.\+trufflehog.\+interaction.\+I\+Interaction}, 
 		\hyperpage{28}
   \item {edu.\+kit.\+trufflehog.\+interaction.\+Main\+Interaction}, 
@@ -157,21 +145,21 @@
   \item {edu.\+kit.\+trufflehog.\+interaction.\+Overlay\+Interaction}, 
 		\hyperpage{48}
   \item {edu.\+kit.\+trufflehog.\+interaction.\+Settings\+Interaction}, 
-		\hyperpage{59}
+		\hyperpage{58}
   \item {edu.\+kit.\+trufflehog.\+interaction.\+Statistics\+Interaction}, 
-		\hyperpage{61}
+		\hyperpage{60}
   \item {edu.\+kit.\+trufflehog.\+interaction.\+Tool\+Bar\+Interaction}, 
-		\hyperpage{63}
-  \item {edu.\+kit.\+trufflehog.\+Main}, \hyperpage{35}
+		\hyperpage{62}
+  \item {edu.\+kit.\+trufflehog.\+Main}, \hyperpage{36}
   \item {edu.\+kit.\+trufflehog.\+model}, \hyperpage{7}
   \item {edu.\+kit.\+trufflehog.\+model.\+configdata.\+Config\+Data\+Model}, 
 		\hyperpage{18}
   \item {edu.\+kit.\+trufflehog.\+model.\+configdata.\+Filter\+Menu\+Model}, 
-		\hyperpage{24}
-  \item {edu.\+kit.\+trufflehog.\+model.\+configdata.\+Graph\+Window\+Model}, 
 		\hyperpage{25}
+  \item {edu.\+kit.\+trufflehog.\+model.\+configdata.\+Graph\+Window\+Model}, 
+		\hyperpage{26}
   \item {edu.\+kit.\+trufflehog.\+model.\+configdata.\+Log\+Window\+Model}, 
-		\hyperpage{35}
+		\hyperpage{36}
   \item {edu.\+kit.\+trufflehog.\+model.\+configdata.\+Notification\+View\+Model}, 
 		\hyperpage{47}
   \item {edu.\+kit.\+trufflehog.\+model.\+configdata.\+Settings\+Menu\+Model}, 
@@ -179,38 +167,40 @@
   \item {edu.\+kit.\+trufflehog.\+model.\+configdata.\+Statistics\+Model}, 
 		\hyperpage{61}
   \item {edu.\+kit.\+trufflehog.\+model.\+File\+System}, \hyperpage{20}
-  \item {edu.\+kit.\+trufflehog.\+model.\+filter.\+Filter}, 
+  \item {edu.\+kit.\+trufflehog.\+model.\+File\+System\+Test}, 
 		\hyperpage{22}
+  \item {edu.\+kit.\+trufflehog.\+model.\+filter.\+Filter}, 
+		\hyperpage{23}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+Abstract\+Network\+Graph}, 
 		\hyperpage{10}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+F\+R\+Layout\+Factory}, 
-		\hyperpage{24}
-  \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+Fruchterman\+Reingold\+Layout}, 
-		\hyperpage{24}
-  \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+Graph\+Proxy}, 
 		\hyperpage{25}
+  \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+Fruchterman\+Reingold\+Layout}, 
+		\hyperpage{25}
+  \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+Graph\+Proxy}, 
+		\hyperpage{26}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+I\+Connection}, 
-		\hyperpage{27}
-  \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+I\+Layout\+Factory}, 
 		\hyperpage{28}
+  \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+I\+Layout\+Factory}, 
+		\hyperpage{29}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+I\+Network\+Graph\+Layout$<$ V, E $>$}, 
-		\hyperpage{29}
+		\hyperpage{30}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+I\+Node}, 
-		\hyperpage{29}
+		\hyperpage{30}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+K\+K\+Layout\+Factory}, 
 		\hyperpage{35}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+Kamada\+Kawai\+Layout}, 
-		\hyperpage{33}
+		\hyperpage{35}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+Network\+Edge}, 
-		\hyperpage{38}
+		\hyperpage{39}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+Network\+Graph}, 
-		\hyperpage{40}
+		\hyperpage{41}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+Network\+Graph\+Switch}, 
 		\hyperpage{41}
   \item {edu.\+kit.\+trufflehog.\+model.\+graph.\+Network\+Node}, 
 		\hyperpage{46}
   \item {edu.\+kit.\+trufflehog.\+model.\+truffledatalog.\+Truffle\+Logger}, 
-		\hyperpage{64}
+		\hyperpage{63}
   \item {edu.\+kit.\+trufflehog.\+presenter}, \hyperpage{8}
   \item {edu.\+kit.\+trufflehog.\+presenter.\+Presenter}, 
 		\hyperpage{50}
@@ -218,11 +208,11 @@
   \item {edu.\+kit.\+trufflehog.\+service.\+executor.\+Command\+Executor}, 
 		\hyperpage{14}
   \item {edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+I\+Packet\+Data}, 
-		\hyperpage{30}
+		\hyperpage{32}
   \item {edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Message\+Queue\+Receiver}, 
 		\hyperpage{38}
   \item {edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Snort\+P\+N\+Plugin\+Not\+Running\+Exception}, 
-		\hyperpage{61}
+		\hyperpage{60}
   \item {edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Truffle}, 
 		\hyperpage{63}
   \item {edu.\+kit.\+trufflehog.\+service.\+packetdataprocessor.\+profinetdataprocessor.\+Truffle\+Receiver}, 
@@ -234,22 +224,22 @@
   \item {edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Command\+Logger}, 
 		\hyperpage{15}
   \item {edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log}, 
-		\hyperpage{50}
+		\hyperpage{51}
   \item {edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Load\+Service}, 
-		\hyperpage{55}
-  \item {edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Loader}, 
 		\hyperpage{54}
+  \item {edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Loader}, 
+		\hyperpage{53}
   \item {edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Save\+Service}, 
-		\hyperpage{57}
+		\hyperpage{56}
   \item {edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Logger}, 
 		\hyperpage{52}
   \item {edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Snapshot\+Logger}, 
 		\hyperpage{60}
   \item {edu.\+kit.\+trufflehog.\+util}, \hyperpage{8}
   \item {edu.\+kit.\+trufflehog.\+util.\+I\+Listener$<$ M $>$}, 
-		\hyperpage{28}
-  \item {edu.\+kit.\+trufflehog.\+util.\+I\+Notifier$<$ M $>$}, 
 		\hyperpage{29}
+  \item {edu.\+kit.\+trufflehog.\+util.\+I\+Notifier$<$ M $>$}, 
+		\hyperpage{30}
   \item {edu.\+kit.\+trufflehog.\+util.\+Notifier$<$ M $>$}, 
 		\hyperpage{47}
   \item {edu.\+kit.\+trufflehog.\+view}, \hyperpage{8}
@@ -258,15 +248,15 @@
   \item {edu.\+kit.\+trufflehog.\+view.\+Border\+Pane\+Controller$<$ I extends I\+Interaction $>$}, 
 		\hyperpage{12}
   \item {edu.\+kit.\+trufflehog.\+view.\+I\+View\+Controller$<$ I extends I\+Interaction $>$}, 
-		\hyperpage{32}
-  \item {edu.\+kit.\+trufflehog.\+view.\+I\+Window\+Controller}, 
 		\hyperpage{33}
+  \item {edu.\+kit.\+trufflehog.\+view.\+I\+Window\+Controller}, 
+		\hyperpage{34}
   \item {edu.\+kit.\+trufflehog.\+view.\+Main\+Tool\+Bar\+Controller}, 
-		\hyperpage{36}
+		\hyperpage{37}
   \item {edu.\+kit.\+trufflehog.\+view.\+Main\+View\+Controller}, 
 		\hyperpage{37}
   \item {edu.\+kit.\+trufflehog.\+view.\+Network\+Graph\+View}, 
-		\hyperpage{41}
+		\hyperpage{42}
   \item {edu.\+kit.\+trufflehog.\+view.\+Network\+Monitoring\+View\+Controller}, 
 		\hyperpage{45}
   \item {edu.\+kit.\+trufflehog.\+view.\+Overlay\+View\+Controller}, 
@@ -280,9 +270,9 @@
   \item {edu.\+kit.\+trufflehog.\+view.\+Tool\+Bar\+Controller$<$ I extends I\+Interaction $>$}, 
 		\hyperpage{62}
   \item {edu\+::kit\+::trufflehog\+::\+Main}
-    \subitem {main}, \hyperpage{35}
+    \subitem {main}, \hyperpage{36}
   \item {edu\+::kit\+::trufflehog\+::command\+::\+I\+Command}
-    \subitem {execute}, \hyperpage{26}
+    \subitem {execute}, \hyperpage{27}
   \item {edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue}
     \subitem {Command\+Queue}, \hyperpage{16}
     \subitem {is\+Empty}, \hyperpage{16}
@@ -296,24 +286,24 @@
   \item {edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue}
     \subitem {is\+Empty}, \hyperpage{27}
     \subitem {pop}, \hyperpage{27}
-    \subitem {push}, \hyperpage{27}
+    \subitem {push}, \hyperpage{28}
   \item {edu\+::kit\+::trufflehog\+::command\+::trufflecommand\+::\+Add\+Packet\+Data\+Command}
     \subitem {execute}, \hyperpage{12}
   \item {edu\+::kit\+::trufflehog\+::command\+::trufflecommand\+::\+Plugin\+Not\+Running\+Command}
-    \subitem {execute}, \hyperpage{49}
+    \subitem {execute}, \hyperpage{50}
   \item {edu\+::kit\+::trufflehog\+::command\+::usercommand\+::\+Display\+Node\+Info\+Command}
     \subitem {execute}, \hyperpage{20}
   \item {edu\+::kit\+::trufflehog\+::command\+::usercommand\+::\+Set\+Display\+Algorithm\+Command}
     \subitem {execute}, \hyperpage{58}
   \item {edu\+::kit\+::trufflehog\+::command\+::usercommand\+::\+Set\+Logging\+Interval\+Command}
-    \subitem {execute}, \hyperpage{59}
+    \subitem {execute}, \hyperpage{58}
   \item {edu\+::kit\+::trufflehog\+::command\+::usercommand\+::\+Update\+Filter\+Command}
     \subitem {execute}, \hyperpage{66}
   \item {edu\+::kit\+::trufflehog\+::interaction\+::\+Main\+Interaction}
-    \subitem {E\+X\+I\+T}, \hyperpage{36}
+    \subitem {E\+X\+I\+T}, \hyperpage{37}
   \item {edu\+::kit\+::trufflehog\+::interaction\+::\+Overlay\+Interaction}
-    \subitem {H\+I\+D\+E}, \hyperpage{48}
-    \subitem {S\+H\+O\+W}, \hyperpage{48}
+    \subitem {H\+I\+D\+E}, \hyperpage{49}
+    \subitem {S\+H\+O\+W}, \hyperpage{49}
   \item {edu\+::kit\+::trufflehog\+::interaction\+::\+Tool\+Bar\+Interaction}
     \subitem {C\+O\+N\+N\+E\+C\+T\+\_\+\+S\+N\+O\+R\+T}, \hyperpage{63}
     \subitem {D\+I\+S\+C\+O\+N\+N\+E\+C\+T\+\_\+\+S\+N\+O\+R\+T}, 
@@ -325,9 +315,16 @@
     \subitem {File\+System}, \hyperpage{21}
     \subitem {get\+Config\+Folder}, \hyperpage{21}
     \subitem {get\+Data\+Folder}, \hyperpage{21}
-    \subitem {get\+Data\+Log\+Folder}, \hyperpage{21}
-    \subitem {get\+Graph\+Log\+Folder}, \hyperpage{21}
     \subitem {get\+Log\+Folder}, \hyperpage{21}
+    \subitem {get\+Replay\+Log\+Folder}, \hyperpage{22}
+    \subitem {get\+Truffle\+Data\+Log\+Folder}, \hyperpage{22}
+  \item {edu\+::kit\+::trufflehog\+::model\+::\+File\+System\+Test}
+    \subitem {set\+Up}, \hyperpage{22}
+    \subitem {tear\+Down}, \hyperpage{23}
+    \subitem {test\+Get\+Config\+Folder}, \hyperpage{23}
+    \subitem {test\+Get\+Data\+Folder}, \hyperpage{23}
+    \subitem {test\+Get\+Replay\+Log\+Folder}, \hyperpage{23}
+    \subitem {test\+Get\+Truffle\+Data\+Log\+Folder}, \hyperpage{23}
   \item {edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}
     \subitem {Config\+Data\+Model}, \hyperpage{18}
     \subitem {get\+Property}, \hyperpage{19}
@@ -335,55 +332,48 @@
     \subitem {set\+Properties\+File}, \hyperpage{19}
     \subitem {set\+Property}, \hyperpage{19}
   \item {edu\+::kit\+::trufflehog\+::model\+::filter\+::\+Filter}
-    \subitem {add\+I\+P\+Regex}, \hyperpage{22}
-    \subitem {add\+M\+A\+C\+Regex}, \hyperpage{22}
-    \subitem {add\+Name\+Regex}, \hyperpage{22}
-    \subitem {contains}, \hyperpage{22}
+    \subitem {add\+I\+P\+Regex}, \hyperpage{24}
+    \subitem {add\+M\+A\+C\+Regex}, \hyperpage{24}
+    \subitem {add\+Name\+Regex}, \hyperpage{24}
+    \subitem {contains}, \hyperpage{24}
   \item {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Abstract\+Network\+Graph}
     \subitem {add\+Network\+Edge}, \hyperpage{10}
     \subitem {add\+Network\+Node}, \hyperpage{10}
   \item {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy}
-    \subitem {add\+Network\+Edge}, \hyperpage{25}
-    \subitem {add\+Network\+Node}, \hyperpage{25}
-    \subitem {set\+Graph}, \hyperpage{25}
+    \subitem {set\+Graph}, \hyperpage{26}
   \item {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Kamada\+Kawai\+Layout}
-    \subitem {Kamada\+Kawai\+Layout}, \hyperpage{33}
+    \subitem {Kamada\+Kawai\+Layout}, \hyperpage{35}
   \item {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Edge}
     \subitem {get\+Active}, \hyperpage{39}
     \subitem {get\+Active\+Property}, \hyperpage{39}
-    \subitem {get\+Connection\+Type}, \hyperpage{39}
-    \subitem {get\+Connection\+Type\+Property}, \hyperpage{39}
-    \subitem {get\+Total\+Packet\+Count}, \hyperpage{39}
-    \subitem {get\+Total\+Packet\+Count\+Property}, \hyperpage{39}
+    \subitem {get\+Connection\+Type}, \hyperpage{40}
+    \subitem {get\+Connection\+Type\+Property}, \hyperpage{40}
+    \subitem {get\+Total\+Packet\+Count}, \hyperpage{40}
+    \subitem {get\+Total\+Packet\+Count\+Property}, \hyperpage{40}
     \subitem {set\+Active}, \hyperpage{40}
     \subitem {set\+Connection\+Type}, \hyperpage{40}
-    \subitem {set\+Total\+Packet\+Count}, \hyperpage{40}
-  \item {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Graph}
-    \subitem {add\+Network\+Edge}, \hyperpage{41}
-    \subitem {add\+Network\+Node}, \hyperpage{41}
+    \subitem {set\+Total\+Packet\+Count}, \hyperpage{41}
   \item {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Graph\+Switch}
-    \subitem {add\+Network\+Edge}, \hyperpage{41}
-    \subitem {add\+Network\+Node}, \hyperpage{41}
-    \subitem {view\+Live}, \hyperpage{41}
-    \subitem {view\+Playback}, \hyperpage{41}
+    \subitem {view\+Live}, \hyperpage{42}
+    \subitem {view\+Playback}, \hyperpage{42}
   \item {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Node}
-    \subitem {log}, \hyperpage{46}
+    \subitem {log}, \hyperpage{47}
   \item {edu\+::kit\+::trufflehog\+::model\+::truffledatalog\+::\+Truffle\+Logger}
     \subitem {get\+Log}, \hyperpage{64}
     \subitem {log}, \hyperpage{64}
     \subitem {Truffle\+Logger}, \hyperpage{64}
   \item {edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter}
     \subitem {create\+Presenter}, \hyperpage{50}
-    \subitem {present}, \hyperpage{50}
+    \subitem {present}, \hyperpage{51}
   \item {edu\+::kit\+::trufflehog\+::service\+::executor\+::\+Command\+Executor}
     \subitem {as\+Truffle\+Command\+Listener}, \hyperpage{14}
     \subitem {as\+User\+Command\+Listener}, \hyperpage{14}
     \subitem {run}, \hyperpage{14}
   \item {edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::\+I\+Packet\+Data}
-    \subitem {get\+Attribute}, \hyperpage{31}
+    \subitem {get\+Attribute}, \hyperpage{32}
   \item {edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver}
     \subitem {Message\+Queue\+Receiver}, \hyperpage{38}
-    \subitem {run}, \hyperpage{38}
+    \subitem {run}, \hyperpage{39}
   \item {edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Unix\+Socket\+Receiver}
     \subitem {run}, \hyperpage{65}
     \subitem {Unix\+Socket\+Receiver}, \hyperpage{65}
@@ -396,37 +386,38 @@
     \subitem {create\+Command\+Log}, \hyperpage{15}
   \item {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}
     \subitem {get\+Commands}, \hyperpage{51}
-    \subitem {get\+End\+Instant}, \hyperpage{51}
-    \subitem {get\+Graph\+Snapshot}, \hyperpage{51}
+    \subitem {get\+End\+Instant}, \hyperpage{52}
+    \subitem {get\+Graph\+Snapshot}, \hyperpage{52}
     \subitem {get\+Start\+Instant}, \hyperpage{52}
     \subitem {Replay\+Log}, \hyperpage{51}
   \item {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}
-    \subitem {jump\+To\+Instant}, \hyperpage{56}
-    \subitem {load}, \hyperpage{56}
-    \subitem {pause}, \hyperpage{56}
-    \subitem {play}, \hyperpage{56}
-    \subitem {Replay\+Log\+Load\+Service}, \hyperpage{56}
+    \subitem {jump\+To\+Instant}, \hyperpage{55}
+    \subitem {load}, \hyperpage{55}
+    \subitem {pause}, \hyperpage{55}
+    \subitem {play}, \hyperpage{55}
+    \subitem {Replay\+Log\+Load\+Service}, \hyperpage{55}
     \subitem {run}, \hyperpage{56}
   \item {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader}
     \subitem {get\+Data}, \hyperpage{54}
-    \subitem {load\+Data}, \hyperpage{55}
+    \subitem {load\+Data}, \hyperpage{54}
     \subitem {Replay\+Log\+Loader}, \hyperpage{54}
   \item {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}
-    \subitem {Replay\+Log\+Save\+Service}, \hyperpage{57}
+    \subitem {receive}, \hyperpage{56}
+    \subitem {Replay\+Log\+Save\+Service}, \hyperpage{56}
     \subitem {run}, \hyperpage{57}
   \item {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger}
-    \subitem {create\+Data\+Log}, \hyperpage{52}
-    \subitem {Replay\+Logger}, \hyperpage{52}
-    \subitem {save\+Data\+Log}, \hyperpage{54}
+    \subitem {create\+Data\+Log}, \hyperpage{53}
+    \subitem {Replay\+Logger}, \hyperpage{53}
+    \subitem {save\+Data\+Log}, \hyperpage{53}
   \item {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger}
     \subitem {Snapshot\+Logger}, \hyperpage{60}
     \subitem {take\+Snapshot}, \hyperpage{60}
   \item {edu\+::kit\+::trufflehog\+::util\+::\+I\+Listener}
     \subitem {receive}, \hyperpage{29}
   \item {edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier}
-    \subitem {add\+Listener}, \hyperpage{30}
-    \subitem {notify\+Listeners}, \hyperpage{30}
-    \subitem {remove\+Listener}, \hyperpage{30}
+    \subitem {add\+Listener}, \hyperpage{31}
+    \subitem {notify\+Listeners}, \hyperpage{32}
+    \subitem {remove\+Listener}, \hyperpage{32}
   \item {edu\+::kit\+::trufflehog\+::util\+::\+Notifier}
     \subitem {add\+Listener}, \hyperpage{48}
     \subitem {notify\+Listeners}, \hyperpage{48}
@@ -441,24 +432,24 @@
     \subitem {notify\+Listeners}, \hyperpage{13}
     \subitem {remove\+Listener}, \hyperpage{13}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+I\+View\+Controller}
-    \subitem {add\+Command}, \hyperpage{32}
+    \subitem {add\+Command}, \hyperpage{34}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+I\+Window\+Controller}
-    \subitem {set\+Scene}, \hyperpage{33}
-    \subitem {show}, \hyperpage{33}
+    \subitem {set\+Scene}, \hyperpage{34}
+    \subitem {show}, \hyperpage{35}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+Main\+Tool\+Bar\+Controller}
     \subitem {add\+Command}, \hyperpage{37}
-    \subitem {Main\+Tool\+Bar\+Controller}, \hyperpage{36}
+    \subitem {Main\+Tool\+Bar\+Controller}, \hyperpage{37}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+Main\+View\+Controller}
-    \subitem {add\+Command}, \hyperpage{37}
-    \subitem {Main\+View\+Controller}, \hyperpage{37}
-    \subitem {on\+Exit}, \hyperpage{37}
+    \subitem {add\+Command}, \hyperpage{38}
+    \subitem {Main\+View\+Controller}, \hyperpage{38}
+    \subitem {on\+Exit}, \hyperpage{38}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}
-    \subitem {add\+Change\+Listener}, \hyperpage{43}
-    \subitem {add\+Command}, \hyperpage{43}
-    \subitem {add\+Post\+Render\+Paintable}, \hyperpage{43}
-    \subitem {add\+Pre\+Render\+Paintable}, \hyperpage{43}
-    \subitem {fire\+State\+Changed}, \hyperpage{43}
-    \subitem {get\+Center}, \hyperpage{43}
+    \subitem {add\+Change\+Listener}, \hyperpage{44}
+    \subitem {add\+Command}, \hyperpage{44}
+    \subitem {add\+Post\+Render\+Paintable}, \hyperpage{44}
+    \subitem {add\+Pre\+Render\+Paintable}, \hyperpage{44}
+    \subitem {fire\+State\+Changed}, \hyperpage{44}
+    \subitem {get\+Center}, \hyperpage{44}
     \subitem {get\+Change\+Listeners}, \hyperpage{44}
     \subitem {get\+Graph\+Layout}, \hyperpage{44}
     \subitem {get\+Model}, \hyperpage{44}
@@ -475,49 +466,49 @@
     \subitem {remove\+Pre\+Render\+Paintable}, \hyperpage{44}
     \subitem {repaint}, \hyperpage{44}
     \subitem {set\+Double\+Buffered}, \hyperpage{44}
-    \subitem {set\+Graph\+Layout}, \hyperpage{44}
-    \subitem {set\+Layout\+Factory}, \hyperpage{44}
-    \subitem {set\+Model}, \hyperpage{44}
-    \subitem {set\+Pick\+Support}, \hyperpage{44}
-    \subitem {set\+Picked\+Edge\+State}, \hyperpage{44}
-    \subitem {set\+Picked\+Vertex\+State}, \hyperpage{44}
+    \subitem {set\+Graph\+Layout}, \hyperpage{45}
+    \subitem {set\+Layout\+Factory}, \hyperpage{45}
+    \subitem {set\+Model}, \hyperpage{45}
+    \subitem {set\+Pick\+Support}, \hyperpage{45}
+    \subitem {set\+Picked\+Edge\+State}, \hyperpage{45}
+    \subitem {set\+Picked\+Vertex\+State}, \hyperpage{45}
     \subitem {set\+Render\+Context}, \hyperpage{45}
     \subitem {set\+Renderer}, \hyperpage{45}
     \subitem {set\+Rendering\+Hints}, \hyperpage{45}
     \subitem {state\+Changed}, \hyperpage{45}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Monitoring\+View\+Controller}
     \subitem {add\+Command}, \hyperpage{46}
-    \subitem {Network\+Monitoring\+View\+Controller}, \hyperpage{45}
+    \subitem {Network\+Monitoring\+View\+Controller}, \hyperpage{46}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+Overlay\+View\+Controller}
     \subitem {add\+Command}, \hyperpage{49}
     \subitem {Overlay\+View\+Controller}, \hyperpage{49}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+Root\+Window\+Controller}
-    \subitem {Root\+Window\+Controller}, \hyperpage{58}
-    \subitem {set\+Scene}, \hyperpage{58}
-    \subitem {show}, \hyperpage{58}
+    \subitem {Root\+Window\+Controller}, \hyperpage{57}
+    \subitem {set\+Scene}, \hyperpage{57}
+    \subitem {show}, \hyperpage{57}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+Settings\+View\+Controller}
-    \subitem {add\+Command}, \hyperpage{60}
-    \subitem {Settings\+View\+Controller}, \hyperpage{60}
+    \subitem {add\+Command}, \hyperpage{59}
+    \subitem {Settings\+View\+Controller}, \hyperpage{59}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+Statistics\+View\+Controller}
-    \subitem {add\+Command}, \hyperpage{62}
-    \subitem {Statistics\+View\+Controller}, \hyperpage{62}
+    \subitem {add\+Command}, \hyperpage{61}
+    \subitem {Statistics\+View\+Controller}, \hyperpage{61}
   \item {edu\+::kit\+::trufflehog\+::view\+::\+Tool\+Bar\+Controller}
     \subitem {add\+Listener}, \hyperpage{62}
     \subitem {notify\+Listeners}, \hyperpage{62}
-    \subitem {remove\+Listener}, \hyperpage{63}
+    \subitem {remove\+Listener}, \hyperpage{62}
   \item {execute}
     \subitem {edu\+::kit\+::trufflehog\+::command\+::\+I\+Command}, 
-		\hyperpage{26}
+		\hyperpage{27}
     \subitem {edu\+::kit\+::trufflehog\+::command\+::trufflecommand\+::\+Add\+Packet\+Data\+Command}, 
 		\hyperpage{12}
     \subitem {edu\+::kit\+::trufflehog\+::command\+::trufflecommand\+::\+Plugin\+Not\+Running\+Command}, 
-		\hyperpage{49}
+		\hyperpage{50}
     \subitem {edu\+::kit\+::trufflehog\+::command\+::usercommand\+::\+Display\+Node\+Info\+Command}, 
 		\hyperpage{20}
     \subitem {edu\+::kit\+::trufflehog\+::command\+::usercommand\+::\+Set\+Display\+Algorithm\+Command}, 
 		\hyperpage{58}
     \subitem {edu\+::kit\+::trufflehog\+::command\+::usercommand\+::\+Set\+Logging\+Interval\+Command}, 
-		\hyperpage{59}
+		\hyperpage{58}
     \subitem {edu\+::kit\+::trufflehog\+::command\+::usercommand\+::\+Update\+Filter\+Command}, 
 		\hyperpage{66}
 
@@ -528,7 +519,7 @@
 		\hyperpage{21}
   \item {fire\+State\+Changed}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{43}
+		\hyperpage{44}
 
   \indexspace
 
@@ -540,10 +531,10 @@
 		\hyperpage{39}
   \item {get\+Attribute}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::\+I\+Packet\+Data}, 
-		\hyperpage{31}
+		\hyperpage{32}
   \item {get\+Center}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{43}
+		\hyperpage{44}
   \item {get\+Change\+Listeners}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
 		\hyperpage{44}
@@ -555,31 +546,25 @@
 		\hyperpage{21}
   \item {get\+Connection\+Type}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Edge}, 
-		\hyperpage{39}
+		\hyperpage{40}
   \item {get\+Connection\+Type\+Property}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Edge}, 
-		\hyperpage{39}
+		\hyperpage{40}
   \item {get\+Data}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader}, 
 		\hyperpage{54}
   \item {get\+Data\+Folder}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System}, 
 		\hyperpage{21}
-  \item {get\+Data\+Log\+Folder}
-    \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System}, 
-		\hyperpage{21}
   \item {get\+End\+Instant}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}, 
-		\hyperpage{51}
+		\hyperpage{52}
   \item {get\+Graph\+Layout}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
 		\hyperpage{44}
-  \item {get\+Graph\+Log\+Folder}
-    \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System}, 
-		\hyperpage{21}
   \item {get\+Graph\+Snapshot}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}, 
-		\hyperpage{51}
+		\hyperpage{52}
   \item {get\+Log}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::truffledatalog\+::\+Truffle\+Logger}, 
 		\hyperpage{64}
@@ -610,21 +595,27 @@
   \item {get\+Rendering\+Hints}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
 		\hyperpage{44}
+  \item {get\+Replay\+Log\+Folder}
+    \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System}, 
+		\hyperpage{22}
   \item {get\+Start\+Instant}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log}, 
 		\hyperpage{52}
   \item {get\+Total\+Packet\+Count}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Edge}, 
-		\hyperpage{39}
+		\hyperpage{40}
   \item {get\+Total\+Packet\+Count\+Property}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Edge}, 
-		\hyperpage{39}
+		\hyperpage{40}
+  \item {get\+Truffle\+Data\+Log\+Folder}
+    \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System}, 
+		\hyperpage{22}
 
   \indexspace
 
   \item {H\+I\+D\+E}
     \subitem {edu\+::kit\+::trufflehog\+::interaction\+::\+Overlay\+Interaction}, 
-		\hyperpage{48}
+		\hyperpage{49}
 
   \indexspace
 
@@ -641,41 +632,41 @@
 
   \item {jump\+To\+Instant}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}, 
-		\hyperpage{56}
+		\hyperpage{55}
 
   \indexspace
 
   \item {Kamada\+Kawai\+Layout}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Kamada\+Kawai\+Layout}, 
-		\hyperpage{33}
+		\hyperpage{35}
 
   \indexspace
 
   \item {load}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}, 
-		\hyperpage{56}
+		\hyperpage{55}
   \item {load\+Data}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader}, 
-		\hyperpage{55}
+		\hyperpage{54}
   \item {load\+Property\+File}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}, 
 		\hyperpage{19}
   \item {log}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Node}, 
-		\hyperpage{46}
+		\hyperpage{47}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::truffledatalog\+::\+Truffle\+Logger}, 
 		\hyperpage{64}
 
   \indexspace
 
   \item {main}
-    \subitem {edu\+::kit\+::trufflehog\+::\+Main}, \hyperpage{35}
+    \subitem {edu\+::kit\+::trufflehog\+::\+Main}, \hyperpage{36}
   \item {Main\+Tool\+Bar\+Controller}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Main\+Tool\+Bar\+Controller}, 
-		\hyperpage{36}
+		\hyperpage{37}
   \item {Main\+View\+Controller}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Main\+View\+Controller}, 
-		\hyperpage{37}
+		\hyperpage{38}
   \item {Message\+Queue\+Receiver}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver}, 
 		\hyperpage{38}
@@ -687,10 +678,10 @@
 		\hyperpage{43}
   \item {Network\+Monitoring\+View\+Controller}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Monitoring\+View\+Controller}, 
-		\hyperpage{45}
+		\hyperpage{46}
   \item {notify\+Listeners}
     \subitem {edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier}, 
-		\hyperpage{30}
+		\hyperpage{32}
     \subitem {edu\+::kit\+::trufflehog\+::util\+::\+Notifier}, 
 		\hyperpage{48}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Abstract\+Network\+Graph\+View}, 
@@ -710,7 +701,7 @@
 
   \item {on\+Exit}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Main\+View\+Controller}, 
-		\hyperpage{37}
+		\hyperpage{38}
   \item {Overlay\+View\+Controller}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Overlay\+View\+Controller}, 
 		\hyperpage{49}
@@ -719,10 +710,10 @@
 
   \item {pause}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}, 
-		\hyperpage{56}
+		\hyperpage{55}
   \item {play}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}, 
-		\hyperpage{56}
+		\hyperpage{55}
   \item {pop}
     \subitem {edu\+::kit\+::trufflehog\+::command\+::queue\+::\+Command\+Queue}, 
 		\hyperpage{16}
@@ -730,10 +721,10 @@
 		\hyperpage{27}
   \item {present}
     \subitem {edu\+::kit\+::trufflehog\+::presenter\+::\+Presenter}, 
-		\hyperpage{50}
+		\hyperpage{51}
   \item {push}
     \subitem {edu\+::kit\+::trufflehog\+::command\+::queue\+::\+I\+Command\+Queue}, 
-		\hyperpage{27}
+		\hyperpage{28}
 
   \indexspace
 
@@ -744,6 +735,8 @@
     \subitem {edu\+::kit\+::trufflehog\+::interaction\+::\+Tool\+Bar\+Interaction}, 
 		\hyperpage{63}
   \item {receive}
+    \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}, 
+		\hyperpage{56}
     \subitem {edu\+::kit\+::trufflehog\+::util\+::\+I\+Listener}, 
 		\hyperpage{29}
   \item {refresh\+Layout}
@@ -759,13 +752,13 @@
 		\hyperpage{44}
   \item {remove\+Listener}
     \subitem {edu\+::kit\+::trufflehog\+::util\+::\+I\+Notifier}, 
-		\hyperpage{30}
+		\hyperpage{32}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Abstract\+Network\+Graph\+View}, 
 		\hyperpage{11}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Border\+Pane\+Controller}, 
 		\hyperpage{13}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Tool\+Bar\+Controller}, 
-		\hyperpage{63}
+		\hyperpage{62}
   \item {remove\+Post\+Render\+Paintable}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
 		\hyperpage{44}
@@ -780,24 +773,24 @@
 		\hyperpage{51}
   \item {Replay\+Log\+Load\+Service}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}, 
-		\hyperpage{56}
+		\hyperpage{55}
   \item {Replay\+Log\+Loader}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Loader}, 
 		\hyperpage{54}
   \item {Replay\+Log\+Save\+Service}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}, 
-		\hyperpage{57}
+		\hyperpage{56}
   \item {Replay\+Logger}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger}, 
-		\hyperpage{52}
+		\hyperpage{53}
   \item {Root\+Window\+Controller}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Root\+Window\+Controller}, 
-		\hyperpage{58}
+		\hyperpage{57}
   \item {run}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::executor\+::\+Command\+Executor}, 
 		\hyperpage{14}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Message\+Queue\+Receiver}, 
-		\hyperpage{38}
+		\hyperpage{39}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::packetdataprocessor\+::profinetdataprocessor\+::\+Unix\+Socket\+Receiver}, 
 		\hyperpage{65}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Load\+Service}, 
@@ -809,10 +802,10 @@
 
   \item {S\+H\+O\+W}
     \subitem {edu\+::kit\+::trufflehog\+::interaction\+::\+Overlay\+Interaction}, 
-		\hyperpage{48}
+		\hyperpage{49}
   \item {save\+Data\+Log}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Logger}, 
-		\hyperpage{54}
+		\hyperpage{53}
   \item {set\+Active}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Edge}, 
 		\hyperpage{40}
@@ -824,27 +817,27 @@
 		\hyperpage{44}
   \item {set\+Graph}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Graph\+Proxy}, 
-		\hyperpage{25}
+		\hyperpage{26}
   \item {set\+Graph\+Layout}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{44}
+		\hyperpage{45}
   \item {set\+Layout\+Factory}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Abstract\+Network\+Graph\+View}, 
 		\hyperpage{11}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{44}
+		\hyperpage{45}
   \item {set\+Model}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{44}
+		\hyperpage{45}
   \item {set\+Pick\+Support}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{44}
+		\hyperpage{45}
   \item {set\+Picked\+Edge\+State}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{44}
+		\hyperpage{45}
   \item {set\+Picked\+Vertex\+State}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Network\+Graph\+View}, 
-		\hyperpage{44}
+		\hyperpage{45}
   \item {set\+Properties\+File}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::configdata\+::\+Config\+Data\+Model}, 
 		\hyperpage{19}
@@ -862,20 +855,23 @@
 		\hyperpage{45}
   \item {set\+Scene}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+I\+Window\+Controller}, 
-		\hyperpage{33}
+		\hyperpage{34}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Root\+Window\+Controller}, 
-		\hyperpage{58}
+		\hyperpage{57}
   \item {set\+Total\+Packet\+Count}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Edge}, 
-		\hyperpage{40}
+		\hyperpage{41}
+  \item {set\+Up}
+    \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System\+Test}, 
+		\hyperpage{22}
   \item {Settings\+View\+Controller}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Settings\+View\+Controller}, 
-		\hyperpage{60}
+		\hyperpage{59}
   \item {show}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+I\+Window\+Controller}, 
-		\hyperpage{33}
+		\hyperpage{35}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Root\+Window\+Controller}, 
-		\hyperpage{58}
+		\hyperpage{57}
   \item {Snapshot\+Logger}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger}, 
 		\hyperpage{60}
@@ -884,13 +880,28 @@
 		\hyperpage{45}
   \item {Statistics\+View\+Controller}
     \subitem {edu\+::kit\+::trufflehog\+::view\+::\+Statistics\+View\+Controller}, 
-		\hyperpage{62}
+		\hyperpage{61}
 
   \indexspace
 
   \item {take\+Snapshot}
     \subitem {edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Snapshot\+Logger}, 
 		\hyperpage{60}
+  \item {tear\+Down}
+    \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System\+Test}, 
+		\hyperpage{23}
+  \item {test\+Get\+Config\+Folder}
+    \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System\+Test}, 
+		\hyperpage{23}
+  \item {test\+Get\+Data\+Folder}
+    \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System\+Test}, 
+		\hyperpage{23}
+  \item {test\+Get\+Replay\+Log\+Folder}
+    \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System\+Test}, 
+		\hyperpage{23}
+  \item {test\+Get\+Truffle\+Data\+Log\+Folder}
+    \subitem {edu\+::kit\+::trufflehog\+::model\+::\+File\+System\+Test}, 
+		\hyperpage{23}
   \item {Truffle\+Logger}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::truffledatalog\+::\+Truffle\+Logger}, 
 		\hyperpage{64}
@@ -905,9 +916,9 @@
 
   \item {view\+Live}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Graph\+Switch}, 
-		\hyperpage{41}
+		\hyperpage{42}
   \item {view\+Playback}
     \subitem {edu\+::kit\+::trufflehog\+::model\+::graph\+::\+Network\+Graph\+Switch}, 
-		\hyperpage{41}
+		\hyperpage{42}
 
 \end{theindex}

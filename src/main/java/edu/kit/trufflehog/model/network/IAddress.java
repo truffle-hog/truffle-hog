@@ -13,8 +13,6 @@ public interface IAddress {
      */
     byte[] toByteArray();
 
-    int[] toIntArray();
-
     /**
      * Returns the size in Bit of this address.
      * @return the size of this address in bit

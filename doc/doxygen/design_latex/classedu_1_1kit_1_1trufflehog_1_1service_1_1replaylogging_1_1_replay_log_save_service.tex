@@ -2,7 +2,7 @@
 \label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service}\index{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Save\+Service@{edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Save\+Service}}
 
 
-Inherits Runnable.
+Inherits Runnable, and \hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1util_1_1_i_listener}{edu.\+kit.\+trufflehog.\+util.\+I\+Listener$<$ M $>$}.
 
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
@@ -10,6 +10,8 @@ Inherits Runnable.
 \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_a6c679cb4574f24f914e3c0402d444d40}{Replay\+Log\+Save\+Service} ()
 \item 
 void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_ae78e77d574e2e7f8791152f03e2f350a}{run} ()
+\item 
+void \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_aa6242b72579d7b865bdb096cf24508a4}{receive} (\hyperlink{interfaceedu_1_1kit_1_1trufflehog_1_1command_1_1_i_command}{I\+Command} command)
 \end{DoxyCompactItemize}
 
 
@@ -27,6 +29,20 @@ The \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_rep
 Creates a new \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service}{Replay\+Log\+Save\+Service} object. 
 
 \subsection{Member Function Documentation}
+\hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_aa6242b72579d7b865bdb096cf24508a4}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}!receive@{receive}}
+\index{receive@{receive}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}}
+\subsubsection[{receive(\+I\+Command command)}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Save\+Service.\+receive (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Command}}]{command}
+\end{DoxyParamCaption}
+)}\label{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_aa6242b72579d7b865bdb096cf24508a4}
+Through this method the \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service}{Replay\+Log\+Save\+Service} receives new Commands that it should save into the list so that they can be turned into \hyperlink{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log}{Replay\+Log}s later. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & The command to save \\
+\hline
+\end{DoxyParams}
 \hypertarget{classedu_1_1kit_1_1trufflehog_1_1service_1_1replaylogging_1_1_replay_log_save_service_ae78e77d574e2e7f8791152f03e2f350a}{}\index{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}!run@{run}}
 \index{run@{run}!edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service@{edu\+::kit\+::trufflehog\+::service\+::replaylogging\+::\+Replay\+Log\+Save\+Service}}
 \subsubsection[{run()}]{\setlength{\rightskip}{0pt plus 5cm}void edu.\+kit.\+trufflehog.\+service.\+replaylogging.\+Replay\+Log\+Save\+Service.\+run (

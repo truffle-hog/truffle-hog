@@ -2,11 +2,14 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
-import edu.kit.trufflehog.command.trufflecommand.PluginNotRunningCommand;
+import edu.kit.trufflehog.command.trufflecommand.ReceiverErrorCommand;
 import edu.kit.trufflehog.model.filter.Filter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * <p>
@@ -22,6 +25,9 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
     private final INetworkWritingPort writingPort;
     private final List<Filter> filters;
+    private final ExecutorService executor = Executors.newCachedThreadPool();
+    private final Logger logger = LogManager.getLogger();
+
 
     private boolean connected = false;
 
@@ -42,7 +48,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *
      * <p>
      *     Tries to connect to the spp_profinet process.
-     *     If the connection failed a {@link PluginNotRunningCommand} is sent to all listeners.
+     *     If the connection failed a {@link ReceiverErrorCommand} is sent to all listeners.
      *     Otherwise the service starts receiving packet data from the spp_profinet snort plugin,
      *     packs the data into {@link Truffle} objects and then generates {@link ITruffleCommand} objects and sends
      *     them to all listeners.
@@ -53,15 +59,19 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
         while(!Thread.interrupted()) {
             synchronized (this) {
+
                 try {
                     while (!connected) {
                         this.wait();
                     }
 
-                    final Truffle truffle = getTruffle();
+                    Truffle truffle = getTruffle();
 
-                    notifyListeners(new AddPacketDataCommand(writingPort, truffle, filters));
+                    if (truffle != null) {
+                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filters));
+                    }
                 } catch (InterruptedException e) {
+                    logger.debug("UnixSocketReceiver interrupted. Exiting...");
                     Thread.currentThread().interrupt();
                 }
             }
@@ -74,17 +84,19 @@ public class UnixSocketReceiver extends TruffleReceiver {
     @Override
     public void connect() {
 
-        try {
-            if (!connected) {
-                openIPC();
-            }
+        if (!connected) {
 
-            connected = true;
-            synchronized (this) {
-                this.notifyAll();
+            try {
+                openIPC();
+
+                connected = true;
+
+                synchronized (this) {
+                    this.notifyAll();
+                }
+            } catch (SnortPNPluginNotRunningException e) {
+                notifyListeners(new ReceiverErrorCommand("Snort plugin doesn't seem to be running."));
             }
-        } catch (SnortPNPluginNotRunningException e) {
-            notifyListeners(new PluginNotRunningCommand());
         }
     }
 
@@ -94,19 +106,23 @@ public class UnixSocketReceiver extends TruffleReceiver {
     @Override
     public void disconnect() {
 
-        connected = false;
+        if (connected) {
+            connected = false;
 
-        synchronized (this) {
-            if (connected) {
-                closeIPC();
+            synchronized (this) {
+                try {
+                    closeIPC();
+                } catch (SnortPNPluginDisconnectFailedException e) {
+                    logger.error(e);
+                    notifyListeners(new ReceiverErrorCommand("Couldn't disconnect from plugin correctly."));
+                }
             }
         }
-
     }
 
     private native void openIPC() throws SnortPNPluginNotRunningException;
 
-    private native void closeIPC();
+    private native void closeIPC() throws SnortPNPluginDisconnectFailedException;
 
     private native Truffle getTruffle();
 }

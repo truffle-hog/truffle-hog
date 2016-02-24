@@ -54,4 +54,9 @@ public class AddPacketDataCommand implements ITruffleCommand {
 
         writingPort.writeConnection(connection);
     }
+
+    @Override
+    public String toString() {
+        return data.toString();
+    }
 }

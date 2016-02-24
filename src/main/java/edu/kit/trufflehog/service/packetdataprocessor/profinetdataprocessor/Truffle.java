@@ -67,4 +67,29 @@ public class Truffle implements IPacketData {
 
         return (T) attributeMap.get(attributeIdentifier);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        Long srcMacAddress = getAttribute(Long.class, "sourceMacAddress");
+        Long destMacAddress = getAttribute(Long.class, "destMacAddress");
+        Short etherType = getAttribute(Short.class, "etherType");
+
+        sb.append("Source mac address: ");
+        if (srcMacAddress != null) {
+            sb.append(Long.toHexString(srcMacAddress));
+        }
+        sb.append("\nDestination mac address: ");
+        if (destMacAddress != null) {
+            sb.append(Long.toHexString(destMacAddress));
+        }
+        sb.append("\nEther type: ");
+        if (etherType != null) {
+            sb.append(etherType.toString());
+        }
+        sb.append("\n\n");
+
+        return sb.toString();
+    }
 }
