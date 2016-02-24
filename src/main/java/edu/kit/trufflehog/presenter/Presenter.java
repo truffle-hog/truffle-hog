@@ -82,7 +82,63 @@ public class Presenter {
      *      resources they need ect.
      *  </p>
      */
-    public void present() { initGUI(); }
+    public void present() {
+
+        //initGUI();
+        initNetwork();
+    }
+
+    private void initNetwork() {
+
+        // initialize the live network that will be writte on by the receiver commands
+
+        // TODO Ctor injection with the Ports that are within the networks
+        final INetwork liveNetwork = new LiveNetwork(new ConcurrentDirectedSparseGraph<>());
+/*
+        // initialize the replay network that will be written on by a networkTape if the device plays a replay
+        final INetwork replayNetwork = new ReplayNetwork(new ConcurrentDirectedSparseGraph<>());
+*/
+        // initialize the writing port switch that use the writing port of the live network
+        // as their initial default writing port
+        final INetworkWritingPortSwitch writingPortSwitch = new NetworkWritingPortSwitch(liveNetwork.getWritingPort());
+
+        // initialize the reading port switch that uses the reading port of the live network
+        // as its initial default reading port
+        final INetworkReadingPortSwitch readingPortSwitch = new NetworkReadingPortSwitch(liveNetwork.getReadingPort());
+
+        // initialize the view port switch that uses the view port of the live network
+        // as its initial default view port
+        final INetworkViewPortSwitch viewPortSwitch = new NetworkViewPortSwitch(liveNetwork.getViewPort());
+
+        // intialize the network device which is capable of recording and replaying any ongoing network session
+        // on serveral screens
+        final INetworkDevice networkObservationDevice = new NetworkDevice();
+
+        // create a new empty tape to record something on
+        final INetworkTape tape = new NetworkTape(24);
+        // Tell the network observation device to start recording the
+        // given network with 25fps on the created tape
+        networkObservationDevice.record(liveNetwork.getViewPort(), tape, 25);
+
+        final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
+        final CommandExecutor commandExecutor = new CommandExecutor();
+        commandExecutorService.execute(commandExecutor);
+
+        final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
+        final TruffleReceiver truffleReceiver = new UnixSocketReceiver(writingPortSwitch, Collections.emptyList());
+        truffleFetchService.execute(truffleReceiver);
+
+        truffleReceiver.connect();
+
+        truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
+
+        // play that ongoing recording on the given viewportswitch
+        networkObservationDevice.play(tape, viewPortSwitch);
+
+        // track the live network on the given viewportswitch
+        networkObservationDevice.goLive(liveNetwork, viewPortSwitch);
+    }
+
 
     private void initGUI() {
         Stage primaryStage = getPrimaryStage();

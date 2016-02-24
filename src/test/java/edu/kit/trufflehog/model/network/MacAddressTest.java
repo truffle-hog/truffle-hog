@@ -111,13 +111,13 @@ public class MacAddressTest {
 
     }
 
-    @Test
+/*    @Test
     public void testToIntArray() throws Exception {
 
         final IAddress addressh = new MacAddress(0x000001000002L);
 
         assertArrayEquals(new int[] {0x000001, 0x000002}, addressh.toIntArray());
-    }
+    }*/
 
     @Test
     public void testToString() throws Exception {

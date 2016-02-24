@@ -63,7 +63,7 @@ public class MacAddress implements IAddress {
         return Arrays.copyOf(addressByteArray, 6);
     }
 
-    @Override
+/*    @Override
     public int[] toIntArray() {
 
         if (intArray == null) {
@@ -75,7 +75,7 @@ public class MacAddress implements IAddress {
 
         }
         return Arrays.copyOf(intArray, 2);
-    }
+    }*/
 
     @Override
     public int size() {
@@ -95,7 +95,7 @@ public class MacAddress implements IAddress {
         }
         final IAddress other = (IAddress) o;
 
-        return Arrays.equals(this.toIntArray(), other.toIntArray());
+        return Arrays.equals(addressByteArray, other.toByteArray());
 
         //return Arrays.equals(this.toByteArray(), other.toByteArray());
     }
