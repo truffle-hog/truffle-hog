@@ -1,5 +1,6 @@
-package edu.kit.trufflehog.model.network.graph;
+package edu.kit.trufflehog.model.network.graph.nodecomponents;
 
+import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

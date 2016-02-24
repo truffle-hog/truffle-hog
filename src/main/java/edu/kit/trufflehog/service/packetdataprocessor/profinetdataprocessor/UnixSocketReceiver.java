@@ -4,8 +4,7 @@ import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.command.trufflecommand.PluginNotRunningCommand;
 import edu.kit.trufflehog.model.filter.Filter;
-import edu.kit.trufflehog.model.graph.INetworkGraph;
-import edu.kit.trufflehog.view.NetworkGraphView;
+import edu.kit.trufflehog.model.network.INetworkWritingPort;
 
 import java.util.List;
 
@@ -16,11 +15,12 @@ import java.util.List;
  * </p>
  *
  * @author Mark Giraud
+ * @author Jan Hermes
  * @version 0.1
  */
 public class UnixSocketReceiver extends TruffleReceiver {
 
-    private final INetworkGraph graph;
+    private final INetworkWritingPort writingPort;
     private final List<Filter> filters;
 
     private boolean connected = false;
@@ -30,8 +30,8 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *     Creates the UnixSocketReceiver.
      * </p>
      */
-    public UnixSocketReceiver(INetworkGraph graph, List<Filter> filters) {
-        this.graph = graph;
+    public UnixSocketReceiver(INetworkWritingPort writingPort, List<Filter> filters) {
+        this.writingPort = writingPort;
         this.filters = filters;
     }
 
@@ -58,7 +58,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                         this.wait();
                     }
 
-                    notifyListeners(new AddPacketDataCommand(graph, getTruffle(), filters));
+                    notifyListeners(new AddPacketDataCommand(writingPort, getTruffle(), filters));
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }

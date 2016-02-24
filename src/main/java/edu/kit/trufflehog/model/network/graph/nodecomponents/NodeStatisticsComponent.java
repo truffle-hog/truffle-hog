@@ -1,5 +1,6 @@
-package edu.kit.trufflehog.model.network.graph;
+package edu.kit.trufflehog.model.network.graph.nodecomponents;
 
+import edu.kit.trufflehog.model.network.graph.IComponent;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
