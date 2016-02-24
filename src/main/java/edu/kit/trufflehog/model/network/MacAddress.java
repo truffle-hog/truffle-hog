@@ -58,7 +58,9 @@ public class MacAddress implements IAddress {
 
     @Override
     public byte[] toByteArray() {
-        return addressByteArray;
+
+        // TODO change to Arrays.copyof or?
+        return Arrays.copyOf(addressByteArray, 6);
     }
 
     @Override
@@ -114,7 +116,7 @@ public class MacAddress implements IAddress {
             }
             this.addressString = macBuilder.toString();*/
 
-            this. addressString = Arrays.asList(ArrayUtils.toObject(toByteArray())).stream().
+            this.addressString = Arrays.asList(ArrayUtils.toObject(toByteArray())).stream().
                     map(b -> String.format("%02x", b)).collect(Collectors.joining(":"));
         }
 

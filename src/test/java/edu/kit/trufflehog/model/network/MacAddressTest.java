@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Created by jan on 23.02.16.
@@ -40,17 +41,59 @@ public class MacAddressTest {
     }
 
     @Test
-    public void testSize() throws Exception {
-
-    }
-
-    @Test
     public void testHashCode() throws Exception {
+
+        final IAddress addressA_1 = new MacAddress(0xFF0022002200L);
+        final IAddress addressA_2 = new MacAddress(0xFF0022002200L);
+
+        final IAddress addressB_1 = new MacAddress(0xFF0022002000L);
+        final IAddress addressB_2 = new MacAddress(0xFF0022002000L);
+
+        // Corner cases:
+
+        final IAddress smallest = new MacAddress(0x000000000000L);
+        final IAddress smallest2 = new MacAddress(0x000000000000L);
+
+        final IAddress biggest = new MacAddress(0xFFFFFFFFFFFFL);
+        final IAddress biggest2 = new MacAddress(0xFFFFFFFFFFFFL);
+
+        assertEquals(addressA_1.hashCode(), addressA_2.hashCode());
+        assertEquals(addressB_1.hashCode(), addressB_2.hashCode());
+        assertEquals(smallest.hashCode(), smallest2.hashCode());
+        assertEquals(biggest.hashCode(), biggest2.hashCode());
+
+        assertNotEquals(smallest.hashCode(), biggest.hashCode());
+        assertNotEquals(addressA_1.hashCode(), addressB_1.hashCode());
 
     }
 
     @Test
     public void testEquals() throws Exception {
+
+        final IAddress addressA_1 = new MacAddress(0xFF0022002200L);
+        final IAddress addressA_2 = new MacAddress(0xFF0022002200L);
+
+        final IAddress addressB_1 = new MacAddress(0xFF0022002000L);
+        final IAddress addressB_2 = new MacAddress(0xFF0022002000L);
+
+        // Corner cases:
+
+        final IAddress smallest = new MacAddress(0x000000000000L);
+        final IAddress smallest2 = new MacAddress(0x000000000000L);
+
+        final IAddress biggest = new MacAddress(0xFFFFFFFFFFFFL);
+        final IAddress biggest2 = new MacAddress(0xFFFFFFFFFFFFL);
+
+        assertEquals(addressA_1, addressA_2);
+        assertEquals(addressB_1, addressB_2);
+        assertEquals(smallest, smallest2);
+        assertEquals(biggest, biggest2);
+
+        assertNotEquals(smallest, biggest);
+        assertNotEquals(addressA_1, addressB_1);
+
+
+
 
     }
 
@@ -74,7 +117,6 @@ public class MacAddressTest {
         final IAddress addressh = new MacAddress(0x000001000002L);
 
         assertArrayEquals(new int[] {0x000001, 0x000002}, addressh.toIntArray());
-
     }
 
     @Test
