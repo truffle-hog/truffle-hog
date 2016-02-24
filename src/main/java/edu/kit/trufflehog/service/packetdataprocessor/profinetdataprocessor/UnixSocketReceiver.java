@@ -23,7 +23,7 @@ import java.util.concurrent.*;
  */
 public class UnixSocketReceiver extends TruffleReceiver {
 
-    private final INetworkWritingPort writingPort;
+    private final INetworkWritingPort networkWritingPort;
     private final List<Filter> filters;
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private final Logger logger = LogManager.getLogger();
@@ -37,7 +37,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
      * </p>
      */
     public UnixSocketReceiver(INetworkWritingPort writingPort, List<Filter> filters) {
-        this.writingPort = writingPort;
+        this.networkWritingPort = writingPort;
         this.filters = filters;
     }
 
