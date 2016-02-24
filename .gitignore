@@ -50,6 +50,7 @@ pom.xml
 .DS_Store
 *.bak
 *.lock
+*.swp
 
 # TeX temp/output files
 *.glg
