@@ -20,6 +20,7 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.util.Duration;
 
 import javax.swing.*;
@@ -48,7 +49,8 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
 		refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
 			//refresh();
-			repaint();
+			Platform.runLater(() -> repaint());
+
 		}));
 		refresher.setCycleCount(Timeline.INDEFINITE);
 		//fiveSecondsWonder.playGraphTape();
@@ -80,7 +82,7 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
 		initRenderers();
 
-		jungView.setBackground(Color.DARK_GRAY);
+		jungView.setBackground(new Color(0, 17, 61, 255));
 		jungView.setPreferredSize(new Dimension(350, 350));
 		// Show vertex and edge labels
 
@@ -95,7 +97,7 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 	private void initRenderers() {
 
 		jungView.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
-		jungView.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
+		//jungView.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
 
 /*		jungView.getRenderContext().setEdgeStrokeTransformer(iConnection -> {
 			//	return new BasicStroke(1.0f, BasicStroke.CAP_BUTT,

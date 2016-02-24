@@ -20,134 +20,137 @@ public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
     //private final INetworkDevice attachedDevice;
     private INetworkViewPort activeViewport;
 
+
+
     public NetworkViewPortSwitch(INetworkViewPort viewPort) {
 
-
-
+        activeViewport = viewPort;
     }
+
 
     @Override
     public void setActiveViewPort(INetworkViewPort viewPort) {
-
+        activeViewport = viewPort;
     }
 
     @Override
     public INetworkViewPort getActiveViewPort() {
-        return null;
+        return activeViewport;
     }
 
     @Override
     public int getMaxConnectionSize() {
-        return 0;
+        return getActiveViewPort().getMaxConnectionSize();
     }
 
     @Override
     public void setMaxConnectionSize(int size) {
-
+        getActiveViewPort().setMaxConnectionSize(size);
     }
 
     @Override
     public IntegerProperty getMaxConnectionSizeProperty() {
-        return null;
+        return getActiveViewPort().getMaxConnectionSizeProperty();
     }
 
     @Override
     public int getMaxThroughput() {
-        return 0;
+        return getActiveViewPort().getMaxThroughput();
     }
 
     @Override
     public void setMaxThroughput(int size) {
-
+        getActiveViewPort().setMaxThroughput(size);
     }
 
     @Override
     public IntegerProperty getMaxThroughputProperty() {
-        return null;
+        return getActiveViewPort().getMaxThroughputProperty();
     }
 
     @Override
     public long getViewTime() {
-        return 0;
+        return getActiveViewPort().getViewTime();
     }
 
     @Override
     public void setViewTime(long time) {
-
+        getActiveViewPort().setViewTime(time);
     }
 
     @Override
     public LongProperty getViewTimeProperty() {
-        return null;
+        return getActiveViewPort().getViewTimeProperty();
     }
 
     @Override
     public void refreshLayout() {
-
+        getActiveViewPort().refreshLayout();
     }
 
     @Override
     public void setLayoutFactory(Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory) {
-
+        getActiveViewPort().setLayoutFactory(layoutFactory);
     }
 
     @Override
     public void graphIntersection(Graph<INode, IConnection> graph) {
-
+        getActiveViewPort().graphIntersection(graph);
     }
 
     @Override
     public void initialize() {
-
+        getActiveViewPort().initialize();
     }
 
     @Override
     public void setInitializer(Transformer<INode, Point2D> initializer) {
-
+        getActiveViewPort().setInitializer(initializer);
     }
 
     @Override
     public void setGraph(Graph<INode, IConnection> graph) {
-
+        getActiveViewPort().setGraph(graph);
     }
 
     @Override
     public Graph<INode, IConnection> getGraph() {
-        return null;
+        return getActiveViewPort().getGraph();
     }
 
     @Override
     public void reset() {
-
+        getActiveViewPort().reset();
     }
 
     @Override
     public void setSize(Dimension d) {
-
+        getActiveViewPort().setSize(d);
     }
 
     @Override
     public Dimension getSize() {
-        return null;
+        return getActiveViewPort().getSize();
     }
 
     @Override
     public void lock(INode iNode, boolean state) {
-
+        getActiveViewPort().lock(iNode, state);
     }
 
     @Override
     public boolean isLocked(INode iNode) {
-        return false;
+        return getActiveViewPort().isLocked(iNode);
     }
 
     @Override
     public void setLocation(INode iNode, Point2D location) {
-
+        getActiveViewPort().setLocation(iNode, location);
     }
 
     @Override
     public Point2D transform(INode iNode) {
-        return null;
+        return getActiveViewPort().transform(iNode);
     }
+
 }

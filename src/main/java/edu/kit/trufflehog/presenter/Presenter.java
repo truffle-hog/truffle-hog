@@ -4,16 +4,15 @@ import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.configdata.IConfigData;
 import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
-import edu.kit.trufflehog.view.MainToolBarController;
-import edu.kit.trufflehog.view.MainViewController;
-import edu.kit.trufflehog.view.OverlayViewController;
-import edu.kit.trufflehog.view.RootWindowController;
+import edu.kit.trufflehog.view.*;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -38,9 +37,11 @@ public class Presenter {
     private static final Logger logger = LogManager.getLogger(Presenter.class);
 
     private static Presenter presenter;
-    private final IConfigData configData;
-    private final FileSystem fileSystem;
-    private final ScheduledExecutorService executorService;
+   // private final IConfigData configData;
+   // private final FileSystem fileSystem;
+   // private final ScheduledExecutorService executorService;
+
+    private INetworkViewPort viewPort;
 
     /**
      * <p>
@@ -63,7 +64,7 @@ public class Presenter {
      * </p>
      */
     private Presenter() {
-        this.fileSystem = new FileSystem();
+/*        this.fileSystem = new FileSystem();
         this.executorService = new LoggedScheduledExecutor(10);
 
         IConfigData configDataTemp;
@@ -73,7 +74,7 @@ public class Presenter {
             configDataTemp = null;
             logger.error("Unable to set config data model", e);
         }
-        configData = configDataTemp;
+        configData = configDataTemp;*/
     }
 
     /**
@@ -84,8 +85,9 @@ public class Presenter {
      */
     public void present() {
 
-        //initGUI();
+
         initNetwork();
+        initGUI();
     }
 
     private void initNetwork() {
@@ -137,6 +139,8 @@ public class Presenter {
 
         // track the live network on the given viewportswitch
         networkObservationDevice.goLive(liveNetwork, viewPortSwitch);
+
+        viewPort = viewPortSwitch;
     }
 
 
@@ -147,8 +151,16 @@ public class Presenter {
         MainViewController mainView = new MainViewController("main_view.fxml");
         Scene mainScene = new Scene(mainView);
         RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene);
-        primaryStage.setScene(mainScene);
-        primaryStage.show();
+        //primaryStage.setScene(mainScene);
+        //primaryStage.show();
+        rootWindow.show();
+        final Node node = new NetworkViewScreen(viewPort, 50);
+        mainView.getChildren().add(node);
+        AnchorPane.setBottomAnchor(node, 0d);
+        AnchorPane.setTopAnchor(node, 0d);
+        AnchorPane.setLeftAnchor(node, 0d);
+        AnchorPane.setRightAnchor(node, 0d);
+
 
         // setting up general statistics overlay
         OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
@@ -165,6 +177,8 @@ public class Presenter {
         mainView.getChildren().add(nodeStatisticsOverlay);
         AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
+
+
     }
 
 }
