@@ -16,6 +16,7 @@
 /////////////
 
 #define SOCKET_NAME "/socket.sock"
+#define _CHECK_JAVA_EXCEPTION(ENV) if ((*(ENV))->ExceptionOccurred((ENV))) {return NULL;}
 
 //////////////////////////
 //                      //
@@ -51,6 +52,84 @@ struct SocketData
 // The socket file descriptor
 struct SocketData socketData;
 
+///////////////////////
+//                   //
+// JNI Class getters //
+//                   //
+///////////////////////
+
+/**
+ * @brief Gets the Truffle class reference
+ * This method may throw java exceptions. Please check with _CHECK_JAVA_EXCEPTION(env) after calling.
+ *
+ * @param env the java environment
+ *
+ * @return returns a reference to the Truffle class and NULL on error
+ */
+jclass getTruffleClass(JNIEnv *env)
+{
+    static jclass truffleClass = NULL;
+
+    if (truffleClass == NULL)
+    {
+        char *truffleClassName = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle";
+
+        jclass localTruffleClass = (*env)->FindClass(env, truffleClassName);
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(localTruffleClass != NULL, noClass, "Truffle class could not be found");
+
+        truffleClass = (jclass) (*env)->NewGlobalRef(env, localTruffleClass);
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(truffleClass != NULL, noClass, "Global truffle class reference could not be created");
+
+        (*env)->DeleteLocalRef(env, localTruffleClass);
+        _CHECK_JAVA_EXCEPTION(env);
+    }
+    return truffleClass;
+
+noClass:
+    throwNoClassDefError(env, "Truffle class could not be found");
+    return NULL;
+}
+
+//////////////////////
+//                  //
+// JNI Ctor getters //
+//                  //
+//////////////////////
+
+/**
+ * @brief Gets the constructor method id for the truffle object
+ * This method may throw java exceptions. Please check with _CHECK_JAVA_EXCEPTION(env) after calling.
+ *
+ * @param env the java environment
+ * @param truffleClass the truffle class reference
+ *
+ * @return returns the method id of the constructor
+ */
+jmethodID getTruffleCtor(JNIEnv *env, jclass truffleClass)
+{
+    static jmethodID ctor = NULL;
+
+    if (ctor == NULL)
+    {
+        ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "()V");
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(ctor != NULL, noCtor, "constructor for class Truffle not found");
+    }
+
+    return ctor;
+
+noCtor:
+   	throwNoSuchMethodError(env, "Constructor for class Truffle not found");
+   	return NULL;
+}
+
+////////////////////
+//                //
+// Normal methods //
+//                //
+////////////////////
 
 /**
  * @brief Gets the socket file path and writes it to sockData.address.
@@ -83,6 +162,12 @@ error:
     return -1;
 }
 
+/**
+ * @brief Opens the socket for communication.
+ * Only call this method once before closing.
+ *
+ * @return returns 0 on success and -1 on error
+ */
 int openSocket()
 {
     debug("opening socket..");
@@ -173,14 +258,33 @@ error:
  */
 int getNextTruffle(JNIEnv *env, Truffle *truffle)
 {
-    ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
 
-    if (len < 0)
-		goto noMessageReceived;
-    else if (len != sizeof(Truffle))
-        goto error;
+    fd_set read_fds, write_fds, except_fds;
+    FD_ZERO(&read_fds);
+    FD_ZERO(&write_fds);
+    FD_ZERO(&except_fds);
+    FD_SET(socketData.socketFD, &read_fds);
 
-	return 0;
+    struct timeval timeout;
+    timeout.tv_sec = 1;
+    timeout.tv_usec = 0;
+
+    // wait for fd to become ready but only wait 1 second so that the disconnect method gets the chance to close the connection
+    int rv = select(socketData.socketFD + 1, &read_fds, &write_fds, &except_fds, &timeout);
+    if (rv > 0)
+    {
+        ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
+
+        check_to(len >= 0, noMessageReceived, "reading the turffle failed");
+        check(len == sizeof(Truffle), "could not read the correct number of bytes from the socket");
+
+	    return 0;
+	}
+	check_to(rv != 0, noMessageReceived, "no message received");
+
+	debug("some error occurred while waiting for fd to become available: rv=%d", rv);
+	throwReceiverReadError(env, "other error");
+	return -3;
 
 error:
 	throwReceiverReadError(env, "could not read the correct number of bytes from the socket");
@@ -210,17 +314,6 @@ error:
     return NULL;
 }
 
-jobject createObjectWithStdCtor(JNIEnv *env, jclass *clazz)
-{
-    jmethodID ctor = (*env)->GetMethodID(env, *clazz, "<init>", "()V");
-    check(ctor != NULL, "could not get standard ctor");
-
-    return (*env)->NewObject(env, *clazz, ctor);
-
-error:
-    return NULL;
-}
-
 /*
  * Class:     edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver
  * Method:    getTruffle
@@ -228,16 +321,14 @@ error:
  */
 JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_getTruffle(JNIEnv *env, jobject thisObj)
 {
-	char *truffleClassName = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle";
+    jclass truffleClass = getTruffleClass(env);
+    _CHECK_JAVA_EXCEPTION(env);
 
-	jclass truffleClass = (*env)->FindClass(env, truffleClassName);
-	check_to(truffleClass != NULL, noClass, "Truffle class could not be found");
+	jmethodID truffleCtor = getTruffleCtor(env, truffleClass);
+	_CHECK_JAVA_EXCEPTION(env);
 
-	jmethodID ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "()V");
-	check_to(ctor != NULL, noCtor, "constructor for class Truffle not found");
-
-	jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
-
+	jobject truffleObject = (*env)->NewObject(env, truffleClass, truffleCtor);
+    _CHECK_JAVA_EXCEPTION(env);
 	check(truffleObject != NULL, "could not create Truffle");
 
 	Truffle truffle;
@@ -246,7 +337,7 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
     jstring idStr;
 
-    // get method
+    // get setAttribute method
     jmethodID setAttributeMID = (*env)->GetMethodID(env, truffleClass, "setAttribute", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
     check_to(setAttributeMID != 0, noSetAttribute, "setAttribute method not found");
 
@@ -330,17 +421,9 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
 	return truffleObject;
 
-noClass:
-	throwNoClassDefError(env, truffleClassName);
-	return NULL;
-
 noSetAttribute:
     throwNoSuchMethodError(env, "SetAttribute method not found");
     return NULL;
-
-noCtor:
-	throwNoSuchMethodError(env, "Constructor for class Truffle not found");
-	return NULL;
 
 error:
 	return NULL;
