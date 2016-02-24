@@ -259,7 +259,7 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
     // get the long class
     jclass longClass = getClassByName(env, "java/lang/Long");
     check(longClass != NULL, "could not get long class");
-
+a
     // get the long ctor
     jmethodID longCtor = (*env)->GetMethodID(env, longClass, "<init>", "(J)V");
     check(longCtor != NULL, "Could not fetch long ctor");
