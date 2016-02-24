@@ -105,6 +105,8 @@ public class Presenter {
         final TruffleReceiver truffleReceiver = new UnixSocketReceiver(writingPortSwitch, Collections.emptyList());
         truffleFetchService.execute(truffleReceiver);
 
+        truffleReceiver.connect();
+
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 
         // play that ongoing recording on the given viewportswitch
