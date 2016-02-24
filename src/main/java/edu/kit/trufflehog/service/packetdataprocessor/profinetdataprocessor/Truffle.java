@@ -18,7 +18,10 @@ public class Truffle implements IPacketData {
 
     private final Map<Class<?>, HashMap<String, Object>> attributes = new HashMap<>();
 
-    Truffle() {
+    Truffle(long sourceMacID, long destinationMacID) {
+
+        setAttribute(Long.class, "ether_source", sourceMacID);
+        setAttribute(Long.class, "ether_dest", destinationMacID);
 
     }
 
