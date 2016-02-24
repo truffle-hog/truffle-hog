@@ -165,6 +165,15 @@ error:
  */
 JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_getTruffle(JNIEnv *env, jobject thisObj)
 {
+
+    Truffle_t truffle;
+
+    memset((void*) &truffle, 0, sizeof(Truffle_t));
+
+    ssize_t readCount = read(socketData.socketFD, (void*) (&truffle), sizeof(Truffle_t));
+    (void) readCount;
+
+
 	char *truffleClassName = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle";
 
 	jclass truffleClass = (*env)->FindClass(env, truffleClassName);
@@ -174,7 +183,9 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 	jmethodID ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "(JJ)V");
 	check_to(ctor != NULL, noMethod, "constructor for class Truffle not found");
 
-	jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
+	//jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
+
+    jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor, truffle.etherHeader.sourceMacAddress, truffle.etherHeader.destMacAddress);
 
 	//TODO fill truffle with data
 
