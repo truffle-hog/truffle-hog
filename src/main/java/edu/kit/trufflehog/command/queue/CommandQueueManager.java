@@ -55,7 +55,7 @@ public class CommandQueueManager {
      *     This method gets the next non empty {@link ICommandQueue}. If there are multiple queues registered
      *     the queues are cycled each call until every queue was returned at least once.
      *     If all queues are empty this method blocks, until one of the queues receives an element.
-     * </p>
+     * </p>fix
      * @return The next command queue. Returns null if no queues are registered.
      * @throws InterruptedException
      */

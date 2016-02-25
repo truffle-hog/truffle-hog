@@ -24,6 +24,10 @@ public class Truffle implements IPacketData {
         setAttribute(Long.class, "ether_dest", destinationMacID);
     }
 
+    public Truffle() {
+
+    }
+
     /**
      * <p>
      *     This method adds a new element under the specified type and name to the Truffle.

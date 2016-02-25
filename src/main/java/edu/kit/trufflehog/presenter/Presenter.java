@@ -12,6 +12,7 @@ import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.view.*;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -154,7 +155,13 @@ public class Presenter {
         //primaryStage.setScene(mainScene);
         //primaryStage.show();
         rootWindow.show();
+
+       /* Platform.runLater(new Runnable() {
+
+        });*/
         final Node node = new NetworkViewScreen(viewPort, 50);
+
+
         mainView.getChildren().add(node);
         AnchorPane.setBottomAnchor(node, 0d);
         AnchorPane.setTopAnchor(node, 0d);

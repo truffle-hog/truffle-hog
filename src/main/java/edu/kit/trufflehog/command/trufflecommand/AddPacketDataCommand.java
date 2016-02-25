@@ -41,8 +41,8 @@ public class AddPacketDataCommand implements ITruffleCommand {
     @Override
     public void execute() {
 
-        final MacAddress sourceAddress = new MacAddress(data.getAttribute(Long.class, "ether_source"));
-        final MacAddress destAddress = new MacAddress(data.getAttribute(Long.class, "ether_dest"));
+        final MacAddress sourceAddress = new MacAddress(data.getAttribute(Long.class, "sourceMacAddress"));
+        final MacAddress destAddress = new MacAddress(data.getAttribute(Long.class, "destMacAddress"));
 
 
         final INode sourceNode = new NetworkNode(sourceAddress);

@@ -49,7 +49,8 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
 		refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
 			//refresh();
-			Platform.runLater(() -> repaint());
+			//Platform.runLater(() -> repaint());
+			repaint();
 
 		}));
 		refresher.setCycleCount(Timeline.INDEFINITE);

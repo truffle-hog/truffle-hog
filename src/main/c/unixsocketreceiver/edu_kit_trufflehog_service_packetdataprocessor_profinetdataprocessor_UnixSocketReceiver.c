@@ -259,7 +259,11 @@ error:
 int getNextTruffle(JNIEnv *env, Truffle *truffle)
 {
 
-    fd_set read_fds, write_fds, except_fds;
+    ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
+
+}
+
+  /*  fd_set read_fds, write_fds, except_fds;
     FD_ZERO(&read_fds);
     FD_ZERO(&write_fds);
     FD_ZERO(&except_fds);
@@ -292,7 +296,7 @@ error:
 noMessageReceived:
 	debug("read failed");
 	return -2;
-}
+}*/
 
 
 /**
