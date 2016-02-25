@@ -31,6 +31,10 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
     private boolean connected = false;
 
+    static {
+        System.loadLibrary("truffleReceiver");
+    }
+
     /**
      * <p>
      *     Creates the UnixSocketReceiver.
