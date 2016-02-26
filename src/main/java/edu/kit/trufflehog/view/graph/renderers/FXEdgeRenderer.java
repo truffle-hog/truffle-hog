@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.view.graph;
+package edu.kit.trufflehog.view.graph.renderers;
 
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
@@ -15,6 +15,7 @@ import edu.uci.ics.jung.visualization.renderers.EdgeLabelRenderer;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import edu.uci.ics.jung.visualization.transform.LensTransformer;
 import edu.uci.ics.jung.visualization.transform.MutableTransformer;
+import edu.uci.ics.jung.visualization.transform.MutableTransformerDecorator;
 import edu.uci.ics.jung.visualization.transform.shape.GraphicsDecorator;
 
 import javax.swing.*;
@@ -30,6 +31,7 @@ public class FXEdgeRenderer<V, E> implements Renderer.Edge<V,E> {
             new BasicEdgeArrowRenderingSupport();
 
     public void paintEdge(RenderContext<V,E> rc, Layout<V, E> layout, E e) {
+
         GraphicsDecorator g2d = rc.getGraphicsContext();
         Graph<V,E> graph = layout.getGraph();
         if (!rc.getEdgeIncludePredicate().evaluate(Context.<Graph<V,E>,E>getInstance(graph,e)))
@@ -45,9 +47,16 @@ public class FXEdgeRenderer<V, E> implements Renderer.Edge<V,E> {
 
         V v1 = endpoints.getFirst();
         V v2 = endpoints.getSecond();
-        if (!rc.getVertexIncludePredicate().evaluate(Context.<Graph<V,E>,V>getInstance(graph,v1)) ||
-                !rc.getVertexIncludePredicate().evaluate(Context.<Graph<V,E>,V>getInstance(graph,v2)))
+/*        if (!rc.getVertexIncludePredicate().evaluate(Context.<Graph<V,E>,V>getInstance(graph,v1)) ||
+                !rc.getVertexIncludePredicate().evaluate(Context.<Graph<V,E>,V>getInstance(graph,v2))) {
             return;
+
+        }*/
+
+        if (!rc.getVertexIncludePredicate().evaluate(Context.getInstance(graph, v2))) {
+            drawMultiCastEdge(rc, layout, e, v1);
+            return;
+        }
 
         Stroke new_stroke = rc.getEdgeStrokeTransformer().transform(e);
         Stroke old_stroke = g2d.getStroke();
@@ -60,6 +69,72 @@ public class FXEdgeRenderer<V, E> implements Renderer.Edge<V,E> {
         if (new_stroke != null)
             g2d.setStroke(old_stroke);
 
+    }
+
+    private void drawMultiCastEdge(RenderContext<V, E> rc, Layout<V, E> layout, E e, V source) {
+
+        GraphicsDecorator g = rc.getGraphicsContext();
+        boolean edgeHit = true;
+        // get the shape to be rendered
+        Shape shape = rc.getEdgeShapeTransformer().transform(Context.getInstance(layout.getGraph(), e));
+
+        Point2D p = layout.transform(source);
+        p = rc.getMultiLayerTransformer().transform(Layer.LAYOUT, p);
+        float x = (float)p.getX();
+        float y = (float)p.getY();
+        // create a transform that translates to the location of
+        // the edge to be rendered
+        AffineTransform xform = AffineTransform.getTranslateInstance(x,y);
+        // transform the edge shape with xtransform
+        shape = xform.createTransformedShape(shape);
+
+        edgeHit = edgeHit(rc, shape);
+        //rc.getViewTransformer().transform(shape).intersects(deviceRectangle);
+
+        if (edgeHit) {
+            paintShapeForEdge(rc, e, shape);
+        }
+    }
+
+    protected boolean edgeHit(RenderContext<V,E> rc, Shape s) {
+
+        JComponent vv = rc.getScreenDevice();
+        Rectangle deviceRectangle = null;
+        if(vv != null) {
+            Dimension d = vv.getSize();
+            deviceRectangle = new Rectangle(
+                    0,0,
+                    d.width,d.height);
+        }
+        MutableTransformer vt = rc.getMultiLayerTransformer().getTransformer(Layer.VIEW);
+        if(vt instanceof MutableTransformerDecorator) {
+            vt = ((MutableTransformerDecorator)vt).getDelegate();
+        }
+        return vt.transform(s).intersects(deviceRectangle);
+    }
+
+    protected void paintShapeForEdge(RenderContext<V,E> rc, E e, Shape shape) {
+
+        GraphicsDecorator g = rc.getGraphicsContext();
+        Paint oldPaint = g.getPaint();
+        Paint fillPaint = rc.getEdgeFillPaintTransformer().transform(e);
+        if(fillPaint != null) {
+            g.setPaint(fillPaint);
+            g.fill(shape);
+            g.setPaint(oldPaint);
+        }
+        Paint drawPaint = rc.getEdgeDrawPaintTransformer().transform(e);
+        if(drawPaint != null) {
+            g.setPaint(drawPaint);
+            Stroke oldStroke = g.getStroke();
+            Stroke stroke = rc.getEdgeStrokeTransformer().transform(e);
+            if(stroke != null) {
+                g.setStroke(stroke);
+            }
+            g.draw(shape);
+            g.setPaint(oldPaint);
+            g.setStroke(oldStroke);
+        }
     }
 
     /**

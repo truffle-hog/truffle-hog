@@ -18,6 +18,9 @@ public class LiveNetwork implements INetwork {
 
         ioPort = new NetworkIOPort(graph);
         viewPort = new NetworkViewPort(graph);
+
+        viewPort.getMaxThroughputProperty().bind(ioPort.getMaxThroughputProperty());
+        viewPort.getMaxConnectionSizeProperty().bind(ioPort.getMaxConnectionSizeProperty());
     }
 
     @Override

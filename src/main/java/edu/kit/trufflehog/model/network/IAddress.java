@@ -33,4 +33,6 @@ public interface IAddress {
     /** Must be overwritten to adhere to the interfaces contract. **/
     @Override
     boolean equals(Object o);
+
+    boolean isMulticast();
 }

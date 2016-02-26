@@ -4,6 +4,7 @@ import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.INetworkReadingPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
+import javafx.beans.property.IntegerProperty;
 
 /**
  * TODO implement
@@ -35,5 +36,25 @@ public class NetworkReadingPortSwitch implements INetworkReadingPortSwitch {
     @Override
     public IConnection getNetworkConnectionByAddress(IAddress source, IAddress dest) {
         return getActiveReadingPort().getNetworkConnectionByAddress(source, dest);
+    }
+
+    @Override
+    public int getMaxConnectionSize() {
+        return getActiveReadingPort().getMaxConnectionSize();
+    }
+
+    @Override
+    public IntegerProperty getMaxConnectionSizeProperty() {
+        return getActiveReadingPort().getMaxConnectionSizeProperty();
+    }
+
+    @Override
+    public int getMaxThroughput() {
+        return getActiveReadingPort().getMaxThroughput();
+    }
+
+    @Override
+    public IntegerProperty getMaxThroughputProperty() {
+        return getActiveReadingPort().getMaxThroughputProperty();
     }
 }

@@ -124,8 +124,8 @@ public class NetworkTape implements INetworkTape {
                 //final IConnection connectionCopy = new Connection(edge);
              //  final Pair<INode> endpoints = liveNetworkViewPort.getGraph().getEndpoints(edge);
 
-               // final INode source = nodes.get(endpoints.getFirst());
-              //  final INode dest = nodes.get(endpoints.getSecond());
+               // final INode source = node.get(endpoints.getFirst());
+              //  final INode dest = node.get(endpoints.getSecond());
 
 /*                long result = 17;
                 result = 31 * result + source.getID();

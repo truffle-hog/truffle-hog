@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * <p>
- *     Interface used to represent nodes in the graph.
+ *     Interface used to represent node in the graph.
  * </p>
  */
 public interface INode extends IComposition, Serializable {

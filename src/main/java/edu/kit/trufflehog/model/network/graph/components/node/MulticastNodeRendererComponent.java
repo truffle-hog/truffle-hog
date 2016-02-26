@@ -1,6 +1,8 @@
-package edu.kit.trufflehog.model.network.graph.nodecomponents;
+package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+
+import java.awt.*;
 
 /**
  * This Component of a node will handle how a node is displayed in the graph
@@ -9,12 +11,24 @@ import edu.kit.trufflehog.model.network.graph.IComponent;
  * @author Jan Hermes
  * @version 0.1
  */
-public class NodeRendererComponent implements IComponent {
+public class MulticastNodeRendererComponent implements IComponent {
 
 
-    public NodeRendererComponent() {
+    public MulticastNodeRendererComponent() {
 
         // TODO implement
+    }
+
+    public Shape getShape() {
+
+        //TODO implement
+        return null;
+    }
+
+    public Color getColor() {
+
+        // TODO implement
+        return null;
     }
 
 

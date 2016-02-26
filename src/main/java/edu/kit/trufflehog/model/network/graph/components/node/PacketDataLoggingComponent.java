@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.model.network.graph.nodecomponents;
+package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;

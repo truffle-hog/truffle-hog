@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.view.graph;
+package edu.kit.trufflehog.view.graph.renderers;
 
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;

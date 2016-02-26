@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * <p>
  *     Command used to add Truffle data to the graph. It updates the INodes and IConnections and creates new ones if
- *     necessary (i.e. when new devices enter the network). After the creation, the new nodes get checked with the
+ *     necessary (i.e. when new devices enter the network). After the creation, the new node get checked with the
  *     Filter objects and marked accordingly.
  * </p>
  */
@@ -44,14 +44,12 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final MacAddress sourceAddress = new MacAddress(data.getAttribute(Long.class, "sourceMacAddress"));
         final MacAddress destAddress = new MacAddress(data.getAttribute(Long.class, "destMacAddress"));
 
-
         final INode sourceNode = new NetworkNode(sourceAddress);
         final INode destNode = new NetworkNode(destAddress);
         final IConnection connection = new NetworkConnection(sourceNode, destNode);
 
         writingPort.writeNode(sourceNode);
         writingPort.writeNode(destNode);
-
         writingPort.writeConnection(connection);
     }
 

@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.IAddress;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 
 import java.io.Serializable;
 
@@ -19,6 +20,9 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 
 		this.address = address;
 		this.hashcode = address.hashCode();
+
+		// TODO maybe not make this default component
+		addComponent(new NodeStatisticsComponent(1));
 	}
 
 	@Override

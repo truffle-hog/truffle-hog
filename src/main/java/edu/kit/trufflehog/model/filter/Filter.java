@@ -8,7 +8,7 @@ import java.util.LinkedList;
 /**
  * <p>
  *     Contains regex lists with ip, mac and name rules. These will be used with {@link ICommand} to distinguish specific
- *     nodes in the graph.
+ *     node in the graph.
  * </p>
  */
 public class Filter implements Serializable {

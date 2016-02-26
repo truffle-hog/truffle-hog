@@ -2,7 +2,7 @@ package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
-import edu.kit.trufflehog.model.network.graph.nodecomponents.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

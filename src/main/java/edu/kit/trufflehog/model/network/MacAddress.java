@@ -20,8 +20,11 @@ public class MacAddress implements IAddress {
     private final int hashcode;
 
     private String addressString = null;
+    private boolean isMulticast;
 
-    public MacAddress(long address) {
+    public MacAddress(long address, boolean isMulticast) {
+
+        this.isMulticast = isMulticast;
 
         if (address > 0xFFFFFFFFFFFFL || address < 0) {
             throw new IllegalArgumentException("the address is too big or in wrong format");
@@ -34,6 +37,13 @@ public class MacAddress implements IAddress {
         byte[] bytes = ByteBuffer.allocate(8).putLong(0, this.address).array();
 
         addressByteArray = Arrays.copyOfRange(bytes, 2, 8);
+    }
+
+    public MacAddress(long address) {
+
+        // TODO maybe check for multicast outside?
+        this(address, address == 0x010ecf000000L);
+
     }
 
 /*    public MacAddress(byte[] address) {
@@ -98,6 +108,12 @@ public class MacAddress implements IAddress {
         return Arrays.equals(addressByteArray, other.toByteArray());
 
         //return Arrays.equals(this.toByteArray(), other.toByteArray());
+    }
+
+    @Override
+    public boolean isMulticast() {
+
+        return isMulticast;
     }
 
     @Override

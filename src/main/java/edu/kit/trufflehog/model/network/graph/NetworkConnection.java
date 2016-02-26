@@ -1,5 +1,10 @@
 package edu.kit.trufflehog.model.network.graph;
 
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastLayeredEdgeRendererComponent;
+
 /**
  * <p>
  *     Edge in the graph to represent a relation between two devices. Stores important statistics about the ongoing
@@ -22,6 +27,13 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
         result = result + 31 * this.dest.hashCode();
         hashcode = result;
 
+        this.addComponent(new EdgeStatisticsComponent(1));
+
+        if (networkNodeDest.getAddress().isMulticast()) {
+            this.addComponent(new MulticastEdgeRendererComponent());
+        } else {
+            this.addComponent(new BasicEdgeRendererComponent());
+        }
     }
 
     @Override
@@ -81,13 +93,39 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
         return copy;
     }
 
+    /**
+     * Updates the given component if it existis in this node
+     * @param update the component to update this component
+     * @return true if it exists and was updated, false otherwise
+     */
     @Override
-    public boolean update(IConnection update) {
-        return false;
+    public boolean update(IComponent update) {
+
+        final IComponent existing = getComponent(update.getClass());
+
+        if (existing == null) {
+            return false;
+        }
+
+        return existing.update(update);
     }
 
     @Override
-    public boolean update(IComponent update) {
-        return false;
+    public boolean update(IConnection update) {
+
+        if (!this.equals(update)) {
+            return false;
+        }
+
+        update.getComponents().stream().forEach(c -> {
+
+            if (c.isMutable()) {
+                final IComponent existing = getComponent(c.getClass());
+                existing.update(c);
+            }
+        });
+
+        return true;
+
     }
 }
