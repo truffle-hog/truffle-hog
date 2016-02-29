@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.service.executor;
 
+import edu.kit.trufflehog.command.ICommand;
 import edu.kit.trufflehog.command.queue.CommandQueue;
 import edu.kit.trufflehog.command.queue.CommandQueueManager;
 import edu.kit.trufflehog.command.queue.ICommandQueue;
@@ -61,16 +62,7 @@ public class CommandExecutor implements Runnable {
      * @return A user command listener.
      */
     public IListener<IUserCommand> asUserCommandListener() {
-        return message -> {
-            try {
-                if (message == null) {
-                    throw new NullPointerException("Message to receive must not be null!");
-                }
-                userCommandQueue.push(message);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        };
+        return asListener(IUserCommand.class, userCommandQueue);
     }
 
     /**
@@ -82,12 +74,16 @@ public class CommandExecutor implements Runnable {
      * @return A truffle command listener.
      */
     public IListener<ITruffleCommand> asTruffleCommandListener() {
+        return asListener(ITruffleCommand.class, truffleCommandQueue);
+    }
+
+    private <T extends ICommand> IListener<T> asListener(Class<T>commandQueueType, ICommandQueue commandQueue) {
         return message -> {
             try {
                 if (message == null) {
                     throw new NullPointerException("Message to receive must not be null!");
                 }
-                truffleCommandQueue.push(message);
+                commandQueue.push(message);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
