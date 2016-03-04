@@ -15,12 +15,7 @@ public interface IConnection extends IComposition, Serializable {
 
     IConnection createDeepCopy();
 
-    /**
-     * Updates this connection with the given connection
-     * @param update the connection that updates this connection
-     * @return true if this connection was updated, false if there was no success in updating
-     *              or no values changes
-     */
-    boolean update(IConnection update);
+
+ //   boolean update(IConnection update);
 
 }

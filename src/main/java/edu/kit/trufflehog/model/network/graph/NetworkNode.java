@@ -10,7 +10,7 @@ import java.io.Serializable;
  *     Node in the graph to represent a device in the network. Stores important device data and logs.
  * </p>
  */
-public class NetworkNode extends AbstractComposition implements Serializable, INode, IComposition {
+public class NetworkNode extends AbstractComposition implements Serializable, INode {
 
 	private final IAddress address;
 	private final int hashcode;
@@ -48,41 +48,24 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 	}
 
     /**
-     * Updates the given component if it existis in this node
-     * @param update the component to update this component
-     * @return true if it exists and was updated, false otherwise
+     * Updates this node with the given node
+     * @param update the node that updates this node
+     * @return true if the update was successful and values change, false otherwise
      */
     @Override
     public boolean update(IComponent update) {
 
-        final IComponent existing = getComponent(update.getClass());
+		if (!this.equals(update)) {
+            // also implicit NULL check -> no check for null needed
+			return false;
+		}
+        // if it is equal than it is an INode thus we can safely cast it
+        final INode updateNode = (INode) update;
 
-        if (existing == null) {
-            return false;
-        }
-
-        return existing.update(update);
-    }
-
-    @Override
-    public boolean update(INode update) {
-
-        if (!this.equals(update)) {
-            return false;
-        }
-
-		update.stream().filter(IComponent::isMutable).forEach(c -> {
+        updateNode.stream().filter(IComponent::isMutable).forEach(c -> {
 			final IComponent existing = getComponent(c.getClass());
 			existing.update(c);
 		});
-/*
-		update.stream().forEach(c -> {
-			if (c.isMutable()) {
-				final IComponent existing = getComponent(c.getClass());
-				existing.update(c);
-			}
-		});*/
-
         return true;
     }
 

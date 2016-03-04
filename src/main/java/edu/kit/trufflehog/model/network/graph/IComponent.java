@@ -1,33 +1,18 @@
 package edu.kit.trufflehog.model.network.graph;
 
+import edu.kit.trufflehog.util.DeepCopyable;
+import edu.kit.trufflehog.util.Updatable;
+
 import java.io.Serializable;
 
 /**
  * Created by jan on 23.02.16.
  */
-public interface IComponent extends Serializable {
+public interface IComponent extends DeepCopyable<IComponent>, Updatable<IComponent>, Serializable {
 
     /**
      * @return the name of this component
      */
     String name();
 
-    /**
-     * @return {@code false} if this component is mutable, {@code true} otherwise.
-     */
-    boolean isMutable();
-
-    /**
-     *
-     * @return A component
-     */
-    IComponent createDeepCopy();
-
-    /**
-     * Updates this component with the given component
-     * @param update the component to update this component
-     * @return true if the update was successfull and values changed, false if there were no changes
-     *          or f the component is immutable, thus cannot be updated
-     */
-    boolean update(IComponent update);
 }

@@ -94,30 +94,22 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
     }
 
     /**
-     * Updates the given component if it existis in this node
-     * @param update the component to update this component
-     * @return true if it exists and was updated, false otherwise
+     * Updates this connection with the given connection
+     * @param update the connection that updates this connection
+     * @return true if this connection was updated, false if there was no success in updating
+     *              or no values changes
      */
     @Override
     public boolean update(IComponent update) {
 
-        final IComponent existing = getComponent(update.getClass());
-
-        if (existing == null) {
-            return false;
-        }
-
-        return existing.update(update);
-    }
-
-    @Override
-    public boolean update(IConnection update) {
-
         if (!this.equals(update)) {
+            // also implicit NULL check -> no check for null needed
             return false;
         }
+        // if it is equal than it is an IConnection thus we can safely cast it
+        final IConnection updateConnection = (IConnection) update;
 
-        update.stream().filter(IComponent::isMutable).forEach(c -> {
+        updateConnection.stream().filter(IComponent::isMutable).forEach(c -> {
             final IComponent existing = getComponent(c.getClass());
             existing.update(c);
         });
