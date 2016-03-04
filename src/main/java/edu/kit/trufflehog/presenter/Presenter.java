@@ -10,6 +10,7 @@ import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedS
 import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.executor.TruffleExecutor;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.view.*;
@@ -143,7 +144,7 @@ public class Presenter {
         //commandExecutorService.execute(commandExecutor);
 
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
-        final TruffleReceiver truffleReceiver = new UnixSocketReceiver(writingPortSwitch, Collections.emptyList());
+        final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, Collections.emptyList());
         truffleFetchService.execute(truffleReceiver);
 
         truffleReceiver.connect();

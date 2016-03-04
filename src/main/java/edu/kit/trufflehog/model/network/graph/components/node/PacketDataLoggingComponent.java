@@ -39,7 +39,7 @@ public class PacketDataLoggingComponent implements IComponent {
 
     @Override
     public boolean isMutable() {
-        return true;
+        return false;
     }
 
     @Override

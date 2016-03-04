@@ -1,8 +1,10 @@
 package edu.kit.trufflehog.model.network.graph;
 
+import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 import javafx.beans.property.*;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,77 +60,52 @@ public class TestNode implements INode {
     }
 
     @Override
-    public void setIpAddress(int ipAddress) {
-
-    }
-
-    @Override
-    public void setMaxAddress(long macAddress) {
-
-    }
-
-    @Override
-    public void setDeviceName(String deviceName) {
-
-    }
-
-    @Override
-    public void setTimeAdded(int timeAdded) {
-
-    }
-
-    @Override
-    public void setLastUpdateTime(int lastUpdateTime) {
-
-    }
-
-    @Override
-    public void setPackageCountIn(int packageCountIn) {
-
-    }
-
-    @Override
-    public void setPackageCountOut(int packageCountOut) {
-
-    }
-
-    @Override
-    public int getIpAddress() {
-        return 0;
-    }
-
-    @Override
-    public long getMacAddress() {
-        return 0;
-    }
-
-    @Override
-    public String getDeviceName() {
+    public IAddress getAddress() {
         return null;
     }
 
     @Override
-    public int getTimeAdded() {
-        return 0;
+    public String name() {
+        return null;
     }
 
     @Override
-    public int getLastUpdateTime() {
-        return 0;
+    public boolean isMutable() {
+        return false;
     }
 
     @Override
-    public int getPackageCountIn() {
-        return 0;
+    public INode createDeepCopy() {
+        return null;
     }
 
     @Override
-    public int getPackageCountOut() {
-        return 0;
+    public boolean update(IComponent update) {
+        return false;
     }
 
     @Override
-    public void log(Truffle truffle) {
+    public boolean update(INode update) {
+        return false;
+    }
 
+    @Override
+    public <T extends IComponent> void addComponent(T component) {
+
+    }
+
+    @Override
+    public void removeComponent(Class<? extends IComponent> type) {
+
+    }
+
+    @Override
+    public <T extends IComponent> T getComponent(Class<T> componentType) {
+        return null;
+    }
+
+    @Override
+    public Collection<? extends IComponent> getComponents() {
+        return null;
     }
 }
