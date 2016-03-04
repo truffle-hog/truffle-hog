@@ -15,15 +15,16 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 	private final IAddress address;
 	private final int hashcode;
 
-	public NetworkNode(IAddress address) {
+    public NetworkNode(IAddress address, IComponent... components) {
         super();
 
-		this.address = address;
-		this.hashcode = address.hashCode();
+        this.address = address;
+        this.hashcode = this.address.hashCode();
 
-		// TODO maybe not make this default component
-		addComponent(new NodeStatisticsComponent(1));
-	}
+        for (IComponent c : components) {
+            this.addComponent(c);
+        }
+    }
 
 	@Override
 	public IAddress getAddress() {
@@ -87,7 +88,10 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 
     @Override
     public String toString() {
-        return address.toString();
+
+        return getComponent(NodeStatisticsComponent.class).toString();
+
+        //return address.toString();
     }
 
 

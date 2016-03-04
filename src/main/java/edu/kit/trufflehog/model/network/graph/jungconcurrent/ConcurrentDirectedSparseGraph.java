@@ -4,6 +4,8 @@ import edu.uci.ics.jung.graph.*;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.graph.util.Pair;
 import org.apache.commons.collections15.Factory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConcurrentDirectedSparseGraph<V,E> extends AbstractTypedGraph<V, E> implements
         DirectedGraph<V, E>
 {
+    private static final Logger logger = LogManager.getLogger(ConcurrentDirectedSparseGraph.class);
+    
     /**
      * Returns a {@code Factory} that creates an instance of this graph type.
      * @param <V> the vertex type for the graph factory
@@ -28,6 +32,8 @@ public class ConcurrentDirectedSparseGraph<V,E> extends AbstractTypedGraph<V, E>
         };
     }
 
+    
+    
     protected Map<V, Pair<Map<V,E>>> vertices;  // Map of vertices to Pair of adjacency maps {incoming, outgoing}
     // of neighboring vertices to incident edges
     protected Map<E, Pair<V>> edges;            // Map of edges to incident vertex pairs
@@ -53,8 +59,13 @@ public class ConcurrentDirectedSparseGraph<V,E> extends AbstractTypedGraph<V, E>
         V source = new_endpoints.getFirst();
         V dest = new_endpoints.getSecond();
 
-        if (findEdge(source, dest) != null)
+        if (findEdge(source, dest) != null) {
+
+            vertices.get(source).getSecond().put(dest, edge);
+
             return false;
+
+        }
 
         edges.put(edge, new_endpoints);
 
@@ -233,9 +244,14 @@ public class ConcurrentDirectedSparseGraph<V,E> extends AbstractTypedGraph<V, E>
             throw new IllegalArgumentException("vertex may not be null");
         }
         if (!containsVertex(vertex)) {
-            vertices.put(vertex, new Pair<Map<V,E>>(new HashMap<V,E>(), new HashMap<V,E>()));
+            vertices.put(vertex, new Pair<>(new HashMap<>(), new HashMap<>()));
             return true;
         } else {
+
+            final Pair<Map<V,E>> existing = vertices.get(vertex);
+            logger.debug("vertex allready exists: " + existing.toString() + "\nupdating with: " + vertex.toString());
+
+            vertices.put(vertex, existing);
             return false;
         }
     }

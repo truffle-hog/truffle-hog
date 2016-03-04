@@ -38,7 +38,7 @@ public interface INetworkDevice {
      * @return {@code true} if the is no record currently active on the given recording port,
      *          {@code false} otherwise
      */
-    public boolean record(final INetworkViewPort network, final INetworkTape tape, final int framerate);
+    boolean record(final INetworkViewPort network, final INetworkTape tape, final int framerate);
 
 
     /**

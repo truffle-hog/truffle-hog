@@ -1,5 +1,8 @@
 package edu.kit.trufflehog.model.network.recording;
 
+import edu.kit.trufflehog.model.network.INetworkIOPort;
+import edu.kit.trufflehog.model.network.NetworkIOPort;
+import edu.kit.trufflehog.model.network.NetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.INetwork;
@@ -14,22 +17,32 @@ import edu.uci.ics.jung.graph.Graph;
  */
 public class ReplayNetwork implements INetwork {
 
+    private final ReplayPort port;
+
     public ReplayNetwork(Graph<INode, IConnection> replayViewGraph) {
+
+        port = new ReplayPort(replayViewGraph);
+
     }
 
     @Override
     public INetworkReadingPort getReadingPort() {
 
-        return null;
+        return port;
     }
 
     @Override
     public INetworkWritingPort getWritingPort() {
-        return null;
+        return port;
     }
 
     @Override
     public INetworkViewPort getViewPort() {
-        return null;
+        return port;
+    }
+
+    @Override
+    public String toString() {
+        return port.toString();
     }
 }

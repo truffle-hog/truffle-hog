@@ -3,12 +3,16 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by jan on 23.02.16.
  */
 public class NodeStatisticsComponent implements IComponent {
 
+    private static final Logger logger = LogManager.getLogger(NodeStatisticsComponent.class);
+    
     private final IntegerProperty throughputProperty = new SimpleIntegerProperty(1);
 
     public NodeStatisticsComponent(int initial) {
@@ -45,8 +49,9 @@ public class NodeStatisticsComponent implements IComponent {
     @Override
     public IComponent createDeepCopy() {
 
-        final IComponent copy = new NodeStatisticsComponent(throughputProperty.get());
+        final IComponent copy = new NodeStatisticsComponent(getThroughput());
 
+        //logger.debug("Deep copy created: " + copy.toString());
         return copy;
     }
 
@@ -56,5 +61,12 @@ public class NodeStatisticsComponent implements IComponent {
         // TODO maybe change to another value
         incrementThroughput(1);
         return true;
+    }
+
+    @Override
+    public String toString() {
+
+        return name() + ": " + "Throughput=" + getThroughput();
+
     }
 }

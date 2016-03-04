@@ -1,18 +1,30 @@
 package edu.kit.trufflehog.model.network.graph;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Created by jan on 23.02.16.
+ * \brief An abstract implementation of the IComposition interface. Facilitates to create new IComposition classes.
+ *
+ * \date 04.03.16
+ * \copyright GNU Public License
+ * @author Jan Hermes
+ * @version 0.0.1
  */
 public abstract class AbstractComposition implements IComposition {
 
+    private static final Logger logger = LogManager.getLogger(AbstractComposition.class);
+    
     final HashMap<Class<? extends IComponent>, IComponent> components = new HashMap<>();
 
     @Override
     public <T extends IComponent> T addComponent(T component) {
+
+        
 
         final IComponent existing = components.get(component.getClass());
 
@@ -24,7 +36,10 @@ public abstract class AbstractComposition implements IComposition {
             T castedExisting = (T) existing;
             return castedExisting;
         }
+
         components.put(component.getClass(), component);
+
+        //logger.debug(components);
         // TODO do this differently? but i think null as indicator for "there was no previous value" is ok
         return null;
     }

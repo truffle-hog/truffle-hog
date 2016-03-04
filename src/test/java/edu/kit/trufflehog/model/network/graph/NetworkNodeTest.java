@@ -26,13 +26,25 @@ public class NetworkNodeTest {
 
         node.addComponent(new NodeStatisticsComponent(1));
 
+        node.getComponent(NodeStatisticsComponent.class).setThroughputProperty(4);
+
+        node.getComponent(NodeStatisticsComponent.class).incrementThroughput(1);
+
         final INode deepCopy = node.createDeepCopy();
         final NodeStatisticsComponent statCopy = deepCopy.getComponent(NodeStatisticsComponent.class);
+
+        //statCopy.setThroughputProperty(10);
+
+        assertEquals(5, statCopy.getThroughput());
+        assertEquals(5, node.getComponent(NodeStatisticsComponent.class).getThroughput());
+
 
         statCopy.setThroughputProperty(10);
 
         assertEquals(10, statCopy.getThroughput());
-        assertEquals(1, node.getComponent(NodeStatisticsComponent.class).getThroughput());
+        assertEquals(5, node.getComponent(NodeStatisticsComponent.class).getThroughput());
+
+
     }
 
     @Test

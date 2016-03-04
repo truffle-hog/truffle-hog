@@ -12,6 +12,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -19,6 +21,8 @@ import javafx.util.Duration;
  */
 public class NetworkDevice implements INetworkDevice {
 
+    private static final Logger logger = LogManager.getLogger(NetworkDevice.class);
+    
     private Timeline frameWriter;
 
     private boolean isRecording = false;
@@ -44,7 +48,7 @@ public class NetworkDevice implements INetworkDevice {
 
         frameWriter = new Timeline(new KeyFrame(Duration.millis(frameLength), event -> {
             tape.write(network);
-            playbackFrameCountProperty.set(tape.frameCount() - 1);
+            playbackFrameCountProperty.set(tape.getFrameCount() - 1);
         }));
         frameWriter.setCycleCount(Timeline.INDEFINITE);
         frameWriter.play();
@@ -61,11 +65,13 @@ public class NetworkDevice implements INetworkDevice {
     @Override
     public void play(final INetworkTape tape, final INetworkViewPortSwitch viewPortSwitch) {
 
-        if (tape.frameCount() == 0) {
+        if (tape.getFrameCount() == 0) {
+
+            logger.debug("Framecount of the given tape to be played is zero");
             return;
         }
 
-        playbackFrameCountProperty.set(tape.frameCount() - 1);
+        playbackFrameCountProperty.set(tape.getFrameCount() - 1);
 
         final Graph<INode, IConnection> replayViewGraph = new ConcurrentDirectedSparseGraph<>();
         final INetwork replayNetwork = new ReplayNetwork(replayViewGraph);

@@ -5,9 +5,13 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class FrameHandler implements EventHandler<ActionEvent> {
+
+    private static final Logger logger = LogManager.getLogger(FrameHandler.class);
 
     private final INetworkTape playTape;
     private final INetwork replayLayout;
@@ -20,17 +24,21 @@ public class FrameHandler implements EventHandler<ActionEvent> {
     }
 
     public BooleanProperty getMovableNodesProperty() {
+
         return movableNodesProperty;
     }
 
     public boolean getMovableNodes() {
+
         return movableNodesProperty.get();
     }
 
     @Override
     public void handle(ActionEvent event) {
 
-        final INetworkTape.INetworkFrame playFrame = playTape.getCurrentReadingFrame();
+        final INetworkTape.INetworkFrame playFrame = playTape.getFrame(playTape.getCurrentReadingFrame());
+
+        logger.debug(playFrame.toString());
 
         replayLayout.getViewPort().setMaxConnectionSize(playFrame.getMaxConnectionSize());
         replayLayout.getViewPort().setMaxThroughput(playFrame.getMaxThroughput());
@@ -53,5 +61,7 @@ public class FrameHandler implements EventHandler<ActionEvent> {
         playFrame.getGraph().getEdges().stream().forEach(edge -> {
             replayLayout.getWritingPort().writeConnection(edge);
         });
+
+        //logger.debug(replayLayout.toString());
     }
 }

@@ -80,7 +80,7 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
 
         final IConnection copy = new NetworkConnection(getSrc().createDeepCopy(), getDest().createDeepCopy());
 
-        components.values().stream().forEach(component -> {
+        this.stream().forEach(component -> {
             if (component.isMutable()) {
 
                 copy.addComponent(component.createDeepCopy());

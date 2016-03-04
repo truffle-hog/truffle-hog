@@ -14,11 +14,11 @@ import java.awt.*;
 public class BasicEdgeRendererComponent implements IRendererComponent {
 
 
-    Color baseUnpicked = new Color(0x7f7784);
+    Color colorUnpicked = new Color(0x7f7784);
     float[] hsbValsUnpicked = new float[3];
 
 
-    Color basePicked = new Color(0xf0caa3);
+    Color colorPicked = new Color(0xf0caa3);
     float[] hsbValsPicked = new float[3];
 
 
@@ -27,8 +27,8 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
 
     public BasicEdgeRendererComponent() {
 
-        Color.RGBtoHSB(baseUnpicked.getRed(), baseUnpicked.getGreen(), baseUnpicked.getBlue(), hsbValsUnpicked);
-        Color.RGBtoHSB(basePicked.getRed(), basePicked.getGreen(), basePicked.getBlue(), hsbValsPicked);
+        Color.RGBtoHSB(colorUnpicked.getRed(), colorUnpicked.getGreen(), colorUnpicked.getBlue(), hsbValsUnpicked);
+        Color.RGBtoHSB(colorPicked.getRed(), colorPicked.getGreen(), colorPicked.getBlue(), hsbValsPicked);
 
         currentBrightness = hsbValsUnpicked[2];
     }
@@ -69,6 +69,22 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
         return null;
     }
 
+    @Override
+    public void setColorUnpicked(Color colorUnpicked) {
+        this.colorUnpicked = colorUnpicked;
+        Color.RGBtoHSB(this.colorUnpicked.getRed(), this.colorUnpicked.getGreen(), this.colorUnpicked.getBlue(), hsbValsPicked);
+    }
+
+    @Override
+    public void setShape(Shape shape) {
+
+    }
+
+    @Override
+    public void setStroke(Stroke stroke) {
+
+    }
+
 
     @Override
     public String name() {
@@ -82,7 +98,14 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
 
     @Override
     public IComponent createDeepCopy() {
-        return null;
+
+        final BasicEdgeRendererComponent rendererComponent = new BasicEdgeRendererComponent();
+        rendererComponent.setColorPicked(getColorPicked());
+        rendererComponent.setColorUnpicked(getColorUnpicked());
+        rendererComponent.setShape(getShape());
+        rendererComponent.setStroke(getStroke());
+
+        return rendererComponent;
     }
 
     @Override
@@ -94,5 +117,12 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
         // TODO implement more
         currentBrightness = 1;
         return true;
+    }
+
+    public void setColorPicked(Color colorPicked) {
+        this.colorPicked = colorPicked;
+
+
+        Color.RGBtoHSB(this.colorPicked.getRed(), this.colorPicked.getGreen(), this.colorPicked.getBlue(), hsbValsPicked);
     }
 }

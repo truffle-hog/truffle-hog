@@ -1,31 +1,35 @@
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
-import edu.kit.trufflehog.model.configdata.IConfigData;
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.*;
-import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.executor.TruffleExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.view.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,7 +51,13 @@ public class Presenter {
    // private final FileSystem fileSystem;
    // private final ScheduledExecutorService executorService;
 
+    private INetworkViewPort liveViewPort;
     private INetworkViewPort viewPort;
+    private INetworkViewPortSwitch viewPortSwitch;
+    private INetworkDevice networkDevice;
+
+    private INetwork liveNetwork;
+    private INetworkTape tape;
 
     /**
      * <p>
@@ -101,7 +111,9 @@ public class Presenter {
                 // initialize the live network that will be writte on by the receiver commands
 
         // TODO Ctor injection with the Ports that are within the networks
-        final INetwork liveNetwork = new LiveNetwork(new ConcurrentDirectedSparseGraph<>());
+        liveNetwork = new LiveNetwork(new ConcurrentDirectedSparseGraph<>());
+
+        liveViewPort = liveNetwork.getViewPort();
 
         // TODO Where to put this???
         final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
@@ -126,17 +138,16 @@ public class Presenter {
 
         // initialize the view port switch that uses the view port of the live network
         // as its initial default view port
-        final INetworkViewPortSwitch viewPortSwitch = new NetworkViewPortSwitch(liveNetwork.getViewPort());
+        viewPortSwitch = new NetworkViewPortSwitch(liveNetwork.getViewPort());
 
         // intialize the network device which is capable of recording and replaying any ongoing network session
         // on serveral screens
-        final INetworkDevice networkObservationDevice = new NetworkDevice();
+        networkDevice = new NetworkDevice();
 
         // create a new empty tape to record something on
-        final INetworkTape tape = new NetworkTape(24);
+        tape = new NetworkTape(24);
         // Tell the network observation device to start recording the
         // given network with 25fps on the created tape
-        //networkObservationDevice.record(liveNetwork.getViewPort(), tape, 25);
 
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
         //final CommandExecutor commandExecutor = new CommandExecutor();
@@ -154,10 +165,12 @@ public class Presenter {
         truffleReceiver.addListener(executor);
 
         // play that ongoing recording on the given viewportswitch
-        //networkObservationDevice.play(tape, viewPortSwitch);
+        //networkDevice.play(tape, viewPortSwitch);
+
+
 
         // track the live network on the given viewportswitch
-        networkObservationDevice.goLive(liveNetwork, viewPortSwitch);
+        networkDevice.goLive(liveNetwork, viewPortSwitch);
 
         viewPort = viewPortSwitch;
     }
@@ -184,6 +197,49 @@ public class Presenter {
 
         mainView.setCenter(pane);
 
+        final Slider slider = new Slider(0, 100, 0);
+        slider.setTooltip(new Tooltip("replay"));
+        tape.getCurrentReadingFrameProperty().bindBidirectional(slider.valueProperty());
+        tape.getFrameCountProperty().bindBidirectional(slider.maxProperty());
+
+        final ToggleButton liveButton = new ToggleButton("Live");
+        liveButton.setDisable(true);
+        final ToggleButton playButton = new ToggleButton("Play");
+        playButton.setDisable(false);
+        final ToggleButton stopButton = new ToggleButton("Stop");
+        stopButton.setDisable(false);
+        final ToggleButton recButton = new ToggleButton("Rec");
+        recButton.setDisable(false);
+
+        liveButton.setOnAction(h -> {
+            networkDevice.goLive(liveNetwork, viewPortSwitch);
+            liveButton.setDisable(true);
+        });
+
+        playButton.setOnAction(handler -> {
+            networkDevice.play(tape, viewPortSwitch);
+            liveButton.setDisable(false);
+        });
+
+        final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveViewPort, tape);
+        recButton.setOnAction(h -> {
+            startRecordCommand.execute();
+        });
+
+        slider.setStyle("-fx-background-color: transparent");
+
+        final ToolBar toolBar = new ToolBar();
+        toolBar.getItems().add(stopButton);
+        toolBar.getItems().add(playButton);
+        toolBar.getItems().add(recButton);
+        toolBar.setStyle("-fx-background-color: transparent");
+      //  toolBar.getItems().add(slider);
+
+        final FlowPane flowPane = new FlowPane();
+
+        flowPane.getChildren().addAll(toolBar, slider);
+
+        mainView.setBottom(flowPane);
 
         pane.getChildren().add(node);
         AnchorPane.setBottomAnchor(node, 0d);

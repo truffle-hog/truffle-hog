@@ -8,6 +8,8 @@ package edu.kit.trufflehog.util;
  * use the Annotation {@link org.apache.http.annotation.Immutable}.
  *
  * If a class is mutable the function has to return \code true \endcode.
+ *
+ * @author Jan Hermes
  */
 public interface Mutability {
 

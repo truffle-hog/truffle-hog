@@ -11,29 +11,27 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.kit.trufflehog.model.network.graph;
-
-import edu.kit.trufflehog.util.DeepCopyable;
-import edu.kit.trufflehog.util.Updatable;
-
-import java.io.Serializable;
+package edu.kit.trufflehog.model.network.recording;
 
 /**
  * \brief
  * \details
  * \date 04.03.16
  * \copyright GNU Public License
+ *
  * @author Jan Hermes
  * @version 0.0.1
  */
-public interface IComponent extends DeepCopyable<IComponent>, Updatable<IComponent>, Serializable {
+public class CopyMachine {
 
-    /**
-     * @return the name of this component
-     */
-    String name();
+    //TODO maybe not...
+    public CopyMachine() {
+
+    }
+
+    //copyComponent()
 
 }

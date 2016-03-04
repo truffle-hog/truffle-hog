@@ -11,6 +11,8 @@ import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import org.apache.commons.collections15.Transformer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -27,6 +29,8 @@ import java.util.stream.Collectors;
  */
 public class NetworkTape implements INetworkTape {
 
+    private static final Logger logger = LogManager.getLogger(NetworkTape.class);
+    
     private final int frameRate;
 
 
@@ -36,26 +40,38 @@ public class NetworkTape implements INetworkTape {
 
     private final IntegerProperty currentWritingFrameProperty = new SimpleIntegerProperty(0);
 
+    private final IntegerProperty frameCountProperty = new SimpleIntegerProperty(0);
+
 
 
     public NetworkTape(int frameRate) {
         this.frameRate = frameRate;
     }
 
-    public NetworkFrame getCurrentReadingFrame() {
-
-
-        return null;
-    }
-
-    public NetworkFrame getCurrentWritingFrame() {
-        return null;
-    }
-
     @Override
     public void setCurrentReadingFrame(int frame) {
 
         currentReadingFrameProperty.set(frame);
+    }
+
+    @Override
+    public IntegerProperty getCurrentReadingFrameProperty() {
+        return currentReadingFrameProperty;
+    }
+
+    @Override
+    public int getCurrentReadingFrame() {
+        return currentReadingFrameProperty.get();
+    }
+
+    @Override
+    public IntegerProperty getCurrentWritingFrameProperty() {
+        return currentWritingFrameProperty;
+    }
+
+    @Override
+    public int getCurrentWritingFrame() {
+        return currentWritingFrameProperty.get();
     }
 
     @Override
@@ -68,17 +84,28 @@ public class NetworkTape implements INetworkTape {
     public void write(INetworkViewPort networkViewPort) {
 
         frames.add(new NetworkFrame(networkViewPort));
-        currentWritingFrameProperty.add(1);
+        currentWritingFrameProperty.set(currentWritingFrameProperty.get() + 1);
+        frameCountProperty.set(frames.size() - 1);
     }
 
     @Override
-    public int frameCount() {
-        return 0;
+    public int getFrameCount() {
+        return frameCountProperty.get();
+    }
+
+    @Override
+    public IntegerProperty getFrameCountProperty() {
+        return frameCountProperty;
     }
 
     @Override
     public int getFrameRate() {
         return frameRate;
+    }
+
+    @Override
+    public INetworkFrame getFrame(int index) {
+        return frames.get(index);
     }
 
     @Override
@@ -106,8 +133,10 @@ public class NetworkTape implements INetworkTape {
 
         private NetworkFrame(INetworkViewPort liveNetworkViewPort) {
 
-            time = Instant.now().getEpochSecond();
+            time = Instant.now().toEpochMilli();
             frame = new ConcurrentDirectedSparseGraph<>();
+
+            logger.debug(liveNetworkViewPort.getGraph().toString());
 
             liveNetworkViewPort.getGraph().getVertices().stream().forEach(node -> {
 
@@ -133,6 +162,8 @@ public class NetworkTape implements INetworkTape {
                 final IConnection connectionCopy = edge.createDeepCopy();
                 frame.addEdge(connectionCopy, connectionCopy.getSrc(), connectionCopy.getDest());
             });
+
+            logger.debug(frame.toString());
 
 /*        staticReplayLayout = new StaticLayout<>(this, TransformerUtils.mapTransformer(nodeMap));*/
             setMaxThroughput(liveNetworkViewPort.getMaxThroughput());
@@ -261,7 +292,9 @@ public class NetworkTape implements INetworkTape {
 
         @Override
         public String toString() {
-            return frame.toString();
+            return frame.toString() + "\n"
+                    + "max connection: " + maxConnectionSizeProperty.get() + "\n"
+                    + "max throughput: " + maxThroughputProperty.get();
         }
     }
 }

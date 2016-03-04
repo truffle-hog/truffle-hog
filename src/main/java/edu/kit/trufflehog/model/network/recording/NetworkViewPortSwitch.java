@@ -8,6 +8,8 @@ import edu.uci.ics.jung.graph.Graph;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import org.apache.commons.collections15.Transformer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -17,6 +19,8 @@ import java.awt.geom.Point2D;
  */
 public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
 
+    private static final Logger logger = LogManager.getLogger(NetworkViewPortSwitch.class);
+    
     //private final INetworkDevice attachedDevice;
     private INetworkViewPort activeViewport;
 
@@ -115,6 +119,8 @@ public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
 
     @Override
     public Graph<INode, IConnection> getGraph() {
+        
+        //logger.debug(getActiveViewPort().getGraph());
         return getActiveViewPort().getGraph();
     }
 

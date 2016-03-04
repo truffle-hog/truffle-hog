@@ -1,8 +1,6 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
-import edu.kit.trufflehog.view.graph.decorators.LayeredShape;
-import edu.uci.ics.jung.visualization.transform.AffineTransformer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -25,12 +23,12 @@ public class MulticastEdgeRendererComponent implements IRendererComponent {
 
     private final Shape shape = new Ellipse2D.Float(-10, -10, 20, 20);
 
-    Color baseUnpicked = new Color(0x7f7784);
-    Color basePicked = new Color(0xf0caa3);
+    Color colorUnpicked = new Color(0x7f7784);
+    Color colorPicked = new Color(0xf0caa3);
 
-    private float currentOpacity = 170;
-    private float multiplier = 1f;
     private float strokeWidth = 5f;
+    private float multiplier = 1.05f;
+    private float opacity = 170;
 
     public MulticastEdgeRendererComponent() {
 
@@ -51,23 +49,42 @@ public class MulticastEdgeRendererComponent implements IRendererComponent {
     @Override
     public Color getColorUnpicked() {
 
-        currentOpacity = currentOpacity <= 10 ? 0 : currentOpacity * 0.8f;
-        return new Color(baseUnpicked.getRed(), baseUnpicked.getGreen(), baseUnpicked.getBlue(), (int) currentOpacity);
+        opacity = opacity <= 10 ? 0 : opacity * 0.8f;
+        return new Color(colorUnpicked.getRed(), colorUnpicked.getGreen(), colorUnpicked.getBlue(), (int) opacity);
     }
 
     @Override
     public Color getColorPicked() {
 
-        currentOpacity = currentOpacity <= 10 ? 0 : currentOpacity * 0.8f;
-        return new Color(basePicked.getRed(), basePicked.getGreen(), basePicked.getBlue(), (int) currentOpacity);
+        opacity = opacity <= 10 ? 0 : opacity * 0.8f;
+        return new Color(colorPicked.getRed(), colorPicked.getGreen(), colorPicked.getBlue(), (int) opacity);
     }
 
     @Override
     public Stroke getStroke() {
 
         strokeWidth *= 1.4f;
-
         return new BasicStroke(strokeWidth);
+    }
+
+    @Override
+    public void setColorPicked(Color colorPicked) {
+
+    }
+
+    @Override
+    public void setColorUnpicked(Color colorUnpicked) {
+
+    }
+
+    @Override
+    public void setShape(Shape shape) {
+
+    }
+
+    @Override
+    public void setStroke(Stroke stroke) {
+
     }
 
 
@@ -83,7 +100,17 @@ public class MulticastEdgeRendererComponent implements IRendererComponent {
 
     @Override
     public IComponent createDeepCopy() {
-        return null;
+
+        final MulticastEdgeRendererComponent edgeRenderer = new MulticastEdgeRendererComponent();
+
+        edgeRenderer.setColorUnpicked(getColorUnpicked());
+        edgeRenderer.setColorPicked(getColorPicked());
+        edgeRenderer.setShape(getShape());
+        edgeRenderer.setStroke(getStroke());
+
+        edgeRenderer.setOpacity(getOpacity());
+        edgeRenderer.setLastUpdate(getLastUpdate());
+        return edgeRenderer;
     }
 
     @Override
@@ -91,9 +118,26 @@ public class MulticastEdgeRendererComponent implements IRendererComponent {
 
         strokeWidth = 5f;
         multiplier = 1.05f;
-        currentOpacity = 170;
+        opacity = 170;
 
-        lastUpdate = Instant.now().toEpochMilli();
+        setLastUpdate(Instant.now().toEpochMilli());
         return true;
+    }
+
+    public float getOpacity() {
+        return opacity;
+    }
+
+    public void setOpacity(float opacity) {
+        this.opacity = opacity;
+    }
+
+    public long getLastUpdate() {
+
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(long lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 }

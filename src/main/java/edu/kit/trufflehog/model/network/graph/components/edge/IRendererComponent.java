@@ -18,4 +18,12 @@ public interface IRendererComponent extends IComponent {
     Color getColorPicked();
 
     Stroke getStroke();
+
+    void setColorPicked(Color colorPicked);
+
+    void setColorUnpicked(Color colorUnpicked);
+
+    void setShape(Shape shape);
+
+    void setStroke(Stroke stroke);
 }

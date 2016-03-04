@@ -53,6 +53,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 
+		// TODO horror
 		Main.primaryStage = primaryStage;
 		primaryStage.setTitle("TruffleHog");
 		this.presenter = Presenter.createPresenter();
@@ -66,7 +67,7 @@ public class Main extends Application {
 	public void stop() {
 
 		Platform.exit();
-		System.exit(0);
+        System.exit(0);
 	}
 
 	/**

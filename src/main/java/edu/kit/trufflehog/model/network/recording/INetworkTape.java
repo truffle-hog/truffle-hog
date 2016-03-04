@@ -1,21 +1,26 @@
 package edu.kit.trufflehog.model.network.recording;
 
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import javafx.beans.property.IntegerProperty;
 
 /**
  * This interface provides the functionality that a network tape where a recording of a network is captured on has.
  */
 public interface INetworkTape {
 
+    IntegerProperty getCurrentReadingFrameProperty();
+
     /**
      * @return The Frame the reading end is currently pointing to
      */
-    INetworkFrame getCurrentReadingFrame();
+    int getCurrentReadingFrame();
+
+    IntegerProperty getCurrentWritingFrameProperty();
 
     /**
      * @return The Frame the writing end is currently pointing to
      */
-    INetworkFrame getCurrentWritingFrame();
+    int getCurrentWritingFrame();
 
     /**
      * Sets the current reading frame pointer to the given frame number.
@@ -40,12 +45,16 @@ public interface INetworkTape {
     /**
      * @return The number of frames on this network tape
      */
-    int frameCount();
+    int getFrameCount();
+
+    IntegerProperty getFrameCountProperty();
 
     /**
      * @return The Framerate this network tape was recorded with
      */
     int getFrameRate();
+
+    INetworkFrame getFrame(int index);
 
     /**
      * This interface provides the functionality a single frame in a networktape possesses.

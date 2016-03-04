@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.view.graph.decorators.LayeredShape;
+import javafx.application.Platform;
 import javafx.scene.shape.Ellipse;
 
 import java.awt.*;
@@ -34,6 +35,7 @@ public class MulticastLayeredEdgeRendererComponent implements IRendererComponent
 
     public MulticastLayeredEdgeRendererComponent() {
 
+
         // TODO implement
     }
 
@@ -65,6 +67,26 @@ public class MulticastLayeredEdgeRendererComponent implements IRendererComponent
     @Override
     public Stroke getStroke() {
         return null;
+    }
+
+    @Override
+    public void setColorPicked(Color colorPicked) {
+
+    }
+
+    @Override
+    public void setColorUnpicked(Color colorUnpicked) {
+
+    }
+
+    @Override
+    public void setShape(Shape shape) {
+
+    }
+
+    @Override
+    public void setStroke(Stroke stroke) {
+
     }
 
 
