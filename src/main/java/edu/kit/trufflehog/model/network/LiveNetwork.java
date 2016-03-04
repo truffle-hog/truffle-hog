@@ -2,8 +2,6 @@ package edu.kit.trufflehog.model.network;
 
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.NetworkIOPort;
-import edu.kit.trufflehog.model.network.graph.NetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 
 /**

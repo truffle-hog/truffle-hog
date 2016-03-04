@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.MacAddress;
+import edu.kit.trufflehog.model.network.NetworkIOPort;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import org.junit.Before;
 import org.junit.Test;

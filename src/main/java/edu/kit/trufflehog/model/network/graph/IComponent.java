@@ -8,13 +8,19 @@ import java.io.Serializable;
 public interface IComponent extends Serializable {
 
     /**
-     *
      * @return the name of this component
      */
     String name();
 
+    /**
+     * @return {@code false} if this component is mutable, {@code true} otherwise.
+     */
     boolean isMutable();
 
+    /**
+     *
+     * @return A component
+     */
     IComponent createDeepCopy();
 
     /**

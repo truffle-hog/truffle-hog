@@ -1,6 +1,9 @@
-package edu.kit.trufflehog.model.network.graph;
+package edu.kit.trufflehog.model.network;
 
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentFRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;

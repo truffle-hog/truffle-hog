@@ -1,7 +1,9 @@
-package edu.kit.trufflehog.model.network.graph;
+package edu.kit.trufflehog.model.network;
 
 import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.uci.ics.jung.graph.Graph;
@@ -38,8 +40,6 @@ public class NetworkIOPort implements INetworkIOPort {
     private final MaximumOfValuesBinding maxTrafficBinding = new MaximumOfValuesBinding();
     private final MaximumOfValuesBinding maxThroughputBinding = new MaximumOfValuesBinding();
 
-    //private final IntegerProperty
-
     public NetworkIOPort(final Graph<INode, IConnection> delegate) {
 
         maxConnectionSizeProperty.bind(maxTrafficBinding);
@@ -58,13 +58,11 @@ public class NetworkIOPort implements INetworkIOPort {
             existing.update(connection);
             return;
         }
-
         final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);
 
         if (edgeStat != null) {
             maxTrafficBinding.bindProperty(edgeStat.getTrafficProperty());
         }
-
         delegate.addEdge(connection, connection.getSrc(), connection.getDest());
         idConnectionMap.put(connectionKey, connection);
     }
@@ -78,7 +76,6 @@ public class NetworkIOPort implements INetworkIOPort {
             existing.update(node);
             return;
         }
-
         final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);
 
         if (nodeStat != null) {
@@ -152,9 +149,6 @@ public class NetworkIOPort implements INetworkIOPort {
             if (c.next()) {
 
                 c.getAddedSubList().stream().forEach(p -> {
-
-                    //System.out.println(p.get());
-
                     if (p.get() > max) {
                         max = p.get();
                     }
@@ -164,8 +158,6 @@ public class NetworkIOPort implements INetworkIOPort {
 
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-
-            //System.out.println(oldValue.intValue() + " " + newValue.intValue());
 
             if (newValue.intValue() > max) {
                 max = newValue.intValue();

@@ -139,7 +139,6 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
             final EdgeStatisticsComponent statComp = iConnection.getComponent(EdgeStatisticsComponent.class);
             // TODO maybe check for NULL
-
             int currentSize = statComp.getTraffic();
             long maxSize = viewPort.getMaxConnectionSize();
             float relation = (float) currentSize / (float) maxSize;

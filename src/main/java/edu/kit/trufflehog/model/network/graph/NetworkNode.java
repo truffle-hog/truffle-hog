@@ -71,16 +71,19 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
             return false;
         }
 
-        update.getComponents().stream().forEach(c -> {
-
-            if (c.isMutable()) {
-                final IComponent existing = getComponent(c.getClass());
-                existing.update(c);
-            }
-        });
+		update.stream().filter(IComponent::isMutable).forEach(c -> {
+			final IComponent existing = getComponent(c.getClass());
+			existing.update(c);
+		});
+/*
+		update.stream().forEach(c -> {
+			if (c.isMutable()) {
+				final IComponent existing = getComponent(c.getClass());
+				existing.update(c);
+			}
+		});*/
 
         return true;
-
     }
 
 	@Override
@@ -95,11 +98,8 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 		if (!(o instanceof INode)) {
 			return false;
 		}
-
 		final INode other = (INode) o;
-
 		return getAddress().equals(other.getAddress());
-
 	}
 
     @Override

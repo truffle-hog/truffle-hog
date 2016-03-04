@@ -117,15 +117,10 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
             return false;
         }
 
-        update.getComponents().stream().forEach(c -> {
-
-            if (c.isMutable()) {
-                final IComponent existing = getComponent(c.getClass());
-                existing.update(c);
-            }
+        update.stream().filter(IComponent::isMutable).forEach(c -> {
+            final IComponent existing = getComponent(c.getClass());
+            existing.update(c);
         });
-
         return true;
-
     }
 }

@@ -6,9 +6,6 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import javafx.beans.property.IntegerProperty;
 
-/**
- * TODO implement
- */
 public class NetworkReadingPortSwitch implements INetworkReadingPortSwitch {
 
     private INetworkReadingPort activePort;
