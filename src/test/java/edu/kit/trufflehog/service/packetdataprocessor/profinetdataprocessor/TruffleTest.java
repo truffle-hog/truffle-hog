@@ -13,11 +13,12 @@ import static org.junit.Assert.*;
  */
 public class TruffleTest {
 
+
     private Truffle truffle;
 
     @Before
     public void setUp() throws Exception {
-        truffle = new Truffle();
+        truffle = new Truffle(0x00, 0x01);
     }
 
     @After

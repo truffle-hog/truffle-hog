@@ -13,12 +13,14 @@ import javafx.beans.property.IntegerProperty;
  */
 public interface INetworkDevice {
 
+
+
     /**
      * Plays the given given network tape for playback on the given viewport.
      *
      * @param tape the tape to be played
      */
-    void play(INetworkTape tape, INetworkViewPort viewPort);
+    void play(INetworkTape tape, INetworkViewPortSwitch viewPort);
 
     /**
      * Stops the recording of the network on the inserted tape.
@@ -29,40 +31,22 @@ public interface INetworkDevice {
      * Records the current live network with the given framerate. Does noething and returns false if
      * it is already recording.
      *
-     * @param frameRate the maximum framerate the live network will be recorded with.
-     * @return {@code true} if the is no record currently active, {@code false} otherwise
+     * @param network the network to be recorded
+     * @param tape the tape the given network will be recorded on
+     * @param framerate the maximum framerate the live network will be recorded with.
+     *
+     * @return {@code true} if the is no record currently active on the given recording port,
+     *          {@code false} otherwise
      */
-    boolean record(int frameRate);
+    public boolean record(final INetworkViewPort network, final INetworkTape tape, final int framerate);
+
 
     /**
-     * Tell the device to track the live network again.
+     * Tell the device to show the given network on the given viewportswitch
+     * @param network the network to be shown
+     * @param viewPortSwitch the view port switch for the network to be displayed on
      */
-    void goLive();
-
-    /**
-     * Returns the live network that this device is currently working on
-     * @return the live network this device is connected to
-     */
-    INetwork getLiveNetwork();
-
-    /**
-     * Returns the replay network this device is currently recording on
-     * @return the replay network this device is recording on
-     */
-    INetwork getReplayNetwork();
-
-    /**
-     * Retrieves and removes the network tape currently in the recorder
-     * @return The network Tape that was in the recorder
-     */
-    INetworkTape removeNetworkTape();
-
-    /**
-     * Returns a copy of the network tape currently in the recorder.
-     * @return The network Tape that is in the recorder
-     */
-    INetworkTape getNetworkTape();
-
+    void goLive(INetwork network, INetworkViewPortSwitch viewPortSwitch);
 
 
     /**
@@ -113,4 +97,5 @@ public interface INetworkDevice {
      * @return Whether or not the user is able to move the Nodes during playback // TODO Maybe a better method name
      */
     boolean isMovableDuringPlayback();
+
 }

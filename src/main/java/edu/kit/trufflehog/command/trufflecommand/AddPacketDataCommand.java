@@ -2,15 +2,19 @@ package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.Filter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.MacAddress;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.NetworkConnection;
+import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
 import java.util.List;
 
 /**
  * <p>
  *     Command used to add Truffle data to the graph. It updates the INodes and IConnections and creates new ones if
- *     necessary (i.e. when new devices enter the network). After the creation, the new nodes get checked with the
+ *     necessary (i.e. when new devices enter the network). After the creation, the new node get checked with the
  *     Filter objects and marked accordingly.
  * </p>
  */
@@ -28,7 +32,7 @@ public class AddPacketDataCommand implements ITruffleCommand {
      * @param packet Truffle to get data from
      * @param filters List of filters to check
      */
-    public AddPacketDataCommand(INetworkWritingPort writingPort, Truffle packet, List<Filter> filters) {
+    public AddPacketDataCommand(INetworkWritingPort writingPort, IPacketData packet, List<Filter> filters) {
         this.writingPort = writingPort;
         filterList = filters;
         this.data = packet;
@@ -37,6 +41,16 @@ public class AddPacketDataCommand implements ITruffleCommand {
     @Override
     public void execute() {
 
+        final MacAddress sourceAddress = new MacAddress(data.getAttribute(Long.class, "sourceMacAddress"));
+        final MacAddress destAddress = new MacAddress(data.getAttribute(Long.class, "destMacAddress"));
+
+        final INode sourceNode = new NetworkNode(sourceAddress);
+        final INode destNode = new NetworkNode(destAddress);
+        final IConnection connection = new NetworkConnection(sourceNode, destNode);
+
+        writingPort.writeNode(sourceNode);
+        writingPort.writeNode(destNode);
+        writingPort.writeConnection(connection);
     }
 
     @Override

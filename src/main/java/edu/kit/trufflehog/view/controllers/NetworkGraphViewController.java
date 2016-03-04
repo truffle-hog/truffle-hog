@@ -24,6 +24,11 @@ public abstract class NetworkGraphViewController extends SwingNode
 	private final INotifier<IUserCommand> viewControllerNotifier =
 			new ViewControllerNotifier();
 
+	public abstract void setRefreshRate(int rate);
+
+	public abstract void enableSmartRefresh(int maxRate);
+
+	public abstract void disableSmartRefresh();
 	/**
 	 * {@inheritDoc}
 	 */

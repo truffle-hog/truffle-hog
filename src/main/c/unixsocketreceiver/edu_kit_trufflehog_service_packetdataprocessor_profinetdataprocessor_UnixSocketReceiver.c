@@ -16,6 +16,7 @@
 /////////////
 
 #define SOCKET_NAME "/socket.sock"
+#define _CHECK_JAVA_EXCEPTION(ENV) if ((*(ENV))->ExceptionOccurred((ENV))) {return NULL;}
 
 //////////////////////////
 //                      //
@@ -51,6 +52,202 @@ struct SocketData
 // The socket file descriptor
 struct SocketData socketData;
 
+///////////////////////
+//                   //
+// JNI Class getters //
+//                   //
+///////////////////////
+
+/**
+ * @brief Gets the Truffle class reference
+ * This method may throw java exceptions. Please check with _CHECK_JAVA_EXCEPTION(env) after calling.
+ *
+ * @param env the java environment
+ *
+ * @return returns a reference to the Truffle class and NULL on error
+ */
+jclass getTruffleClass(JNIEnv *env)
+{
+    static jclass truffleClass = NULL;
+
+    if (truffleClass == NULL)
+    {
+        jclass localTruffleClass = (*env)->FindClass(env, "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle");
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(localTruffleClass != NULL, noClass, "Truffle class could not be found");
+
+        truffleClass = (jclass) (*env)->NewGlobalRef(env, localTruffleClass);
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(truffleClass != NULL, noClass, "Global truffle class reference could not be created");
+
+        (*env)->DeleteLocalRef(env, localTruffleClass);
+        _CHECK_JAVA_EXCEPTION(env);
+    }
+    return truffleClass;
+
+noClass:
+    throwNoClassDefError(env, "Truffle class could not be found");
+    return NULL;
+}
+
+/**
+ * @brief Gets the Long class reference
+ * This method may throw java exceptions. Please check with _CHECK_JAVA_EXCEPTION(env) after calling.
+ *
+ * @param env the java environment
+ *
+ * @return returns a reference to the long class and NULL on error
+ */
+jclass getLongClass(JNIEnv *env)
+{
+    static jclass longClass = NULL;
+
+    if (longClass == NULL)
+    {
+        jclass localLongClass = (*env)->FindClass(env, "java/lang/Long");
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(localLongClass != NULL, noClass, "could not get long class");
+
+        longClass = (jclass) (*env)->NewGlobalRef(env, localLongClass);
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(longClass != NULL, noClass, "Global long class reference could not be created");
+
+        (*env)->DeleteLocalRef(env, localLongClass);
+        _CHECK_JAVA_EXCEPTION(env);
+    }
+
+    return longClass;
+
+noClass:
+    throwNoClassDefError(env, "Long class could not be found");
+    return NULL;
+}
+
+/**
+ * @brief Gets the Short class reference
+ * This method may throw java exceptions. Please check with _CHECK_JAVA_EXCEPTION(env) after calling.
+ *
+ * @param env the java environment
+ *
+ * @return returns a reference to the short class and NULL on error
+ */
+jclass getShortClass(JNIEnv *env)
+{
+    static jclass shortClass = NULL;
+
+    if (shortClass == NULL)
+    {
+        jclass localShortClass = (*env)->FindClass(env, "java/lang/Short");
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(localShortClass != NULL, noClass, "could not get short class");
+
+        shortClass = (jclass) (*env)->NewGlobalRef(env, localShortClass);
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(shortClass != NULL, noClass, "Global short class reference could not be created");
+
+        (*env)->DeleteLocalRef(env, localShortClass);
+        _CHECK_JAVA_EXCEPTION(env);
+    }
+
+    return shortClass;
+
+noClass:
+    throwNoClassDefError(env, "Short class could not be found");
+    return NULL;
+}
+
+//////////////////////
+//                  //
+// JNI Ctor getters //
+//                  //
+//////////////////////
+
+/**
+ * @brief Gets the constructor method id for the truffle object
+ * This method may throw java exceptions. Please check with _CHECK_JAVA_EXCEPTION(env) after calling.
+ *
+ * @param env the java environment
+ * @param truffleClass the truffle class reference
+ *
+ * @return returns the method id of the constructor
+ */
+jmethodID getTruffleCtor(JNIEnv *env, jclass truffleClass)
+{
+    static jmethodID ctor = NULL;
+
+    if (ctor == NULL)
+    {
+        ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "()V");
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(ctor != NULL, noCtor, "constructor for class Truffle not found");
+    }
+
+    return ctor;
+
+noCtor:
+   	throwNoSuchMethodError(env, "Constructor for class Truffle not found");
+   	return NULL;
+}
+
+/**
+ * @brief Gets the constructor method id for the long object with a long parameter
+ * This method may throw java exceptions. Please check with _CHECK_JAVA_EXCEPTION(env) after calling.
+ *
+ * @param env the java environment
+ * @param longClass the long class reference
+ *
+ * @return returns the method id of the constructor
+ */
+jmethodID getLongCtor(JNIEnv * env, jclass longClass)
+{
+    static jmethodID ctor = NULL;
+
+    if (ctor == NULL)
+    {
+        ctor = (*env)->GetMethodID(env, longClass, "<init>", "(J)V");
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(ctor != NULL, noCtor, "Could not fetch long ctor");
+    }
+
+    return ctor;
+
+noCtor:
+    throwNoSuchMethodError(env, "Constructor for class Long(long) not found");
+    return NULL;
+}
+
+/**
+ * @brief Gets the constructor method id for the short object with a short parameter
+ * This method may throw java exceptions. Please check with _CHECK_JAVA_EXCEPTION(env) after calling.
+ *
+ * @param env the java environment
+ * @param shortClass the short class reference
+ *
+ * @return returns the method id of the constructor
+ */
+jmethodID getShortCtor(JNIEnv *env, jclass shortClass)
+{
+    static jmethodID ctor = NULL;
+
+    if (ctor == NULL)
+    {
+        ctor = (*env)->GetMethodID(env, shortClass, "<init>", "(S)V");
+        _CHECK_JAVA_EXCEPTION(env);
+        check_to(ctor != NULL, noCtor, "Could not fetch short ctor");
+    }
+
+    return ctor;
+
+noCtor:
+    throwNoSuchMethodError(env, "Constructor for class Short(short) not found");
+    return NULL;
+}
+
+////////////////////
+//                //
+// Normal methods //
+//                //
+////////////////////
 
 /**
  * @brief Gets the socket file path and writes it to sockData.address.
@@ -83,6 +280,12 @@ error:
     return -1;
 }
 
+/**
+ * @brief Opens the socket for communication.
+ * Only call this method once before closing.
+ *
+ * @return returns 0 on success and -1 on error
+ */
 int openSocket()
 {
     debug("opening socket..");
@@ -173,14 +376,37 @@ error:
  */
 int getNextTruffle(JNIEnv *env, Truffle *truffle)
 {
+
     ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
 
-    if (len < 0)
-		goto noMessageReceived;
-    else if (len != sizeof(Truffle))
-        goto error;
+}
 
-	return 0;
+  /*  fd_set read_fds, write_fds, except_fds;
+    FD_ZERO(&read_fds);
+    FD_ZERO(&write_fds);
+    FD_ZERO(&except_fds);
+    FD_SET(socketData.socketFD, &read_fds);
+
+    struct timeval timeout;
+    timeout.tv_sec = 1;
+    timeout.tv_usec = 0;
+
+    // wait for fd to become ready but only wait 1 second so that the disconnect method gets the chance to close the connection
+    int rv = select(socketData.socketFD + 1, &read_fds, &write_fds, &except_fds, &timeout);
+    if (rv > 0)
+    {
+        ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
+
+        check_to(len >= 0, noMessageReceived, "reading the turffle failed");
+        check(len == sizeof(Truffle), "could not read the correct number of bytes from the socket");
+
+	    return 0;
+	}
+	check_to(rv != 0, noMessageReceived, "no message received");
+
+	debug("some error occurred while waiting for fd to become available: rv=%d", rv);
+	throwReceiverReadError(env, "other error");
+	return -3;
 
 error:
 	throwReceiverReadError(env, "could not read the correct number of bytes from the socket");
@@ -188,38 +414,7 @@ error:
 noMessageReceived:
 	debug("read failed");
 	return -2;
-}
-
-
-/**
- * @brief Gets the class id by name
- *
- * @param env the java environment
- * @param className the name of the class to get
- *
- * @return Returns the class id on success and NULL on error.
- */
-jclass getClassByName(JNIEnv *env, char *className)
-{
-    jclass clazz = (*env)->FindClass(env, className);
-    check(clazz != NULL, "class not found");
-
-    return clazz;
-error:
-    throwNoClassDefError(env, className);
-    return NULL;
-}
-
-jobject createObjectWithStdCtor(JNIEnv *env, jclass *clazz)
-{
-    jmethodID ctor = (*env)->GetMethodID(env, *clazz, "<init>", "()V");
-    check(ctor != NULL, "could not get standard ctor");
-
-    return (*env)->NewObject(env, *clazz, ctor);
-
-error:
-    return NULL;
-}
+}*/
 
 /*
  * Class:     edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver
@@ -228,16 +423,14 @@ error:
  */
 JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_getTruffle(JNIEnv *env, jobject thisObj)
 {
-	char *truffleClassName = "edu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle";
+    jclass truffleClass = getTruffleClass(env);
+    _CHECK_JAVA_EXCEPTION(env);
 
-	jclass truffleClass = (*env)->FindClass(env, truffleClassName);
-	check_to(truffleClass != NULL, noClass, "Truffle class could not be found");
+	jmethodID truffleCtor = getTruffleCtor(env, truffleClass);
+	_CHECK_JAVA_EXCEPTION(env);
 
-	jmethodID ctor = (*env)->GetMethodID(env, truffleClass, "<init>", "()V");
-	check_to(ctor != NULL, noCtor, "constructor for class Truffle not found");
-
-	jobject truffleObject = (*env)->NewObject(env, truffleClass, ctor);
-
+	jobject truffleObject = (*env)->NewObject(env, truffleClass, truffleCtor);
+    _CHECK_JAVA_EXCEPTION(env);
 	check(truffleObject != NULL, "could not create Truffle");
 
 	Truffle truffle;
@@ -246,8 +439,9 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
     jstring idStr;
 
-    // get method
+    // get setAttribute method
     jmethodID setAttributeMID = (*env)->GetMethodID(env, truffleClass, "setAttribute", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
+    _CHECK_JAVA_EXCEPTION(env);
     check_to(setAttributeMID != 0, noSetAttribute, "setAttribute method not found");
 
 
@@ -257,24 +451,29 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
     //////////////////////////////////////////////////////////////////////////////////////
     // get the long class
-    jclass longClass = getClassByName(env, "java/lang/Long");
+    jclass longClass = getLongClass(env);
+    _CHECK_JAVA_EXCEPTION(env);
     check(longClass != NULL, "could not get long class");
 
     // get the long ctor
-    jmethodID longCtor = (*env)->GetMethodID(env, longClass, "<init>", "(J)V");
+    jmethodID longCtor = getLongCtor(env, longClass);
+    _CHECK_JAVA_EXCEPTION(env);
     check(longCtor != NULL, "Could not fetch long ctor");
     //////////////////////////////////////////////////////////////////////////////////////
 
     /////////// start of setAttribute(Long.class, "sourceMacAddress", srcAddr) ///////////
     // create the long object for srcMacAddr
     jobject srcMacAddr = (*env)->NewObject(env, longClass, longCtor, truffle.etherHeader.sourceMacAddress);
+    _CHECK_JAVA_EXCEPTION(env);
     check(srcMacAddr != NULL, "Could not create srcMacAddr Long object");
 
     // create the id string for sourceMacAddress
     idStr = (*env)->NewStringUTF(env, "sourceMacAddress");
+    _CHECK_JAVA_EXCEPTION(env);
     check(idStr != NULL, "could not create id string for sourceMacAddress");
 
     (*env)->CallObjectMethod(env, truffleObject, setAttributeMID, longClass, idStr, srcMacAddr);
+    _CHECK_JAVA_EXCEPTION(env);
     idStr = NULL;
     /////////// end of setAttribute(Long.class, "sourceMacAddress", srcAddr) ///////////
 
@@ -282,13 +481,16 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
     /////////// start of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
     // create the id string for destMacAddress
     idStr = (*env)->NewStringUTF(env, "destMacAddress");
+    _CHECK_JAVA_EXCEPTION(env);
     check(idStr != NULL, "could not create id string for destMacAddress");
 
     // create the long object for destMacAddr
     jobject destMacAddr = (*env)->NewObject(env, longClass, longCtor, truffle.etherHeader.destMacAddress);
+    _CHECK_JAVA_EXCEPTION(env);
     check(destMacAddr != NULL, "could not create destMacAddr Long object");
 
     (*env)->CallObjectMethod(env, truffleObject, setAttributeMID, longClass, idStr, destMacAddr);
+    _CHECK_JAVA_EXCEPTION(env);
     idStr = NULL;
     /////////// end of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
 
@@ -303,24 +505,29 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
     //////////////////////////////////////////////////////////////////////////////////////
     // get the short class
-    jclass shortClass = getClassByName(env, "java/lang/Short");
+    jclass shortClass = getShortClass(env);
+    _CHECK_JAVA_EXCEPTION(env);
     check(shortClass != NULL, "could not get short class");
 
     // get the long ctor
-    jmethodID shortCtor = (*env)->GetMethodID(env, shortClass, "<init>", "(S)V");
+    jmethodID shortCtor = getShortCtor(env, shortClass);
+    _CHECK_JAVA_EXCEPTION(env);
     check(shortCtor != NULL, "Could not fetch short ctor");
     //////////////////////////////////////////////////////////////////////////////////////
 
     /////////// start of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
     // create the id string for destMacAddress
     idStr = (*env)->NewStringUTF(env, "etherType");
+    _CHECK_JAVA_EXCEPTION(env);
     check(idStr != NULL, "could not create id string for etherType");
 
     // create the long object for destMacAddr
     jobject etherType = (*env)->NewObject(env, shortClass, shortCtor, truffle.etherHeader.etherType);
+    _CHECK_JAVA_EXCEPTION(env);
     check(etherType != NULL, "could not create etherType Short object");
 
     (*env)->CallObjectMethod(env, truffleObject, setAttributeMID, shortClass, idStr, etherType);
+    _CHECK_JAVA_EXCEPTION(env);
     idStr = NULL;
     /////////// end of setAttribute(Long.class, "destMacAddress", destAddr) ///////////
 
@@ -330,17 +537,9 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
 	return truffleObject;
 
-noClass:
-	throwNoClassDefError(env, truffleClassName);
-	return NULL;
-
 noSetAttribute:
     throwNoSuchMethodError(env, "SetAttribute method not found");
     return NULL;
-
-noCtor:
-	throwNoSuchMethodError(env, "Constructor for class Truffle not found");
-	return NULL;
 
 error:
 	return NULL;

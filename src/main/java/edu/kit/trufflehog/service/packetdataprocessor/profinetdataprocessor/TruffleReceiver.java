@@ -21,10 +21,6 @@ import edu.kit.trufflehog.command.trufflecommand.ReceiverErrorCommand;
  */
 public abstract class TruffleReceiver extends Notifier<ITruffleCommand> implements INotifier<ITruffleCommand>, Runnable {
 
-    static {
-        System.loadLibrary("truffleReceiver");
-    }
-
     /**
      * <p>
      *     This method connects the {@link TruffleReceiver} to the snort process.

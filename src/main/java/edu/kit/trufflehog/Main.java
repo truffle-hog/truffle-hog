@@ -4,6 +4,7 @@ import edu.kit.trufflehog.presenter.Presenter;
 import edu.kit.trufflehog.view.MainViewController;
 import edu.kit.trufflehog.view.RootWindowController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -45,12 +46,13 @@ public class Main extends Application {
 	}
 
 	/**
-	 * JavaFX start method. This method mainly initializes the GUI-part of the application.
+	 * JavaFX start method.
 	 *
 	 * @param primaryStage supplied by system
      */
 	@Override
 	public void start(Stage primaryStage) {
+
 		Main.primaryStage = primaryStage;
 		primaryStage.setTitle("TruffleHog");
 		this.presenter = Presenter.createPresenter();
@@ -63,6 +65,8 @@ public class Main extends Application {
 	@Override
 	public void stop() {
 
+		Platform.exit();
+		System.exit(0);
 	}
 
 	/**
