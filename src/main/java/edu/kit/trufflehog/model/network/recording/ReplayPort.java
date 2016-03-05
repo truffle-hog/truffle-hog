@@ -264,6 +264,31 @@ public class ReplayPort implements INetworkViewPort, INetworkIOPort {
     }
 
     @Override
+    public void graphIntersection(Collection<INode> vertices, Collection<IConnection> edges) {
+
+        final Collection<INode> filteredNodes = getGraph().getVertices().stream().filter(node -> !vertices.contains(node)).collect(Collectors.toList());
+        //existingNodes.values().removeAll(filteredNodes);
+
+        //getGraph().getVertices()
+
+        filteredNodes.stream().forEach(deleteNode -> {
+
+            final Collection<IConnection> incident = delegate.getGraph().getIncidentEdges(deleteNode);
+            getGraph().removeVertex(deleteNode);
+            //existingNodes.remove(deleteNode.getID());
+            //existingEdges.values().removeAll(incident);
+        });
+
+        final Collection<IConnection> filteredEdges = getGraph().getEdges().stream().filter(edge -> !edges.contains(edge)).collect(Collectors.toList());
+
+        filteredEdges.stream().forEach(deleteEdge -> {
+
+            getGraph().removeEdge(deleteEdge);
+            //existingEdges.remove(deleteEdge.longHashCode());
+        });
+    }
+
+    @Override
     public String toString() {
         return getGraph().toString();
     }

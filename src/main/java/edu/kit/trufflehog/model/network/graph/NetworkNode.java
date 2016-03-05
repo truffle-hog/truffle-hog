@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.io.Serializable;
 
@@ -32,14 +33,16 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 	}
 
 	@Override
-	public INode createDeepCopy() {
+	public INode createDeepCopy(ICopyCreator copyCreator) {
+
+        copyCreator.createDeepCopy(this);
 
 		final INode node = new NetworkNode(address);
 
 		components.values().stream().forEach(component -> {
 			if (component.isMutable()) {
 
-				node.addComponent(component.createDeepCopy());
+				node.addComponent(component.createDeepCopy(copyCreator));
 
 			} else {
 				node.addComponent(component);
@@ -54,7 +57,7 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
      * @return true if the update was successful and values change, false otherwise
      */
     @Override
-    public boolean update(IComponent update) {
+    public boolean update(IComponent update, IUpdater updater) {
 
 		if (!this.equals(update)) {
             // also implicit NULL check -> no check for null needed
@@ -63,11 +66,7 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
         // if it is equal than it is an INode thus we can safely cast it
         final INode updateNode = (INode) update;
 
-        updateNode.stream().filter(IComponent::isMutable).forEach(c -> {
-			final IComponent existing = getComponent(c.getClass());
-			existing.update(c);
-		});
-        return true;
+        return updater.update(this, updateNode);
     }
 
 	@Override

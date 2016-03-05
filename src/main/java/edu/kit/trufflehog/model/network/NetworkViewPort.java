@@ -23,6 +23,7 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentFRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -125,7 +126,9 @@ public class NetworkViewPort implements INetworkViewPort {
 
     @Override
     public void setMaxConnectionSize(int size) {
+
         maxConnectionSizeProperty.set(size);
+
     }
 
     @Override
@@ -140,7 +143,9 @@ public class NetworkViewPort implements INetworkViewPort {
 
     @Override
     public void setMaxThroughput(int size) {
+
         maxThroughputProperty.set(size);
+
     }
 
     @Override
@@ -178,6 +183,11 @@ public class NetworkViewPort implements INetworkViewPort {
     @Override
     public void graphIntersection(Graph<INode, IConnection> graph) {
 
+        throw new UnsupportedOperationException("A live graph does not support this operation");
+    }
+
+    @Override
+    public void graphIntersection(Collection<INode> vertices, Collection<IConnection> edges) {
         throw new UnsupportedOperationException("A live graph does not support this operation");
     }
 }

@@ -10,20 +10,20 @@ import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.executor.TruffleExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
+import edu.kit.trufflehog.util.bindings.PlatformIntegerBinding;
 import edu.kit.trufflehog.view.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -101,9 +101,10 @@ public class Presenter {
      */
     public void present() {
 
-
-        initNetwork();
-        initGUI();
+        Platform.runLater(() -> {
+            initNetwork();
+            initGUI();
+        });
     }
 
     private void initNetwork() {
@@ -178,90 +179,109 @@ public class Presenter {
 
     private void initGUI() {
 
-        Stage primaryStage = getPrimaryStage();
+            Stage primaryStage = getPrimaryStage();
 
-        // setting up main window
-        MainViewController mainView = new MainViewController("main_view.fxml");
-        Scene mainScene = new Scene(mainView);
-        RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene);
-        //primaryStage.setScene(mainScene);
-        //primaryStage.show();
-        rootWindow.show();
+            // setting up main window
+            MainViewController mainView = new MainViewController("main_view.fxml");
+            Scene mainScene = new Scene(mainView);
+            RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene);
+            //primaryStage.setScene(mainScene);
+            //primaryStage.show();
+            rootWindow.show();
 
        /* Platform.runLater(new Runnable() {
 
         });*/
-        final Node node = new NetworkViewScreen(viewPort, 50);
+            final Node node = new NetworkViewScreen(viewPort, 50);
 
-        final AnchorPane pane = new AnchorPane();
+            final AnchorPane pane = new AnchorPane();
 
-        mainView.setCenter(pane);
+            mainView.setCenter(pane);
 
-        final Slider slider = new Slider(0, 100, 0);
-        slider.setTooltip(new Tooltip("replay"));
-        tape.getCurrentReadingFrameProperty().bindBidirectional(slider.valueProperty());
-        tape.getFrameCountProperty().bindBidirectional(slider.maxProperty());
+            final Slider slider = new Slider(0, 100, 0);
+            slider.setTooltip(new Tooltip("replay"));
+            tape.getCurrentReadingFrameProperty().bindBidirectional(slider.valueProperty());
+            tape.getFrameCountProperty().bindBidirectional(slider.maxProperty());
 
-        final ToggleButton liveButton = new ToggleButton("Live");
-        liveButton.setDisable(true);
-        final ToggleButton playButton = new ToggleButton("Play");
-        playButton.setDisable(false);
-        final ToggleButton stopButton = new ToggleButton("Stop");
-        stopButton.setDisable(false);
-        final ToggleButton recButton = new ToggleButton("Rec");
-        recButton.setDisable(false);
-
-        liveButton.setOnAction(h -> {
-            networkDevice.goLive(liveNetwork, viewPortSwitch);
+            final ToggleButton liveButton = new ToggleButton("Live");
             liveButton.setDisable(true);
-        });
+            final ToggleButton playButton = new ToggleButton("Play");
+            playButton.setDisable(false);
+            final ToggleButton stopButton = new ToggleButton("Stop");
+            stopButton.setDisable(false);
+            final ToggleButton recButton = new ToggleButton("Rec");
+            recButton.setDisable(false);
 
-        playButton.setOnAction(handler -> {
-            networkDevice.play(tape, viewPortSwitch);
-            liveButton.setDisable(false);
-        });
+            liveButton.setOnAction(h -> {
+                networkDevice.goLive(liveNetwork, viewPortSwitch);
+                liveButton.setDisable(true);
+            });
 
-        final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveViewPort, tape);
-        recButton.setOnAction(h -> {
-            startRecordCommand.execute();
-        });
+            playButton.setOnAction(handler -> {
+                networkDevice.play(tape, viewPortSwitch);
+                liveButton.setDisable(false);
+            });
 
-        slider.setStyle("-fx-background-color: transparent");
+            final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveViewPort, tape);
+            recButton.setOnAction(h -> {
+                startRecordCommand.execute();
+            });
 
-        final ToolBar toolBar = new ToolBar();
-        toolBar.getItems().add(stopButton);
-        toolBar.getItems().add(playButton);
-        toolBar.getItems().add(recButton);
-        toolBar.setStyle("-fx-background-color: transparent");
-      //  toolBar.getItems().add(slider);
+            slider.setStyle("-fx-background-color: transparent");
 
-        final FlowPane flowPane = new FlowPane();
+            final ToolBar toolBar = new ToolBar();
+            toolBar.getItems().add(stopButton);
+            toolBar.getItems().add(playButton);
+            toolBar.getItems().add(recButton);
+            toolBar.setStyle("-fx-background-color: transparent");
+            //  toolBar.getItems().add(slider);
 
-        flowPane.getChildren().addAll(toolBar, slider);
+            final FlowPane flowPane = new FlowPane();
 
-        mainView.setBottom(flowPane);
+            flowPane.getChildren().addAll(toolBar, slider);
 
-        pane.getChildren().add(node);
-        AnchorPane.setBottomAnchor(node, 0d);
-        AnchorPane.setTopAnchor(node, 0d);
-        AnchorPane.setLeftAnchor(node, 0d);
-        AnchorPane.setRightAnchor(node, 0d);
+            mainView.setBottom(flowPane);
+
+            pane.getChildren().add(node);
+            AnchorPane.setBottomAnchor(node, 0d);
+            AnchorPane.setTopAnchor(node, 0d);
+            AnchorPane.setLeftAnchor(node, 0d);
+            AnchorPane.setRightAnchor(node, 0d);
 
 
-        // setting up general statistics overlay
-        OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
-        pane.getChildren().add(generalStatisticsOverlay);
-        AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
-        AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
+            // setting up general statistics overlay
+            OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
+            pane.getChildren().add(generalStatisticsOverlay);
+            AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
+            AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
 
-        // setting up menubar
-        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml");
-        pane.getChildren().add(mainToolBarController);
+            // setting up menubar
+            MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml");
+            pane.getChildren().add(mainToolBarController);
 
-        // setting up node statistics overlay
-        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
-        pane.getChildren().add(nodeStatisticsOverlay);
-        AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
-        AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
+            // setting up node statistics overlay
+            OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
+
+            nodeStatisticsOverlay.add(new Label("Max Connection Size"), 0, 0);
+            nodeStatisticsOverlay.add(new Label("Max Throughput"), 0, 1);
+
+            final PlatformIntegerBinding maxConBinding = new PlatformIntegerBinding(viewPortSwitch.getMaxConnectionSizeProperty());
+            final PlatformIntegerBinding maxThroughBinding = new PlatformIntegerBinding(viewPortSwitch.getMaxThroughputProperty());
+
+            final Label connectionSizeLabel = new Label();
+            connectionSizeLabel.textProperty().bind(maxConBinding.asString());
+
+            final Label throughputLabel = new Label();
+            throughputLabel.textProperty().bind(maxThroughBinding.asString());
+
+            nodeStatisticsOverlay.add(connectionSizeLabel, 1, 0);
+            nodeStatisticsOverlay.add(throughputLabel, 1, 1);
+
+
+
+            pane.getChildren().add(nodeStatisticsOverlay);
+            AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
+            AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
+
     }
 }

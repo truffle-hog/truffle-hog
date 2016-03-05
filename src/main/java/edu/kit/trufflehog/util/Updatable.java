@@ -1,5 +1,7 @@
 package edu.kit.trufflehog.util;
 
+import edu.kit.trufflehog.model.network.graph.IUpdater;
+
 /**
  * This interface is used for Objects that want to be updatable by other objects of the same type with different/new values
  * and/or define some update logic that has to be performed when an instance gets updated.
@@ -7,7 +9,7 @@ package edu.kit.trufflehog.util;
  *
  * @author Jan Hermes
  */
-public interface Updatable<T> extends Mutability {
+public interface Updatable<T> {
 
     /**
      * Updates this class with the given instance of the same class. The actual update logic can include any functionality
@@ -16,5 +18,5 @@ public interface Updatable<T> extends Mutability {
      * @return \code true \endcode if this instance was updated, \code false \endcode if there was no success in updating
      *              or no values changed
      */
-    boolean update(T instance);
+    boolean update(T instance, IUpdater updater);
 }

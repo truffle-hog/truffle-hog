@@ -20,6 +20,7 @@ import edu.kit.trufflehog.view.graph.control.FXDefaultModalGraphMouse;
 import edu.kit.trufflehog.view.graph.control.FXModalGraphMouse;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationModel;
 import edu.uci.ics.jung.visualization.decorators.PickableEdgePaintTransformer;
@@ -29,6 +30,11 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.Observable;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.value.ObservableObjectValue;
+import javafx.beans.value.ObservableValue;
 import javafx.util.Duration;
 
 import javax.swing.*;
@@ -106,7 +112,7 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
 	private void initRenderers() {
 
-		jungView.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
+		jungView.getRenderContext().setVertexLabelTransformer(iNode -> iNode.toString() + " max Size: " + viewPort.getMaxThroughput());
 		//jungView.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
 
 /*		jungView.getRenderContext().setVertexFillPaintTransformer(

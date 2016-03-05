@@ -1,26 +1,15 @@
 package edu.kit.trufflehog.model.network;
 
-import edu.kit.trufflehog.model.network.IAddress;
-import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
 import edu.uci.ics.jung.graph.Graph;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import org.apache.commons.collections15.keyvalue.MultiKey;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -119,50 +108,5 @@ public class NetworkIOPort implements INetworkIOPort {
         return maxThroughputProperty;
     }
 
-
-    private static class MaximumOfValuesBinding extends IntegerBinding implements ChangeListener<Number>, ListChangeListener<IntegerProperty> {
-
-        private final ObservableList<IntegerProperty> boundProperties = FXCollections.observableArrayList();
-
-        private int max = 0;
-
-        public MaximumOfValuesBinding() {
-            super.bind(boundProperties);
-            boundProperties.addListener(this);
-        }
-
-        public void bindProperty(IntegerProperty property) {
-
-            property.addListener(this);
-            super.bind(property);
-            boundProperties.add(property);
-        }
-
-        @Override
-        protected int computeValue() {
-            return max;
-        }
-
-        @Override
-        public void onChanged(Change<? extends IntegerProperty> c) {
-
-            if (c.next()) {
-
-                c.getAddedSubList().stream().forEach(p -> {
-                    if (p.get() > max) {
-                        max = p.get();
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-
-            if (newValue.intValue() > max) {
-                max = newValue.intValue();
-            }
-        }
-    }
 
 }

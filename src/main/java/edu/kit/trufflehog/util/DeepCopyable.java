@@ -35,5 +35,5 @@ public interface DeepCopyable<T> extends Mutability {
      *
      * @return A deep copy of this INode
      */
-    T createDeepCopy();
+    T createDeepCopy(ICopyCreator copyCreator);
 }

@@ -8,6 +8,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import org.apache.commons.collections15.Transformer;
 
+import java.util.Collection;
+
 /**
  * A Networkview port provides all functionality that has to be accessed by the network view. Meaning it also
  * has to give access
@@ -82,4 +84,6 @@ public interface INetworkViewPort extends Layout<INode, IConnection> {
      * @param graph
      */
     void graphIntersection(Graph<INode, IConnection> graph);
+
+    void graphIntersection(Collection<INode> vertices, Collection<IConnection> edges);
 }

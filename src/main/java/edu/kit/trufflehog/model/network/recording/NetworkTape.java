@@ -18,6 +18,8 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -116,27 +118,22 @@ public class NetworkTape implements INetworkTape {
 
     public static class NetworkFrame implements INetworkFrame {
 
-        private final long time;
-        private final Graph<INode, IConnection> frame;
-
-
         private final Map<INode, Point2D> nodeMap = new ConcurrentHashMap<>();
 
         private final Map<INode, INode> nodes = new ConcurrentHashMap<>();
 
-        private final IntegerProperty maxThroughputProperty = new SimpleIntegerProperty(0);
+        private final Collection<IConnection> connections = new HashSet<>();
 
-        private final IntegerProperty maxConnectionSizeProperty = new SimpleIntegerProperty(0);
+        private final int maxThroughput;
 
-        private final LongProperty viewTimeProperty = new SimpleLongProperty(0);
-        private Dimension dimension;
+        private final int maxConnectionSize;
+
+        private final long viewTime;
+        private final Dimension dimension;
 
         private NetworkFrame(INetworkViewPort liveNetworkViewPort) {
 
-            time = Instant.now().toEpochMilli();
-            frame = new ConcurrentDirectedSparseGraph<>();
-
-            logger.debug(liveNetworkViewPort.getGraph().toString());
+            //logger.debug(liveNetworkViewPort.getGraph().toString());
 
             liveNetworkViewPort.getGraph().getVertices().stream().forEach(node -> {
 
@@ -144,145 +141,53 @@ public class NetworkTape implements INetworkTape {
                 final Point2D transform = liveNetworkViewPort.transform(node);
                 nodeMap.put(copyNode, new Point2D.Double(transform.getX(), transform.getY()));
                 nodes.put(copyNode, copyNode);
-                //connectionMap.put(copyNode, new HashSet<>());
-                frame.addVertex(copyNode);
             });
 
             liveNetworkViewPort.getGraph().getEdges().stream().forEach(edge -> {
 
-                //final IConnection connectionCopy = new Connection(edge);
-             //  final Pair<INode> endpoints = liveNetworkViewPort.getGraph().getEndpoints(edge);
-
-               // final INode source = node.get(endpoints.getFirst());
-              //  final INode dest = node.get(endpoints.getSecond());
-
-/*                long result = 17;
-                result = 31 * result + source.getID();
-                result = 31 * result + dest.getID();*/
                 final IConnection connectionCopy = edge.createDeepCopy();
-                frame.addEdge(connectionCopy, connectionCopy.getSrc(), connectionCopy.getDest());
+                connections.add(connectionCopy);
             });
 
-            logger.debug(frame.toString());
-
-/*        staticReplayLayout = new StaticLayout<>(this, TransformerUtils.mapTransformer(nodeMap));*/
-            setMaxThroughput(liveNetworkViewPort.getMaxThroughput());
-            setMaxConnectionSize(liveNetworkViewPort.getMaxConnectionSize());
-            setSize(liveNetworkViewPort.getSize());
-
-           // staticReplayLayout = new ConcurrentStaticLayout<>(frame);
+            maxThroughput = liveNetworkViewPort.getMaxThroughput();
+            maxConnectionSize = liveNetworkViewPort.getMaxConnectionSize();
+            dimension = liveNetworkViewPort.getSize();
+            viewTime = liveNetworkViewPort.getViewTime();
         }
 
         @Override
         public int getMaxConnectionSize() {
-            return maxConnectionSizeProperty.get();
-        }
-
-        @Override
-        public void setMaxConnectionSize(int size) {
-            maxConnectionSizeProperty.set(size);
-        }
-
-        @Override
-        public IntegerProperty getMaxConnectionSizeProperty() {
-            return maxConnectionSizeProperty;
+            return maxConnectionSize;
         }
 
         @Override
         public int getMaxThroughput() {
-            return maxThroughputProperty.get();
-        }
-
-        @Override
-        public void setMaxThroughput(int size) {
-            maxThroughputProperty.set(size);
-        }
-
-        @Override
-        public IntegerProperty getMaxThroughputProperty() {
-            return maxThroughputProperty;
+            return maxThroughput;
         }
 
         @Override
         public long getViewTime() {
-            return viewTimeProperty.get();
+            return viewTime;
         }
 
         @Override
-        public void setViewTime(long time) {
-            viewTimeProperty.set(time);
+        public int getVertexCount() {
+            return nodes.size();
         }
 
         @Override
-        public LongProperty getViewTimeProperty() {
-            return viewTimeProperty;
+        public int getEdgeCount() {
+            return connections.size();
         }
 
         @Override
-        public void refreshLayout() {
-
+        public Collection<INode> getVertices() {
+            return nodeMap.keySet();
         }
 
         @Override
-        public void setLayoutFactory(Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory) {
-
-        }
-
-        @Override
-        public void graphIntersection(Graph<INode, IConnection> graph) {
-
-        }
-
-        @Override
-        public void initialize() {
-
-        }
-
-        @Override
-        public void setInitializer(Transformer<INode, Point2D> initializer) {
-
-        }
-
-        @Override
-        public void setGraph(Graph<INode, IConnection> graph) {
-
-        }
-
-        @Override
-        public Graph<INode, IConnection> getGraph() {
-            return frame;
-        }
-
-        @Override
-        public void reset() {
-
-        }
-
-        @Override
-        public void setSize(Dimension d) {
-
-            dimension = d;
-        }
-
-        @Override
-        public Dimension getSize() {
-            return dimension;
-        }
-
-        @Override
-        public void lock(INode iNode, boolean state) {
-
-        }
-
-        @Override
-        public boolean isLocked(INode iNode) {
-            return false;
-        }
-
-        @Override
-        public void setLocation(INode iNode, Point2D location) {
-
-            nodeMap.put(iNode, location);
+        public Collection<IConnection> getEdges() {
+            return connections;
         }
 
         @Override
@@ -290,11 +195,5 @@ public class NetworkTape implements INetworkTape {
             return nodeMap.get(iNode);
         }
 
-        @Override
-        public String toString() {
-            return frame.toString() + "\n"
-                    + "max connection: " + maxConnectionSizeProperty.get() + "\n"
-                    + "max throughput: " + maxThroughputProperty.get();
-        }
     }
 }

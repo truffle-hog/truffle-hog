@@ -44,8 +44,8 @@ public class ConcurrentDirectedSparseGraph<V,E> extends AbstractTypedGraph<V, E>
     public ConcurrentDirectedSparseGraph()
     {
         super(EdgeType.DIRECTED);
-        vertices = new ConcurrentHashMap<>();
-        edges = new ConcurrentHashMap<>();
+        vertices = new HashMap<>();
+        edges = new HashMap<>();
     }
 
     @Override

@@ -1,7 +1,9 @@
 package edu.kit.trufflehog.service.executor;
 
+import edu.kit.trufflehog.command.ICommand;
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.util.IListener;
+import javafx.application.Platform;
 
 import java.util.Deque;
 import java.util.Queue;
@@ -20,13 +22,20 @@ public class TruffleExecutor implements Runnable, IListener<ITruffleCommand> {
 
         while (!Thread.interrupted()) {
 
+            ICommand command = null;
+
             try {
-                blockingQueue.take().execute();
+                command = blockingQueue.take();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
+
+            Platform.runLater(command::execute);
+
         }
+
+
     }
 
     @Override

@@ -1,7 +1,12 @@
 package edu.kit.trufflehog.model.network.recording;
 
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
 import javafx.beans.property.IntegerProperty;
+
+import java.awt.geom.Point2D;
+import java.util.Collection;
 
 /**
  * This interface provides the functionality that a network tape where a recording of a network is captured on has.
@@ -59,7 +64,22 @@ public interface INetworkTape {
     /**
      * This interface provides the functionality a single frame in a networktape possesses.
      */
-    interface INetworkFrame extends INetworkViewPort {
+    interface INetworkFrame {
 
+        int getMaxConnectionSize();
+
+        int getMaxThroughput();
+
+        long getViewTime();
+
+        int getVertexCount();
+
+        int getEdgeCount();
+
+        Collection<INode> getVertices();
+
+        Collection<IConnection> getEdges();
+
+        Point2D transform(INode node);
     }
 }

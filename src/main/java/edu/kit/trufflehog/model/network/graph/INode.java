@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.IAddress;
+import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.io.Serializable;
 
@@ -22,7 +23,7 @@ public interface INode extends IComposition, Serializable {
      * @return A deep copy of this INode
      */
     @Override
-    INode createDeepCopy();
+    INode createDeepCopy(ICopyCreator copyCreator);
 
     /**
      * Updates this node with the given node

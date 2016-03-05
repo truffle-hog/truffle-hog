@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.Collection;
 
 /**
  * TODO Implement
@@ -100,6 +101,11 @@ public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
     @Override
     public void graphIntersection(Graph<INode, IConnection> graph) {
         getActiveViewPort().graphIntersection(graph);
+    }
+
+    @Override
+    public void graphIntersection(Collection<INode> vertices, Collection<IConnection> edges) {
+        getActiveViewPort().graphIntersection(vertices, edges);
     }
 
     @Override

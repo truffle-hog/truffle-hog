@@ -14,13 +14,13 @@ public class FrameHandler implements EventHandler<ActionEvent> {
     private static final Logger logger = LogManager.getLogger(FrameHandler.class);
 
     private final INetworkTape playTape;
-    private final INetwork replayLayout;
+    private final INetwork replayNetwork;
     private final BooleanProperty movableNodesProperty = new SimpleBooleanProperty(true);
 
-    public FrameHandler(INetworkTape playTape, INetwork replayLayout) {
+    public FrameHandler(INetworkTape playTape, INetwork replayNetwork) {
 
         this.playTape = playTape;
-        this.replayLayout = replayLayout;
+        this.replayNetwork = replayNetwork;
     }
 
     public BooleanProperty getMovableNodesProperty() {
@@ -40,28 +40,29 @@ public class FrameHandler implements EventHandler<ActionEvent> {
 
         logger.debug(playFrame.toString());
 
-        replayLayout.getViewPort().setMaxConnectionSize(playFrame.getMaxConnectionSize());
-        replayLayout.getViewPort().setMaxThroughput(playFrame.getMaxThroughput());
-        replayLayout.getViewPort().setViewTime(playFrame.getViewTime());
+        replayNetwork.getViewPort().setMaxConnectionSize(playFrame.getMaxConnectionSize());
+        replayNetwork.getViewPort().setMaxThroughput(playFrame.getMaxThroughput());
+        replayNetwork.getViewPort().setViewTime(playFrame.getViewTime());
 
-        if (playFrame.getGraph().getVertexCount() < replayLayout.getViewPort().getGraph().getVertexCount() ||
-                playFrame.getGraph().getEdgeCount() < replayLayout.getViewPort().getGraph().getVertexCount()) {
+        if (playFrame.getVertexCount() < replayNetwork.getViewPort().getGraph().getVertexCount() ||
+                playFrame.getEdgeCount() < replayNetwork.getViewPort().getGraph().getVertexCount()) {
 
-            replayLayout.getViewPort().graphIntersection(playFrame.getGraph());
+            replayNetwork.getViewPort().graphIntersection(playFrame.getVertices(), playFrame.getEdges());
         }
 
 
-        playFrame.getGraph().getVertices().stream().forEach(node -> {
-            replayLayout.getWritingPort().writeNode(node);
+        playFrame.getVertices().stream().forEach(node -> {
+
+            replayNetwork.getWritingPort().writeNode(node);
             if (getMovableNodes()) {
-                replayLayout.getViewPort().setLocation(node, playFrame.transform(node));
+                replayNetwork.getViewPort().setLocation(node, playFrame.transform(node));
             }
         });
 
-        playFrame.getGraph().getEdges().stream().forEach(edge -> {
-            replayLayout.getWritingPort().writeConnection(edge);
+        playFrame.getEdges().stream().forEach(edge -> {
+            replayNetwork.getWritingPort().writeConnection(edge);
         });
 
-        //logger.debug(replayLayout.toString());
+        //logger.debug(replayNetwork.toString());
     }
 }
