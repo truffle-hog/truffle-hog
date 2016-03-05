@@ -22,9 +22,13 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.IRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 
+import javax.swing.text.View;
 import javax.xml.soap.Node;
 
 /**
@@ -116,5 +120,31 @@ public class ReplayUpdater implements IUpdater {
         edgeStatisticsComponent.setLastUpdateTimeProperty(comp.getLastUpdateTime());
         edgeStatisticsComponent.setTrafficProperty(comp.getTraffic());
         return true;
+    }
+
+    @Override
+    public boolean update(StaticRendererComponent component, IComponent instance) {
+
+        if (!(instance instanceof IRendererComponent)) {
+            return false;
+        }
+        final IRendererComponent other = (IRendererComponent) instance;
+
+        component.setColorPicked(other.getColorPicked());
+        component.setColorUnpicked(other.getColorUnpicked());
+        component.setShape(other.getShape());
+        component.setStroke(other.getStroke());
+        return true;
+    }
+
+    @Override
+    public boolean update(ViewComponent viewComponent, IComponent instance) {
+
+        if (!(instance instanceof ViewComponent)) {
+            return false;
+        }
+        final ViewComponent other = (ViewComponent) instance;
+
+        return viewComponent.getRenderer().update(other.getRenderer(), this);
     }
 }

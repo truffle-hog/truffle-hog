@@ -1,12 +1,17 @@
 package edu.kit.trufflehog.model.network.recording;
 
 import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.graph.INode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
 
 public class FrameHandler implements EventHandler<ActionEvent> {
@@ -39,6 +44,12 @@ public class FrameHandler implements EventHandler<ActionEvent> {
         final INetworkTape.INetworkFrame playFrame = playTape.getFrame(playTape.getCurrentReadingFrame());
 
 //        logger.debug(playFrame.toString());
+
+        final Collection<INode> nodes = new ArrayList<>(replayNetwork.getViewPort().getGraph().getVertices());
+
+        nodes.stream().forEach(vertex -> {
+            replayNetwork.getViewPort().getGraph().removeVertex(vertex);
+        });
 
         replayNetwork.getViewPort().setMaxConnectionSize(playFrame.getMaxConnectionSize());
         replayNetwork.getViewPort().setMaxThroughput(playFrame.getMaxThroughput());

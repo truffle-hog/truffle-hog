@@ -23,7 +23,10 @@ import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.IRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 /**
@@ -77,28 +80,21 @@ public class TapeCopyCreator implements ICopyCreator {
     @Override
     public IComponent createDeepCopy(MulticastEdgeRendererComponent multicastEdgeRendererComponent) {
 
-        final MulticastEdgeRendererComponent edgeRenderer = new MulticastEdgeRendererComponent();
+        final StaticRendererComponent edgeRenderer = new StaticRendererComponent(multicastEdgeRendererComponent.getShape(),
+                multicastEdgeRendererComponent.getColorPicked(), multicastEdgeRendererComponent.getColorUnpicked(), multicastEdgeRendererComponent.getStroke());
 
-        edgeRenderer.setColorUnpicked(multicastEdgeRendererComponent.getColorUnpicked());
-        edgeRenderer.setColorPicked(multicastEdgeRendererComponent.getColorPicked());
-        edgeRenderer.setShape(multicastEdgeRendererComponent.getShape());
-        edgeRenderer.setStroke(multicastEdgeRendererComponent.getStroke());
-
-        edgeRenderer.setOpacity(multicastEdgeRendererComponent.getOpacity());
-        edgeRenderer.setLastUpdate(multicastEdgeRendererComponent.getLastUpdate());
+        //edgeRenderer.setOpacity(multicastEdgeRendererComponent.getOpacity());
+        //edgeRenderer.setLastUpdate(multicastEdgeRendererComponent.getLastUpdate());
         return edgeRenderer;
     }
 
     @Override
     public IComponent createDeepCopy(BasicEdgeRendererComponent basicEdgeRendererComponent) {
 
-        final BasicEdgeRendererComponent rendererComponent = new BasicEdgeRendererComponent();
-        rendererComponent.setColorPicked(basicEdgeRendererComponent.getColorPicked());
-        rendererComponent.setColorUnpicked(basicEdgeRendererComponent.getColorUnpicked());
-        rendererComponent.setShape(basicEdgeRendererComponent.getShape());
-        rendererComponent.setStroke(basicEdgeRendererComponent.getStroke());
+        final StaticRendererComponent edgeRenderer = new StaticRendererComponent(basicEdgeRendererComponent.getShape(),
+                basicEdgeRendererComponent.getColorPicked(), basicEdgeRendererComponent.getColorUnpicked(), basicEdgeRendererComponent.getStroke());
 
-        return rendererComponent;
+        return edgeRenderer;
     }
 
     @Override
@@ -107,5 +103,17 @@ public class TapeCopyCreator implements ICopyCreator {
         final IComponent copy = new EdgeStatisticsComponent(edgeStatisticsComponent.getTraffic());
 
         return copy;
+    }
+
+    @Override
+    public IComponent createDeepCopy(ViewComponent viewComponent) {
+
+        final IRendererComponent comp = viewComponent.getRenderer();
+
+        final StaticRendererComponent renderer = new StaticRendererComponent(comp.getShape(),
+                comp.getColorPicked(), comp.getColorUnpicked(), comp.getStroke());
+
+        return new ViewComponent(renderer);
+
     }
 }

@@ -18,7 +18,7 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
     private final INode dest;
 
     private final int hashcode;
-    public NetworkConnection(INode networkNodeSrc, INode networkNodeDest) {
+    public NetworkConnection(INode networkNodeSrc, INode networkNodeDest, IComponent... components) {
 
         src = networkNodeSrc;
         dest = networkNodeDest;
@@ -28,12 +28,8 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
         result = result + 31 * this.dest.hashCode();
         hashcode = result;
 
-        this.addComponent(new EdgeStatisticsComponent(1));
-
-        if (networkNodeDest.getAddress().isMulticast()) {
-            this.addComponent(new MulticastEdgeRendererComponent());
-        } else {
-            this.addComponent(new BasicEdgeRendererComponent());
+        for (IComponent c : components) {
+            this.addComponent(c);
         }
     }
 

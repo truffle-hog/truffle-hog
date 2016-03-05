@@ -12,7 +12,11 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.commons.collections15.keyvalue.MultiKey;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -24,6 +28,9 @@ public class NetworkIOPort implements INetworkIOPort {
 
     private final Map<IAddress, INode> idNodeMap = new ConcurrentHashMap<>();
     private final Map<MultiKey<IAddress>, IConnection> idConnectionMap = new ConcurrentHashMap<>();
+
+    private final Queue<IConnection> copyCache = new LinkedList<>();
+    private final Queue<IConnection> whileCopyBuffer = new LinkedList<>();
 
     private final IntegerProperty maxThroughputProperty = new SimpleIntegerProperty(0);
     private final IntegerProperty maxConnectionSizeProperty = new SimpleIntegerProperty(0);
@@ -38,8 +45,6 @@ public class NetworkIOPort implements INetworkIOPort {
         maxConnectionSizeProperty.bind(maxTrafficBinding);
         maxThroughputProperty.bind(maxThroughputBinding);
 
-
-
         this.delegate = delegate;
     }
 
@@ -48,6 +53,8 @@ public class NetworkIOPort implements INetworkIOPort {
 
         final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
         final IConnection existing = idConnectionMap.get(connectionKey);
+
+
 
         if (existing != null) {
             existing.update(connection, liveUpdater);

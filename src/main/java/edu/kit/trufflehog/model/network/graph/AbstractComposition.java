@@ -24,8 +24,6 @@ public abstract class AbstractComposition implements IComposition {
     @Override
     public <T extends IComponent> T addComponent(T component) {
 
-        
-
         final IComponent existing = components.get(component.getClass());
 
         if (existing != null) {

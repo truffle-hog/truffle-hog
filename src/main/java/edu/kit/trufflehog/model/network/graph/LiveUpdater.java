@@ -19,6 +19,8 @@ package edu.kit.trufflehog.model.network.graph;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 
 import java.time.Instant;
@@ -90,5 +92,23 @@ public class LiveUpdater implements IUpdater {
         edgeStatisticsComponent.setLastUpdateTimeProperty(Instant.now().toEpochMilli());
         edgeStatisticsComponent.incrementTraffic(1);
         return true;
+    }
+
+    @Override
+    public boolean update(StaticRendererComponent component, IComponent instance) {
+
+        throw new UnsupportedOperationException("this operation should not be performed by the live updater");
+    }
+
+    @Override
+    public boolean update(ViewComponent viewComponent, IComponent instance) {
+
+        if (!(instance instanceof ViewComponent)) {
+            return false;
+        }
+        final ViewComponent other = (ViewComponent) instance;
+
+        return viewComponent.getRenderer().update(other.getRenderer(), this);
+
     }
 }

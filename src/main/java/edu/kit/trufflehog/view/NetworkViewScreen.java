@@ -11,6 +11,7 @@ import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComp
 import edu.kit.trufflehog.model.network.graph.components.edge.IRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastLayeredEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.graph.decorators.FXEdgeShape;
@@ -135,12 +136,11 @@ public class NetworkViewScreen extends NetworkGraphViewController {
               //      BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
 //				final long maxSize = layout.getNetworkGraph().getMaxConnectionSize();
 
-            IRendererComponent rendererComponent;
+			final ViewComponent rendererComponent = iConnection.getComponent(ViewComponent.class);
 
             if (iConnection.getDest().getAddress().isMulticast()) {
 
-                rendererComponent = iConnection.getComponent(MulticastEdgeRendererComponent.class);
-                return rendererComponent.getStroke();
+                return rendererComponent.getRenderer().getStroke();
             }
 
             final EdgeStatisticsComponent statComp = iConnection.getComponent(EdgeStatisticsComponent.class);
@@ -193,25 +193,14 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
 		jungView.getRenderContext().setEdgeDrawPaintTransformer(iConnection -> {
 
-            IRendererComponent rendererComponent;
-
-            if (iConnection.getDest().getAddress().isMulticast()) {
-
-                rendererComponent = iConnection.getComponent(MulticastEdgeRendererComponent.class);
-
-            } else {
-
-                rendererComponent = iConnection.getComponent(BasicEdgeRendererComponent.class);
-            }
+            final ViewComponent viewComponent = iConnection.getComponent(ViewComponent.class);
 
             if (getPickedEdgeState().isPicked(iConnection)) {
-                return rendererComponent.getColorPicked();
+                return viewComponent.getRenderer().getColorPicked();
             } else {
-                return rendererComponent.getColorUnpicked();
+                return viewComponent.getRenderer().getColorUnpicked();
             }
         });
-
-        //jungView.getRenderContext().set
 	}
 
 

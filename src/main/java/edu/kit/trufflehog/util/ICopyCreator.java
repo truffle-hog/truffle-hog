@@ -24,6 +24,7 @@ import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
 
 /**
  * \brief
@@ -45,4 +46,6 @@ public interface ICopyCreator {
     IComponent createDeepCopy(BasicEdgeRendererComponent basicEdgeRendererComponent);
 
     IComponent createDeepCopy(EdgeStatisticsComponent edgeStatisticsComponent);
+
+    IComponent createDeepCopy(ViewComponent viewComponent);
 }

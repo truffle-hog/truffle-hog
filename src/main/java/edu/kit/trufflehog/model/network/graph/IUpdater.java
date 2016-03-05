@@ -19,6 +19,8 @@ package edu.kit.trufflehog.model.network.graph;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 
 /**
@@ -43,4 +45,8 @@ public interface IUpdater {
     boolean update(BasicEdgeRendererComponent basicEdgeRendererComponent, IComponent instance);
 
     boolean update(EdgeStatisticsComponent edgeStatisticsComponent, IComponent instance);
+
+    boolean update(StaticRendererComponent component, IComponent instance);
+
+    boolean update(ViewComponent viewComponent, IComponent instance);
 }
