@@ -1,6 +1,8 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -48,7 +50,6 @@ public class EdgeStatisticsComponent implements IComponent {
         return true;
     }
 
-    @Override
     public IComponent createDeepCopy() {
 
         final IComponent copy = new EdgeStatisticsComponent(trafficProperty.get());
@@ -56,7 +57,6 @@ public class EdgeStatisticsComponent implements IComponent {
         return copy;
     }
 
-    @Override
     public boolean update(IComponent update) {
 
         // TODO maybe change to another value
@@ -75,5 +75,15 @@ public class EdgeStatisticsComponent implements IComponent {
 
     public void setLastUpdateTimeProperty(long value) {
         lastUpdateTimeProperty().setValue(value);
+    }
+
+    @Override
+    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+        return copyCreator.createDeepCopy(this);
+    }
+
+    @Override
+    public boolean update(IComponent instance, IUpdater updater) {
+        return updater.update(this, instance);
     }
 }

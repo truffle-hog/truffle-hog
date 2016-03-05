@@ -22,6 +22,7 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentFRLayout;
@@ -57,6 +58,8 @@ public class ReplayPort implements INetworkViewPort, INetworkIOPort {
     private final AtomicInteger maxConnectionSize = new AtomicInteger(0);
 
     private final AtomicInteger maxTrafficCount = new AtomicInteger(0);
+
+    private final IUpdater replayUpdater = new ReplayUpdater();
 
     private Layout<INode, IConnection> delegate;
 
@@ -103,28 +106,28 @@ public class ReplayPort implements INetworkViewPort, INetworkIOPort {
     @Override
     public void writeConnection(IConnection connection) {
 
-/*        final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
+        final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
         final IConnection existing = idConnectionMap.get(connectionKey);
 
         if (existing != null) {
-            existing.update(connection);
+            existing.update(connection, replayUpdater);
             return;
-        }*/
+        }
         delegate.getGraph().addEdge(connection, connection.getSrc(), connection.getDest());
-    //    idConnectionMap.put(connectionKey, connection);
+        idConnectionMap.put(connectionKey, connection);
     }
 
     @Override
     public void writeNode(INode node) {
 
-/*        final INode existing = idNodeMap.get(node.getAddress());
+        final INode existing = idNodeMap.get(node.getAddress());
 
         if (existing != null) {
-            existing.update(node);
+            existing.update(node, replayUpdater);
             return;
-        }*/
+        }
         delegate.getGraph().addVertex(node);
-   //     idNodeMap.put(node.getAddress(), node);
+        idNodeMap.put(node.getAddress(), node);
     }
 
     @Override
@@ -256,6 +259,8 @@ public class ReplayPort implements INetworkViewPort, INetworkIOPort {
 
         filteredEdges.stream().forEach(deleteEdge -> {
 
+
+
             getGraph().removeEdge(deleteEdge);
             //existingEdges.remove(deleteEdge.longHashCode());
         });
@@ -273,18 +278,20 @@ public class ReplayPort implements INetworkViewPort, INetworkIOPort {
 
         filteredNodes.stream().forEach(deleteNode -> {
 
-            final Collection<IConnection> incident = delegate.getGraph().getIncidentEdges(deleteNode);
+            //final Collection<IConnection> incident = delegate.getGraph().getIncidentEdges(deleteNode);
             getGraph().removeVertex(deleteNode);
-            //existingNodes.remove(deleteNode.getID());
-            //existingEdges.values().removeAll(incident);
+            idNodeMap.remove(deleteNode.getAddress());
         });
 
         final Collection<IConnection> filteredEdges = getGraph().getEdges().stream().filter(edge -> !edges.contains(edge)).collect(Collectors.toList());
 
         filteredEdges.stream().forEach(deleteEdge -> {
 
+            final MultiKey<IAddress> connectionKey = new MultiKey<>(deleteEdge.getSrc().getAddress(), deleteEdge.getDest().getAddress());
+            //final IConnection existing = idConnectionMap.get(connectionKey);
+
             getGraph().removeEdge(deleteEdge);
-            //existingEdges.remove(deleteEdge.longHashCode());
+            idConnectionMap.remove(connectionKey);
         });
     }
 

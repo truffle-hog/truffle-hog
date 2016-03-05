@@ -1,6 +1,8 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.awt.*;
 
@@ -96,7 +98,6 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
         return true;
     }
 
-    @Override
     public IComponent createDeepCopy() {
 
         final BasicEdgeRendererComponent rendererComponent = new BasicEdgeRendererComponent();
@@ -108,7 +109,6 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
         return rendererComponent;
     }
 
-    @Override
     public boolean update(IComponent update) {
 
         if (currentBrightness > 0.7) {
@@ -124,5 +124,23 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
 
 
         Color.RGBtoHSB(this.colorPicked.getRed(), this.colorPicked.getGreen(), this.colorPicked.getBlue(), hsbValsPicked);
+    }
+
+    @Override
+    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+        return copyCreator.createDeepCopy(this);
+    }
+
+    @Override
+    public boolean update(IComponent instance, IUpdater updater) {
+        return updater.update(this, instance);
+    }
+
+    public float getCurrentBrightness() {
+        return currentBrightness;
+    }
+
+    public void setCurrentBrightness(float currentBrightness) {
+        this.currentBrightness = currentBrightness;
     }
 }

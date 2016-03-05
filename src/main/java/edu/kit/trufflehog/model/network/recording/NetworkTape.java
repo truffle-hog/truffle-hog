@@ -4,6 +4,7 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
+import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.beans.property.IntegerProperty;
@@ -43,6 +44,8 @@ public class NetworkTape implements INetworkTape {
     private final IntegerProperty currentWritingFrameProperty = new SimpleIntegerProperty(0);
 
     private final IntegerProperty frameCountProperty = new SimpleIntegerProperty(0);
+
+    private final ICopyCreator tapeCopyCreator = new TapeCopyCreator();
 
 
 
@@ -85,7 +88,7 @@ public class NetworkTape implements INetworkTape {
     @Override
     public void write(INetworkViewPort networkViewPort) {
 
-        frames.add(new NetworkFrame(networkViewPort));
+        frames.add(new NetworkFrame(networkViewPort, tapeCopyCreator));
         currentWritingFrameProperty.set(currentWritingFrameProperty.get() + 1);
         frameCountProperty.set(frames.size() - 1);
     }
@@ -131,13 +134,13 @@ public class NetworkTape implements INetworkTape {
         private final long viewTime;
         private final Dimension dimension;
 
-        private NetworkFrame(INetworkViewPort liveNetworkViewPort) {
+        private NetworkFrame(INetworkViewPort liveNetworkViewPort, ICopyCreator tapeCopyCreator) {
 
             //logger.debug(liveNetworkViewPort.getGraph().toString());
 
             liveNetworkViewPort.getGraph().getVertices().stream().forEach(node -> {
 
-                final INode copyNode = node.createDeepCopy();
+                final INode copyNode = node.createDeepCopy(tapeCopyCreator);
                 final Point2D transform = liveNetworkViewPort.transform(node);
                 nodeMap.put(copyNode, new Point2D.Double(transform.getX(), transform.getY()));
                 nodes.put(copyNode, copyNode);
@@ -145,7 +148,7 @@ public class NetworkTape implements INetworkTape {
 
             liveNetworkViewPort.getGraph().getEdges().stream().forEach(edge -> {
 
-                final IConnection connectionCopy = edge.createDeepCopy();
+                final IConnection connectionCopy = edge.createDeepCopy(tapeCopyCreator);
                 connections.add(connectionCopy);
             });
 

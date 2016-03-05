@@ -233,6 +233,7 @@ public class Presenter {
             toolBar.getItems().add(stopButton);
             toolBar.getItems().add(playButton);
             toolBar.getItems().add(recButton);
+            toolBar.getItems().add(liveButton);
             toolBar.setStyle("-fx-background-color: transparent");
             //  toolBar.getItems().add(slider);
 

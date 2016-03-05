@@ -4,6 +4,7 @@ import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererC
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastLayeredEdgeRendererComponent;
+import edu.kit.trufflehog.util.ICopyCreator;
 
 /**
  * <p>
@@ -75,10 +76,12 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
         return true;
     }
 
-    @Override
+
     public IConnection createDeepCopy() {
 
-        final IConnection copy = new NetworkConnection(getSrc().createDeepCopy(), getDest().createDeepCopy());
+        //TODO externalise
+
+/*        final IConnection copy = new NetworkConnection(getSrc().createDeepCopy(), getDest().createDeepCopy());
 
         this.stream().forEach(component -> {
             if (component.isMutable()) {
@@ -90,7 +93,14 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
             }
         });
 
-        return copy;
+        return copy;*/
+        return null;
+    }
+
+
+    @Override
+    public IConnection createDeepCopy(ICopyCreator copyCreator) {
+        return copyCreator.createDeepCopy(this);
     }
 
     /**
@@ -100,19 +110,15 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
      *              or no values changes
      */
     @Override
-    public boolean update(IComponent update) {
+    public boolean update(IComponent instance, IUpdater updater) {
 
-        if (!this.equals(update)) {
+        if (!this.equals(instance)) {
             // also implicit NULL check -> no check for null needed
             return false;
         }
         // if it is equal than it is an IConnection thus we can safely cast it
-        final IConnection updateConnection = (IConnection) update;
+        final IConnection updateConnection = (IConnection) instance;
 
-        updateConnection.stream().filter(IComponent::isMutable).forEach(c -> {
-            final IComponent existing = getComponent(c.getClass());
-            existing.update(c);
-        });
-        return true;
+        return updater.update(this, updateConnection);
     }
 }

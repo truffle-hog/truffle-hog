@@ -16,6 +16,13 @@
  */
 package edu.kit.trufflehog.model.network.graph;
 
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+
+import java.time.Instant;
+
 /**
  * \brief
  * \details
@@ -34,8 +41,54 @@ public class LiveUpdater implements IUpdater {
             final IComponent existing = node.getComponent(c.getClass());
             existing.update(c, this);
         });
-
         // TODO check if really some was changed
+        return true;
+    }
+
+    @Override
+    public boolean update(NodeStatisticsComponent nodeStatisticsComponent, IComponent instance) {
+
+        nodeStatisticsComponent.incrementThroughput(1);
+        return true;
+    }
+
+    @Override
+    public boolean update(IConnection oldValue, IConnection newValue) {
+
+        newValue.stream().filter(IComponent::isMutable).forEach(c -> {
+            final IComponent existing = oldValue.getComponent(c.getClass());
+            existing.update(c, this);
+        });
+        // TODO check if really some was changed
+        return true;
+    }
+
+    @Override
+    public boolean update(MulticastEdgeRendererComponent multicastEdgeRendererComponent, IComponent instance) {
+
+        multicastEdgeRendererComponent.setStrokeWidth(5f);
+        multicastEdgeRendererComponent.setMultiplier(1.05f);
+        multicastEdgeRendererComponent.setOpacity(170);
+
+        multicastEdgeRendererComponent.setLastUpdate(Instant.now().toEpochMilli());
+        return true;
+    }
+
+    @Override
+    public boolean update(BasicEdgeRendererComponent basicEdgeRendererComponent, IComponent instance) {
+        if (basicEdgeRendererComponent.getCurrentBrightness() > 0.7) {
+            return true;
+        }
+        // TODO implement more
+        basicEdgeRendererComponent.setCurrentBrightness(1);
+        return true;
+    }
+
+    @Override
+    public boolean update(EdgeStatisticsComponent edgeStatisticsComponent, IComponent instance) {
+        // TODO maybe change to another value
+        edgeStatisticsComponent.setLastUpdateTimeProperty(Instant.now().toEpochMilli());
+        edgeStatisticsComponent.incrementTraffic(1);
         return true;
     }
 }

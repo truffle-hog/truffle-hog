@@ -38,7 +38,7 @@ public class FrameHandler implements EventHandler<ActionEvent> {
 
         final INetworkTape.INetworkFrame playFrame = playTape.getFrame(playTape.getCurrentReadingFrame());
 
-        logger.debug(playFrame.toString());
+//        logger.debug(playFrame.toString());
 
         replayNetwork.getViewPort().setMaxConnectionSize(playFrame.getMaxConnectionSize());
         replayNetwork.getViewPort().setMaxThroughput(playFrame.getMaxThroughput());
@@ -49,7 +49,6 @@ public class FrameHandler implements EventHandler<ActionEvent> {
 
             replayNetwork.getViewPort().graphIntersection(playFrame.getVertices(), playFrame.getEdges());
         }
-
 
         playFrame.getVertices().stream().forEach(node -> {
 

@@ -2,6 +2,8 @@ package edu.kit.trufflehog.model.network;
 
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.LiveUpdater;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
@@ -29,10 +31,14 @@ public class NetworkIOPort implements INetworkIOPort {
     private final MaximumOfValuesBinding maxTrafficBinding = new MaximumOfValuesBinding();
     private final MaximumOfValuesBinding maxThroughputBinding = new MaximumOfValuesBinding();
 
+    private final IUpdater liveUpdater = new LiveUpdater();
+
     public NetworkIOPort(final Graph<INode, IConnection> delegate) {
 
         maxConnectionSizeProperty.bind(maxTrafficBinding);
         maxThroughputProperty.bind(maxThroughputBinding);
+
+
 
         this.delegate = delegate;
     }
@@ -44,7 +50,7 @@ public class NetworkIOPort implements INetworkIOPort {
         final IConnection existing = idConnectionMap.get(connectionKey);
 
         if (existing != null) {
-            existing.update(connection);
+            existing.update(connection, liveUpdater);
             return;
         }
         final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);
@@ -62,7 +68,7 @@ public class NetworkIOPort implements INetworkIOPort {
         final INode existing = idNodeMap.get(node.getAddress());
 
         if (existing != null) {
-            existing.update(node);
+            existing.update(node, liveUpdater);
             return;
         }
         final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);

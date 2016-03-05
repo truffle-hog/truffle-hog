@@ -1,6 +1,8 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
@@ -46,9 +48,18 @@ public class NodeStatisticsComponent implements IComponent {
         return true;
     }
 
-    @Override
-    public IComponent createDeepCopy() {
 
+    @Override
+    public String toString() {
+
+        return name() + ": " + "Throughput=" + getThroughput();
+
+    }
+
+    @Override
+    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+
+        // TODO externalise this logic in the copy creator
         final IComponent copy = new NodeStatisticsComponent(getThroughput());
 
         //logger.debug("Deep copy created: " + copy.toString());
@@ -56,17 +67,7 @@ public class NodeStatisticsComponent implements IComponent {
     }
 
     @Override
-    public boolean update(IComponent update) {
-
-        // TODO maybe change to another value
-        incrementThroughput(1);
-        return true;
-    }
-
-    @Override
-    public String toString() {
-
-        return name() + ": " + "Throughput=" + getThroughput();
-
+    public boolean update(IComponent instance, IUpdater updater) {
+        return updater.update(this, instance);
     }
 }

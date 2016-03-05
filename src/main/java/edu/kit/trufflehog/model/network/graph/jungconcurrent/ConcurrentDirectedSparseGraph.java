@@ -61,7 +61,7 @@ public class ConcurrentDirectedSparseGraph<V,E> extends AbstractTypedGraph<V, E>
 
         if (findEdge(source, dest) != null) {
 
-            vertices.get(source).getSecond().put(dest, edge);
+            //vertices.get(source).getSecond().put(dest, edge);
 
             return false;
 
@@ -248,10 +248,10 @@ public class ConcurrentDirectedSparseGraph<V,E> extends AbstractTypedGraph<V, E>
             return true;
         } else {
 
-            final Pair<Map<V,E>> existing = vertices.get(vertex);
-            logger.debug("vertex allready exists: " + existing.toString() + "\nupdating with: " + vertex.toString());
+            //final Pair<Map<V,E>> existing = vertices.get(vertex);
+            //logger.debug("vertex allready exists: " + existing.toString() + "\nupdating with: " + vertex.toString());
 
-            vertices.put(vertex, existing);
+            //vertices.put(vertex, existing);
             return false;
         }
     }

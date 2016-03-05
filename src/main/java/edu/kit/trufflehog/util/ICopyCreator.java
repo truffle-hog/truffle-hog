@@ -17,8 +17,13 @@
 package edu.kit.trufflehog.util;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
 
 /**
  * \brief
@@ -31,5 +36,13 @@ import edu.kit.trufflehog.model.network.graph.NetworkNode;
  */
 public interface ICopyCreator {
 
-    void createDeepCopy(NetworkNode component);
+    INode createDeepCopy(INode component);
+
+    IConnection createDeepCopy(IConnection iComponents);
+
+    IComponent createDeepCopy(MulticastEdgeRendererComponent multicastEdgeRendererComponent);
+
+    IComponent createDeepCopy(BasicEdgeRendererComponent basicEdgeRendererComponent);
+
+    IComponent createDeepCopy(EdgeStatisticsComponent edgeStatisticsComponent);
 }

@@ -1,7 +1,9 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
+import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -42,15 +44,23 @@ public class PacketDataLoggingComponent implements IComponent {
         return true;
     }
 
-    @Override
     public IComponent createDeepCopy() {
 
         // because IPacketData is immutable, do not have to copy them explicitly
         return new PacketDataLoggingComponent(dataList);
     }
 
-    @Override
     public boolean update(IComponent update) {
+        return false;
+    }
+
+    @Override
+    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+        return null;
+    }
+
+    @Override
+    public boolean update(IComponent instance, IUpdater updater) {
         return false;
     }
 }

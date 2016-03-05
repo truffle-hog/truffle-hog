@@ -1,6 +1,8 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.util.ICopyCreator;
 import edu.kit.trufflehog.view.graph.decorators.LayeredShape;
 import javafx.application.Platform;
 import javafx.scene.shape.Ellipse;
@@ -100,12 +102,11 @@ public class MulticastLayeredEdgeRendererComponent implements IRendererComponent
         return true;
     }
 
-    @Override
     public IComponent createDeepCopy() {
         return null;
     }
 
-    @Override
+
     public boolean update(IComponent update) {
 
         shape.addShape(new Ellipse2D.Float(-10, -10, 20, 20));
@@ -114,5 +115,17 @@ public class MulticastLayeredEdgeRendererComponent implements IRendererComponent
         //multiplier = 0;
         lastUpdate = Instant.now().toEpochMilli();
         return true;
+    }
+
+    @Override
+    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+        return null;
+    }
+
+    @Override
+    public boolean update(IComponent instance, IUpdater updater) {
+
+
+        return false;
     }
 }
