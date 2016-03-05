@@ -8,8 +8,11 @@ import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComp
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
 import edu.uci.ics.jung.graph.Graph;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.concurrent.Service;
 import org.apache.commons.collections15.keyvalue.MultiKey;
 
 import java.util.Collection;
@@ -31,6 +34,7 @@ public class NetworkIOPort implements INetworkIOPort {
 
     private final Queue<IConnection> copyCache = new LinkedList<>();
     private final Queue<IConnection> whileCopyBuffer = new LinkedList<>();
+    private final BooleanProperty copyingProperty = new SimpleBooleanProperty(false);
 
     private final IntegerProperty maxThroughputProperty = new SimpleIntegerProperty(0);
     private final IntegerProperty maxConnectionSizeProperty = new SimpleIntegerProperty(0);
@@ -48,13 +52,25 @@ public class NetworkIOPort implements INetworkIOPort {
         this.delegate = delegate;
     }
 
+    public void acceptCopyService(CopyService copyService) {
+
+        copyService.copy(copyCache, copyingProperty, whileCopyBuffer);
+
+    }
+
     @Override
     public void writeConnection(IConnection connection) {
 
         final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
         final IConnection existing = idConnectionMap.get(connectionKey);
 
+        if (copyingProperty.get()) {
+            whileCopyBuffer.add(connection);
+        } else {
+            copyCache.add(connection);
+        }
 
+        //copyCache.add(connection);
 
         if (existing != null) {
             existing.update(connection, liveUpdater);
