@@ -86,7 +86,7 @@ public class UnixSocketReceiverTest {
 
         receiver.connect();
 
-        Thread.sleep(2000);
+        Thread.sleep(5000);
 
         receiver.disconnect();
     }

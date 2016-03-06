@@ -30,6 +30,10 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
     private boolean connected = false;
 
+    static {
+        System.loadLibrary("truffleReceiver");
+    }
+
     /**
      * <p>
      *     Creates the UnixSocketReceiver.
@@ -64,7 +68,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                         this.wait();
                     }
 
-                    Truffle truffle = getTruffle();
+                    final Truffle truffle = getTruffle();
 
                     if (truffle != null) {
                         notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filters));
@@ -72,6 +76,8 @@ public class UnixSocketReceiver extends TruffleReceiver {
                 } catch (InterruptedException e) {
                     logger.debug("UnixSocketReceiver interrupted. Exiting...");
                     Thread.currentThread().interrupt();
+                } catch (ReceiverReadError receiverReadError) {
+                    logger.debug(receiverReadError);
                 }
             }
         }
@@ -123,5 +129,5 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
     private native void closeIPC() throws SnortPNPluginDisconnectFailedException;
 
-    private native Truffle getTruffle();
+    private native Truffle getTruffle() throws ReceiverReadError;
 }
