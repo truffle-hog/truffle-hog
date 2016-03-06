@@ -3,13 +3,14 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.command.trufflecommand.ReceiverErrorCommand;
-import edu.kit.trufflehog.model.filter.Filter;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * <p>
@@ -23,7 +24,7 @@ import java.util.concurrent.*;
 public class UnixSocketReceiver extends TruffleReceiver {
 
     private final INetworkWritingPort networkWritingPort;
-    private final List<Filter> filters;
+    private final List<IFilter> filters;
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private final Logger logger = LogManager.getLogger();
 
@@ -39,7 +40,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *     Creates the UnixSocketReceiver.
      * </p>
      */
-    public UnixSocketReceiver(INetworkWritingPort networkWritingPort, List<Filter> filters) {
+    public UnixSocketReceiver(INetworkWritingPort networkWritingPort, List<IFilter> filters) {
         this.networkWritingPort = networkWritingPort;
         this.filters = filters;
     }
