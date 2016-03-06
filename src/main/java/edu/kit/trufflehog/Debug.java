@@ -1,13 +1,17 @@
 package edu.kit.trufflehog;
 
 import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.FilterDataModel;
+import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 
+import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -18,9 +22,21 @@ import java.sql.Statement;
  */
 public class Debug {
     public static void main(String[] args) {
+        FilterDataModel filterDataModel = new FilterDataModel(new FileSystem(), new LoggedScheduledExecutor(1));
 
-        ConfigDataModel configDataModel = new ConfigDataModel(new FileSystem(), new LoggedScheduledExecutor(1));
-        configDataModel.load();
+        List<String> filterARules = new ArrayList<>();
+        filterARules.add("Rule A: 1");
+        filterARules.add("Rule A: 2");
+        filterARules.add("Rule A: 3");
+        FilterInput filterInput = new FilterInput("Filter A", filterARules, Color.black);
+
+        filterDataModel.addFilterToDatabase(filterInput);
+
+        filterDataModel.loadFilters();
+
+        filterDataModel.removeFilterFromDatabase(filterInput);
+
+        filterDataModel.loadFilters();
 
         //dbShit();
     }
@@ -29,7 +45,6 @@ public class Debug {
         Connection connection;
         Statement statement;
         try {
-            Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:./src/main/resources/db.sql");
             System.out.println("Opened database successfully");
 
