@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trufflehog>
+    <head>
+        <!-- The version of Truffle Hog that this file is meant for. -->
+        <trufflehog-version>1.0</trufflehog-version>
+
+        <!-- Defines the file type for Truffle Hog. If this is wrong, the file will not be read. -->
+        <type>settings</type>
+    </head>
+    <data>
+        <!--__________________________________________________________________________________________________________
+        ______________________________________________________________________________________________________________
+        Below is an example of an entry. Each entry needs a key, a value and a type. The type is the class
+        that the value belongs to. For example, here 007 is an integer, thus it is of type java.lang.Integer.
+
+        IMPORTANT: It is key that the type is the fully qualified name of the desired class, otherwise Java will not
+        find the class. That means use java.lang.Integer and not Integer.
+
+        Example Entry:
+
+            <entry type="java.lang.Integer">
+                <key>example-integer</key>
+                <value>007</value>
+            </entry>
+        ______________________________________________________________________________________________________________
+        ___________________________________________________________________________________________________________-->
+    </data>
+</trufflehog>

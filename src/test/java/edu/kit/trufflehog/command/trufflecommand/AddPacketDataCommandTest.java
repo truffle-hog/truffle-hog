@@ -2,13 +2,11 @@ package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.Filter;
 import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.INetworkGraph;
 import edu.kit.trufflehog.model.graph.NetworkNode;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import sun.nio.ch.Net;
 
 import java.util.LinkedList;
 import java.util.List;
