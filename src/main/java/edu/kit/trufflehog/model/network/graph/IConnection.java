@@ -7,7 +7,7 @@ import java.io.Serializable;
  *     Interface used to represent communication relations of node in the graph.
  * </p>
  */
-public interface IConnection extends IComposition, Serializable {
+public interface IConnection extends Serializable {
 
     INode getSrc();
 
@@ -22,5 +22,7 @@ public interface IConnection extends IComposition, Serializable {
      *              or no values changes
      */
     boolean update(IConnection update);
+
+    IComposition getComposition();
 
 }

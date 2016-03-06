@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.INode;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -85,7 +86,7 @@ public class MulticastEdgeRendererComponent implements IRendererComponent {
     }
 
     @Override
-    public boolean update(IComponent update) {
+    public boolean update(INode update) {
 
         strokeWidth = 5f;
         multiplier = 1.05f;

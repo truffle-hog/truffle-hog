@@ -42,22 +42,22 @@ public class DisplayNodeInfoCommandV2 implements IUserCommand {
             anchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
             anchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
 
-            Text throughput = new Text("Throughput: " + node.getComponent(NodeStatisticsComponent.class).getThroughput());
-            node.getComponent(NodeStatisticsComponent.class).getThroughputProperty().addListener(new ChangeListener<Number>() {
+            Text throughput = new Text("Throughput: " + node.getComposition().getComponent(NodeStatisticsComponent.class).getThroughput());
+            node.getComposition().getComponent(NodeStatisticsComponent.class).getThroughputProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     thr = newValue.intValue();
                     throughput.setText("Throughput: " + thr);
                 }
             });
-            node.getComponent(NodeStatisticsComponent.class).getObjectProperty().addListener(new ChangeListener<NodeStatisticsComponent>() {
+            node.getComposition().getComponent(NodeStatisticsComponent.class).getObjectProperty().addListener(new ChangeListener<NodeStatisticsComponent>() {
                 @Override
                 public void changed(ObservableValue<? extends NodeStatisticsComponent> observable, NodeStatisticsComponent oldValue, NodeStatisticsComponent newValue) {
                     throughput.setText("Throughput: " + newValue.getThroughput());
                 }
             });
-            if (node.getComponent(PacketDataLoggingComponent.class) == null) return;
-            node.getComponent(PacketDataLoggingComponent.class).getObservablePacketsProperty().addListener(new ListChangeListener() {
+            if (node.getComposition().getComponent(PacketDataLoggingComponent.class) == null) return;
+            node.getComposition().getComponent(PacketDataLoggingComponent.class).getObservablePacketsProperty().addListener(new ListChangeListener() {
                 @Override
                 public void onChanged(Change c) {
                     c.next();
@@ -74,7 +74,7 @@ public class DisplayNodeInfoCommandV2 implements IUserCommand {
                     });
                 }
             });
-            node.getComponent(PacketDataLoggingComponent.class).getObservablePacketsProperty().addListener(new ChangeListener() {
+            node.getComposition().getComponent(PacketDataLoggingComponent.class).getObservablePacketsProperty().addListener(new ChangeListener() {
                 @Override
                 public void changed(ObservableValue observable, Object oldValue, Object newValue) {
 

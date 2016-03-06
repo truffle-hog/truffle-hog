@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.INode;
 
 import java.awt.*;
 
@@ -86,7 +87,7 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
     }
 
     @Override
-    public boolean update(IComponent update) {
+    public boolean update(INode update) {
 
         if (currentBrightness > 0.7) {
             return true;

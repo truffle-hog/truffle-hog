@@ -24,15 +24,15 @@ public class NetworkNodeTest {
         final IAddress address = new MacAddress(0x000000ffffff);
         final INode node = new NetworkNode(address);
 
-        node.addComponent(new NodeStatisticsComponent(1));
+        node.getComposition().addComponent(new NodeStatisticsComponent(1));
 
         final INode deepCopy = node.createDeepCopy();
-        final NodeStatisticsComponent statCopy = deepCopy.getComponent(NodeStatisticsComponent.class);
+        final NodeStatisticsComponent statCopy = deepCopy.getComposition().getComponent(NodeStatisticsComponent.class);
 
         statCopy.setThroughputProperty(10);
 
         assertEquals(10, statCopy.getThroughput());
-        assertEquals(1, node.getComponent(NodeStatisticsComponent.class).getThroughput());
+        assertEquals(1, node.getComposition().getComponent(NodeStatisticsComponent.class).getThroughput());
     }
 
     @Test
@@ -42,9 +42,9 @@ public class NetworkNodeTest {
 
         final IComponent statistics = new NodeStatisticsComponent(1);
 
-        node.addComponent(statistics);
+        node.getComposition().addComponent(statistics);
 
-        final NodeStatisticsComponent c = node.getComponent(NodeStatisticsComponent.class);
+        final NodeStatisticsComponent c = node.getComposition().getComponent(NodeStatisticsComponent.class);
 
         assertEquals(1, c.getThroughput());
 
@@ -61,10 +61,10 @@ public class NetworkNodeTest {
 
         final IComponent statistics = new NodeStatisticsComponent(1);
 
-        node.addComponent(statistics);
+        node.getComposition().addComponent(statistics);
 
-        node.removeComponent(NodeStatisticsComponent.class);
-        assertNull(node.getComponent(NodeStatisticsComponent.class));
+        node.getComposition().removeComponent(NodeStatisticsComponent.class);
+        assertNull(node.getComposition().getComponent(NodeStatisticsComponent.class));
 
     }
 
@@ -76,9 +76,9 @@ public class NetworkNodeTest {
 
         final IComponent statistics = new NodeStatisticsComponent(1);
 
-        node.addComponent(statistics);
+        node.getComposition().addComponent(statistics);
 
-        assertEquals(statistics, node.getComponent(NodeStatisticsComponent.class));
+        assertEquals(statistics, node.getComposition().getComponent(NodeStatisticsComponent.class));
 
     }
 

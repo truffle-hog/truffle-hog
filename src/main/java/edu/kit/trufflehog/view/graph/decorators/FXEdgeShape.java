@@ -194,7 +194,7 @@ public class FXEdgeShape  {
 
             if (connection.getDest().getAddress().isMulticast()) {
 
-                final MulticastEdgeRendererComponent rendererComp = connection.getComponent(MulticastEdgeRendererComponent.class);
+                final MulticastEdgeRendererComponent rendererComp = connection.getComposition().getComponent(MulticastEdgeRendererComponent.class);
                 return rendererComp.getShape();
             }
 

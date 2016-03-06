@@ -25,5 +25,5 @@ public interface IComponent extends Serializable {
      * @return true if the update was successful, false if there were no changes or the component is immutable
      * and thus cannot be updated
      */
-    boolean update(IComponent node);
+    boolean update(INode node);
 }

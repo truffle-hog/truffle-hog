@@ -63,12 +63,10 @@ public class TestNode implements INode {
         return null;
     }
 
-    @Override
     public String name() {
         return null;
     }
 
-    @Override
     public boolean isMutable() {
         return false;
     }
@@ -79,26 +77,31 @@ public class TestNode implements INode {
     }
 
     @Override
-    public boolean update(IComponent update) {
+    public boolean update(INode update) {
         return false;
     }
 
     @Override
+    public IComposition getComposition() {
+        return null;
+    }
+
+    public boolean update(IComponent update) {
+        return false;
+    }
+
     public <T extends IComponent> void addComponent(T component) {
 
     }
 
-    @Override
     public void removeComponent(Class<? extends IComponent> type) {
 
     }
 
-    @Override
     public <T extends IComponent> T getComponent(Class<T> componentType) {
         return null;
     }
 
-    @Override
     public Collection<? extends IComponent> getComponents() {
         return null;
     }

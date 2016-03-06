@@ -148,11 +148,11 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
             if (iConnection.getDest().getAddress().isMulticast()) {
 
-                rendererComponent = iConnection.getComponent(MulticastEdgeRendererComponent.class);
+                rendererComponent = iConnection.getComposition().getComponent(MulticastEdgeRendererComponent.class);
                 return rendererComponent.getStroke();
             }
 
-            final EdgeStatisticsComponent statComp = iConnection.getComponent(EdgeStatisticsComponent.class);
+            final EdgeStatisticsComponent statComp = iConnection.getComposition().getComponent(EdgeStatisticsComponent.class);
             // TODO maybe check for NULL
 
             int currentSize = statComp.getTraffic();
@@ -170,7 +170,7 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
             //System.out.println(layout.transform(iNode));
 
-            final NodeStatisticsComponent statComp = iNode.getComponent(NodeStatisticsComponent.class);
+            final NodeStatisticsComponent statComp = iNode.getComposition().getComponent(NodeStatisticsComponent.class);
             int currentSize = statComp.getThroughput();
             long maxSize = viewPort.getMaxThroughput();
             double relation = (double) currentSize / (double) maxSize;
@@ -207,11 +207,11 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
             if (iConnection.getDest().getAddress().isMulticast()) {
 
-                rendererComponent = iConnection.getComponent(MulticastEdgeRendererComponent.class);
+                rendererComponent = iConnection.getComposition().getComponent(MulticastEdgeRendererComponent.class);
 
             } else {
 
-                rendererComponent = iConnection.getComponent(BasicEdgeRendererComponent.class);
+                rendererComponent = iConnection.getComposition().getComponent(BasicEdgeRendererComponent.class);
             }
 
             if (getPickedEdgeState().isPicked(iConnection)) {

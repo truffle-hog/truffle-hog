@@ -61,7 +61,7 @@ public class NetworkIOPort implements INetworkIOPort {
             return;
         }
 
-        final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);
+        final EdgeStatisticsComponent edgeStat = connection.getComposition().getComponent(EdgeStatisticsComponent.class);
 
         if (edgeStat != null) {
             maxTrafficBinding.bindProperty(edgeStat.getTrafficProperty());
@@ -80,15 +80,15 @@ public class NetworkIOPort implements INetworkIOPort {
             existing.update(node);
 
             //TODO Improve this!!!
-            PacketDataLoggingComponent component = existing.getComponent(PacketDataLoggingComponent.class);
+            PacketDataLoggingComponent component = existing.getComposition().getComponent(PacketDataLoggingComponent.class);
             if (component != null) {
-                IPacketData packetData = node.getComponent(PacketDataLoggingComponent.class).getObservablePackets().get(0);
+                IPacketData packetData = node.getComposition().getComponent(PacketDataLoggingComponent.class).getObservablePackets().get(0);
                 if (packetData != null) component.addPacket(packetData);
             }
             return;
         }
 
-        final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);
+        final NodeStatisticsComponent nodeStat = node.getComposition().getComponent(NodeStatisticsComponent.class);
 
         if (nodeStat != null) {
             maxThroughputBinding.bindProperty(nodeStat.getThroughputProperty());

@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.view.graph.decorators.LayeredShape;
 
 import java.awt.*;
@@ -81,7 +82,7 @@ public class MulticastLayeredEdgeRendererComponent implements IRendererComponent
     }
 
     @Override
-    public boolean update(IComponent update) {
+    public boolean update(INode update) {
 
         shape.addShape(new Ellipse2D.Float(-10, -10, 20, 20));
 

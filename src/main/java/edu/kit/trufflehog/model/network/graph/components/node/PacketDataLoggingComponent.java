@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -58,7 +59,7 @@ public class PacketDataLoggingComponent implements IComponent {
     }
 
     @Override
-    public boolean update(IComponent update) {
+    public boolean update(INode update) {
         return false;
     }
 }

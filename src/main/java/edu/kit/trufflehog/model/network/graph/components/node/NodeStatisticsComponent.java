@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.INode;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -59,7 +60,7 @@ public class NodeStatisticsComponent implements IComponent {
     }
 
     @Override
-    public boolean update(IComponent update) {
+    public boolean update(INode update) {
 
         // TODO maybe change to another value
         incrementThroughput(1);

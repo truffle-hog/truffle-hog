@@ -10,10 +10,11 @@ import java.io.Serializable;
  *     Node in the graph to represent a device in the network. Stores important device data and logs.
  * </p>
  */
-public class NetworkNode extends AbstractComposition implements Serializable, INode, IComposition {
+public class NetworkNode implements Serializable, INode {
 
 	private final IAddress address;
 	private final int hashcode;
+	private final IComposition composition;
 
 	public NetworkNode(IAddress address) {
         super();
@@ -21,8 +22,10 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 		this.address = address;
 		this.hashcode = address.hashCode();
 
+        composition = new SimpleComposition();
+
 		// TODO maybe not make this default component
-		addComponent(new NodeStatisticsComponent(1));
+		composition.addComponent(new NodeStatisticsComponent(1));
 	}
 
 	@Override
@@ -35,27 +38,28 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 
 		final INode node = new NetworkNode(address);
 
-		components.values().stream().forEach(component -> {
+		composition.getComponents().stream().forEach(component -> {
 			if (component.isMutable()) {
 
-				node.addComponent(component.createDeepCopy());
+				composition.addComponent(component.createDeepCopy());
 
 			} else {
-				node.addComponent(component);
+				composition.addComponent(component);
 			}
 		});
 		return node;
 	}
 
-    /**
+    /*
+    **
      * Updates the given component if it existis in this node
      * @param update the component to update this component
      * @return true if it exists and was updated, false otherwise
-     */
+     *
 	@Override
     public boolean update(IComponent update) {
 
-        final IComponent existing = getComponent(update.getClass());
+        final IComponent existing = composition.getComponent(update.getClass());
 
         if (existing == null) {
             return false;
@@ -63,7 +67,7 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 
         return existing.update(update);
     }
-
+    */
 
     public boolean update(INode update) {
 
@@ -71,10 +75,10 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
             return false;
         }
 
-        update.getComponents().stream().forEach(c -> {
+        update.getComposition().getComponents().stream().forEach(c -> {
 
             if (c.isMutable()) {
-                final IComponent existing = getComponent(c.getClass());
+                final IComponent existing = composition.getComponent(c.getClass());
                 existing.update(update);
             }
         });
@@ -108,13 +112,15 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
     }
 
 
-	@Override
 	public String name() {
 		return "Network Node";
 	}
 
-	@Override
 	public boolean isMutable() {
 		return true;
 	}
+
+    public IComposition getComposition() {
+        return composition;
+    }
 }

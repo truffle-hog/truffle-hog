@@ -10,29 +10,33 @@ import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRende
  *     communication.
  * </p>
  */
-public class NetworkConnection extends AbstractComposition implements IConnection {
+public class NetworkConnection implements IConnection {
 
     private final INode src;
     private final INode dest;
+    private final IComposition composition;
 
     private final int hashcode;
     public NetworkConnection(INode networkNodeSrc, INode networkNodeDest) {
 
         src = networkNodeSrc;
         dest = networkNodeDest;
+        composition = new SimpleComposition();
 
         int result = 17;
         result = result + 31 * this.src.hashCode();
         result = result + 31 * this.dest.hashCode();
         hashcode = result;
 
-        this.addComponent(new EdgeStatisticsComponent(1));
+        composition.addComponent(new EdgeStatisticsComponent(1));
 
         if (networkNodeDest.getAddress().isMulticast()) {
-            this.addComponent(new MulticastEdgeRendererComponent());
+            composition.addComponent(new MulticastEdgeRendererComponent());
         } else {
-            this.addComponent(new BasicEdgeRendererComponent());
+            composition.addComponent(new BasicEdgeRendererComponent());
         }
+
+
     }
 
     @Override
@@ -64,12 +68,10 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
     }
 
 
-    @Override
     public String name() {
         return "Network Connection";
     }
 
-    @Override
     public boolean isMutable() {
         return true;
     }
@@ -79,28 +81,28 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
 
         final IConnection copy = new NetworkConnection(getSrc().createDeepCopy(), getDest().createDeepCopy());
 
-        components.values().stream().forEach(component -> {
+        composition.getComponents().stream().forEach(component -> {
             if (component.isMutable()) {
 
-                copy.addComponent(component.createDeepCopy());
+                copy.getComposition().addComponent(component.createDeepCopy());
 
             } else {
-                copy.addComponent(component);
+                copy.getComposition().addComponent(component);
             }
         });
 
         return copy;
     }
 
-    /**
+    /*
      * Updates the given component if it existis in this node
      * @param update the component to update this component
      * @return true if it exists and was updated, false otherwise
-     */
+     *
     @Override
-    public boolean update(IComponent update) {
+    public boolean update(INode update) {
 
-        final IComponent existing = getComponent(update.getClass());
+        final IComponent existing = composition.getComponent(update.getClass());
 
         if (existing == null) {
             return false;
@@ -108,6 +110,7 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
 
         return existing.update(update);
     }
+    */
 
     @Override
     public boolean update(IConnection update) {
@@ -115,16 +118,21 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
         if (!this.equals(update)) {
             return false;
         }
-
-        update.getComponents().stream().forEach(c -> {
+        /*TODO fix this
+        update.getComposition().getComponents().stream().forEach(c -> {
 
             if (c.isMutable()) {
                 final IComponent existing = getComponent(c.getClass());
                 existing.update(c);
             }
         });
-
+        */
         return true;
 
+    }
+
+    @Override
+    public IComposition getComposition() {
+        return composition;
     }
 }

@@ -49,11 +49,11 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final INode destNode = new NetworkNode(destAddress);
         final IConnection connection = new NetworkConnection(sourceNode, destNode);
 
-        destNode.addComponent(new PacketDataLoggingComponent());
-        destNode.getComponent(PacketDataLoggingComponent.class).addPacket(data);
+        destNode.getComposition().addComponent(new PacketDataLoggingComponent());
+        destNode.getComposition().getComponent(PacketDataLoggingComponent.class).addPacket(data);
 
-        sourceNode.addComponent(new PacketDataLoggingComponent());
-        sourceNode.getComponent(PacketDataLoggingComponent.class).addPacket(data);
+        sourceNode.getComposition().addComponent(new PacketDataLoggingComponent());
+        sourceNode.getComposition().getComponent(PacketDataLoggingComponent.class).addPacket(data);
 
         writingPort.writeNode(sourceNode);
         writingPort.writeNode(destNode);

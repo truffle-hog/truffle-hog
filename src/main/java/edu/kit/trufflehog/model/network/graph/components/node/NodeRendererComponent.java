@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.INode;
 
 import java.awt.*;
 
@@ -48,7 +49,7 @@ public class NodeRendererComponent implements IComponent {
     }
 
     @Override
-    public boolean update(IComponent update) {
+    public boolean update(INode update) {
         return false;
     }
 }
