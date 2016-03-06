@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService;
 public class ConfigDataModel implements IConfigData {
     private static final Logger logger = LogManager.getLogger(ConfigDataModel.class);
 
-    private IConfigDataModel<StringProperty> settingsDataModel;
+    private final IConfigDataModel<StringProperty> settingsDataModel;
 
     /**
      * <p>
@@ -33,7 +33,7 @@ public class ConfigDataModel implements IConfigData {
      * @param executorService The executor service used by TruffleHog to manage the multi-threading.
      * @throws NullPointerException Thrown when it was impossible to get config data for some reason.
      */
-    public ConfigDataModel(FileSystem fileSystem, ExecutorService executorService) throws NullPointerException{
+    public ConfigDataModel(final FileSystem fileSystem, final ExecutorService executorService) throws NullPointerException{
         settingsDataModel = new SettingsDataModel(fileSystem, executorService);
     }
 
@@ -57,12 +57,12 @@ public class ConfigDataModel implements IConfigData {
     }
 
     @Override
-    public StringProperty getSetting(Class typeClass, String key) {
+    public StringProperty getSetting(final Class typeClass, final String key) {
         return settingsDataModel.get(typeClass, key);
     }
 
     @Override
-    public String getFilter(String key) {
+    public String getFilter(final String key) {
         return null;
     }
 }
