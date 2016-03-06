@@ -12,9 +12,8 @@ import java.util.List;
  */
 public class UpdateFilterCommand implements IUserCommand {
 
-    // TODO make those final and not null as default!!!!!
-    private INetworkWritingPort network = null;
-    private List<IFilter> filterList = null;
+    private final INetworkWritingPort network;
+    private final List<Filter> filterList;
 
     /**
      * <p>
@@ -23,7 +22,7 @@ public class UpdateFilterCommand implements IUserCommand {
      * @param port {@link INetworkWritingPort} to write data to
      * @param filters List of filters to check
      */
-    UpdateFilterCommand(INetworkWritingPort port, List<IFilter> filters) {
+    UpdateFilterCommand(final INetworkWritingPort port, final List<Filter> filters) {
         network = port;
         filterList = filters;
     }

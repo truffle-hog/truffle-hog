@@ -10,6 +10,8 @@ package edu.kit.trufflehog.util;
  * </p>
  *
  * @param <M> The type of message to receive
+ * @author Mark Giraud
+ * @version 1.0
  */
 public interface IListener<M> {
 
@@ -21,5 +23,5 @@ public interface IListener<M> {
      *
      * @param m The message that is sent from the Notifier to the IListener.
      */
-    void receive(M m);
+    void receive(final M m);
 }

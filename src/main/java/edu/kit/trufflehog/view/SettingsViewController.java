@@ -16,8 +16,7 @@ import java.util.Map;
 public class SettingsViewController extends BorderPaneController<SettingsInteraction> {
 
 	/** The commands that are mapped to their interactions. **/
-    private final Map<SettingsInteraction, IUserCommand> interactionMap =
-            new EnumMap<>(SettingsInteraction.class);
+    private final Map<SettingsInteraction, IUserCommand> interactionMap = new EnumMap<>(SettingsInteraction.class);
 
     /**
      * <p>
@@ -36,9 +35,7 @@ public class SettingsViewController extends BorderPaneController<SettingsInterac
      * {@inheritDoc}
      */
     @Override
-    public final void addCommand(final SettingsInteraction interactor, final
-    IUserCommand
-            command) {
+    public final void addCommand(final SettingsInteraction interactor, final IUserCommand command) {
 
         interactionMap.put(interactor, command);
     }

@@ -37,10 +37,10 @@ import java.util.stream.Collectors;
 class SettingsDataModel implements IConfigDataModel<StringProperty> {
     private static final Logger logger = LogManager.getLogger(SettingsDataModel.class);
 
-    private FileSystem fileSystem;
-    private ExecutorService executorService;
-    private File settingsFile;
-    private Map<Class, Map<String, StringProperty>> settingsMap = new HashMap<>();
+    private final FileSystem fileSystem;
+    private final ExecutorService executorService;
+    private final File settingsFile;
+    private final Map<Class, Map<String, StringProperty>> settingsMap = new HashMap<>();
 
     private static final String CONFIG_FILE_NAME = "system_config.xml";
 
@@ -53,7 +53,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      * @param executorService The executor service used by TruffleHog to manage the multi-threading.
      * @throws NullPointerException Thrown when it was impossible to get the config file for some reason.
      */
-    public SettingsDataModel(FileSystem fileSystem, ExecutorService executorService) throws NullPointerException {
+    public SettingsDataModel(final FileSystem fileSystem, final ExecutorService executorService) {
         this.fileSystem = fileSystem;
         this.executorService = executorService;
         this.settingsFile = getSettingsFile();
@@ -70,7 +70,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      */
     @Override
     public void load() {
-        settingsMap = new HashMap<>();
+        settingsMap.clear();
 
         try {
             // Set up the XML parser
@@ -145,7 +145,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      * @param configFile The file object to which to copy the config file
      * @return True if the copy operation was successful, else false
      */
-    private boolean copyConfigFileToDataFolder(File configFile) {
+    private boolean copyConfigFileToDataFolder(final File configFile) {
         // Set file path to the default file in resources
         ClassLoader classLoader = getClass().getClassLoader();
         String filePath = "edu" + File.separator + "kit" + File.separator + "trufflehog" + File.separator + "config"
@@ -188,7 +188,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      * @param head The head segment of the settings file.
      * @return True if the head segment matched the required type, else false.
      */
-    private boolean checkHead(Element head) {
+    private boolean checkHead(final Element head) {
         return head.getChild("type").getValue().equals("settings");
     }
 
@@ -234,7 +234,10 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      * @param oldValue The old value that should be updated.
      * @param newValue The new value, that should overwrite the old value.
      */
-    private synchronized void updateSettingsFile(Class typeClass, String key, String oldValue, String newValue) {
+    private synchronized void updateSettingsFile(final Class typeClass,
+                                                 final String key,
+                                                 final String oldValue,
+                                                 final String newValue) {
         // synchronized because this always runs in its own thread
 
         try {
@@ -285,8 +288,12 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      * @param entry The entry that should be updated in the XML file.
      * @throws IOException Thrown if something goes wrong during the write operation.
      */
-    private void saveNewValue(Class typeClass, String key, String oldValue, String newValue, Document document
-            , Element entry) throws IOException {
+    private void saveNewValue(final Class typeClass,
+                              final String key,
+                              final String oldValue,
+                              final String newValue,
+                              final Document document,
+                              final Element entry) throws IOException {
         // Get the only one we found
         entry.getChild("value").setText(newValue);
 
@@ -302,7 +309,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
     }
 
     @Override
-    public StringProperty get(Class typeClass, String key) {
+    public StringProperty get(final Class typeClass, final String key) {
         Map<String, StringProperty> propertyMap = settingsMap.get(typeClass);
         if (propertyMap != null) {
             return propertyMap.get(key);

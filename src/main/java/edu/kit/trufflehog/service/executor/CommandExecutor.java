@@ -77,7 +77,7 @@ public class CommandExecutor implements Runnable {
         return asListener(ITruffleCommand.class, truffleCommandQueue);
     }
 
-    private <T extends ICommand> IListener<T> asListener(Class<T>commandQueueType, ICommandQueue commandQueue) {
+    private <T extends ICommand> IListener<T> asListener(final Class<T>commandQueueType, final ICommandQueue commandQueue) {
         return message -> {
             try {
                 if (message == null) {
