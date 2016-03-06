@@ -3,6 +3,10 @@ package edu.kit.trufflehog.command.trufflecommand;
 import edu.kit.trufflehog.model.filter.Filter;
 
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.NetworkEdge;
+import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
@@ -39,31 +43,16 @@ public class AddPacketDataCommand implements ITruffleCommand {
 
     @Override
     public void execute() {
-        Long sourceMacAddress = truffle.getAttribute(Long.class, "sourceMacAddress");
-        Long destinationMacAddress = truffle.getAttribute(Long.class, "destinationMacAddress");
+        Long sourceMacAddress = data.getAttribute(Long.class, "sourceMacAddress");
+        Long destinationMacAddress = data.getAttribute(Long.class, "destinationMacAddress");
         boolean allowedSource = true;
         boolean allowedDestination = true;
-        IConnection edge;
+        IConnection edge = new NetworkEdge();
 
-        INode sourceNode = networkGraph.getNetworkNodeByMACAddress(sourceMacAddress);
-        INode destinationNode = networkGraph.getNetworkNodeByMACAddress(destinationMacAddress);
+        INode sourceNode = new NetworkNode();
+        INode destinationNode = new NetworkNode();
 
-        if (sourceNode != null && destinationNode != null) {  //Connection is existing
-            edge = networkGraph.getNetworkEdge(sourceNode, destinationNode);
-        } else {  //Otherwise create a new one
-            edge = new NetworkEdge();
-            networkGraph.addNetworkEdge(edge, sourceNode, destinationNode);
-        }
-        if (sourceNode == null) {  //Creating new source node because it doesn´t exist
-            sourceNode = new NetworkNode();
-            sourceNode.setMacAdress(sourceMacAddress);
-            networkGraph.addNetworkNode(sourceNode);
-        }
-        if (destinationNode == null) {  //Creating new destination node because it doesn´t exist
-            destinationNode = new NetworkNode();
-            destinationNode.setMacAdress(destinationMacAddress);
-            networkGraph.addNetworkNode(destinationNode);
-        }
+
         for (Filter filter : filterList) {
             if (filter.contains(sourceMacAddress.toString())) {
                 allowedSource = false;
