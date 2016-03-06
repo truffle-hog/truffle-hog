@@ -17,7 +17,7 @@ public class TruffleCrook extends TruffleReceiver {
     private long lastCreation = 0;
 
     private long[] addresses;
-    private int maxAddresses = 15;
+    private int maxAddresses = 2;
 
     public TruffleCrook(@NotNull INetworkWritingPort writingPort, @NotNull List<Filter> filterList) {
         networkWritingPort = writingPort;

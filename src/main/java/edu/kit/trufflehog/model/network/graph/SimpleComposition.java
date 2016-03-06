@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph;
 
 /**
  * Created by Hoehler on 06.03.2016.
+ * TODO Implement this thing
  */
 public class SimpleComposition extends AbstractComposition {
     @Override

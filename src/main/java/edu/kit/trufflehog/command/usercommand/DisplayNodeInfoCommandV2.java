@@ -43,42 +43,30 @@ public class DisplayNodeInfoCommandV2 implements IUserCommand {
             anchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
 
             Text throughput = new Text("Throughput: " + node.getComposition().getComponent(NodeStatisticsComponent.class).getThroughput());
-            node.getComposition().getComponent(NodeStatisticsComponent.class).getThroughputProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    thr = newValue.intValue();
-                    throughput.setText("Throughput: " + thr);
-                }
+            node.getComposition().getComponent(NodeStatisticsComponent.class).getThroughputProperty().addListener((observable, oldValue, newValue) -> {
+                thr = newValue.intValue();
+                throughput.setText("Throughput: " + thr);
             });
-            node.getComposition().getComponent(NodeStatisticsComponent.class).getObjectProperty().addListener(new ChangeListener<NodeStatisticsComponent>() {
-                @Override
-                public void changed(ObservableValue<? extends NodeStatisticsComponent> observable, NodeStatisticsComponent oldValue, NodeStatisticsComponent newValue) {
-                    throughput.setText("Throughput: " + newValue.getThroughput());
-                }
+            node.getComposition().getComponent(NodeStatisticsComponent.class).getObjectProperty().addListener((observable, oldValue, newValue) -> {
+                throughput.setText("Throughput: " + newValue.getThroughput());
             });
             if (node.getComposition().getComponent(PacketDataLoggingComponent.class) == null) return;
-            node.getComposition().getComponent(PacketDataLoggingComponent.class).getObservablePacketsProperty().addListener(new ListChangeListener() {
-                @Override
-                public void onChanged(Change c) {
-                    c.next();
-                    List<IPacketData> newPackets = c.getAddedSubList();
+            node.getComposition().getComponent(PacketDataLoggingComponent.class).getObservablePacketsProperty().addListener((ListChangeListener) c -> {
+                c.next();
+                List<IPacketData> newPackets = c.getAddedSubList();
 
-                    Platform.runLater(() -> {
-                        int counter = 1;
-                        for (IPacketData i : newPackets) {
-                            Label data = new Label(i.toString() + counter);
-                            nodeStatisticsOverlay.add(data, 0, counter);
+                Platform.runLater(() -> {
+                    int counter = 1;
+                    for (IPacketData i : newPackets) {
+                        Label data = new Label(i.toString() + counter);
+                        nodeStatisticsOverlay.add(data, 0, counter);
 
-                            counter++;
-                        }
-                    });
-                }
+                        counter++;
+                    }
+                });
             });
-            node.getComposition().getComponent(PacketDataLoggingComponent.class).getObservablePacketsProperty().addListener(new ChangeListener() {
-                @Override
-                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            node.getComposition().getComponent(PacketDataLoggingComponent.class).getObservablePacketsProperty().addListener((observable, oldValue, newValue) -> {
 
-                }
             });
 
             nodeStatisticsOverlay.add(throughput, 0, 0);

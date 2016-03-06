@@ -79,12 +79,14 @@ public class NetworkIOPort implements INetworkIOPort {
         if (existing != null) {
             existing.update(node);
 
-            //TODO Improve this!!!
+            //TODO Improve this!!! and decide where to create components (here or in commands)
+            /*
             PacketDataLoggingComponent component = existing.getComposition().getComponent(PacketDataLoggingComponent.class);
             if (component != null) {
                 IPacketData packetData = node.getComposition().getComponent(PacketDataLoggingComponent.class).getObservablePackets().get(0);
                 if (packetData != null) component.addPacket(packetData);
             }
+            */
             return;
         }
 

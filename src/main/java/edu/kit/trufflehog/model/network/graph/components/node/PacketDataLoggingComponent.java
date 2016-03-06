@@ -11,20 +11,32 @@ import javafx.collections.ObservableList;
 import java.util.Collection;
 
 /**
- * Created by jan on 23.02.16.
+ * <p>
+ *     Component to store outgoing and incoming IPacketData of nodes. Provides JavaFX property to access/observe
+ *     the data.
+ * </p>
  */
 public class PacketDataLoggingComponent implements IComponent {
 
     private final ObservableList<IPacketData> dataList;
-
     private ListProperty dataProperty;
 
+    /**
+     * <p>
+     *     Creates and initializes the component.
+     * </p>
+     */
     public PacketDataLoggingComponent() {
 
         dataList = FXCollections.observableArrayList();
         dataProperty = new SimpleListProperty<>(dataList);
     }
 
+    /**
+     * <p>
+     *     Creates and initializes the component using the provided Collection of IPacketData.
+     * </p>
+     */
     public PacketDataLoggingComponent(Collection<IPacketData> data) {
 
         dataList = FXCollections.observableArrayList(data);
@@ -37,7 +49,14 @@ public class PacketDataLoggingComponent implements IComponent {
 
     public ListProperty getObservablePacketsProperty() { return dataProperty; }
 
+    /**
+     * <p>
+     *     Adds the provided IPacketData to the list.
+     * </p>
+     * @param packet The packet to add to the list (must not be null).
+     */
     public void addPacket(IPacketData packet) {
+        if (packet == null) throw new NullPointerException("packet must not be null!");
         dataList.add(packet);
     }
 
@@ -48,7 +67,7 @@ public class PacketDataLoggingComponent implements IComponent {
 
     @Override
     public boolean isMutable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -60,6 +79,10 @@ public class PacketDataLoggingComponent implements IComponent {
 
     @Override
     public boolean update(INode update) {
-        return false;
+        PacketDataLoggingComponent logComponent = update.getComposition().getComponent(PacketDataLoggingComponent.class);
+        if (logComponent == null) return false;
+        dataList.addAll(logComponent.getObservablePackets());
+
+        return true;
     }
 }
