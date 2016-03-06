@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
+import edu.kit.trufflehog.model.filter.FilterInput;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import org.apache.logging.log4j.LogManager;
@@ -20,9 +21,10 @@ import java.util.concurrent.ExecutorService;
  * @version 1.0
  */
 public class ConfigDataModel implements IConfigData {
-    private static final Logger logger = LogManager.getLogger(ConfigDataModel.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private final IConfigDataModel<StringProperty> settingsDataModel;
+    private final IConfigDataModel<FilterInput> filterDataModel;
 
     /**
      * <p>
@@ -35,6 +37,7 @@ public class ConfigDataModel implements IConfigData {
      */
     public ConfigDataModel(final FileSystem fileSystem, final ExecutorService executorService) throws NullPointerException{
         settingsDataModel = new SettingsDataModel(fileSystem, executorService);
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
     }
 
     /**
@@ -43,17 +46,8 @@ public class ConfigDataModel implements IConfigData {
      * </p>
      */
     public void load() {
-        settingsDataModel.load();
-        loadFilters();
-    }
-
-    /**
-     * <p>
-     *     Loads all filters found on the hard drive into memory.
-     * </p>
-     */
-    private void loadFilters() {
-
+        //settingsDataModel.load();
+        filterDataModel.load();
     }
 
     @Override
@@ -62,7 +56,7 @@ public class ConfigDataModel implements IConfigData {
     }
 
     @Override
-    public String getFilter(final String key) {
+    public FilterInput getFilter(final String key) {
         return null;
     }
 }

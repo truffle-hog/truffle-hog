@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.configdata;
 
+import edu.kit.trufflehog.model.filter.FilterInput;
 import javafx.beans.property.StringProperty;
 
 import java.util.Properties;
@@ -28,11 +29,11 @@ public interface IConfigData {
 
     /**
      * <p>
-     *     Gets the filter object that is mapped to the given key.
+     *     Gets the filter input object that is mapped to the given key.
      * </p>
      *
      * @param key The key that belongs to the filter that should be retrieved.
-     * @return The filter object that is mapped to the given key.
+     * @return The filter input object that is mapped to the given key.
      */
-    String getFilter(String key);
+    FilterInput getFilter(String key);
 }

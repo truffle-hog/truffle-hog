@@ -1,5 +1,9 @@
 package edu.kit.trufflehog;
 
+import edu.kit.trufflehog.model.FileSystem;
+import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -14,6 +18,14 @@ import java.sql.Statement;
  */
 public class Debug {
     public static void main(String[] args) {
+
+        ConfigDataModel configDataModel = new ConfigDataModel(new FileSystem(), new LoggedScheduledExecutor(1));
+        configDataModel.load();
+
+        //dbShit();
+    }
+
+    private static void dbShit() {
         Connection connection;
         Statement statement;
         try {

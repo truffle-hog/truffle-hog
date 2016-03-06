@@ -40,7 +40,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *     Creates the UnixSocketReceiver.
      * </p>
      */
-    public UnixSocketReceiver(final INetworkWritingPort networkWritingPort, final List<Filter> filters) {
+    public UnixSocketReceiver(final INetworkWritingPort networkWritingPort, final List<IFilter> filters) {
         this.networkWritingPort = networkWritingPort;
         this.filters = filters;
     }
