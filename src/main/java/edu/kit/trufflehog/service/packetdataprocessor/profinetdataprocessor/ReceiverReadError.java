@@ -13,7 +13,7 @@ public class ReceiverReadError extends Exception {
 
     }
 
-    public ReceiverReadError(String message) {
+    public ReceiverReadError(final String message) {
         super(message);
     }
 }
