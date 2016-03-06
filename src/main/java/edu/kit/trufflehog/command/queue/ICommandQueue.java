@@ -24,7 +24,7 @@ public interface ICommandQueue {
      * @throws InterruptedException
      * @throws NullPointerException If the command to add is null.
      */
-    <T extends ICommand> void push(T command) throws InterruptedException;
+    <T extends ICommand> void push(final T command) throws InterruptedException;
 
     /**
      * <p>
