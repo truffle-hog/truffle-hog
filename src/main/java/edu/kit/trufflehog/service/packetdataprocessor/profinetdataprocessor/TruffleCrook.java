@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Created by Hoehler on 04.03.2016.
+ * FOR TESTING PURPOSES ONLY!
  */
 public class TruffleCrook extends TruffleReceiver {
     private final INetworkWritingPort networkWritingPort;
@@ -43,7 +44,6 @@ public class TruffleCrook extends TruffleReceiver {
                     if (System.currentTimeMillis() - lastCreation > 1000) {
                         truffle = getTruffle();
                         lastCreation = System.currentTimeMillis();
-                        System.out.println("Truffle generated");
                     }
 
                     if (truffle != null) {

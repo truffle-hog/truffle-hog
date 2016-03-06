@@ -2,6 +2,8 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -14,19 +16,25 @@ public class PacketDataLoggingComponent implements IComponent {
 
     private final ObservableList<IPacketData> dataList;
 
+    private ListProperty dataProperty;
+
     public PacketDataLoggingComponent() {
 
         dataList = FXCollections.observableArrayList();
+        dataProperty = new SimpleListProperty<>(dataList);
     }
 
     public PacketDataLoggingComponent(Collection<IPacketData> data) {
 
         dataList = FXCollections.observableArrayList(data);
+        dataProperty = new SimpleListProperty<>(dataList);
     }
 
     public ObservableList<IPacketData> getObservablePackets() {
         return dataList;
     }
+
+    public ListProperty getObservablePacketsProperty() { return dataProperty; }
 
     public void addPacket(IPacketData packet) {
         dataList.add(packet);

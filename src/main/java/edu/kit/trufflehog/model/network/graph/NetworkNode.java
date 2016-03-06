@@ -52,7 +52,7 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
      * @param update the component to update this component
      * @return true if it exists and was updated, false otherwise
      */
-    @Override
+	@Override
     public boolean update(IComponent update) {
 
         final IComponent existing = getComponent(update.getClass());
@@ -64,7 +64,7 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
         return existing.update(update);
     }
 
-    @Override
+
     public boolean update(INode update) {
 
         if (!this.equals(update)) {
@@ -75,7 +75,7 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 
             if (c.isMutable()) {
                 final IComponent existing = getComponent(c.getClass());
-                existing.update(c);
+                existing.update(update);
             }
         });
 

@@ -1,6 +1,8 @@
 package edu.kit.trufflehog.view;
 
 
+import edu.kit.trufflehog.command.queue.CommandQueueManager;
+import edu.kit.trufflehog.command.usercommand.DisplayNodeInfoCommandV2;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
@@ -12,6 +14,9 @@ import edu.kit.trufflehog.model.network.graph.components.edge.IRendererComponent
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastLayeredEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.service.executor.CommandExecutor;
+import edu.kit.trufflehog.service.executor.TruffleExecutor;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.graph.decorators.FXEdgeShape;
 import edu.kit.trufflehog.view.graph.renderers.FXRenderer;
@@ -22,6 +27,7 @@ import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationModel;
+import edu.uci.ics.jung.visualization.control.GraphMouseListener;
 import edu.uci.ics.jung.visualization.decorators.PickableEdgePaintTransformer;
 import edu.uci.ics.jung.visualization.decorators.PickableVertexPaintTransformer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
@@ -29,12 +35,15 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Map;
@@ -48,13 +57,18 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
 	private INetworkViewPort viewPort;
 
+    private CommandExecutor commandExecutor;
+    private AnchorPane anchorPane;
+
 //	private final javafx.animation.Timeline timeLine;
 
 	private FXModalGraphMouse graphMouse;
 
 	private Timeline refresher;
 
-	public NetworkViewScreen(INetworkViewPort port, long refreshRate) {
+	public NetworkViewScreen(INetworkViewPort port, long refreshRate, CommandExecutor executor, AnchorPane pane) {
+        commandExecutor = executor;
+        anchorPane = pane;
 
 		refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
 			//refresh();
@@ -90,6 +104,7 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 		};*/
 
 		initRenderers();
+        initMouse();
 
 		jungView.setBackground(new Color(0x9dc4bf));
 		//jungView.setBackground(new Color(0x5e6d67));
@@ -208,6 +223,27 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 
         //jungView.getRenderContext().set
 	}
+
+    private void initMouse() {
+        jungView.addGraphMouseListener(new GraphMouseListener<INode>() {
+            @Override
+            public void graphClicked(INode iNode, MouseEvent me) {
+                if (me.getButton() == MouseEvent.BUTTON1) {
+                    commandExecutor.asUserCommandListener().receive(new DisplayNodeInfoCommandV2(iNode, anchorPane));
+                }
+            }
+
+            @Override
+            public void graphPressed(INode iNode, MouseEvent me) {
+
+            }
+
+            @Override
+            public void graphReleased(INode iNode, MouseEvent me) {
+
+            }
+        });
+    }
 
 
 	@Override

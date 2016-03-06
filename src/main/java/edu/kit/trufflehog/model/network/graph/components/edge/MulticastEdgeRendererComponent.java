@@ -1,8 +1,6 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
-import edu.kit.trufflehog.view.graph.decorators.LayeredShape;
-import edu.uci.ics.jung.visualization.transform.AffineTransformer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

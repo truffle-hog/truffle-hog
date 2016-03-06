@@ -18,10 +18,12 @@ public interface IComponent extends Serializable {
     IComponent createDeepCopy();
 
     /**
-     * Updates this component with the given component
-     * @param update the component to update this component
-     * @return true if the update was successfull and values changed, false if there were no changes
-     *          or f the component is immutable, thus cannot be updated
+     * <p>
+     *     Updated this component using the given node
+     * </p>
+     * @param node INode to update this component with
+     * @return true if the update was successful, false if there were no changes or the component is immutable
+     * and thus cannot be updated
      */
-    boolean update(IComponent update);
+    boolean update(IComponent node);
 }

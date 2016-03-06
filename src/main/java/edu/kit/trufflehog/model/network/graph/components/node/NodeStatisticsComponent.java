@@ -2,7 +2,9 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Created by jan on 23.02.16.
@@ -11,10 +13,16 @@ public class NodeStatisticsComponent implements IComponent {
 
     private final IntegerProperty throughputProperty = new SimpleIntegerProperty(1);
 
+    private ObjectProperty<NodeStatisticsComponent> objectProperty;
+
     public NodeStatisticsComponent(int initial) {
 
         throughputProperty.set(initial);
+        objectProperty = new SimpleObjectProperty<NodeStatisticsComponent>(this) {
+        };
     }
+
+    public ObjectProperty<NodeStatisticsComponent> getObjectProperty() {return objectProperty; }
 
     public IntegerProperty getThroughputProperty() {
         return throughputProperty;

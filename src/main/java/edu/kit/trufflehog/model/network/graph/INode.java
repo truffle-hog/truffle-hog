@@ -20,6 +20,6 @@ public interface INode extends IComposition, Serializable {
      * @param update the node that updates this node
      * @return true if the update was successful and values changes, false otherwise
      */
-    boolean update(INode update);
+    boolean update(IComponent update);
 
 }

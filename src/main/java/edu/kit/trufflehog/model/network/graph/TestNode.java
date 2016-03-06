@@ -1,7 +1,6 @@
 package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.IAddress;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 import javafx.beans.property.*;
 
 import java.util.Collection;
@@ -81,11 +80,6 @@ public class TestNode implements INode {
 
     @Override
     public boolean update(IComponent update) {
-        return false;
-    }
-
-    @Override
-    public boolean update(INode update) {
         return false;
     }
 

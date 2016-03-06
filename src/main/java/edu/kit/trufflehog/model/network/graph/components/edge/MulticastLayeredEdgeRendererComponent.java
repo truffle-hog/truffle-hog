@@ -2,12 +2,9 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.view.graph.decorators.LayeredShape;
-import javafx.scene.shape.Ellipse;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.time.Instant;
 
 /**

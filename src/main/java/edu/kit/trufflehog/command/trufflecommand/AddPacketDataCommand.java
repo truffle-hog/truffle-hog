@@ -7,6 +7,7 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 
 import java.util.List;
@@ -47,6 +48,12 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final INode sourceNode = new NetworkNode(sourceAddress);
         final INode destNode = new NetworkNode(destAddress);
         final IConnection connection = new NetworkConnection(sourceNode, destNode);
+
+        destNode.addComponent(new PacketDataLoggingComponent());
+        destNode.getComponent(PacketDataLoggingComponent.class).addPacket(data);
+
+        sourceNode.addComponent(new PacketDataLoggingComponent());
+        sourceNode.getComponent(PacketDataLoggingComponent.class).addPacket(data);
 
         writingPort.writeNode(sourceNode);
         writingPort.writeNode(destNode);

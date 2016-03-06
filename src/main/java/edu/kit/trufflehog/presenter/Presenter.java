@@ -43,6 +43,8 @@ import static edu.kit.trufflehog.Main.getPrimaryStage;
 public class Presenter {
     private static final Logger logger = LogManager.getLogger(Presenter.class);
 
+    private CommandExecutor commandExecutor;
+
     private static Presenter presenter;
    // private final IConfigData configData;
    // private final FileSystem fileSystem;
@@ -154,6 +156,10 @@ public class Presenter {
         //truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
         truffleReceiver.addListener(executor);
 
+        commandExecutor = new CommandExecutor();
+        ExecutorService ces = Executors.newSingleThreadExecutor();
+        ces.execute(commandExecutor);
+
         // play that ongoing recording on the given viewportswitch
         //networkObservationDevice.play(tape, viewPortSwitch);
 
@@ -179,9 +185,11 @@ public class Presenter {
        /* Platform.runLater(new Runnable() {
 
         });*/
-        final Node node = new NetworkViewScreen(viewPort, 50);
+
 
         final AnchorPane pane = new AnchorPane();
+
+        final Node node = new NetworkViewScreen(viewPort, 50, commandExecutor, pane);
 
         mainView.setCenter(pane);
 

@@ -4,6 +4,8 @@ import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -76,6 +78,13 @@ public class NetworkIOPort implements INetworkIOPort {
 
         if (existing != null) {
             existing.update(node);
+
+            //TODO Improve this!!!
+            PacketDataLoggingComponent component = existing.getComponent(PacketDataLoggingComponent.class);
+            if (component != null) {
+                IPacketData packetData = node.getComponent(PacketDataLoggingComponent.class).getObservablePackets().get(0);
+                if (packetData != null) component.addPacket(packetData);
+            }
             return;
         }
 

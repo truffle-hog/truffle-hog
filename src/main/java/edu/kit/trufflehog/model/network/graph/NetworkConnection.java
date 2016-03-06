@@ -3,7 +3,6 @@ package edu.kit.trufflehog.model.network.graph;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastLayeredEdgeRendererComponent;
 
 /**
  * <p>
