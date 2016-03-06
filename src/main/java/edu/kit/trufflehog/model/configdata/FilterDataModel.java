@@ -7,9 +7,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -17,10 +17,10 @@ import java.util.concurrent.ExecutorService;
  *
  * </p>
  */
-public class FilterDataModel implements IConfigDataModel<FilterInput> {
+class FilterDataModel implements IConfigDataModel<FilterInput> {
     private static final Logger logger = LogManager.getLogger();
 
-    private final List<FilterInput> loadedFilters;
+    private final Map<String, FilterInput> loadedFilters;
     private final FileSystem fileSystem;
     private final ExecutorService executorService;
     private final File filterDatabase;
@@ -28,11 +28,18 @@ public class FilterDataModel implements IConfigDataModel<FilterInput> {
 
     private static final String DATABASE_NAME = "filters.sql";
 
-
+    /**
+     * <p>
+     *
+     * </p>
+     *
+     * @param fileSystem
+     * @param executorService
+     */
     public FilterDataModel(FileSystem fileSystem, ExecutorService executorService) {
         this.fileSystem = fileSystem;
         this.executorService = executorService;
-        this.loadedFilters = new ArrayList<>();
+        this.loadedFilters = new HashMap<>();
 
         File databaseTemp;
         try {
@@ -67,6 +74,11 @@ public class FilterDataModel implements IConfigDataModel<FilterInput> {
         }
     }
 
+    /**
+     * <p>
+     *
+     * </p>
+     */
     public void loadFilters() {
         if (connection == null) {
             logger.error("Unable to load filters from database, connection is null");
@@ -78,13 +90,32 @@ public class FilterDataModel implements IConfigDataModel<FilterInput> {
             if (rs.next()) {
                 String base64String = rs.getString("filter");
                 FilterInput filterInput = fromBase64(base64String);
-                loadedFilters.add(filterInput);
+                loadedFilters.put(filterInput.getName(), filterInput);
             }
         } catch (SQLException e) {
             logger.error("Error while loading filter input objects from database into list", e);
         }
     }
 
+    /**
+     * <p>
+     *
+     * </p>
+     *
+     * @param filterInput
+     */
+    public void updateFilterInDatabase(FilterInput filterInput) {
+        removeFilterFromDatabase(filterInput);
+        addFilterToDatabase(filterInput);
+    }
+
+    /**
+     * <p>
+     *
+     * </p>
+     *
+     * @param filterInput
+     */
     public void addFilterToDatabase(FilterInput filterInput) {
         if (connection == null) {
             logger.error("Unable to add filter to database, connection is null");
@@ -101,11 +132,21 @@ public class FilterDataModel implements IConfigDataModel<FilterInput> {
             String sql = "INSERT INTO FILTERS(ID,FILTER) " +
                     "VALUES('" + filterInput.getName() + "','" + filterBase64 + "');";
             connection.createStatement().executeUpdate(sql);
+
+            // Only update the map if the database query was successful
+            loadedFilters.put(filterInput.getName(), filterInput);
         } catch (SQLException e) {
             logger.error("Unable to add a filter to the database", e);
         }
     }
 
+    /**
+     * <p>
+     *
+     * </p>
+     *
+     * @param filterInput
+     */
     public void removeFilterFromDatabase(FilterInput filterInput) {
         if (connection == null) {
             logger.error("Unable to remove filter from database, connection is null");
@@ -114,12 +155,23 @@ public class FilterDataModel implements IConfigDataModel<FilterInput> {
 
         try {
             connection.createStatement().executeUpdate("DELETE from FILTERS where ID='"+ filterInput.getName() +"';");
+
+            // Only update the map if the database query was successful
+            loadedFilters.remove(filterInput.getName());
         } catch (SQLException e) {
             logger.error("Unable to remove filter input " + filterInput.getName() + " from database", e);
         }
     }
 
-    public String toBase64(FilterInput filterInput) {
+    /**
+     * <p>
+     *
+     * </p>
+     *
+     * @param filterInput
+     * @return
+     */
+    private String toBase64(FilterInput filterInput) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(outputStream);
@@ -132,7 +184,15 @@ public class FilterDataModel implements IConfigDataModel<FilterInput> {
         }
     }
 
-    public FilterInput fromBase64(String string) {
+    /**
+     * <p>
+     *
+     * </p>
+     *
+     * @param string
+     * @return
+     */
+    private FilterInput fromBase64(String string) {
         try {
             byte[] data = Base64.getDecoder().decode(string);
             ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
@@ -145,7 +205,12 @@ public class FilterDataModel implements IConfigDataModel<FilterInput> {
         }
     }
 
-    public void createDatabase() {
+    /**
+     * <p>
+     *
+     * </p>
+     */
+    private void createDatabase() {
         try {
             logger.debug("Creating new database..");
             Statement statement = connection.createStatement();
@@ -161,13 +226,24 @@ public class FilterDataModel implements IConfigDataModel<FilterInput> {
         }
     }
 
+    /**
+     * <p>
+     *
+     * </p>
+     *
+     * @return
+     */
+    public Map<String, FilterInput> getAllFilters() {
+        return loadedFilters;
+    }
+
     @Override
     public FilterInput get(Class classType, String key) {
-        return null;
+        return loadedFilters.get(key);
     }
 
     @Override
     public void load() {
-        createDatabase();
+        loadFilters();
     }
 }
