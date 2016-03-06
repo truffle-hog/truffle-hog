@@ -16,12 +16,10 @@ import java.util.Map;
  *     during the running program.
  * </p>
  */
-public final class MainToolBarController extends
-        ToolBarController<ToolBarInteraction> {
+public final class MainToolBarController extends ToolBarController<ToolBarInteraction> {
 
     /** The commands that are mapped to their interactions. **/
-    private final Map<ToolBarInteraction, IUserCommand> interactionMap =
-            new EnumMap<>(ToolBarInteraction.class);
+    private final Map<ToolBarInteraction, IUserCommand> interactionMap = new EnumMap<>(ToolBarInteraction.class);
 
 
     /**

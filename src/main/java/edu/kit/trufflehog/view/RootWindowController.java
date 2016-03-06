@@ -22,8 +22,7 @@ public final class RootWindowController implements IWindowController {
      * @param primaryStage the stage this window is placed on
      * @param monitorScene the scene to be placed into the window
      */
-    public RootWindowController(final Stage primaryStage, final Scene
-                                monitorScene) {
+    public RootWindowController(final Stage primaryStage, final Scene monitorScene) {
 
         this.stage = primaryStage;
         this.stage.setScene(monitorScene);
