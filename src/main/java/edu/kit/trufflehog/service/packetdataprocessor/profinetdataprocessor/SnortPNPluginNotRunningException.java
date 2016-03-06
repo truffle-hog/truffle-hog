@@ -11,7 +11,7 @@ public class SnortPNPluginNotRunningException extends Exception {
         super();
     }
 
-    public SnortPNPluginNotRunningException(String message) {
+    public SnortPNPluginNotRunningException(final String message) {
         super(message);
     }
 }

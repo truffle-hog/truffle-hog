@@ -17,8 +17,7 @@ import java.util.Map;
 public class OverlayViewController extends GridPaneController<OverlayInteraction> {
 
 	/** The commands that are mapped to their interactions. **/
-    private final Map<OverlayInteraction, IUserCommand> interactionMap =
-            new EnumMap<>(OverlayInteraction.class);
+    private final Map<OverlayInteraction, IUserCommand> interactionMap = new EnumMap<>(OverlayInteraction.class);
 
     /**
      * <p>
@@ -37,9 +36,7 @@ public class OverlayViewController extends GridPaneController<OverlayInteraction
      * {@inheritDoc}
      */
     @Override
-    public final void addCommand(final OverlayInteraction interactor, final
-    IUserCommand
-            command) {
+    public final void addCommand(final OverlayInteraction interactor, final IUserCommand command) {
 
         interactionMap.put(interactor, command);
     }

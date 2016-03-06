@@ -17,8 +17,7 @@ import java.util.Map;
 public class NetworkMonitoringViewController extends BorderPaneController<NetworkMonitoringInteraction> {
 
 	/** The commands that are mapped to their interactions. **/
-    private final Map<NetworkMonitoringInteraction, IUserCommand> interactionMap =
-            new EnumMap<>(NetworkMonitoringInteraction.class);
+    private final Map<NetworkMonitoringInteraction, IUserCommand> interactionMap = new EnumMap<>(NetworkMonitoringInteraction.class);
 
     /**
      * <p>
@@ -38,9 +37,7 @@ public class NetworkMonitoringViewController extends BorderPaneController<Networ
      * {@inheritDoc}
      */
     @Override
-    public final void addCommand(final NetworkMonitoringInteraction interactor, final
-    IUserCommand
-            command) {
+    public final void addCommand(final NetworkMonitoringInteraction interactor, final IUserCommand command) {
 
         interactionMap.put(interactor, command);
     }

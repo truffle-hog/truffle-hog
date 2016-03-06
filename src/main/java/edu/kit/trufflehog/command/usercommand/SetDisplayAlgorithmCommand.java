@@ -15,8 +15,8 @@ import org.apache.commons.collections15.Transformer;
  * </p>
  */
 public class SetDisplayAlgorithmCommand implements IUserCommand{
-    private Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory;
-    private INetworkViewPort viewPort;
+    private final Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory;
+    private final INetworkViewPort viewPort;
 
     /**
      * <p>
@@ -25,7 +25,7 @@ public class SetDisplayAlgorithmCommand implements IUserCommand{
      * @param factory {@link Transformer} implementation of the desired {@link Layout} implementation
      * @param viewPort {@link INetworkViewPort} implementation managing the graph layouts
      */
-    public SetDisplayAlgorithmCommand(Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> factory, INetworkViewPort viewPort) {
+    public SetDisplayAlgorithmCommand(final Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> factory, final INetworkViewPort viewPort) {
         layoutFactory = factory;
         this.viewPort = viewPort;
     }

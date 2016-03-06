@@ -41,7 +41,7 @@ public class CommandQueueManager {
      *
      * @param queue The {@link ICommandQueue} to add.
      */
-    protected void registerQueue(ICommandQueue queue) {
+    protected void registerQueue(final ICommandQueue queue) {
         queues.add(queue);
         registeredQueues++;
     }
@@ -60,6 +60,8 @@ public class CommandQueueManager {
      * @throws InterruptedException
      */
     public synchronized ICommandQueue getNextQueue() throws InterruptedException {
+
+        //TODO: Profile and optimize?
 
         if (registeredQueues == 0)
             return null;
