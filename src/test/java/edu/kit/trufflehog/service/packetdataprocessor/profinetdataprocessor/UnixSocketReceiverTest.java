@@ -74,7 +74,7 @@ public class UnixSocketReceiverTest {
      *
      * @throws Exception
      */
-    //@Ignore
+    @Ignore
     @Test
     public void testReceiver() throws Exception {
 
