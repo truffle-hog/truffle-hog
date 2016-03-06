@@ -17,8 +17,7 @@ import java.util.Map;
 public class MainViewController extends AnchorPaneController<MainInteraction> {
 
 	/** The commands that are mapped to their interactions. **/
-    private final Map<MainInteraction, IUserCommand> interactionMap =
-            new EnumMap<>(MainInteraction.class);
+    private final Map<MainInteraction, IUserCommand> interactionMap = new EnumMap<>(MainInteraction.class);
 
     /**
      * <p>
@@ -46,8 +45,7 @@ public class MainViewController extends AnchorPaneController<MainInteraction> {
      * {@inheritDoc}
      */
     @Override
-    public final void addCommand(final MainInteraction interactor, final
-    IUserCommand command) {
+    public final void addCommand(final MainInteraction interactor, final IUserCommand command) {
 
         interactionMap.put(interactor, command);
     }

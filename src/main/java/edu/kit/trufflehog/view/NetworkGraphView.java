@@ -65,7 +65,8 @@ public class NetworkGraphView extends NetworkGraphViewController {
 	 * @param layoutFactory the layout factory to be used for visualization of
 	 *                         the graph
 	 */
-	public NetworkGraphView(final Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory, INetworkViewPort graph) {
+	public NetworkGraphView(final Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory,
+							final INetworkViewPort graph) {
 
 		this.layoutFactory = layoutFactory;
 

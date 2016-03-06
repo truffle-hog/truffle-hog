@@ -27,5 +27,5 @@ public interface IPacketData {
      * @param <T> The type of the attribute that is retrieved.
      * @return The value of the attribute or null if nothing was found under the specified identifier
      */
-    <T> T getAttribute(Class<T> attributeType, String attributeIdentifier);
+    <T> T getAttribute(final Class<T> attributeType, final String attributeIdentifier);
 }

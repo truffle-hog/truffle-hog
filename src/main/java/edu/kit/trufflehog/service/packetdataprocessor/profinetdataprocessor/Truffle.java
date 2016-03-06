@@ -33,7 +33,7 @@ public class Truffle implements IPacketData {
      * @return The value of the previous mapping. If no element was mapped under the identifier then null is returned.
      */
     @SuppressWarnings("unchecked")
-    <T> T setAttribute(Class<T> attributeType, String attributeIdentifier, T value) {
+    <T> T setAttribute(final Class<T> attributeType, final String attributeIdentifier, final T value) {
         HashMap<String, Object> attributeMap = attributes.get(attributeType);
 
         if (attributeMap == null) {
@@ -55,7 +55,7 @@ public class Truffle implements IPacketData {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getAttribute(Class<T> attributeType, String attributeIdentifier) {
+    public <T> T getAttribute(final Class<T> attributeType, final String attributeIdentifier) {
         HashMap<?, ?> attributeMap = attributes.get(attributeType);
 
         if (attributeMap == null)

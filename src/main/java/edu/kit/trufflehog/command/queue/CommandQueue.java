@@ -27,7 +27,7 @@ public class CommandQueue implements ICommandQueue {
      *
      * @param commandQueueManager The instance of the {@link CommandQueueManager} that manages all the command queues.
      */
-    public CommandQueue(CommandQueueManager commandQueueManager) {
+    public CommandQueue(final CommandQueueManager commandQueueManager) {
 
         if (commandQueueManager == null)
             throw new NullPointerException();
@@ -45,7 +45,7 @@ public class CommandQueue implements ICommandQueue {
      * @throws NullPointerException If the command to add is null.
      */
     @Override
-    public <T extends ICommand> void push(T command) throws InterruptedException {
+    public <T extends ICommand> void push(final T command) throws InterruptedException {
         if (command == null)
             throw new NullPointerException("Command object to be added may not be null!");
 

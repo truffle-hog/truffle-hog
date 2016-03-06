@@ -16,6 +16,8 @@ package edu.kit.trufflehog.util;
  * </p>
  *
  * @param <M> The type of message to receive.
+ * @author Mark Giraud
+ * @version 1.0
  */
 public interface INotifier<M> {
 
@@ -29,7 +31,7 @@ public interface INotifier<M> {
      * @return True, if the listener list changed due to this call.
      * @throws NullPointerException If the supplied listener is null.
      */
-    boolean addListener(IListener<M> listener);
+    boolean addListener(final IListener<M> listener);
 
     /**
      * <p>
@@ -41,7 +43,7 @@ public interface INotifier<M> {
      * @return True, if a listener was removed due to this call.
      * @throws NullPointerException If the supplied listener is null.
      */
-    boolean removeListener(IListener<M> listener);
+    boolean removeListener(final IListener<M> listener);
 
     /**
      * <p>
@@ -52,5 +54,5 @@ public interface INotifier<M> {
      * @param message The message to send along with the notification to each IListener.
      * @throws NullPointerException If the supplied message is null.
      */
-    void notifyListeners(M message);
+    void notifyListeners(final M message);
 }

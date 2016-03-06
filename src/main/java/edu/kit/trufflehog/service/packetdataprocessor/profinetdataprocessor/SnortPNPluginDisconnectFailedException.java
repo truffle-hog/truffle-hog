@@ -1,7 +1,12 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 /**
- * Created by root on 18.02.16.
+ * <p>
+ *     This exception can be thrown by {@link TruffleReceiver}s to indicate that something went wrong while
+ *     disconnecting from the Snort Plugin.
+ * </p>
+ * @author Mark Giraud
+ * @version 1.0
  */
 public class SnortPNPluginDisconnectFailedException extends Exception {
 
@@ -9,7 +14,7 @@ public class SnortPNPluginDisconnectFailedException extends Exception {
         super();
     }
 
-    SnortPNPluginDisconnectFailedException(String message) {
+    SnortPNPluginDisconnectFailedException(final String message) {
         super(message);
     }
 }

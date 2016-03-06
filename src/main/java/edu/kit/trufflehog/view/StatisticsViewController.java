@@ -16,8 +16,7 @@ import java.util.Map;
 public class StatisticsViewController extends BorderPaneController<StatisticsInteraction> {
 
 	/** The commands that are mapped to their interactions. **/
-    private final Map<StatisticsInteraction, IUserCommand> interactionMap =
-            new EnumMap<>(StatisticsInteraction.class);
+    private final Map<StatisticsInteraction, IUserCommand> interactionMap = new EnumMap<>(StatisticsInteraction.class);
 
     /**
      * <p>
@@ -36,8 +35,7 @@ public class StatisticsViewController extends BorderPaneController<StatisticsInt
      * {@inheritDoc}
      */
     @Override
-    public final void addCommand(final StatisticsInteraction interactor, final
-    IUserCommand command) {
+    public final void addCommand(final StatisticsInteraction interactor, final IUserCommand command) {
 
         interactionMap.put(interactor, command);
     }
