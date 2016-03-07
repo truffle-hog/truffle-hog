@@ -64,6 +64,7 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
         // it was not. Perhaps the database library is asynchronous, though I am not sure how that would affect this map.
         this.loadedFilters = new ConcurrentHashMap<>();
 
+        // Get database file
         File databaseFile;
         try {
             databaseFile = new File(fileSystem.getConfigFolder().getCanonicalPath() + File.separator + DATABASE_NAME);
@@ -72,6 +73,7 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
             logger.error("Unable to get canonical path to database, getting absolute path instead", e);
         }
 
+        // Get database connection
         Connection connectionTemp;
         try {
             connectionTemp = DriverManager.getConnection("jdbc:sqlite:" + databaseFile.getCanonicalPath());
@@ -111,6 +113,8 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
             return;
         }
 
+
+        // Iterate through all found entries in the database and add them to the map
         try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM FILTERS;");
             while (rs.next()) {
@@ -153,23 +157,26 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      * @param filterInput The {@link FilterInput} to add to the database.
      */
     public void addFilterToDatabase(FilterInput filterInput) {
+        // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to add filter to database, connection is null");
             return;
         }
 
+        // Make sure the given filter input is not null
         if (filterInput == null) {
             logger.error("Unable to add filter to database, filter input is null");
             return;
         }
 
+        // Convert filterInput object into base64 string representation
         String filterBase64 = toBase64(filterInput);
-
         if (filterBase64 == null) {
             logger.error("Unable to add filter to database, base64 string is null");
             return;
         }
 
+        // Add the base64 string into the database
         try {
             String sql = "INSERT INTO FILTERS(ID,FILTER) " +
                     "VALUES('" + filterInput.getName() + "','" + filterBase64 + "');";
@@ -193,16 +200,19 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      * @param filterInput The {@link FilterInput} to remove from the database.
      */
     public void removeFilterFromDatabase(FilterInput filterInput) {
+        // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to remove filter from database, connection is null");
             return;
         }
 
+        // Make sure the given filter input is not null
         if (filterInput == null) {
             logger.error("Unable to add filter to database, filter input is null");
             return;
         }
 
+        // Remove the filterInput from the database
         try {
             connection.createStatement().executeUpdate("DELETE from FILTERS where ID='"+ filterInput.getName() +"';");
 
