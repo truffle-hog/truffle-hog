@@ -33,7 +33,7 @@ import static edu.kit.trufflehog.Main.getPrimaryStage;
  * <p>
  * </p>
  *
- * @author Julian Brendl
+ * @author Maximilian Diez, Julian Brendl
  * @version 1.0
  */
 public class ViewBuilder {
