@@ -13,6 +13,7 @@ import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComp
 import edu.kit.trufflehog.model.network.graph.components.edge.IRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastLayeredEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.MulticastNodeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.executor.TruffleExecutor;
@@ -33,6 +34,7 @@ import edu.uci.ics.jung.visualization.decorators.PickableVertexPaintTransformer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
+import edu.uci.ics.jung.visualization.transform.AffineTransformer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.layout.AnchorPane;
@@ -44,6 +46,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Map;
@@ -127,10 +130,24 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 /*		jungView.getRenderContext().setVertexFillPaintTransformer(
                 new PickableVertexPaintTransformer<>(
                         getPickedVertexState(), new Color(0xa1928b), new Color(0xccc1bb)));*/
-
+/*
         jungView.getRenderContext().setVertexFillPaintTransformer(
                 new PickableVertexPaintTransformer<>(
                         getPickedVertexState(), new Color(0xab7d63), new Color(0xf0caa3)));
+        */
+        jungView.getRenderContext().setVertexFillPaintTransformer(iNode -> {
+            final MulticastNodeRendererComponent mnrc = iNode.getComposition().getComponent(MulticastNodeRendererComponent.class);
+            if (mnrc == null) return new Color(0, 0, 0);
+
+            if (getPickedVertexState().isPicked(iNode)) {
+                return mnrc.getColorPicked();
+            }
+            else {
+                return mnrc.getColorUnpicked();
+            }
+
+        });
+
 
         jungView.getRenderContext().setEdgeDrawPaintTransformer(
                 new PickableEdgePaintTransformer<>(getPickedEdgeState(), new Color(0x7f7784), new Color(0xf0caa3)));
@@ -174,8 +191,11 @@ public class NetworkViewScreen extends NetworkGraphViewController {
             int currentSize = statComp.getThroughput();
             long maxSize = viewPort.getMaxThroughput();
             double relation = (double) currentSize / (double) maxSize;
-            double sizeMulti = (50.0 * relation) + 10;
-            return new Ellipse2D.Double(-sizeMulti, -sizeMulti, 2*sizeMulti, 2*sizeMulti);
+            double sizeMulti = (relation/2) + 0.1;
+            Shape nodeShape = iNode.getComposition().getComponent(MulticastNodeRendererComponent.class).getShape();
+
+            return AffineTransform.getScaleInstance(sizeMulti, sizeMulti).createTransformedShape(nodeShape);
+            //return new Ellipse2D.Double(-sizeMulti, -sizeMulti, 2*sizeMulti, 2*sizeMulti);
             //return AffineTransform.getScaleInstance(sizeMulti, sizeMulti).createTransformedShape(circle);
         });
 
