@@ -7,6 +7,7 @@ import javafx.beans.property.StringProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -24,7 +25,7 @@ public class ConfigDataModel implements IConfigData {
     private static final Logger logger = LogManager.getLogger();
 
     private final IConfigDataModel<StringProperty> settingsDataModel;
-    private final IConfigDataModel<FilterInput> filterDataModel;
+    private final FilterDataModel filterDataModel;
 
     /**
      * <p>
@@ -42,6 +43,50 @@ public class ConfigDataModel implements IConfigData {
 
     /**
      * <p>
+     *     Updates a {@link FilterInput} entry in the database by deleting it and adding it again.
+     * </p>
+     *
+     * @param filterInput The {@link FilterInput} to update.
+     */
+    public void updateFilterInput(final FilterInput filterInput) {
+        filterDataModel.updateFilterInDatabase(filterInput);
+    }
+
+    /**
+     * <p>
+     *     Adds a {@link FilterInput} to the database.
+     * </p>
+     *
+     * @param filterInput The {@link FilterInput} to add to the database.
+     */
+    public void addFilterInput(final FilterInput filterInput) {
+        filterDataModel.addFilterToDatabase(filterInput);
+    }
+
+    /**
+     * <p>
+     *     Removes a {@link FilterInput} from the database.
+     * </p>
+     *
+     * @param filterInput The {@link FilterInput} to remove from the database.
+     */
+    public void removeFilterInput(final FilterInput filterInput) {
+        filterDataModel.removeFilterFromDatabase(filterInput);
+    }
+
+    /**
+     * <p>
+     *     Gets all loaded {@link FilterInput} objects. If none have been loaded yet, the method loads them first.
+     * </p>
+     *
+     * @return The list of loaded {@link FilterInput} objects.
+     */
+    public Map<String, FilterInput> getAllLoadedFilters() {
+        return filterDataModel.getAllFilters();
+    }
+
+    /**
+     * <p>
      *     Loads all settings that are stored on the hard drive into the program.
      * </p>
      */
@@ -55,8 +100,19 @@ public class ConfigDataModel implements IConfigData {
         return settingsDataModel.get(typeClass, key);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     *     The given name must be the same name as the name that is stored inside the name parameter of the
+     *     {@link FilterInput} object.
+     * </p>
+     *
+     * @param name The name that belongs to the FilterInput object that should be retrieved.
+     * @return The FilterInput object that has the matching name.
+     */
     @Override
-    public FilterInput getFilter(final String key) {
-        return null;
+    public FilterInput getFilter(final String name) {
+        return filterDataModel.get(name);
     }
 }
