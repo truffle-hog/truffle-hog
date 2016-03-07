@@ -50,7 +50,7 @@ public class SettingsDataModelTest {
 
     private FileSystem fileSystem;
     private ExecutorService executorService;
-    private ConfigDataModel configDataModel;
+    private SettingsDataModel settingsDataModel;
 
     /**
      * <p>
@@ -65,7 +65,7 @@ public class SettingsDataModelTest {
         this.fileSystem = mock(FileSystem.class);
         when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
         when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config"));
-        this.configDataModel = new ConfigDataModel(fileSystem, executorService);
+        this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
     }
 
     /**
@@ -79,7 +79,7 @@ public class SettingsDataModelTest {
     public void tearDown() throws Exception {
         executorService = null;
         fileSystem = null;
-        configDataModel = null;
+        settingsDataModel = null;
     }
 
     /**
@@ -102,7 +102,7 @@ public class SettingsDataModelTest {
             fileSystem.getConfigFolder().mkdir();
         }
 
-        this.configDataModel = new ConfigDataModel(fileSystem, executorService);
+        this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
         boolean exists = new File(fileSystem.getConfigFolder()  + File.separator + "system_config.xml").exists();
 
         if (fileSystem.getConfigFolder().exists()) {
@@ -126,10 +126,10 @@ public class SettingsDataModelTest {
      */
     @Test
     public void testLoad() throws Exception {
-        configDataModel.load();
-        assertEquals("007", configDataModel.getSetting(Integer.class, "test-integer").getValue());
-        assertEquals("hello world", configDataModel.getSetting(String.class, "test-string").getValue());
-        assertEquals("true", configDataModel.getSetting(Boolean.class, "test-boolean").getValue());
+        settingsDataModel.load();
+        assertEquals("007", settingsDataModel.get(Integer.class, "test-integer").getValue());
+        assertEquals("hello world", settingsDataModel.get(String.class, "test-string").getValue());
+        assertEquals("true", settingsDataModel.get(Boolean.class, "test-boolean").getValue());
     }
 
     /**
@@ -154,13 +154,13 @@ public class SettingsDataModelTest {
 
 
         // Test for error
-        StringProperty property1 = configDataModel.getSetting(String.class, "test-integer");
+        StringProperty property1 = settingsDataModel.get(String.class, "test-integer");
         assertEquals(null, property1);
 
-        StringProperty property2 = configDataModel.getSetting(String.class, "I love ice cream");
+        StringProperty property2 = settingsDataModel.get(String.class, "I love ice cream");
         assertEquals(null, property2);
 
-        StringProperty property3 = configDataModel.getSetting(Optional.class, "I love ice cream");
+        StringProperty property3 = settingsDataModel.get(Optional.class, "I love ice cream");
         assertEquals(null, property3);
     }
 
@@ -177,8 +177,8 @@ public class SettingsDataModelTest {
      * @throws Exception Passes any errors that occurred during the test on
      */
     private void testGetEntrySuccess(Class classType, String key, String oldValue, String newValue) throws Exception {
-        configDataModel.load();
-        StringProperty property1 = configDataModel.getSetting(classType, key);
+        settingsDataModel.load();
+        StringProperty property1 = settingsDataModel.get(classType, key);
         assertEquals(true, property1.getValue().equals(oldValue));
 
         StringProperty property2 = new SimpleStringProperty(property1.getValue());
@@ -188,16 +188,16 @@ public class SettingsDataModelTest {
 
         Thread.sleep(500); // sleep because the saving to file happens in another thread
 
-        configDataModel.load();
-        property1 = configDataModel.getSetting(classType, key);
+        settingsDataModel.load();
+        property1 = settingsDataModel.get(classType, key);
         assertEquals(true, property1.getValue().equals(newValue));
 
         property1.setValue(oldValue);
 
         Thread.sleep(500); // sleep because the saving to file happens in another thread
 
-        configDataModel.load();
-        property1 = configDataModel.getSetting(classType, key);
+        settingsDataModel.load();
+        property1 = settingsDataModel.get(classType, key);
         assertEquals(true, property1.getValue().equals(oldValue));
     }
 }

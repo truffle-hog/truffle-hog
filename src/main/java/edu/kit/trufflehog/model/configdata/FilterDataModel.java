@@ -26,8 +26,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.*;
 import java.sql.*;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>
@@ -59,7 +59,10 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
      */
     public FilterDataModel(FileSystem fileSystem) {
-        this.loadedFilters = new HashMap<>();
+
+        // Not sure why this map has to be concurrent, but in the unit tests I got concurrent hash map exceptions when
+        // it was not. Perhaps the database library is asynchronous, though I am not sure how that would affect this map.
+        this.loadedFilters = new ConcurrentHashMap<>();
 
         File databaseFile;
         try {
@@ -100,6 +103,9 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      * </p>
      */
     private void loadFilters() {
+        // Clear existing list because old content is no longer relevant
+        loadedFilters.clear();
+
         if (connection == null) {
             logger.error("Unable to load filters from database, connection is null");
             return;
@@ -107,7 +113,7 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
         try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM FILTERS;");
-            if (rs.next()) {
+            while (rs.next()) {
                 String base64String = rs.getString("filter");
                 FilterInput filterInput = fromBase64(base64String);
                 if (filterInput != null) {
@@ -149,6 +155,11 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
             return;
         }
 
+        if (filterInput == null) {
+            logger.error("Unable to add filter to database, filter input is null");
+            return;
+        }
+
         String filterBase64 = toBase64(filterInput);
 
         if (filterBase64 == null) {
@@ -178,6 +189,11 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
     public void removeFilterFromDatabase(FilterInput filterInput) {
         if (connection == null) {
             logger.error("Unable to remove filter from database, connection is null");
+            return;
+        }
+
+        if (filterInput == null) {
+            logger.error("Unable to add filter to database, filter input is null");
             return;
         }
 
