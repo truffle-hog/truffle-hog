@@ -31,7 +31,6 @@ public class SettingsViewController extends TabPaneController<SettingsInteractio
      * @param fxmlFileName the name of the fxml file to be loaded
      */
     public SettingsViewController(final String fxmlFileName) {
-
         super(fxmlFileName);
     }
 

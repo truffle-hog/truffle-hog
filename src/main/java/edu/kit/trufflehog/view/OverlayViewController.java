@@ -16,7 +16,11 @@ import java.util.Map;
  */
 public class OverlayViewController extends GridPaneController<OverlayInteraction> {
 
-	/** The commands that are mapped to their interactions. **/
+	/**
+     * <p>
+     *     The commands that are mapped to their interactions.
+     * </p>
+     */
     private final Map<OverlayInteraction, IUserCommand> interactionMap = new EnumMap<>(OverlayInteraction.class);
 
     /**
@@ -25,19 +29,15 @@ public class OverlayViewController extends GridPaneController<OverlayInteraction
      *     The fxml file has to be in the same namespace as the
      *     OverlayViewController.
      * </p>
+     *
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
     public OverlayViewController(final String fxmlFileName) {
-
         super(fxmlFileName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void addCommand(final OverlayInteraction interactor, final IUserCommand command) {
-
         interactionMap.put(interactor, command);
     }
 }

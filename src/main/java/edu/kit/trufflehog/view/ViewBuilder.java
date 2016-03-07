@@ -37,6 +37,11 @@ import static edu.kit.trufflehog.Main.getPrimaryStage;
  * @version 1.0
  */
 public class ViewBuilder {
+    private OverlayViewController recordOverlayMenu;
+    private OverlayViewController filterOverlayMenu;
+    private OverlayViewController settingsOverlayMenu;
+
+    private boolean filterButtonPressed = false;
 
     public void build() {
         Stage primaryStage = getPrimaryStage();
@@ -44,6 +49,11 @@ public class ViewBuilder {
         Scene mainScene = new Scene(mainViewController);
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
+
+        // Set min. dimensions
+        primaryStage.setMinWidth(720d);
+        primaryStage.setMinHeight(480d);
+
         primaryStage.show();
 
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
@@ -52,6 +62,31 @@ public class ViewBuilder {
         buildToolbar(primaryStage, mainViewController);
         buildGeneralStatisticsOverlay(mainViewController);
         buildNodeStatisticsOverlay(mainViewController);
+        buildMenuOverlays(mainViewController);
+    }
+
+    private void buildMenuOverlays(MainViewController mainViewController) {
+        settingsOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
+        MainToolBarController toolBarController = new MainToolBarController("main_toolbar.fxml", new ImageButton("filter.png"));
+        settingsOverlayMenu.getChildren().add(toolBarController);
+        AnchorPane.setBottomAnchor(toolBarController, 10d);
+        AnchorPane.setLeftAnchor(toolBarController, 10d);
+        mainViewController.getChildren().add(settingsOverlayMenu);
+        AnchorPane.setBottomAnchor(settingsOverlayMenu, 10d);
+        AnchorPane.setLeftAnchor(settingsOverlayMenu, 10d);
+        settingsOverlayMenu.setVisible(false);
+
+        filterOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
+        mainViewController.getChildren().add(filterOverlayMenu);
+        AnchorPane.setBottomAnchor(filterOverlayMenu, 65d);
+        AnchorPane.setLeftAnchor(filterOverlayMenu, 20d);
+        filterOverlayMenu.setVisible(false);
+
+        recordOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
+        mainViewController.getChildren().add(recordOverlayMenu);
+        AnchorPane.setBottomAnchor(recordOverlayMenu, 10d);
+        AnchorPane.setLeftAnchor(recordOverlayMenu, 10d);
+        recordOverlayMenu.setVisible(false);
     }
 
     private void buildNodeStatisticsOverlay(MainViewController mainViewController) {
@@ -71,7 +106,7 @@ public class ViewBuilder {
 
     private void buildToolbar(Stage primaryStage, MainViewController mainViewController) {
         Button settingsButton = buildSettingsButton(primaryStage);
-        Button filterButton = buildFilterButton();
+        Button filterButton = buildFilterButton(primaryStage);
         Button recordButton = buildRecordButton();
 
         MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml", settingsButton,
@@ -112,8 +147,14 @@ public class ViewBuilder {
         return settingsButton;
     }
 
-    private Button buildFilterButton() {
-         return new ImageButton("filter.png");
+    private Button buildFilterButton(Stage  stage) {
+        Button filterButton = new ImageButton("filter.png");
+        filterButton.setOnAction(event -> {
+            filterOverlayMenu.setVisible(!filterButtonPressed);
+            filterButtonPressed = !filterButtonPressed;
+        });
+
+        return filterButton;
     }
 
     private Button buildRecordButton() {
