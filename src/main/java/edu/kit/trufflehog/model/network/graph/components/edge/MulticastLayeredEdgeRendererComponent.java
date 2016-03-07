@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.view.graph.decorators.LayeredShape;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
