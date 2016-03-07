@@ -1,27 +1,42 @@
 package edu.kit.trufflehog.model.network.graph;
 
-import edu.kit.trufflehog.model.network.IAddress;
-
-import java.io.Serializable;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 
 /**
  * <p>
- *     Interface used to represent node in the graph.
+ *     Interface used to represent nodes in the graph.
  * </p>
  */
-public interface INode extends Serializable {
+public interface INode {
 
-    IAddress getAddress();
+    void setIpAdress(String ipAdress);
 
-    INode createDeepCopy();
+    void setMacAdress(String macAdress);
 
-    /**
-     * Updates this node with the given node
-     * @param update the node that updates this node
-     * @return true if the update was successful and values changes, false otherwise
-     */
-    boolean update(INode update);
+    void setDeviceName(String deviceName);
 
-    IComposition getComposition();
+    void setTimeAdded(int timeAdded);
+
+    void setLastUpdateTime(int lastUpdateTime);
+
+    void setPackageCountIn(int packageCountIn);
+
+    void setPackageCountOut(int packageCountOut);
+
+    String getIpAdress();
+
+    String getMacAdress();
+
+    String getDeviceName();
+
+    int getTimeAdded();
+
+    int getLastUpdateTime();
+
+    int getPackageCountIn();
+
+    int getPackageCountOut();
+
+    void log(Truffle truffle);
 
 }

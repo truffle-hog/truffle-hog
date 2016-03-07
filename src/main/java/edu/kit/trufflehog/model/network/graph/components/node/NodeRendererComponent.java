@@ -1,8 +1,5 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
-import edu.kit.trufflehog.model.network.graph.IComponent;
-import edu.kit.trufflehog.model.network.graph.INode;
-
 import java.awt.*;
 
 /**
@@ -12,7 +9,7 @@ import java.awt.*;
  * @author Jan Hermes
  * @version 0.1
  */
-public class NodeRendererComponent implements IComponent {
+public class NodeRendererComponent { //TODO: must implement icomponent
 
 
     public NodeRendererComponent() {
@@ -33,23 +30,23 @@ public class NodeRendererComponent implements IComponent {
     }
 
 
-    @Override
-    public String name() {
-        return "Node Renderer";
-    }
-
-    @Override
-    public boolean isMutable() {
-        return true;
-    }
-
-    @Override
-    public IComponent createDeepCopy() {
-        return null;
-    }
-
-    @Override
-    public boolean update(INode update) {
-        return false;
-    }
+//    @Override
+//    public String name() {
+//        return "Node Renderer";
+//    }
+//
+//    @Override
+//    public boolean isMutable() {
+//        return true;
+//    }
+//
+//    @Override
+//    public IComponent createDeepCopy() {
+//        return null;
+//    }
+//
+//    @Override
+//    public boolean update(INode update) {
+//        return false;
+//    }
 }

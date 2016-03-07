@@ -1,28 +1,31 @@
 package edu.kit.trufflehog.model.network.graph;
 
-import java.io.Serializable;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
 
 /**
  * <p>
- *     Interface used to represent communication relations of node in the graph.
+ *     Interface used to represent communication relations of nodes in the graph.
  * </p>
  */
-public interface IConnection extends Serializable {
+public interface IConnection {
 
-    INode getSrc();
+    long getTotalPacketCount();
 
-    INode getDest();
+    void setTotalPacketCount(long value);
 
-    IConnection createDeepCopy();
+    LongProperty getTotalPacketCountProperty();
 
-    /**
-     * Updates this connection with the given connection
-     * @param update the connection that updates this connection
-     * @return true if this connection was updated, false if there was no success in updating
-     *              or no values changes
-     */
-    boolean update(IConnection update);
+    long getActive();
 
-    IComposition getComposition();
+    void setActive(long value);
+
+    LongProperty getActiveProperty();
+
+    long getConnectionType();
+
+    void setConnectionType(int value);
+
+    IntegerProperty getConnectionTypeProperty();
 
 }

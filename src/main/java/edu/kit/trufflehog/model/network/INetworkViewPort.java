@@ -77,7 +77,7 @@ public interface INetworkViewPort extends Layout<INode, IConnection> {
 
 
     /**
-     * Intersects the underlying graph of this viewport with the given graph. Meaning only common node and
+     * Intersects the underlying graph of this viewport with the given graph. Meaning only common nodes and
      * connections with the given graph will remain in the underlying graph.
      * @param graph
      */

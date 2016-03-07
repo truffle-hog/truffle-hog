@@ -2,7 +2,6 @@ package edu.kit.trufflehog.model.network;
 
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import javafx.beans.property.IntegerProperty;
 
 /**
  * This Interface provides the functionality needed to access network specific data.
@@ -27,30 +26,5 @@ public interface INetworkReadingPort {
      * @return the connection that is identified by the given source and destination addresses
      */
     IConnection getNetworkConnectionByAddress(IAddress source, IAddress dest);
-
-
-    /**
-     * Returns the maximum number of connections that
-     * @return The maximum number of connections
-     */
-    int getMaxConnectionSize();
-
-    /**
-     * Returns the maximum number of connections that
-     * @return The maximum number of connections
-     */
-    IntegerProperty getMaxConnectionSizeProperty();
-
-    /**
-     * Returns the maximum throughput of any network node in the current network
-     * @return
-     */
-    int getMaxThroughput();
-
-    /**
-     * Returns the maximum throughput of any network node in the current network
-     * @return
-     */
-    IntegerProperty getMaxThroughputProperty();
 
 }
