@@ -2,6 +2,7 @@ package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.service.replaylogging.ReplayLogger;
+import javafx.beans.property.IntegerProperty;
 
 /**
  * <p>
@@ -9,16 +10,16 @@ import edu.kit.trufflehog.service.replaylogging.ReplayLogger;
  * </p>
  */
 public class SetLoggingIntervalCommand implements IUserCommand {
-    private final ConfigDataModel configModel;
+    private final IntegerProperty intprop;
 
     /**
      * <p>
-     *     Creates new command and provides config object.
+     *     Creates new command and provides the integer in a property object.
      * </p>
-     * @param config {@link ConfigDataModel} to manipulate
+     * @param intprop Integer to update.
      */
-    SetLoggingIntervalCommand(final ConfigDataModel config) {
-        configModel = config;
+    SetLoggingIntervalCommand(final IntegerProperty intprop) {
+        this.intprop = intprop;
     }
 
     @Override
