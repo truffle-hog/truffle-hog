@@ -1,72 +1,131 @@
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package edu.kit.trufflehog.model.configdata;
 
-import java.util.Properties;
+import edu.kit.trufflehog.model.FileSystem;
+import edu.kit.trufflehog.model.filter.FilterInput;
+import javafx.beans.property.Property;
+import javafx.beans.property.StringProperty;
+
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 /**
  * <p>
- *     The ConfigDataModel mainly manages the GUI state using java property files. It also manages what the gui
- *     displays (e.g. labels etc.). It can save the GUI state and load it back. To do so, each GUI window is mapped to
- *     its own ConfigDatatModel from which it loads its display settings. Thus it is easy to change the language for
- *     example, since only the underlying property file has to be exchanged.
+ *     The ConfigDataModel saves all configurations of TruffleHog into an xml file and continuously updates it.
+ *     This is done through the JavaFX {@link Property} object using its bindings. Further more, filter options are
+ *     stored separately from the xml file. At the start of the program, everything is loaded from the hard drive into
+ *     memory.
  * </p>
- * <p>
- *     Multiple property objects can be loaded at once, however one has to be always marked as the current object.
- *     This way it is easy to switch between different configurations (for example switch languages).
- * </p>
+ *
+ * @author Julian Brendl
+ * @version 1.0
  */
-public abstract class ConfigDataModel {
+public class ConfigDataModel implements IConfigData {
+    private final IConfigDataModel<StringProperty> settingsDataModel;
+    private final FilterDataModel filterDataModel;
+
     /**
      * <p>
      *     Creates a new ConfigDataModel object.
      * </p>
+     *
+     * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
+     * @param executorService The executor service used by TruffleHog to manage the multi-threading.
+     * @throws NullPointerException Thrown when it was impossible to get config data for some reason.
      */
-    public ConfigDataModel() {
+    public ConfigDataModel(final FileSystem fileSystem, final ExecutorService executorService) throws NullPointerException{
+        settingsDataModel = new SettingsDataModel(fileSystem, executorService);
+        filterDataModel = new FilterDataModel(fileSystem);
     }
 
     /**
      * <p>
-     *     Gets the value mapped to the given key in the currently loaded {@link Properties} object, or null if the key
-     *     does not exist.
+     *     Updates a {@link FilterInput} entry in the database by deleting it and adding it again.
      * </p>
      *
-     * @param key The key of the value to get in the currently loaded {@link Properties} object.
-     * @return The value mapped to the key, if it exists, else null.
+     * @param filterInput The {@link FilterInput} to update.
      */
-    public String getProperty(String key) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    public void updateFilterInput(final FilterInput filterInput) {
+        filterDataModel.updateFilterInDatabase(filterInput);
     }
 
     /**
      * <p>
-     *      Adds a new property key value pair to the currently loaded {@link Properties} object.
+     *     Adds a {@link FilterInput} to the database.
      * </p>
      *
-     * @param key The key to add to the currently loaded Properties object.
-     * @param value The value to match with the given key.
+     * @param filterInput The {@link FilterInput} to add to the database.
      */
-    public void setProperty(String key, String value) {
+    public void addFilterInput(final FilterInput filterInput) {
+        filterDataModel.addFilterToDatabase(filterInput);
     }
 
     /**
      * <p>
-     *     Sets a {@link Properties} object that has been loaded into memory as the current Properties object. That
-     *     means that {@link #setProperty(String, String)} and {@link #getProperty(String)} now apply to that property
-     *     file.
+     *     Removes a {@link FilterInput} from the database.
      * </p>
      *
-     * @param name The name of the property file to set as the current property file.
+     * @param filterInput The {@link FilterInput} to remove from the database.
      */
-    public void setPropertiesFile(String name) {
+    public void removeFilterInput(final FilterInput filterInput) {
+        filterDataModel.removeFilterFromDatabase(filterInput);
     }
 
     /**
      * <p>
-     *      Loads a new property file into memory. It is put on the list of loaded property files in the ConfigDataModel
-     *      and can now be selected as the current {@link Properties} object.
+     *     Gets all loaded {@link FilterInput} objects. If none have been loaded yet, the method loads them first.
      * </p>
      *
-     * @param path The path to the property file to load into memory.
+     * @return The list of loaded {@link FilterInput} objects.
      */
-    public void loadPropertyFile(String path) {
+    public Map<String, FilterInput> getAllLoadedFilters() {
+        return filterDataModel.getAllFilters();
+    }
+
+    /**
+     * <p>
+     *     Loads all settings that are stored on the hard drive into the program.
+     * </p>
+     */
+    public void load() {
+        settingsDataModel.load();
+        filterDataModel.load();
+    }
+
+    @Override
+    public StringProperty getSetting(final Class typeClass, final String key) {
+        return settingsDataModel.get(typeClass, key);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     *     The given name must be the same name as the name that is stored inside the name parameter of the
+     *     {@link FilterInput} object.
+     * </p>
+     *
+     * @param name The name that belongs to the FilterInput object that should be retrieved.
+     * @return The FilterInput object that has the matching name.
+     */
+    @Override
+    public FilterInput getFilter(final String name) {
+        return filterDataModel.get(name);
     }
 }

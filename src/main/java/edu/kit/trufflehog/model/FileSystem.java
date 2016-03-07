@@ -1,3 +1,20 @@
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package edu.kit.trufflehog.model;
 
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
@@ -34,7 +51,7 @@ import java.net.URISyntaxException;
  *         <li>
  *             Config folder:
  *             <p>
- *                 This is where the property files for the {@link ConfigDataModel} are saved to.
+ *                 This is where the config files for the {@link ConfigDataModel} are saved to.
  *             </p>
  *         </li>
  *         <br></br>
@@ -64,6 +81,7 @@ public class FileSystem {
     private File dataFolder = null;
     private File replayLogFolder = null;
     private File configFolder = null;
+    private File filterFolder = null;
     private File truffleDataLogFolder = null;
     private File logFolder = null;
 
@@ -126,6 +144,20 @@ public class FileSystem {
     public File getConfigFolder() {
         getDataFolder();
         configFolder = createFolder(configFolder, "config", dataFolder);
+
+        return configFolder;
+    }
+
+    /**
+     * <p>
+     *     Returns the File object of the config folder, or creates the folder if it does not exist yet.
+     * </p>
+     *
+     * @return The corresponding File object of the config folder.
+     */
+    public File getFilterFolder() {
+        getConfigFolder();
+        filterFolder = createFolder(filterFolder, "filters", configFolder);
 
         return configFolder;
     }

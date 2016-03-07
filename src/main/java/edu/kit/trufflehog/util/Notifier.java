@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.util;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -18,12 +19,18 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * </p>
  *
  * @param <M> The type of message to receive.
+ * @author Mark Giraud
+ * @version 1.0
  */
 public abstract class Notifier<M> implements INotifier<M> {
+
+    /**
+     * This needs to be a concurrent queue! Do not change!
+     */
     private final Collection<IListener<M>> listeners = new ConcurrentLinkedQueue<>();
 
     @Override
-    public boolean addListener(IListener<M> listener) {
+    public boolean addListener(final IListener<M> listener) {
         if (listener == null)
             throw new NullPointerException("Listener to add must not be null!");
 
@@ -31,7 +38,7 @@ public abstract class Notifier<M> implements INotifier<M> {
     }
 
     @Override
-    public boolean removeListener(IListener listener) {
+    public boolean removeListener(final IListener listener) {
         if (listener == null)
             throw new NullPointerException("Listener to remove must not be null!");
 
@@ -39,7 +46,7 @@ public abstract class Notifier<M> implements INotifier<M> {
     }
 
     @Override
-    public void notifyListeners(M message) {
+    public void notifyListeners(final M message) {
         if (message == null)
             throw new NullPointerException("Message to be sent must not be null!");
 

@@ -1,15 +1,20 @@
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.view.*;
+import edu.kit.trufflehog.model.FileSystem;
+import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.IConfigData;
+import edu.kit.trufflehog.view.MainToolBarController;
+import edu.kit.trufflehog.view.MainViewController;
+import edu.kit.trufflehog.view.OverlayViewController;
+import edu.kit.trufflehog.view.RootWindowController;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.ScheduledExecutorService;
 
 import static edu.kit.trufflehog.Main.getPrimaryStage;
 
@@ -21,7 +26,13 @@ import static edu.kit.trufflehog.Main.getPrimaryStage;
  * </p>
  */
 public class Presenter {
+    private static final Logger logger = LogManager.getLogger(Presenter.class);
+
     private static Presenter presenter;
+    private final IConfigData configData;
+    private final FileSystem fileSystem;
+    private final ScheduledExecutorService executorService;
+
     /**
      * <p>
      *     Creates a new instance of a singleton Presenter or returns it if it was created before.
@@ -43,6 +54,17 @@ public class Presenter {
      * </p>
      */
     private Presenter() {
+        this.fileSystem = new FileSystem();
+        this.executorService = new LoggedScheduledExecutor(10);
+
+        IConfigData configDataTemp;
+        try {
+            configDataTemp = new ConfigDataModel(fileSystem, executorService);
+        } catch (NullPointerException e ) {
+            configDataTemp = null;
+            logger.error("Unable to set config data model", e);
+        }
+        configData = configDataTemp;
     }
 
     /**
@@ -99,7 +121,6 @@ public class Presenter {
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN), settingsButton::fire);
         MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml", settingsButton);
         mainView.getChildren().add(mainToolBarController);
-
 
         // setting up node statistics overlay
         OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");

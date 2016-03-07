@@ -28,54 +28,45 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    testCompile 'org.mockito:mockito-all:1.8.4'
-
     // general
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.logging.log4j:log4j-core:2.5'
     compile 'org.apache.logging.log4j:log4j-api:2.5'
+    compile 'com.google.guava:guava:19.0'
+    compile 'org.xerial:sqlite-jdbc:3.8.11.2'
+    compile 'org.jdom:jdom:2.0.2'
 
-    //jung
+
     compile 'org.apache.commons:commons-collections4:4.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'colt:colt:1.2.0'
+
     compile 'net.sf.jung:jung2:2.0.1'
     compile 'net.sf.jung:jung-graph-impl:2.0.1'
     compile 'net.sf.jung:jung-visualization:2.0.1'
 
+    // test
     testCompile 'org.apache.commons:commons-collections4:4.1'
     testCompile 'commons-io:commons-io:2.4'
     testCompile 'org.apache.commons:commons-lang3:3.4'
+    testCompile 'org.xerial:sqlite-jdbc:3.8.11.2'
     testCompile 'colt:colt:1.2.0'
     testCompile 'net.sf.jung:jung2:2.0.1'
     testCompile 'net.sf.jung:jung-graph-impl:2.0.1'
     testCompile 'net.sf.jung:jung-visualization:2.0.1'
     testCompile 'org.apache.logging.log4j:log4j-core:2.5'
     testCompile 'org.apache.logging.log4j:log4j-api:2.5'
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'org.mockito:mockito-all:1.8.4'
 }
+
+test.dependsOn processTestResources
 
 jar {
     manifest {
         attributes 'Main-Class': 'edu.kit.trufflehog.Main'
     }
-}
-
-sourceSets {
-    unitTest {
-        java {
-            compileClasspath += main.output + test.output
-            runtimeClasspath += main.output + test.output
-            srcDir file('src/test/java')
-        }
-
-        resources.srcDir file('src/test/resources')
-    }
-}
-
-configurations {
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
 }
 
 jacocoTestReport {

@@ -9,12 +9,15 @@ import java.util.Map;
 
 /**
  * <p>
- * The MainViewController incorporates all GUI elements that belong to the
- * primary scope of the application. This for example includes the top
- * Menu Bar.
+ *     The MainViewController incorporates all GUI elements that belong to the
+ *     primary scope of the application. This for example includes the top
+ *     Menu Bar.
  * </p>
  */
 public class MainViewController extends AnchorPaneController<MainInteraction> {
+
+	/** The commands that are mapped to their interactions. **/
+    private final Map<MainInteraction, IUserCommand> interactionMap = new EnumMap<>(MainInteraction.class);
 
     /**
      * <p>
@@ -32,6 +35,7 @@ public class MainViewController extends AnchorPaneController<MainInteraction> {
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
     public MainViewController(final String fxmlFileName) {
+
         super(fxmlFileName);
     }
 
@@ -41,11 +45,17 @@ public class MainViewController extends AnchorPaneController<MainInteraction> {
      * </p>
      */
     public void onExit() {
+
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final void addCommand(final MainInteraction interactor, final IUserCommand command) {
+
         interactionMap.put(interactor, command);
     }
 }

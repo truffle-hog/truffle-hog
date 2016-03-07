@@ -1,6 +1,6 @@
 package edu.kit.trufflehog.command.trufflecommand;
 
-import edu.kit.trufflehog.model.filter.Filter;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
@@ -17,7 +17,7 @@ import java.util.List;
 public class AddPacketDataCommand implements ITruffleCommand {
 
     private final INetworkWritingPort writingPort;
-    private final List<Filter> filterList;
+    private final List<IFilter> filterList;
     private final IPacketData data;
 
     /**
@@ -28,13 +28,19 @@ public class AddPacketDataCommand implements ITruffleCommand {
      * @param packet Truffle to get data from
      * @param filters List of filters to check
      */
-    AddPacketDataCommand(INetworkWritingPort writingPort, Truffle packet, List<Filter> filters) {
+    public AddPacketDataCommand(final INetworkWritingPort writingPort, final Truffle packet, final List<IFilter> filters) {
         this.writingPort = writingPort;
         filterList = filters;
         this.data = packet;
     }
 
+    @Override
     public void execute() {
 
+    }
+
+    @Override
+    public String toString() {
+        return data.toString();
     }
 }
