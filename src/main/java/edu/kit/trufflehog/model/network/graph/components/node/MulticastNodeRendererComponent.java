@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
-import com.sun.istack.internal.NotNull;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.INode;
 
@@ -39,7 +38,7 @@ public class MulticastNodeRendererComponent implements IComponent {
      * @param colorPicked The color to use if the node is selected
      * @param colorUnpicked The color to use if the node is not selected
      */
-    public MulticastNodeRendererComponent(@NotNull Shape shape, @NotNull Color colorPicked, @NotNull Color colorUnpicked) {
+    public MulticastNodeRendererComponent(Shape shape, Color colorPicked, Color colorUnpicked) {
         if (shape == null) throw new NullPointerException("shape must not be null!");
         if (colorPicked == null) throw new NullPointerException("colorPicked must not be null!");
         if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
@@ -84,7 +83,7 @@ public class MulticastNodeRendererComponent implements IComponent {
      * </p>
      * @param shape The shape to be used
      */
-    public void setShape(@NotNull Shape shape) {
+    public void setShape(Shape shape) {
         if (shape == null) throw new NullPointerException("shape must not be null!");
         this.shape = shape;
     }
@@ -95,7 +94,7 @@ public class MulticastNodeRendererComponent implements IComponent {
      * </p>
      * @param colorPicked
      */
-    public void setColorPicked(@NotNull Color colorPicked) {
+    public void setColorPicked(Color colorPicked) {
         if (colorPicked == null) throw new NullPointerException("colorPicked must not be null!");
         this.colorPicked = colorPicked;
     }
@@ -106,7 +105,7 @@ public class MulticastNodeRendererComponent implements IComponent {
      * </p>
      * @param colorUnpicked
      */
-    public void setColorUnpicked(@NotNull Color colorUnpicked) {
+    public void setColorUnpicked(Color colorUnpicked) {
         if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
         this.colorUnpicked = colorUnpicked;
     }
