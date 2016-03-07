@@ -3,13 +3,15 @@ package edu.kit.trufflehog.presenter;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.configdata.IConfigData;
-import edu.kit.trufflehog.view.MainToolBarController;
-import edu.kit.trufflehog.view.MainViewController;
-import edu.kit.trufflehog.view.OverlayViewController;
-import edu.kit.trufflehog.view.RootWindowController;
+import edu.kit.trufflehog.view.*;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,9 +22,9 @@ import static edu.kit.trufflehog.Main.getPrimaryStage;
 
 /**
  * <p>
- *      The Presenter builds TruffleHog. It instantiates all necessary instances of classes, registers these instances
- *      with each other, distributes resources (parameters) to them etc. In other words it is the glue code of
- *      TruffleHog. There should always only be one instance of a Presenter around.
+ *     The Presenter builds TruffleHog. It instantiates all necessary instances of classes, registers these instances
+ *     with each other, distributes resources (parameters) to them etc. In other words it is the glue code of
+ *     TruffleHog. There should always only be one instance of a Presenter around.
  * </p>
  */
 public class Presenter {
@@ -37,7 +39,6 @@ public class Presenter {
      * <p>
      *     Creates a new instance of a singleton Presenter or returns it if it was created before.
      * </p>
-     *
      *
      * @return A new instance of the Presenter, if none already exists.
      */
@@ -60,7 +61,7 @@ public class Presenter {
         IConfigData configDataTemp;
         try {
             configDataTemp = new ConfigDataModel(fileSystem, executorService);
-        } catch (NullPointerException e ) {
+        } catch (NullPointerException e) {
             configDataTemp = null;
             logger.error("Unable to set config data model", e);
         }
@@ -68,12 +69,14 @@ public class Presenter {
     }
 
     /**
-     *  <p>
-     *      Present TruffleHog. Create all necessary objects, register them with each other, bind them, pass them the
-     *      resources they need ect.
-     *  </p>
+     * <p>
+     *     Present TruffleHog. Create all necessary objects, register them with each other, bind them, pass them the
+     *     resources they need ect.
+     * </p>
      */
-    public void present() { initGUI(); }
+    public void present() {
+        initGUI();
+    }
 
     private void initGUI() {
         Stage primaryStage = getPrimaryStage();
@@ -82,13 +85,12 @@ public class Presenter {
         MainViewController mainView = new MainViewController("main_view.fxml");
         Scene mainScene = new Scene(mainView);
         primaryStage.setScene(mainScene);
-        primaryStage.getIcons().add(
-                new Image(
-                        RootWindowController.class.getResourceAsStream("icon.png")));
+        primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
         primaryStage.show();
 
         // CTRL+Q for program quitting
-        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN), primaryStage::close);
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
+                primaryStage::close);
 
         // setting up general statistics overlay
         OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
@@ -104,10 +106,14 @@ public class Presenter {
             Scene settingsScene = new Scene(settingsView);
             settingsStage.setScene(settingsScene);
             settingsStage.show();
+
             // CTRL+W for closing
-            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN), settingsStage::close);
+            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN)
+                    , settingsStage::close);
+
             // CTRL+S triggers info about program settings saving
-            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN), () -> {
+            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN),
+                    () -> {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Relax, no need to save anything here");
                 alert.setHeaderText(null);
@@ -118,7 +124,8 @@ public class Presenter {
         });
 
         // setting up keyboard shortcut
-        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN), settingsButton::fire);
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN),
+                settingsButton::fire);
         MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml", settingsButton);
         mainView.getChildren().add(mainToolBarController);
 

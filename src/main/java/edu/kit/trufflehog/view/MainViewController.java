@@ -15,10 +15,6 @@ import java.util.Map;
  * </p>
  */
 public class MainViewController extends AnchorPaneController<MainInteraction> {
-
-	/** The commands that are mapped to their interactions. **/
-    private final Map<MainInteraction, IUserCommand> interactionMap = new EnumMap<>(MainInteraction.class);
-
     /**
      * <p>
      *     The commands that are mapped to their interactions.
