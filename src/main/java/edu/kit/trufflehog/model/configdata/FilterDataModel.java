@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.IFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,55 +11,57 @@ import java.sql.*;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 /**
  * <p>
- *
+ *     The FilterDataModel stores {@link FilterInput} objects into a sqlite database. FilterInput objects are used to
+ *     create a new {@link IFilter}; they contain the core data a filter needs to be created: the user input.
  * </p>
+ * <p>
+ *     This class manages the storage of these FilterInput objects. It contains a list with all existing FilterInput
+ *     objects and has the ability to add, remove get and update these FilterInput objects from a database. As an
+ *     implementation for the database drivers a JDBC variant was chosen that is OS agnostic.
+ * </p>
+ *
+ * @author Julian Brendl
+ * @version 1.0
  */
 class FilterDataModel implements IConfigDataModel<FilterInput> {
     private static final Logger logger = LogManager.getLogger();
 
     private final Map<String, FilterInput> loadedFilters;
-    private final FileSystem fileSystem;
-    private final ExecutorService executorService;
-    private final File filterDatabase;
     private final Connection connection;
 
     private static final String DATABASE_NAME = "filters.sql";
 
     /**
      * <p>
-     *
+     *     Creates a new FilterDataModel.
      * </p>
      *
-     * @param fileSystem
-     * @param executorService
+     * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
      */
-    public FilterDataModel(FileSystem fileSystem, ExecutorService executorService) {
-        this.fileSystem = fileSystem;
-        this.executorService = executorService;
+    public FilterDataModel(FileSystem fileSystem) {
         this.loadedFilters = new HashMap<>();
 
-        File databaseTemp;
+        File databaseFile;
         try {
-            databaseTemp = new File(fileSystem.getConfigFolder().getCanonicalPath() + File.separator + DATABASE_NAME);
+            databaseFile = new File(fileSystem.getConfigFolder().getCanonicalPath() + File.separator + DATABASE_NAME);
         } catch (IOException e) {
-            databaseTemp = new File(fileSystem.getConfigFolder().getAbsolutePath() + File.separator + DATABASE_NAME);
+            databaseFile = new File(fileSystem.getConfigFolder().getAbsolutePath() + File.separator + DATABASE_NAME);
             logger.error("Unable to get canonical path to database, getting absolute path instead", e);
         }
-        filterDatabase = databaseTemp;
 
         Connection connectionTemp;
         try {
-            connectionTemp = DriverManager.getConnection("jdbc:sqlite:" + filterDatabase.getCanonicalPath());
+            connectionTemp = DriverManager.getConnection("jdbc:sqlite:" + databaseFile.getCanonicalPath());
         } catch (SQLException | IOException e) {
             connectionTemp = null;
             logger.error("Unable to set connection for database", e);
         }
         connection = connectionTemp;
 
+        // Make sure auto commit is on, so that queries will automatically updated the database
         if (connection != null) {
             try {
                 connection.setAutoCommit(true);
@@ -69,17 +72,17 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
         // Create database if the database file is empty (the db file is created above with the connection no matter
         // what)
-        if (filterDatabase.length() == 0) {
+        if (databaseFile.length() == 0) {
             createDatabase();
         }
     }
 
     /**
      * <p>
-     *
+     *     Loads all existing {@link FilterInput} objects from the database into a map with their name as they key.
      * </p>
      */
-    public void loadFilters() {
+    private void loadFilters() {
         if (connection == null) {
             logger.error("Unable to load filters from database, connection is null");
             return;
@@ -90,7 +93,11 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
             if (rs.next()) {
                 String base64String = rs.getString("filter");
                 FilterInput filterInput = fromBase64(base64String);
-                loadedFilters.put(filterInput.getName(), filterInput);
+                if (filterInput != null) {
+                    loadedFilters.put(filterInput.getName(), filterInput);
+                } else {
+                    logger.error("Found null filter input object while loading from database, skipping");
+                }
             }
         } catch (SQLException e) {
             logger.error("Error while loading filter input objects from database into list", e);
@@ -99,10 +106,11 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *
+     *     Updates a {@link FilterInput} entry in the database by deleting it and adding it again. The internal map is
+     *     updated as well.
      * </p>
      *
-     * @param filterInput
+     * @param filterInput The {@link FilterInput} to update.
      */
     public void updateFilterInDatabase(FilterInput filterInput) {
         removeFilterFromDatabase(filterInput);
@@ -111,10 +119,12 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *
+     *     Adds a {@link FilterInput} to the database. The internal map is updated as well. The FilterInput object is
+     *     stored as a base64 string and not as a {@link Clob} because the internal implementation of the database does
+     *     not provide a CLOB implementation. However since it is OS agnostic, we decided to go with it anyway.
      * </p>
      *
-     * @param filterInput
+     * @param filterInput The {@link FilterInput} to add to the database.
      */
     public void addFilterToDatabase(FilterInput filterInput) {
         if (connection == null) {
@@ -125,6 +135,7 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
         String filterBase64 = toBase64(filterInput);
 
         if (filterBase64 == null) {
+            logger.error("Unable to add filter to database, base64 string is null");
             return;
         }
 
@@ -142,10 +153,10 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *
+     *     Removes a {@link FilterInput} from the database. The internal map is updated as well.
      * </p>
      *
-     * @param filterInput
+     * @param filterInput The {@link FilterInput} to remove from the database.
      */
     public void removeFilterFromDatabase(FilterInput filterInput) {
         if (connection == null) {
@@ -165,11 +176,11 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *
+     *     Converts a {@link FilterInput} object into a base64 string, which is how it will be stored into the database.
      * </p>
      *
-     * @param filterInput
-     * @return
+     * @param filterInput The {@link FilterInput} that should be converted into a base64 string.
+     * @return The base64 string representing the FilterInput object.
      */
     private String toBase64(FilterInput filterInput) {
         try {
@@ -186,11 +197,12 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *
+     *     Converts a base64 string into a {@link FilterInput} object, so that the object can be recreated from the
+     *     database.
      * </p>
      *
-     * @param string
-     * @return
+     * @param string The base64 string that should be converted back into a {@link FilterInput} object.
+     * @return The original FilterInput object represented by the given base64 string.
      */
     private FilterInput fromBase64(String string) {
         try {
@@ -207,7 +219,7 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *
+     *     Creates a new sqlite database with an ID and a FILTER column. This is where the filters will be saved.
      * </p>
      */
     private void createDatabase() {
@@ -228,12 +240,15 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *
+     *     Gets all loaded {@link FilterInput} objects. If none have been loaded yet, the method loads them first.
      * </p>
      *
-     * @return
+     * @return The list of loaded {@link FilterInput} objects.
      */
     public Map<String, FilterInput> getAllFilters() {
+        if (loadedFilters.isEmpty()) {
+            loadFilters();
+        }
         return loadedFilters;
     }
 

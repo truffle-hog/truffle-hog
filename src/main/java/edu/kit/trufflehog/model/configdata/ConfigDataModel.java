@@ -37,7 +37,7 @@ public class ConfigDataModel implements IConfigData {
      */
     public ConfigDataModel(final FileSystem fileSystem, final ExecutorService executorService) throws NullPointerException{
         settingsDataModel = new SettingsDataModel(fileSystem, executorService);
-        filterDataModel = new FilterDataModel(fileSystem, executorService);
+        filterDataModel = new FilterDataModel(fileSystem);
     }
 
     /**
@@ -46,7 +46,7 @@ public class ConfigDataModel implements IConfigData {
      * </p>
      */
     public void load() {
-        //settingsDataModel.load();
+        settingsDataModel.load();
         filterDataModel.load();
     }
 
