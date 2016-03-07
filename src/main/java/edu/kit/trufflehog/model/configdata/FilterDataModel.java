@@ -146,6 +146,9 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      *     stored as a base64 string and not as a {@link Clob} because the internal implementation of the database does
      *     not provide a CLOB implementation. However since it is OS agnostic, we decided to go with it anyway.
      * </p>
+     * <p>
+     *     If filterInput is null, nothing is added.
+     * </p>
      *
      * @param filterInput The {@link FilterInput} to add to the database.
      */
@@ -182,6 +185,9 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
     /**
      * <p>
      *     Removes a {@link FilterInput} from the database. The internal map is updated as well.
+     * </p>
+     * <p>
+     *     If filterInput is null, nothing is done.
      * </p>
      *
      * @param filterInput The {@link FilterInput} to remove from the database.
