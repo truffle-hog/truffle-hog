@@ -47,6 +47,7 @@ import static org.mockito.Mockito.when;
 public class FilterDataModelTest {
     private FileSystem fileSystem;
     private FilterDataModel filterDataModel;
+    private File databaseFile;
 
     /**
      * <p>
@@ -57,6 +58,8 @@ public class FilterDataModelTest {
      */
     @Before
     public void setUp() throws Exception {
+        this.databaseFile = new File("./src/test/resources/data/config/filters.sql");
+
         this.fileSystem = mock(FileSystem.class);
         when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
         when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config"));
@@ -72,8 +75,9 @@ public class FilterDataModelTest {
      */
     @After
     public void tearDown() throws Exception {
-        FileUtils.deleteDirectory(fileSystem.getConfigFolder());
-        fileSystem.getConfigFolder().mkdir();
+        if (databaseFile.exists()) {
+            FileUtils.forceDelete(databaseFile);
+        }
     }
 
     /**
