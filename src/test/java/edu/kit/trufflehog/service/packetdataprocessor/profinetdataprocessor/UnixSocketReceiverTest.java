@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
-import edu.kit.trufflehog.model.filter.Filter;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import edu.kit.trufflehog.util.IListener;
 import org.junit.After;
@@ -13,8 +13,8 @@ import org.mockito.ArgumentCaptor;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * <p>
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 public class UnixSocketReceiverTest {
 
     UnixSocketReceiver receiver;
-    List<Filter> mockedFilterList;
+    List<IFilter> mockedFilterList;
     Thread testRunner;
     IListener<ITruffleCommand> mockedListener;
 

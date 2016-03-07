@@ -1,6 +1,6 @@
 package edu.kit.trufflehog.command.usercommand;
 
-import edu.kit.trufflehog.model.filter.Filter;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class UpdateFilterCommand implements IUserCommand {
 
     private final INetworkWritingPort network;
-    private final List<Filter> filterList;
+    private final List<IFilter> filterList;
 
     /**
      * <p>
@@ -22,7 +22,7 @@ public class UpdateFilterCommand implements IUserCommand {
      * @param port {@link INetworkWritingPort} to write data to
      * @param filters List of filters to check
      */
-    UpdateFilterCommand(final INetworkWritingPort port, final List<Filter> filters) {
+    UpdateFilterCommand(final INetworkWritingPort port, final List<IFilter> filters) {
         network = port;
         filterList = filters;
     }
