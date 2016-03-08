@@ -20,6 +20,7 @@ package edu.kit.trufflehog.model.filter;
 import eu.hansolo.enzo.notification.Notification;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.cell.CheckBoxTableCell;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -78,6 +79,9 @@ public class FilterInput implements Serializable {
      *         </li>
      *         <li>
      *             Color: The color of the filter determines what color a matched node should become.
+     *         </li>
+     *         <li>
+     *             Active: Whether this filter is currently being applied on the network or not.
      *         </li>
      *     </ul>
      * </p>
@@ -156,10 +160,25 @@ public class FilterInput implements Serializable {
         return active;
     }
 
+    /**
+     * <p>
+     *     Gets the BooleanProperty behind the activity state. This is mapped to the {@link CheckBoxTableCell} in the
+     *     table view in the filters menu.
+     * </p>
+     *
+     * @return the BooleanProperty that is is mapped to the {@link CheckBoxTableCell} in the table view in the filters menu.
+     */
     public BooleanProperty getBooleanProperty() {
         return booleanProperty;
     }
 
+    /**
+     * <p>
+         *     Since {@link BooleanProperty} objects cannot be serialized, THIS METHOD HAS TO BE CALLED AFTER EACH
+     *     DESERIALIZATION OF A FILTERINPUT OBJECT to recreate the connection between the BooleanProperty and the
+     *     normal boolean value that was serialized.
+     * </p>
+     */
     public void load() {
         booleanProperty = new SimpleBooleanProperty(active);
         booleanProperty.addListener((observable, oldValue, newValue) -> {

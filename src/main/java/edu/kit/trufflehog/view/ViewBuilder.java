@@ -46,7 +46,7 @@ import static edu.kit.trufflehog.Main.getPrimaryStage;
  * <p>
  * </p>
  *
- * @author Maximilian Diez, Julian Brendl
+ * @author Julian Brendl, Maximilian Diez
  * @version 1.0
  */
 public class ViewBuilder {
@@ -124,6 +124,7 @@ public class ViewBuilder {
         activeColumn.setMinWidth(80);
         tableView.getColumns().add(activeColumn);
 
+        // Set up callback for CheckBoxTableCell
         activeColumn.setCellFactory(tableColumn -> {
             final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
             checkBoxTableCell.setSelectedStateCallback(index -> {
