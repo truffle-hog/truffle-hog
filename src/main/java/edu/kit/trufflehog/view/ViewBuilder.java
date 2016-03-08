@@ -18,6 +18,7 @@
 
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterType;
 import eu.hansolo.enzo.notification.Notification;
@@ -36,6 +37,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import static edu.kit.trufflehog.Main.getPrimaryStage;
@@ -60,6 +62,8 @@ public class ViewBuilder {
     private boolean recordButtonPressed = false;
 
     public void build() {
+        loadFonts();
+
         primaryStage = getPrimaryStage();
         mainViewController = new MainViewController("main_view.fxml");
 
@@ -119,28 +123,39 @@ public class ViewBuilder {
         TableColumn activeColumn = new TableColumn<>("Active");
         activeColumn.setMinWidth(80);
         tableView.getColumns().add(activeColumn);
-        activeColumn.setCellFactory(p -> new CheckBoxTableCell());
+
+        activeColumn.setCellFactory(tableColumn -> {
+            final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
+            checkBoxTableCell.setSelectedStateCallback(index -> {
+                FilterInput filterInput = (FilterInput) tableView.getItems().get(index);
+                return filterInput.getBooleanProperty();
+            });
+
+            return checkBoxTableCell;
+        });
 
         tableView.setItems(data);
         tableView.setMinWidth(330);
 
         // Set up add button
         Button addButton = new ImageButton("add.png");
-        addButton.setOnAction(number -> {
+        addButton.setOnAction(actionEvent -> {
             FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
             data.add(filterInput);
+            filterInput = new FilterInput("Filter B", FilterType.BLACKLIST, null, null);
+            data.add(filterInput);
         });
-        addButton.setScaleX(0.8);
-        addButton.setScaleY(0.8);
+        addButton.setScaleX(0.5);
+        addButton.setScaleY(0.5);
 
         // Set up remove button
         Button removeButton = new ImageButton("remove.png");
-        removeButton.setOnAction(number -> {
-            FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
+        removeButton.setOnAction(actionEvent -> {
+            FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             data.remove(filterInput);
         });
-        removeButton.setScaleX(0.8);
-        removeButton.setScaleY(0.8);
+        removeButton.setScaleX(0.5);
+        removeButton.setScaleY(0.5);
 
         // Set up components on overlay
         BorderPane borderPane = new BorderPane();
@@ -268,10 +283,10 @@ public class ViewBuilder {
     }
 
     private void startNotification() {
-//        Notifications.create()
-//                .title("Program started")
-//                .text("Congrats, you just started TruffleHog. ")
-//                .showInformation();
         Notification.Notifier.INSTANCE.notifyInfo("Program started", "Congrats, you just started TruffleHog.");
+    }
+
+    private void loadFonts() {
+        Font.loadFont(Main.class.getClassLoader().getResourceAsStream( "fonts/DroidSans/DroidSans.ttf"), 12);
     }
 }

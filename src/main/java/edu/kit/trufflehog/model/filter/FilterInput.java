@@ -17,6 +17,10 @@
 
 package edu.kit.trufflehog.model.filter;
 
+import eu.hansolo.enzo.notification.Notification;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.List;
@@ -51,10 +55,13 @@ public class FilterInput implements Serializable {
     private final FilterType type;
     private final List<String> rules;
     private final Color color;
+    private boolean active;
+    private transient BooleanProperty booleanProperty;
 
     /**
      * <p>
-     *     Creates a new FilterInput object.
+     *     Creates a new FilterInput object that is inactive. That means it will at first not be applied onto the
+     *     current network.
      * </p>
      * <p>
      *     <ul>
@@ -85,6 +92,9 @@ public class FilterInput implements Serializable {
         this.type = type;
         this.rules = rules;
         this.color = color;
+        this.active = false;
+
+        load();
     }
 
     /**
@@ -132,5 +142,34 @@ public class FilterInput implements Serializable {
      */
     public Color getColor() {
         return color;
+    }
+
+    /**
+     * <p>
+     *     Gets the current activity state. That means this method returns true if the filter is currently being applied
+     *     to the network, and otherwise false.
+     * </p>
+     *
+     * @return True if the filter is currently being applied o the network, else false.
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    public BooleanProperty getBooleanProperty() {
+        return booleanProperty;
+    }
+
+    public void load() {
+        booleanProperty = new SimpleBooleanProperty(active);
+        booleanProperty.addListener((observable, oldValue, newValue) -> {
+            active = newValue;
+
+            if (newValue) {
+                Notification.Notifier.INSTANCE.notifyInfo("Filter Active", name + " was just activated.");
+            } else {
+                Notification.Notifier.INSTANCE.notifyInfo("Filter Inactive", name + " was just deactivated.");
+            }
+        });
     }
 }
