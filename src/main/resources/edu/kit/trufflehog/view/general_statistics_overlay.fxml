@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<fx:root opacity="0.5" prefHeight="150.0" prefWidth="300.0" styleClass="overlaybackground" type="GridPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root opacity="0.5" prefHeight="100.0" prefWidth="250.0" styleClass="overlaybackground" type="GridPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
 
     <stylesheets>
     <URL value="@statistics_overlay.css" />
