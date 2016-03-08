@@ -33,6 +33,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import static edu.kit.trufflehog.Main.getPrimaryStage;
@@ -60,8 +61,6 @@ public class ViewBuilder {
 
         // Set up scene
         Scene mainScene = new Scene(mainViewController);
-        mainScene.getStylesheets().add("@scrollbar.css");
-
 
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
@@ -97,13 +96,11 @@ public class ViewBuilder {
 
     private void buildFilterMenuOverlay() {
         filterOverlayMenu = new OverlayViewController("filter_menu_overlay.fxml");
-        //filterOverlayMenu.getStylesheets().add("@scrollbar.css");
         ObservableList<FilterInput> data = FXCollections.observableArrayList();
 
         // Set up table view
         TableView tableView = new TableView();
         tableView.setEditable(true);
-        tableView.setStyle("-fx-background-color:#000000");
 
         // Set up filter column
         TableColumn nameColumn = new TableColumn("Filter");
@@ -130,22 +127,44 @@ public class ViewBuilder {
         tableView.setMinWidth(328);
 
         // Set up add button
-        Button btnNew = new Button("New Filter");
-        btnNew.setOnAction(number -> {
+        Button addButton = new ImageButton("add.png");
+        addButton.setOnAction(number -> {
             FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
             data.add(filterInput);
         });
 
+        addButton.setScaleX(0.8);
+        addButton.setScaleY(0.8);
+
         // Set up remove button
+        Button removeButton = new ImageButton("remove.png");
+        removeButton.setOnAction(number -> {
+            FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
+            data.remove(filterInput);
+        });
+        removeButton.setScaleX(0.8);
+        removeButton.setScaleY(0.8);
 
+        Pane vBox = new Pane();
+//        AnchorPane.setTopAnchor(anchorPane, 0d);
+//        AnchorPane.setLeftAnchor(anchorPane, 0d);
+//        AnchorPane.setRightAnchor(anchorPane, 0d);
+//        AnchorPane.setBottomAnchor(anchorPane, 0d);
 
+        //anchorPane.setMaxHeight(210d);
+        vBox.setMaxSize(330, 210);
+        vBox.getChildren().addAll(tableView, addButton, removeButton);
+        filterOverlayMenu.getChildren().add(vBox);
 
-        filterOverlayMenu.getChildren().addAll(tableView, btnNew);
-
-        // Set
+        // Set up overlay
         mainViewController.getChildren().add(filterOverlayMenu);
+
+        addButton.setLayoutX(200);
+        addButton.setLayoutY(200);
+
         AnchorPane.setBottomAnchor(filterOverlayMenu, 60d);
         AnchorPane.setLeftAnchor(filterOverlayMenu, 18d);
+        filterOverlayMenu.setMaxSize(330d, 210d);
         filterOverlayMenu.setVisible(false);
     }
 

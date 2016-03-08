@@ -19,21 +19,12 @@
         <URL value="@scrollbar.css" />
     </stylesheets>
     <columnConstraints>
-        <ColumnConstraints />
       <ColumnConstraints hgrow="ALWAYS" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints />
-      <RowConstraints />
       <RowConstraints vgrow="ALWAYS" />
     </rowConstraints>
    <children>
-      <AnchorPane opacity="0.56" prefHeight="241.0" prefWidth="315.0" stylesheets="@filter_menu_overlay.css" GridPane.columnIndex="1" GridPane.rowIndex="1">
-         <styleClass>
-            <String fx:value="overlaybackground" />
-            <String fx:value="body_text" />
-         </styleClass>
-      </AnchorPane>
+      <AnchorPane prefHeight="210.0" prefWidth="330.0" />
    </children>
-
 </fx:root>

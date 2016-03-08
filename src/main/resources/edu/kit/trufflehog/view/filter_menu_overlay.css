@@ -25,7 +25,7 @@ root {
 }
 
 .title_text {
-    color: black;
+    -fx-fill: black;
     -fx-opacity: 100%;
     -fx-font-size: 130%;
     -fx-font-weight: 130px;
@@ -37,6 +37,14 @@ root {
     -fx-opacity: 100%;
     -fx-font-size: 130%;
     -fx-font-weight: 130px;
+    -fx-font-family: monospace;
+}
+
+.table-view {
+    -fx-background-color:#000000;
+    -fx-opacity: 100%;
+    -fx-font-size: 100%;
+    -fx-font-weight: 100px;
     -fx-font-family: monospace;
 }
 
