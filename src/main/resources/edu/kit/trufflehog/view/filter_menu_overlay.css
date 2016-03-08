@@ -15,6 +15,11 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@font-face {
+    font-family: DroidSans;
+    src: url('./fonts/Droid_Sans/DroidSans.ttf');
+}
+
 root {
     display: block;
 }
@@ -29,7 +34,7 @@ root {
     -fx-opacity: 100%;
     -fx-font-size: 90%;
     -fx-font-weight: 100;
-    -fx-font-family: monospace;
+    -fx-font-family: DroidSans;
 }
 
 .table-view {

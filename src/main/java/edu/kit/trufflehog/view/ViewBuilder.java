@@ -38,8 +38,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
 
-import javax.management.NotificationBroadcaster;
-
 import static edu.kit.trufflehog.Main.getPrimaryStage;
 
 /**
@@ -273,7 +271,6 @@ public class ViewBuilder {
         Notifications.create()
                 .title("Program started")
                 .text("Congrats, you just started TruffleHog. ")
-                .darkStyle()
-                .showWarning();
+                .showInformation();
     }
 }
