@@ -105,7 +105,6 @@ public class ViewBuilder {
         tableView.setEditable(true);
         tableView.setStyle("-fx-background-color:#000000");
 
-
         // Set up filter column
         TableColumn nameColumn = new TableColumn("Filter");
         nameColumn.setMinWidth(160);
@@ -128,7 +127,7 @@ public class ViewBuilder {
         activeColumn.setStyle("-fx-background-color:#000000");
 
         tableView.setItems(data);
-        tableView.setMinWidth(330);
+        tableView.setMinWidth(328);
 
         // Set up add button
         Button btnNew = new Button("New Filter");
