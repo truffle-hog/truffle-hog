@@ -33,7 +33,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import static edu.kit.trufflehog.Main.getPrimaryStage;
@@ -145,7 +145,7 @@ public class ViewBuilder {
         removeButton.setScaleX(0.8);
         removeButton.setScaleY(0.8);
 
-        Pane vBox = new Pane();
+        VBox vBox = new VBox();
 //        AnchorPane.setTopAnchor(anchorPane, 0d);
 //        AnchorPane.setLeftAnchor(anchorPane, 0d);
 //        AnchorPane.setRightAnchor(anchorPane, 0d);
