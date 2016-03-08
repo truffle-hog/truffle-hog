@@ -24,7 +24,4 @@
     <rowConstraints>
       <RowConstraints vgrow="ALWAYS" />
     </rowConstraints>
-   <children>
-      <AnchorPane prefHeight="210.0" prefWidth="330.0" />
-   </children>
 </fx:root>
