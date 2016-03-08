@@ -24,27 +24,19 @@ root {
     -fx-background-radius: 2;
 }
 
-.title_text {
-    -fx-fill: black;
-    -fx-opacity: 100%;
-    -fx-font-size: 130%;
-    -fx-font-weight: 130px;
-    -fx-font-family: monospace;
-}
-
-.body_text {
+.text {
     -fx-fill: white;
     -fx-opacity: 100%;
-    -fx-font-size: 130%;
-    -fx-font-weight: 130px;
+    -fx-font-size: 90%;
+    -fx-font-weight: 100;
     -fx-font-family: monospace;
 }
 
 .table-view {
     -fx-background-color:#000000;
-    -fx-opacity: 100%;
-    -fx-font-size: 100%;
-    -fx-font-weight: 100px;
-    -fx-font-family: monospace;
+}
+
+.table-column {
+    -fx-background-color:#000000;
 }
 
