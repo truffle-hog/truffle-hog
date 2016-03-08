@@ -1,3 +1,4 @@
+
 /*
  * This file is part of TruffleHog.
  *
@@ -33,7 +34,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import static edu.kit.trufflehog.Main.getPrimaryStage;
@@ -53,7 +54,9 @@ public class ViewBuilder {
     private OverlayViewController filterOverlayMenu;
     private OverlayViewController settingsOverlayMenu;
 
+    private boolean settingsButtonPressed = false;
     private boolean filterButtonPressed = false;
+    private boolean recordButtonPressed = false;
 
     public void build() {
         primaryStage = getPrimaryStage();
@@ -77,21 +80,17 @@ public class ViewBuilder {
         buildToolbar();
         buildGeneralStatisticsOverlay();
         buildNodeStatisticsOverlay();
+        buildSettingsOverlay();
         buildFilterMenuOverlay();
+        buildRecordOverlay();
     }
 
-    private void buildMenuOverlays() {
+    private void buildSettingsOverlay() {
         settingsOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
         mainViewController.getChildren().add(settingsOverlayMenu);
-        AnchorPane.setBottomAnchor(settingsOverlayMenu, 10d);
-        AnchorPane.setLeftAnchor(settingsOverlayMenu, 10d);
+        AnchorPane.setBottomAnchor(settingsOverlayMenu, 60d);
+        AnchorPane.setLeftAnchor(settingsOverlayMenu, 18d);
         settingsOverlayMenu.setVisible(false);
-
-        recordOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
-        mainViewController.getChildren().add(recordOverlayMenu);
-        AnchorPane.setBottomAnchor(recordOverlayMenu, 10d);
-        AnchorPane.setLeftAnchor(recordOverlayMenu, 10d);
-        recordOverlayMenu.setVisible(false);
     }
 
     private void buildFilterMenuOverlay() {
@@ -107,24 +106,21 @@ public class ViewBuilder {
         nameColumn.setMinWidth(158);
         tableView.getColumns().add(nameColumn);
         nameColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("name"));
-        nameColumn.setStyle("-fx-background-color:#000000");
 
         // Set up type column
         TableColumn typeColumn = new TableColumn("Type");
         typeColumn.setMinWidth(90);
         tableView.getColumns().add(typeColumn);
         typeColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("type"));
-        typeColumn.setStyle("-fx-background-color:#000000");
 
         // Set up active column
         TableColumn activeColumn = new TableColumn<>("Active");
         activeColumn.setMinWidth(80);
         tableView.getColumns().add(activeColumn);
         activeColumn.setCellFactory(p -> new CheckBoxTableCell());
-        activeColumn.setStyle("-fx-background-color:#000000");
 
         tableView.setItems(data);
-        tableView.setMinWidth(328);
+        tableView.setMinWidth(330);
 
         // Set up add button
         Button addButton = new ImageButton("add.png");
@@ -132,7 +128,6 @@ public class ViewBuilder {
             FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
             data.add(filterInput);
         });
-
         addButton.setScaleX(0.8);
         addButton.setScaleY(0.8);
 
@@ -145,27 +140,35 @@ public class ViewBuilder {
         removeButton.setScaleX(0.8);
         removeButton.setScaleY(0.8);
 
-        VBox vBox = new VBox();
-//        AnchorPane.setTopAnchor(anchorPane, 0d);
-//        AnchorPane.setLeftAnchor(anchorPane, 0d);
-//        AnchorPane.setRightAnchor(anchorPane, 0d);
-//        AnchorPane.setBottomAnchor(anchorPane, 0d);
+        // Set up components on overlay
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(tableView);
 
-        //anchorPane.setMaxHeight(210d);
-        vBox.setMaxSize(330, 210);
-        vBox.getChildren().addAll(tableView, addButton, removeButton);
-        filterOverlayMenu.getChildren().add(vBox);
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.getChildren().addAll(addButton, removeButton);
+        borderPane.setBottom(anchorPane);
 
-        // Set up overlay
+        AnchorPane.setBottomAnchor(addButton, 0d);
+        AnchorPane.setRightAnchor(addButton, 0d);
+        AnchorPane.setBottomAnchor(removeButton, 0d);
+        AnchorPane.setRightAnchor(removeButton, 30d);
+
+        filterOverlayMenu.getChildren().add(borderPane);
+
+        // Set up overlay on screen
         mainViewController.getChildren().add(filterOverlayMenu);
-
-        addButton.setLayoutX(200);
-        addButton.setLayoutY(200);
-
         AnchorPane.setBottomAnchor(filterOverlayMenu, 60d);
         AnchorPane.setLeftAnchor(filterOverlayMenu, 18d);
         filterOverlayMenu.setMaxSize(330d, 210d);
         filterOverlayMenu.setVisible(false);
+    }
+
+    private void buildRecordOverlay() {
+        recordOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
+        mainViewController.getChildren().add(recordOverlayMenu);
+        AnchorPane.setBottomAnchor(recordOverlayMenu, 60d);
+        AnchorPane.setLeftAnchor(recordOverlayMenu, 18d);
+        recordOverlayMenu.setVisible(false);
     }
 
     private void buildNodeStatisticsOverlay() {
@@ -232,7 +235,9 @@ public class ViewBuilder {
     private Button buildFilterButton() {
         Button filterButton = new ImageButton("filter.png");
         filterButton.setOnAction(event -> {
+            settingsOverlayMenu.setVisible(false);
             filterOverlayMenu.setVisible(!filterButtonPressed);
+            recordOverlayMenu.setVisible(false);
             filterButtonPressed = !filterButtonPressed;
         });
 
@@ -246,6 +251,13 @@ public class ViewBuilder {
 
     private Button buildRecordButton() {
         ImageButton recordButton = new ImageButton("record.png");
+
+        recordButton.setOnAction(event -> {
+            settingsOverlayMenu.setVisible(false);
+            filterOverlayMenu.setVisible(false);
+            recordOverlayMenu.setVisible(!recordButtonPressed);
+            recordButtonPressed = !recordButtonPressed;
+        });
 
         recordButton.setScaleX(0.8);
         recordButton.setScaleY(0.8);
