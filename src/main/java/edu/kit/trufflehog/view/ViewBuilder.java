@@ -36,6 +36,9 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.controlsfx.control.Notifications;
+
+import javax.management.NotificationBroadcaster;
 
 import static edu.kit.trufflehog.Main.getPrimaryStage;
 
@@ -83,6 +86,7 @@ public class ViewBuilder {
         buildSettingsOverlay();
         buildFilterMenuOverlay();
         buildRecordOverlay();
+        startNotification();
     }
 
     private void buildSettingsOverlay() {
@@ -263,5 +267,13 @@ public class ViewBuilder {
         recordButton.setScaleY(0.8);
 
         return recordButton;
+    }
+
+    private void startNotification() {
+        Notifications.create()
+                .title("Program started")
+                .text("Congrats, you just started TruffleHog. ")
+                .darkStyle()
+                .showWarning();
     }
 }
