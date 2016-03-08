@@ -102,7 +102,7 @@ public class ViewBuilder {
 
         // Set up filter column
         TableColumn nameColumn = new TableColumn("Filter");
-        nameColumn.setMinWidth(160);
+        nameColumn.setMinWidth(158);
         tableView.getColumns().add(nameColumn);
         nameColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("name"));
 
