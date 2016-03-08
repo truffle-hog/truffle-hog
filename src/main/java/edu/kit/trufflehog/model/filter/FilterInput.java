@@ -24,6 +24,23 @@ import java.util.List;
 /**
  * <p>
  *     The FilterInput class contains the data necessary to create a filter. From this class a filter can be created.
+ *     That means the following:
+ *     <ul>
+ *         <li>
+ *             Name: The name of the filter. It has to be unique.
+ *         </li>
+ *         <li>
+ *             Type: The type of the filter. A filter can either be a whitelist or a blacklist, that means all nodes
+ *             matched by the filter either count as safe (whitelist) or unsafe (blacklist).
+ *         </li>
+ *         <li>
+ *             Rules: The rules of the filter define what the filter matches. These are regular expressions matching
+ *             IP addresses, MAC addresses and more.
+ *         </li>
+ *         <li>
+ *             Color: The color of the filter determines what color a matched node should become.
+ *         </li>
+ *     </ul>
  * </p>
  *
  * @author Julian Brendl
@@ -31,6 +48,7 @@ import java.util.List;
  */
 public class FilterInput implements Serializable {
     private final String name;
+    private final FilterType type;
     private final List<String> rules;
     private final Color color;
 
@@ -38,20 +56,40 @@ public class FilterInput implements Serializable {
      * <p>
      *     Creates a new FilterInput object.
      * </p>
+     * <p>
+     *     <ul>
+     *         <li>
+     *             Name: The name of the filter. It has to be unique.
+     *         </li>
+     *         <li>
+     *             Type: The type of the filter. A filter can either be a whitelist or a blacklist, that means all nodes
+     *             matched by the filter either count as safe (whitelist) or unsafe (blacklist).
+     *         </li>
+     *         <li>
+     *             Rules: The rules of the filter define what the filter matches. These are regular expressions matching
+     *             IP addresses, MAC addresses and more.
+     *         </li>
+     *         <li>
+     *             Color: The color of the filter determines what color a matched node should become.
+     *         </li>
+     *     </ul>
+     * </p>
      *
      * @param name The name of this filter.
+     * @param type The type of this filter.
      * @param rules The rules that define this filter.
      * @param color The color that a node should become if it matches with the filter.
      */
-    public FilterInput(final String name, final List<String> rules, final Color color) {
+    public FilterInput(final String name, final FilterType type, final List<String> rules, final Color color) {
         this.name = name;
+        this.type = type;
         this.rules = rules;
         this.color = color;
     }
 
     /**
      * <p>
-     *     Gets the name of this filter.
+     *     Gets the name of this filter. It has to be unique.
      * </p>
      *
      * @return the name of this filter.
@@ -62,7 +100,20 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
-     *     Gets the set of rules for this filter.
+     *     Gets the type of this filter. A filter can either be a whitelist or a blacklist, that means all nodes
+     *     matched by the filter either count as safe (whitelist) or unsafe (blacklist).
+     * </p>
+     *
+     * @return The type of this filter.
+     */
+    public FilterType getType() {
+        return type;
+    }
+
+    /**
+     * <p>
+     *     Gets the set of rules for this filter. The rules of the filter define what the filter matches. These are
+     *     regular expressions matching IP addresses, MAC addresses and more.
      * </p>
      *
      * @return the set of rules for this filter.
@@ -73,7 +124,8 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
-     *     Gets the color for this filter.
+     *     Gets the color for this filter. The color of the filter determines what color a matched node should
+     *     become.
      * </p>
      *
      * @return the color for this filter.

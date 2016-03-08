@@ -17,9 +17,17 @@
 
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.FilterType;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -37,6 +45,9 @@ import static edu.kit.trufflehog.Main.getPrimaryStage;
  * @version 1.0
  */
 public class ViewBuilder {
+    private Stage primaryStage;
+    private MainViewController mainViewController;
+
     private OverlayViewController recordOverlayMenu;
     private OverlayViewController filterOverlayMenu;
     private OverlayViewController settingsOverlayMenu;
@@ -44,9 +55,14 @@ public class ViewBuilder {
     private boolean filterButtonPressed = false;
 
     public void build() {
-        Stage primaryStage = getPrimaryStage();
-        MainViewController mainViewController = new MainViewController("main_view.fxml");
+        primaryStage = getPrimaryStage();
+        mainViewController = new MainViewController("main_view.fxml");
+
+        // Set up scene
         Scene mainScene = new Scene(mainViewController);
+        mainScene.getStylesheets().add("@scrollbar.css");
+
+
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
 
@@ -59,28 +75,18 @@ public class ViewBuilder {
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
 
-        buildToolbar(primaryStage, mainViewController);
-        buildGeneralStatisticsOverlay(mainViewController);
-        buildNodeStatisticsOverlay(mainViewController);
-        buildMenuOverlays(mainViewController);
+        buildToolbar();
+        buildGeneralStatisticsOverlay();
+        buildNodeStatisticsOverlay();
+        buildFilterMenuOverlay();
     }
 
-    private void buildMenuOverlays(MainViewController mainViewController) {
+    private void buildMenuOverlays() {
         settingsOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
-        MainToolBarController toolBarController = new MainToolBarController("main_toolbar.fxml", new ImageButton("filter.png"));
-        settingsOverlayMenu.getChildren().add(toolBarController);
-        AnchorPane.setBottomAnchor(toolBarController, 10d);
-        AnchorPane.setLeftAnchor(toolBarController, 10d);
         mainViewController.getChildren().add(settingsOverlayMenu);
         AnchorPane.setBottomAnchor(settingsOverlayMenu, 10d);
         AnchorPane.setLeftAnchor(settingsOverlayMenu, 10d);
         settingsOverlayMenu.setVisible(false);
-
-        filterOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
-        mainViewController.getChildren().add(filterOverlayMenu);
-        AnchorPane.setBottomAnchor(filterOverlayMenu, 65d);
-        AnchorPane.setLeftAnchor(filterOverlayMenu, 20d);
-        filterOverlayMenu.setVisible(false);
 
         recordOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
         mainViewController.getChildren().add(recordOverlayMenu);
@@ -89,7 +95,62 @@ public class ViewBuilder {
         recordOverlayMenu.setVisible(false);
     }
 
-    private void buildNodeStatisticsOverlay(MainViewController mainViewController) {
+    private void buildFilterMenuOverlay() {
+        filterOverlayMenu = new OverlayViewController("filter_menu_overlay.fxml");
+        //filterOverlayMenu.getStylesheets().add("@scrollbar.css");
+        ObservableList<FilterInput> data = FXCollections.observableArrayList();
+
+        // Set up table view
+        TableView tableView = new TableView();
+        tableView.setEditable(true);
+        tableView.setStyle("-fx-background-color:#000000");
+
+
+        // Set up filter column
+        TableColumn nameColumn = new TableColumn("Filter");
+        nameColumn.setMinWidth(160);
+        tableView.getColumns().add(nameColumn);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("name"));
+        nameColumn.setStyle("-fx-background-color:#000000");
+
+        // Set up type column
+        TableColumn typeColumn = new TableColumn("Type");
+        typeColumn.setMinWidth(90);
+        tableView.getColumns().add(typeColumn);
+        typeColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("type"));
+        typeColumn.setStyle("-fx-background-color:#000000");
+
+        // Set up active column
+        TableColumn activeColumn = new TableColumn<>("Active");
+        activeColumn.setMinWidth(80);
+        tableView.getColumns().add(activeColumn);
+        activeColumn.setCellFactory(p -> new CheckBoxTableCell());
+        activeColumn.setStyle("-fx-background-color:#000000");
+
+        tableView.setItems(data);
+        tableView.setMinWidth(330);
+
+        // Set up add button
+        Button btnNew = new Button("New Filter");
+        btnNew.setOnAction(number -> {
+            FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
+            data.add(filterInput);
+        });
+
+        // Set up remove button
+
+
+
+        filterOverlayMenu.getChildren().addAll(tableView, btnNew);
+
+        // Set
+        mainViewController.getChildren().add(filterOverlayMenu);
+        AnchorPane.setBottomAnchor(filterOverlayMenu, 60d);
+        AnchorPane.setLeftAnchor(filterOverlayMenu, 18d);
+        filterOverlayMenu.setVisible(false);
+    }
+
+    private void buildNodeStatisticsOverlay() {
         OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
         mainViewController.getChildren().add(nodeStatisticsOverlay);
         AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
@@ -97,26 +158,26 @@ public class ViewBuilder {
         nodeStatisticsOverlay.setVisible(false);
     }
 
-    private void buildGeneralStatisticsOverlay(MainViewController mainViewController) {
+    private void buildGeneralStatisticsOverlay() {
         OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
         mainViewController.getChildren().add(generalStatisticsOverlay);
         AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
     }
 
-    private void buildToolbar(Stage primaryStage, MainViewController mainViewController) {
-        Button settingsButton = buildSettingsButton(primaryStage);
-        Button filterButton = buildFilterButton(primaryStage);
+    private void buildToolbar() {
+        Button settingsButton = buildSettingsButton();
+        Button filterButton = buildFilterButton();
         Button recordButton = buildRecordButton();
 
         MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml", settingsButton,
                 filterButton, recordButton);
         mainViewController.getChildren().add(mainToolBarController);
-        AnchorPane.setBottomAnchor(mainToolBarController, 10d);
-        AnchorPane.setLeftAnchor(mainToolBarController, 10d);
+        AnchorPane.setBottomAnchor(mainToolBarController, 5d);
+        AnchorPane.setLeftAnchor(mainToolBarController, 5d);
     }
 
-    private Button buildSettingsButton(Stage primaryStage) {
+    private Button buildSettingsButton() {
         Button settingsButton = new ImageButton("gear.png");
         settingsButton.setOnAction(event -> {
             Stage settingsStage = new Stage();
@@ -144,20 +205,33 @@ public class ViewBuilder {
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN),
                 settingsButton::fire);
 
+        settingsButton.setScaleX(0.8);
+        settingsButton.setScaleY(0.8);
+
         return settingsButton;
     }
 
-    private Button buildFilterButton(Stage  stage) {
+    private Button buildFilterButton() {
         Button filterButton = new ImageButton("filter.png");
         filterButton.setOnAction(event -> {
             filterOverlayMenu.setVisible(!filterButtonPressed);
             filterButtonPressed = !filterButtonPressed;
         });
 
+        filterButton.setScaleX(0.8);
+        filterButton.setScaleY(0.8);
+        filterButton.setMaxSize(20, 20);
+        filterButton.setMinSize(20, 20);
+
         return filterButton;
     }
 
     private Button buildRecordButton() {
-        return new ImageButton("record.png");
+        ImageButton recordButton = new ImageButton("record.png");
+
+        recordButton.setScaleX(0.8);
+        recordButton.setScaleY(0.8);
+
+        return recordButton;
     }
 }

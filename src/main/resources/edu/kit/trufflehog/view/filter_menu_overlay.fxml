@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<fx:root opacity="0.5" prefHeight="210.0" prefWidth="330.0" styleClass="overlaybackground" type="GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <stylesheets>
+        <URL value="@filter_menu_overlay.css" />
+        <URL value="@scrollbar.css" />
+    </stylesheets>
+    <columnConstraints>
+        <ColumnConstraints />
+      <ColumnConstraints hgrow="ALWAYS" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+      <RowConstraints />
+      <RowConstraints vgrow="ALWAYS" />
+    </rowConstraints>
+   <children>
+      <AnchorPane opacity="0.56" prefHeight="241.0" prefWidth="315.0" stylesheets="@filter_menu_overlay.css" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <styleClass>
+            <String fx:value="overlaybackground" />
+            <String fx:value="body_text" />
+         </styleClass>
+      </AnchorPane>
+   </children>
+
+</fx:root>
