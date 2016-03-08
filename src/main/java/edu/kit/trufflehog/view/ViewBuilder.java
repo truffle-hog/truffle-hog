@@ -20,6 +20,7 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterType;
+import eu.hansolo.enzo.notification.Notification;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -36,7 +37,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.controlsfx.control.Notifications;
 
 import static edu.kit.trufflehog.Main.getPrimaryStage;
 
@@ -268,9 +268,10 @@ public class ViewBuilder {
     }
 
     private void startNotification() {
-        Notifications.create()
-                .title("Program started")
-                .text("Congrats, you just started TruffleHog. ")
-                .showInformation();
+//        Notifications.create()
+//                .title("Program started")
+//                .text("Congrats, you just started TruffleHog. ")
+//                .showInformation();
+        Notification.Notifier.INSTANCE.notifyInfo("Program started", "Congrats, you just started TruffleHog.");
     }
 }
