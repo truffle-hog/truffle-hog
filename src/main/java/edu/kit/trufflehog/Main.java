@@ -74,7 +74,7 @@ public class Main extends Application {
 	/**
 	 * JavaFX start method. This method mainly initializes the GUI-part of the application.
 	 *
-	 * @param primaryStage supplied by system
+	 * @param primaryStage Supplied by system
      */
 	@Override
 	public void start(Stage primaryStage) {

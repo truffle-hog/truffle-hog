@@ -1,3 +1,4 @@
+
 /*
  * This file is part of TruffleHog.
  *
@@ -17,6 +18,7 @@
 
 .menu-bar {
     -fx-background-color: #282C34;
+    -fx-opacity: 100;
 }
 
 .menu {
