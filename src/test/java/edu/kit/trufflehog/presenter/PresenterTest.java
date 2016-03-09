@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.presenter;
 
+import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class PresenterTest {
      */
     @Before
     public void setUp() throws Exception {
-        presenter = Presenter.createPresenter();
+        presenter = new Presenter(new Stage());
     }
 
     /**
@@ -38,15 +39,5 @@ public class PresenterTest {
     @After
     public void tearDown() throws Exception {
         presenter = null;
-    }
-
-    /**
-     * Checks if the presenter singleton pattern is implemented correctly.
-     * @throws Exception
-     */
-    @Test
-    public void testSingleton() throws Exception {
-        Presenter presenter2 = Presenter.createPresenter();
-        assertEquals(presenter, presenter2);
     }
 }

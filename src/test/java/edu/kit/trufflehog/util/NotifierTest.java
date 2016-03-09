@@ -9,7 +9,10 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Created by Infinity on 11.02.2016.
+ * <p>
+ *     This class tests the Notifier.
+ * </p>
+ * @author Mark Giraud
  */
 public class NotifierTest {
 

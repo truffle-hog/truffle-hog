@@ -21,13 +21,11 @@ import java.io.IOException;
  *
  * @param <I> The type of interaction to be used in the ViewController
  */
-public abstract class AnchorPaneController<I extends IInteraction> extends
-        AnchorPane implements IViewController<I> {
+public abstract class AnchorPaneController<I extends IInteraction> extends AnchorPane implements IViewController<I> {
 
     public AnchorPaneController(String fxmlFile) {
 
-        final FXMLLoader fxmlLoader =
-                new FXMLLoader(getClass().getResource(fxmlFile));
+        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
@@ -39,30 +37,25 @@ public abstract class AnchorPaneController<I extends IInteraction> extends
 
     }
 
-    /** The wrapped instance of view controller notifier. **/
+    /**
+     * <p>
+     *     The wrapped instance of view controller notifier.
+     * </p>
+     */
     private final INotifier<IUserCommand> viewControllerNotifier =
             new ViewControllerNotifier();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean addListener(final IListener<IUserCommand> listener) {
 
         return viewControllerNotifier.addListener(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean removeListener(final IListener<IUserCommand> listener) {
         return viewControllerNotifier.removeListener(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void notifyListeners(final IUserCommand message) {
         viewControllerNotifier.notifyListeners(message);

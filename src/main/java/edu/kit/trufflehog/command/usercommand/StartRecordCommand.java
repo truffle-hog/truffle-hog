@@ -48,4 +48,10 @@ public class StartRecordCommand implements IUserCommand {
 
         networkDevice.record(network, networkTape, 20);
     }
+
+    @Override
+    public void setSelection(Object selection) {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
+    }
 }

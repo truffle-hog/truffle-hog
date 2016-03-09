@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
-import edu.kit.trufflehog.model.filter.Filter;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import edu.kit.trufflehog.util.IListener;
 import org.junit.After;
@@ -13,8 +13,8 @@ import org.mockito.ArgumentCaptor;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * <p>
@@ -31,15 +31,15 @@ import static org.mockito.Mockito.*;
 public class UnixSocketReceiverTest {
 
     UnixSocketReceiver receiver;
-    List<Filter> mockedFilterList;
+    IFilter mockedFilter;
     Thread testRunner;
     IListener<ITruffleCommand> mockedListener;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
-        mockedFilterList = new LinkedList<>();
-        receiver = new UnixSocketReceiver(mock(INetworkWritingPort.class), mockedFilterList);
+        mockedFilter = mock(IFilter.class);
+        receiver = new UnixSocketReceiver(mock(INetworkWritingPort.class), mockedFilter);
 
         mockedListener = (IListener<ITruffleCommand>) mock(IListener.class);
         receiver.addListener(mockedListener);
@@ -52,7 +52,7 @@ public class UnixSocketReceiverTest {
     public void tearDown() throws Exception {
         testRunner.interrupt();
 
-        mockedFilterList = null;
+        mockedFilter = null;
         receiver = null;
         testRunner = null;
     }
@@ -74,7 +74,7 @@ public class UnixSocketReceiverTest {
      *
      * @throws Exception
      */
-    //@Ignore
+    @Ignore
     @Test
     public void testReceiver() throws Exception {
 

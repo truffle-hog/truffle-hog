@@ -30,14 +30,23 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
  */
 public class NodeSelectionCommand implements IUserCommand<PickedState<INode>> {
 
+    // TODO put empty pickedState
+    private PickedState<INode> pickedState;
 
     @Override
     public <S extends PickedState<INode>> void setSelection(S selection) {
+
+        pickedState = selection;
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
     public void execute() {
+
+        pickedState.getPicked().stream().forEach(node -> {
+            //TODO: Do stuff on nodes
+        });
+
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 }

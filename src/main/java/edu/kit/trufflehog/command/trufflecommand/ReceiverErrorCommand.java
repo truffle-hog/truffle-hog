@@ -9,7 +9,7 @@ public class ReceiverErrorCommand implements ITruffleCommand {
 
     final String message;
 
-    public ReceiverErrorCommand(String message) { //TODO replace the String with a language specific property?
+    public ReceiverErrorCommand(final String message) { //TODO replace the String with a language specific property?
         this.message = message;
     }
 

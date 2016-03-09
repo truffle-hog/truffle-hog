@@ -2,7 +2,7 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.SettingsInteraction;
-import edu.kit.trufflehog.view.controllers.BorderPaneController;
+import edu.kit.trufflehog.view.controllers.TabPaneController;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -13,11 +13,13 @@ import java.util.Map;
  *     interaction with the settings.
  * </p>
  */
-public class SettingsViewController extends BorderPaneController<SettingsInteraction> {
-
-	/** The commands that are mapped to their interactions. **/
-    private final Map<SettingsInteraction, IUserCommand> interactionMap =
-            new EnumMap<>(SettingsInteraction.class);
+public class SettingsViewController extends TabPaneController<SettingsInteraction> {
+    /**
+     * <p>
+     *     The commands that are mapped to their interactions.
+     * </p>
+     */
+    private final Map<SettingsInteraction, IUserCommand> interactionMap = new EnumMap<>(SettingsInteraction.class);
 
     /**
      * <p>
@@ -25,10 +27,10 @@ public class SettingsViewController extends BorderPaneController<SettingsInterac
      *     The fxml file has to be in the same namespace as the
      *     SettingsViewController.
      * </p>
+     *
      * @param fxmlFileName the name of the fxml file to be loaded
      */
     public SettingsViewController(final String fxmlFileName) {
-
         super(fxmlFileName);
     }
 
@@ -36,10 +38,7 @@ public class SettingsViewController extends BorderPaneController<SettingsInterac
      * {@inheritDoc}
      */
     @Override
-    public final void addCommand(final SettingsInteraction interactor, final
-    IUserCommand
-            command) {
-
+    public final void addCommand(final SettingsInteraction interactor, final IUserCommand command) {
         interactionMap.put(interactor, command);
     }
 }

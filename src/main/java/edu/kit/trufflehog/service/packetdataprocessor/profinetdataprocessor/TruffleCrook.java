@@ -1,11 +1,8 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
-import com.sun.istack.internal.NotNull;
 import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
-import edu.kit.trufflehog.model.filter.Filter;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
-
-import java.util.List;
 
 /**
  * Created by Hoehler on 04.03.2016.
@@ -13,15 +10,13 @@ import java.util.List;
  */
 public class TruffleCrook extends TruffleReceiver {
     private final INetworkWritingPort networkWritingPort;
-    private final List<Filter> filters;
     private long lastCreation = 0;
 
     private long[] addresses;
     private int maxAddresses = 10;
 
-    public TruffleCrook(INetworkWritingPort writingPort, List<Filter> filterList) {
+    public TruffleCrook(INetworkWritingPort writingPort, IFilter filter) {
         networkWritingPort = writingPort;
-        filters = filterList;
         init();
     }
 
@@ -47,7 +42,7 @@ public class TruffleCrook extends TruffleReceiver {
                     }
 
                     if (truffle != null) {
-                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filters));
+                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, node -> System.out.println("Dummy filter")));
                     }
                 } catch (Exception e) {
                     System.out.println(e.getMessage());

@@ -1,17 +1,32 @@
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package edu.kit.trufflehog;
 
 import edu.kit.trufflehog.presenter.Presenter;
-import edu.kit.trufflehog.view.MainViewController;
-import edu.kit.trufflehog.view.RootWindowController;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
 
-import javax.management.InstanceAlreadyExistsException;
-// TODO below
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.net.URL;
 
 /**
  * <p>
@@ -19,11 +34,7 @@ import javax.management.InstanceAlreadyExistsException;
  * </p>
  */
 public class Main extends Application {
-	private static Stage primaryStage;
-	private Presenter presenter;
-
-	// TODO below
-	// private static final Logger logger = LogManager.getLogger(Main.class);
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();
 
 	/**
 	 * <p>
@@ -33,6 +44,19 @@ public class Main extends Application {
      * @param args command line arguments
      */
 	public static void main(String[] args) {
+        // Set docking icon on mac
+        String osName = System.getProperty("os.name");
+        if (osName.toLowerCase().contains("mac")) {
+            try {
+                URL iconURL = Main.class.getResource(File.separator + "edu" + File.separator + "kit" + File.separator
+                        + "trufflehog" + File.separator + "view" + File.separator +"icon.png");
+                Image image = new ImageIcon(iconURL).getImage();
+                com.apple.eawt.Application.getApplication().setDockIconImage(image);
+            } catch (Exception e) {
+                logger.error("Unable to set docking icon, probably not running on a mac", e);
+            }
+        }
+
 		launch(args);
 	}
 
@@ -54,9 +78,8 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 
 		// TODO horror
-		Main.primaryStage = primaryStage;
 		primaryStage.setTitle("TruffleHog");
-		this.presenter = Presenter.createPresenter();
+		final Presenter presenter = new Presenter(primaryStage);
 		presenter.present();
 	}
 
@@ -65,18 +88,7 @@ public class Main extends Application {
 	 */
 	@Override
 	public void stop() {
-
 		Platform.exit();
-        System.exit(0);
-	}
-
-	/**
-	 * Getter for the primary JavaFX stage supplied by the system for use by the {@link Presenter}. As there can
-	 * must only be one primaryStage it is used in a static context.
-	 *
-	 * @return primaryStage
-     */
-	public static Stage getPrimaryStage() {
-		return primaryStage;
+		System.exit(0);
 	}
 }

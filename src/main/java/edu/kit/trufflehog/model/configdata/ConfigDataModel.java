@@ -1,11 +1,28 @@
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
+import edu.kit.trufflehog.model.filter.FilterInput;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -20,9 +37,9 @@ import java.util.concurrent.ExecutorService;
  * @version 1.0
  */
 public class ConfigDataModel implements IConfigData {
-    private static final Logger logger = LogManager.getLogger(ConfigDataModel.class);
-
-    private IConfigDataModel<StringProperty> settingsDataModel;
+    private final IConfigDataModel<StringProperty> settingsDataModel;
+    private final FilterDataModel filterDataModel;
+    private final ExecutorService executorService;
 
     /**
      * <p>
@@ -33,8 +50,54 @@ public class ConfigDataModel implements IConfigData {
      * @param executorService The executor service used by TruffleHog to manage the multi-threading.
      * @throws NullPointerException Thrown when it was impossible to get config data for some reason.
      */
-    public ConfigDataModel(FileSystem fileSystem, ExecutorService executorService) throws NullPointerException{
-        settingsDataModel = new SettingsDataModel(fileSystem, executorService);
+    public ConfigDataModel(final FileSystem fileSystem, final ExecutorService executorService) throws NullPointerException{
+        this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
+        this.filterDataModel = new FilterDataModel(fileSystem);
+        this.executorService = executorService;
+    }
+
+    /**
+     * <p>
+     *     Updates a {@link FilterInput} entry in the database by deleting it and adding it again.
+     * </p>
+     *
+     * @param filterInput The {@link FilterInput} to update.
+     */
+    public void updateFilterInput(final FilterInput filterInput) {
+        executorService.submit(() -> filterDataModel.updateFilterInDatabase(filterInput));
+    }
+
+    /**
+     * <p>
+     *     Adds a {@link FilterInput} to the database.
+     * </p>
+     *
+     * @param filterInput The {@link FilterInput} to add to the database.
+     */
+    public void addFilterInput(final FilterInput filterInput) {
+        executorService.submit(() -> filterDataModel.addFilterToDatabase(filterInput));
+    }
+
+    /**
+     * <p>
+     *     Removes a {@link FilterInput} from the database.
+     * </p>
+     *
+     * @param filterInput The {@link FilterInput} to remove from the database.
+     */
+    public void removeFilterInput(final FilterInput filterInput) {
+        executorService.submit(() -> filterDataModel.removeFilterFromDatabase(filterInput));
+    }
+
+    /**
+     * <p>
+     *     Gets all loaded {@link FilterInput} objects. If none have been loaded yet, the method loads them first.
+     * </p>
+     *
+     * @return The list of loaded {@link FilterInput} objects.
+     */
+    public Map<String, FilterInput> getAllLoadedFilters() {
+        return filterDataModel.getAllFilters();
     }
 
     /**
@@ -44,25 +107,27 @@ public class ConfigDataModel implements IConfigData {
      */
     public void load() {
         settingsDataModel.load();
-        loadFilters();
-    }
-
-    /**
-     * <p>
-     *     Loads all filters found on the hard drive into memory.
-     * </p>
-     */
-    private void loadFilters() {
-
+        filterDataModel.load();
     }
 
     @Override
-    public StringProperty getSetting(Class typeClass, String key) {
+    public StringProperty getSetting(final Class typeClass, final String key) {
         return settingsDataModel.get(typeClass, key);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     *     The given name must be the same name as the name that is stored inside the name parameter of the
+     *     {@link FilterInput} object.
+     * </p>
+     *
+     * @param name The name that belongs to the FilterInput object that should be retrieved.
+     * @return The FilterInput object that has the matching name.
+     */
     @Override
-    public String getFilter(String key) {
-        return null;
+    public FilterInput getFilter(final String name) {
+        return filterDataModel.get(name);
     }
 }

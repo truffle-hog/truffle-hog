@@ -3,13 +3,14 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.command.trufflecommand.ReceiverErrorCommand;
-import edu.kit.trufflehog.model.filter.Filter;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * <p>
@@ -18,13 +19,12 @@ import java.util.concurrent.*;
  * </p>
  *
  * @author Mark Giraud
- * @author Jan Hermes
  * @version 0.1
  */
 public class UnixSocketReceiver extends TruffleReceiver {
 
     private final INetworkWritingPort networkWritingPort;
-    private final List<Filter> filters;
+    private final IFilter filter;
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private final Logger logger = LogManager.getLogger();
 
@@ -40,9 +40,9 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *     Creates the UnixSocketReceiver.
      * </p>
      */
-    public UnixSocketReceiver(INetworkWritingPort writingPort, List<Filter> filters) {
-        this.networkWritingPort = writingPort;
-        this.filters = filters;
+    public UnixSocketReceiver(final INetworkWritingPort networkWritingPort, final IFilter filter) {
+        this.networkWritingPort = networkWritingPort;
+        this.filter = filter;
     }
 
     /**
@@ -72,7 +72,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                     final Truffle truffle = getTruffle();
 
                     if (truffle != null) {
-                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filters));
+                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filter));
                     }
                 } catch (InterruptedException e) {
                     logger.debug("UnixSocketReceiver interrupted. Exiting...");

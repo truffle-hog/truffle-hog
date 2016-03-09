@@ -41,7 +41,7 @@ public class CommandQueueManager {
      *
      * @param queue The {@link ICommandQueue} to add.
      */
-    protected void registerQueue(ICommandQueue queue) {
+    protected void registerQueue(final ICommandQueue queue) {
         queues.add(queue);
         registeredQueues++;
     }
@@ -55,14 +55,16 @@ public class CommandQueueManager {
      *     This method gets the next non empty {@link ICommandQueue}. If there are multiple queues registered
      *     the queues are cycled each call until every queue was returned at least once.
      *     If all queues are empty this method blocks, until one of the queues receives an element.
-     * </p>fix
+     * </p>
      * @return The next command queue. Returns null if no queues are registered.
      * @throws InterruptedException
      */
     public synchronized ICommandQueue getNextQueue() throws InterruptedException {
 
+        //TODO: Profile and optimize?
+
         if (registeredQueues == 0) {
-            // TODO change to an empty Queue that is returned...
+            //TODO: return empty queue
             return null;
         }
 
@@ -82,9 +84,8 @@ public class CommandQueueManager {
         }
 
         // next time we want a different queue if other queues have elements in them
-        if (availableElementQueue.size() != 1) {
+        if (availableElementQueue.size() != 1)
             currentQueue = (currentQueue + 1) % registeredQueues;
-        }
 
         return current;
     }

@@ -1,6 +1,6 @@
 package edu.kit.trufflehog.command.usercommand;
 
-import edu.kit.trufflehog.model.filter.Filter;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
 
 import java.util.List;
@@ -10,11 +10,10 @@ import java.util.List;
  *     Command used to run filters on a graph. Can be used to update the graph after filter preferences have changed.
  * </p>
  */
-public class UpdateFilterCommand implements IUserCommand {
+public class UpdateFilterCommand implements IUserCommand<Void> {
 
-    // TODO make those final and not null as default!!!!!
-    private INetworkWritingPort network = null;
-    private List<Filter> filterList = null;
+    private final INetworkWritingPort network;
+    private final List<IFilter> filterList;
 
     /**
      * <p>
@@ -23,7 +22,7 @@ public class UpdateFilterCommand implements IUserCommand {
      * @param port {@link INetworkWritingPort} to write data to
      * @param filters List of filters to check
      */
-    UpdateFilterCommand(INetworkWritingPort port, List<Filter> filters) {
+    UpdateFilterCommand(final INetworkWritingPort port, final List<IFilter> filters) {
         network = port;
         filterList = filters;
     }
@@ -31,5 +30,10 @@ public class UpdateFilterCommand implements IUserCommand {
     @Override
     public void execute() {
 
+    }
+
+    @Override
+    public <S extends Void> void setSelection(S selection) {
+        throw new UnsupportedOperationException("Please stop!");
     }
 }

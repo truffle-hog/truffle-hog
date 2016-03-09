@@ -1,5 +1,23 @@
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package edu.kit.trufflehog.model.configdata;
 
+import edu.kit.trufflehog.model.filter.FilterInput;
 import javafx.beans.property.StringProperty;
 
 import java.util.Properties;
@@ -28,11 +46,11 @@ public interface IConfigData {
 
     /**
      * <p>
-     *     Gets the filter object that is mapped to the given key.
+     *     Gets the filter input object that is mapped to the given key.
      * </p>
      *
      * @param key The key that belongs to the filter that should be retrieved.
-     * @return The filter object that is mapped to the given key.
+     * @return The filter input object that is mapped to the given key.
      */
-    String getFilter(String key);
+    FilterInput getFilter(String key);
 }

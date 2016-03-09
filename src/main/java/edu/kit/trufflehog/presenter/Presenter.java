@@ -2,26 +2,24 @@ package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
+import edu.kit.trufflehog.model.FileSystem;
+import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.executor.TruffleExecutor;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.util.bindings.PlatformIntegerBinding;
 import edu.kit.trufflehog.view.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToolBar;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
@@ -30,86 +28,76 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static edu.kit.trufflehog.Main.getPrimaryStage;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * <p>
- *      The Presenter builds TruffleHog. It instantiates all necessary instances of classes, registers these instances
- *      with each other, distributes resources (parameters) to them etc. In other words it is the glue code of
- *      TruffleHog. There should always only be one instance of a Presenter around.
+ *     The Presenter builds TruffleHog. It instantiates all necessary instances of classes, registers these instances
+ *     with each other, distributes resources (parameters) to them etc. In other words it is the glue code of
+ *     TruffleHog. There should always only be one instance of a Presenter around.
  * </p>
  */
 public class Presenter {
-    private static final Logger logger = LogManager.getLogger(Presenter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static Presenter presenter;
-   // private final IConfigData configData;
-   // private final FileSystem fileSystem;
-   // private final ScheduledExecutorService executorService;
-
+    private final ConfigDataModel configDataModel;
+    private final FileSystem fileSystem;
+    private final ViewBuilder viewBuilder;
+    private final ScheduledExecutorService executorService;
+    private final Stage primaryStage;
     private INetworkViewPort liveViewPort;
     private INetworkViewPort viewPort;
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
-
     private INetwork liveNetwork;
     private INetworkTape tape;
-
-    /**
-     * <p>
-     *     Creates a new instance of a singleton Presenter or returns it if it was created before.
-     * </p>
-     *
-     *
-     * @return A new instance of the Presenter, if none already exists.
-     */
-    public static Presenter createPresenter() {
-        if (Presenter.presenter == null) {
-            Presenter.presenter = new Presenter();
-        }
-        return presenter;
-    }
 
     /**
      * <p>
      *     Creates a new instance of a Presenter.
      * </p>
      */
-    private Presenter() {
-/*        this.fileSystem = new FileSystem();
+    public Presenter(Stage primaryStage) {
+
+        this.primaryStage = primaryStage;
+
+        if (this.primaryStage == null) {
+            throw new NullPointerException("primary stage must not be null");
+        }
+
+        this.fileSystem = new FileSystem();
         this.executorService = new LoggedScheduledExecutor(10);
 
-        IConfigData configDataTemp;
+        ConfigDataModel configDataTemp;
         try {
             configDataTemp = new ConfigDataModel(fileSystem, executorService);
-        } catch (NullPointerException e ) {
+        } catch (NullPointerException e) {
             configDataTemp = null;
             logger.error("Unable to set config data model", e);
         }
-        configData = configDataTemp;*/
+        configDataModel = configDataTemp;
+
+        this.viewBuilder = new ViewBuilder(configDataModel, primaryStage);
     }
 
     /**
-     *  <p>
-     *      Present TruffleHog. Create all necessary objects, register them with each other, bind them, pass them the
-     *      resources they need ect.
-     *  </p>
+     * <p>
+     *     Present TruffleHog. Create all necessary objects, register them with each other, bind them, pass them the
+     *     resources they need ect.
+     * </p>
      */
     public void present() {
 
-        Platform.runLater(() -> {
-            initNetwork();
-            initGUI();
-        });
+        initNetwork();
+        viewBuilder.build();
     }
 
     private void initNetwork() {
 
-                // initialize the live network that will be writte on by the receiver commands
+        // initialize the live network that will be writte on by the receiver commands
 
         // TODO Ctor injection with the Ports that are within the networks
         liveNetwork = new LiveNetwork(new ConcurrentDirectedSparseGraph<>());
@@ -155,7 +143,8 @@ public class Presenter {
         //commandExecutorService.execute(commandExecutor);
 
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
-        final TruffleReceiver truffleReceiver = new UnixSocketReceiver(writingPortSwitch, Collections.emptyList());
+        // TODO change this to real filter
+        final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
         truffleFetchService.execute(truffleReceiver);
 
         truffleReceiver.connect();
@@ -176,113 +165,107 @@ public class Presenter {
         viewPort = viewPortSwitch;
     }
 
-
+    /*
     private void initGUI() {
 
-            Stage primaryStage = getPrimaryStage();
+        // setting up main window
+        MainViewController mainView = new MainViewController("main_view.fxml");
+        Scene mainScene = new Scene(mainView);
+        RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene);
+        //primaryStage.setScene(mainScene);
+        //primaryStage.show();
+        rootWindow.show();
 
-            // setting up main window
-            MainViewController mainView = new MainViewController("main_view.fxml");
-            Scene mainScene = new Scene(mainView);
-            RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene);
-            //primaryStage.setScene(mainScene);
-            //primaryStage.show();
-            rootWindow.show();
+        final Node node = new NetworkViewScreen(viewPort, 50);
 
-       /* Platform.runLater(new Runnable() {
+        final AnchorPane pane = new AnchorPane();
 
-        });*/
-            final Node node = new NetworkViewScreen(viewPort, 50);
+        mainView.setCenter(pane);
 
-            final AnchorPane pane = new AnchorPane();
+        final Slider slider = new Slider(0, 100, 0);
+        slider.setTooltip(new Tooltip("replay"));
+        tape.getCurrentReadingFrameProperty().bindBidirectional(slider.valueProperty());
+        tape.getFrameCountProperty().bindBidirectional(slider.maxProperty());
 
-            mainView.setCenter(pane);
+        final ToggleButton liveButton = new ToggleButton("Live");
+        liveButton.setDisable(true);
+        final ToggleButton playButton = new ToggleButton("Play");
+        playButton.setDisable(false);
+        final ToggleButton stopButton = new ToggleButton("Stop");
+        stopButton.setDisable(false);
+        final ToggleButton recButton = new ToggleButton("Rec");
+        recButton.setDisable(false);
 
-            final Slider slider = new Slider(0, 100, 0);
-            slider.setTooltip(new Tooltip("replay"));
-            tape.getCurrentReadingFrameProperty().bindBidirectional(slider.valueProperty());
-            tape.getFrameCountProperty().bindBidirectional(slider.maxProperty());
-
-            final ToggleButton liveButton = new ToggleButton("Live");
+        liveButton.setOnAction(h -> {
+            networkDevice.goLive(liveNetwork, viewPortSwitch);
             liveButton.setDisable(true);
-            final ToggleButton playButton = new ToggleButton("Play");
-            playButton.setDisable(false);
-            final ToggleButton stopButton = new ToggleButton("Stop");
-            stopButton.setDisable(false);
-            final ToggleButton recButton = new ToggleButton("Rec");
-            recButton.setDisable(false);
+        });
 
-            liveButton.setOnAction(h -> {
-                networkDevice.goLive(liveNetwork, viewPortSwitch);
-                liveButton.setDisable(true);
-            });
+        playButton.setOnAction(handler -> {
+            networkDevice.play(tape, viewPortSwitch);
+            liveButton.setDisable(false);
+        });
 
-            playButton.setOnAction(handler -> {
-                networkDevice.play(tape, viewPortSwitch);
-                liveButton.setDisable(false);
-            });
+        final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);
+        recButton.setOnAction(h -> startRecordCommand.execute());
 
-            final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);
-            recButton.setOnAction(h -> {
-                startRecordCommand.execute();
-            });
+        slider.setStyle("-fx-background-color: transparent");
 
-            slider.setStyle("-fx-background-color: transparent");
+        final ToolBar toolBar = new ToolBar();
+        toolBar.getItems().add(stopButton);
+        toolBar.getItems().add(playButton);
+        toolBar.getItems().add(recButton);
+        toolBar.getItems().add(liveButton);
+        toolBar.setStyle("-fx-background-color: transparent");
+        //  toolBar.getItems().add(slider);
 
-            final ToolBar toolBar = new ToolBar();
-            toolBar.getItems().add(stopButton);
-            toolBar.getItems().add(playButton);
-            toolBar.getItems().add(recButton);
-            toolBar.getItems().add(liveButton);
-            toolBar.setStyle("-fx-background-color: transparent");
-            //  toolBar.getItems().add(slider);
+        final FlowPane flowPane = new FlowPane();
 
-            final FlowPane flowPane = new FlowPane();
+        flowPane.getChildren().addAll(toolBar, slider);
 
-            flowPane.getChildren().addAll(toolBar, slider);
+        mainView.setBottom(flowPane);
 
-            mainView.setBottom(flowPane);
-
-            pane.getChildren().add(node);
-            AnchorPane.setBottomAnchor(node, 0d);
-            AnchorPane.setTopAnchor(node, 0d);
-            AnchorPane.setLeftAnchor(node, 0d);
-            AnchorPane.setRightAnchor(node, 0d);
+        pane.getChildren().add(node);
+        AnchorPane.setBottomAnchor(node, 0d);
+        AnchorPane.setTopAnchor(node, 0d);
+        AnchorPane.setLeftAnchor(node, 0d);
+        AnchorPane.setRightAnchor(node, 0d);
 
 
-            // setting up general statistics overlay
-            OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
-            pane.getChildren().add(generalStatisticsOverlay);
-            AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
-            AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
+        // setting up general statistics overlay
+        OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
+        pane.getChildren().add(generalStatisticsOverlay);
+        AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
+        AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
 
-            // setting up menubar
-            MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml");
-            pane.getChildren().add(mainToolBarController);
+        // setting up menubar
+        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml");
+        pane.getChildren().add(mainToolBarController);
 
-            // setting up node statistics overlay
-            OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
+        // setting up node statistics overlay
+        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
 
-            nodeStatisticsOverlay.add(new Label("Max Connection Size"), 0, 0);
-            nodeStatisticsOverlay.add(new Label("Max Throughput"), 0, 1);
+        nodeStatisticsOverlay.add(new Label("Max Connection Size"), 0, 0);
+        nodeStatisticsOverlay.add(new Label("Max Throughput"), 0, 1);
 
-            final PlatformIntegerBinding maxConBinding = new PlatformIntegerBinding(viewPortSwitch.getMaxConnectionSizeProperty());
-            final PlatformIntegerBinding maxThroughBinding = new PlatformIntegerBinding(viewPortSwitch.getMaxThroughputProperty());
+        final PlatformIntegerBinding maxConBinding = new PlatformIntegerBinding(viewPortSwitch.getMaxConnectionSizeProperty());
+        final PlatformIntegerBinding maxThroughBinding = new PlatformIntegerBinding(viewPortSwitch.getMaxThroughputProperty());
 
-            final Label connectionSizeLabel = new Label();
-            connectionSizeLabel.textProperty().bind(maxConBinding.asString());
+        final Label connectionSizeLabel = new Label();
+        connectionSizeLabel.textProperty().bind(maxConBinding.asString());
 
-            final Label throughputLabel = new Label();
-            throughputLabel.textProperty().bind(maxThroughBinding.asString());
+        final Label throughputLabel = new Label();
+        throughputLabel.textProperty().bind(maxThroughBinding.asString());
 
-            nodeStatisticsOverlay.add(connectionSizeLabel, 1, 0);
-            nodeStatisticsOverlay.add(throughputLabel, 1, 1);
+        nodeStatisticsOverlay.add(connectionSizeLabel, 1, 0);
+        nodeStatisticsOverlay.add(throughputLabel, 1, 1);
 
 
 
-            pane.getChildren().add(nodeStatisticsOverlay);
-            AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
-            AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
+        pane.getChildren().add(nodeStatisticsOverlay);
+        AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
+        AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
 
     }
+    */
 }

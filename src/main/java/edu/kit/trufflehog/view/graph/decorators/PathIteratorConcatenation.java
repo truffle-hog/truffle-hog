@@ -63,5 +63,4 @@ final class PathIteratorConcatenation implements PathIterator {
         return current.currentSegment(coords);
     }
 
-
 }

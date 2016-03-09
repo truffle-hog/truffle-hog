@@ -1,0 +1,15 @@
+root {
+    display: block;
+}
+.overlaybackground {
+    -fx-background-color: #000000;
+    -fx-background-radius: 2;
+}
+
+.text {
+    -fx-fill: white;
+    -fx-opacity: 100%;
+    -fx-font-size: 130%;
+    -fx-font-weight: 100;
+    -fx-font-family: monospace;
+}

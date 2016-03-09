@@ -28,6 +28,7 @@ import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComp
 import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 
 import javax.swing.text.View;
 import javax.xml.soap.Node;
