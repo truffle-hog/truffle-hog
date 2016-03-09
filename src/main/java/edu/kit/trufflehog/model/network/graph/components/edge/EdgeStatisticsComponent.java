@@ -42,7 +42,7 @@ public class EdgeStatisticsComponent implements IComponent {
 
     @Override
     public String name() {
-        return "traffic info";
+        return "Traffic info";
     }
 
     @Override
@@ -64,11 +64,19 @@ public class EdgeStatisticsComponent implements IComponent {
 
     @Override
     public IComponent createDeepCopy(ICopyCreator copyCreator) {
+        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
         return copyCreator.createDeepCopy(this);
     }
 
     @Override
     public boolean update(IComponent instance, IUpdater updater) {
+        if (instance == null) throw new NullPointerException("instance must not be null!");
+        if (updater == null) throw new NullPointerException("updater must not be null!");
         return updater.update(this, instance);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return (o instanceof EdgeStatisticsComponent);
     }
 }

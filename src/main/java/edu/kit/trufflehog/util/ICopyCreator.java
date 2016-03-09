@@ -22,10 +22,10 @@ import edu.kit.trufflehog.model.network.NetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.*;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.model.network.recording.NetworkCopy;
 import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
 
@@ -52,7 +52,15 @@ public interface ICopyCreator {
 
     IComponent createDeepCopy(EdgeStatisticsComponent edgeStatisticsComponent);
 
+    IComponent createDeepCopy(StaticRendererComponent staticRendererComponent);
+
     IComponent createDeepCopy(ViewComponent viewComponent);
+
+    IComponent createDeepCopy(NodeRendererComponent nodeRendererComponent);
+
+    IComponent createDeepCopy(NodeStatisticsComponent nodeStatisticsComponent);
+
+    IComponent createDeepCopy(PacketDataLoggingComponent packetDataLoggingComponent);
 
     NetworkCopy createDeepCopy(LiveNetwork liveNetwork);
 

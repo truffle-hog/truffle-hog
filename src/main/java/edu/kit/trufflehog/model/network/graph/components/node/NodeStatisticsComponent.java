@@ -40,7 +40,7 @@ public class NodeStatisticsComponent implements IComponent {
 
     @Override
     public String name() {
-        return "traffic info";
+        return "Traffic info";
     }
 
     @Override
@@ -58,19 +58,19 @@ public class NodeStatisticsComponent implements IComponent {
 
     @Override
     public IComponent createDeepCopy(ICopyCreator copyCreator) {
-
-        // TODO externalise this logic in the copy creator
-        final IComponent copy = new NodeStatisticsComponent(getThroughput());
-
-        //logger.debug("Deep copy created: " + copy.toString());
-        return copy;
+        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
+        return copyCreator.createDeepCopy(this);
     }
 
     @Override
     public boolean update(IComponent instance, IUpdater updater) {
-
-
-
+        if (instance == null) throw new NullPointerException("instance must not be null!");
+        if (updater == null) throw new NullPointerException("updater must not be null!");
         return updater.update(this, instance);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return (o instanceof NodeStatisticsComponent);
     }
 }

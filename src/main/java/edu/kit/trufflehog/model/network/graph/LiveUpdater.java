@@ -21,7 +21,9 @@ import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComp
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 
 import java.time.Instant;
 
@@ -52,6 +54,17 @@ public class LiveUpdater implements IUpdater {
 
         nodeStatisticsComponent.incrementThroughput(1);
         return true;
+    }
+
+    @Override
+    public boolean update(NodeRendererComponent nodeRendererComponent, IComponent instance) {
+        //TODO does one need to update this?
+        return true;
+    }
+
+    @Override
+    public boolean update(PacketDataLoggingComponent packetDataLoggingComponent, IComponent instance) {
+        return false;
     }
 
     @Override

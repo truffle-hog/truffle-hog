@@ -19,4 +19,6 @@ public interface Updatable<T> {
      *              or no values changed
      */
     boolean update(T instance, IUpdater updater);
+
+    boolean equals(Object o);
 }
