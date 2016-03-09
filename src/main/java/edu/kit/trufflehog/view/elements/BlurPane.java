@@ -49,7 +49,8 @@ public class BlurPane extends StackPane {
             SnapshotParameters parameters = new SnapshotParameters();
             Point2D startPointInScene = this.localToScene(0, 0);
 
-            Rectangle2D toPaint = new Rectangle2D(startPointInScene.getX(), startPointInScene.getY(), getLayoutBounds().getWidth(), getLayoutBounds().getHeight());
+            Rectangle2D toPaint = new Rectangle2D(startPointInScene.getX(), startPointInScene.getY(),
+                    getLayoutBounds().getWidth(), getLayoutBounds().getHeight());
             parameters.setViewport(toPaint);
             WritableImage image = new WritableImage(100, 100);
             image = getScene().getRoot().snapshot(parameters, image);

@@ -25,6 +25,7 @@ import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -55,6 +56,7 @@ public class ViewBuilder {
     // View related variables
     private Stage primaryStage;
     private MainViewController mainViewController;
+    private AnchorPane primaryView;
 
     private OverlayViewController recordOverlayViewController;
     private OverlayViewController filterOverlayViewController;
@@ -84,13 +86,26 @@ public class ViewBuilder {
         loadFonts();
 
         primaryStage = getPrimaryStage();
-        mainViewController = new MainViewController("main_view.fxml");
+        primaryView = new AnchorPane();
+
+        MenuBar menuBar = buildMenuBar();
+
+        mainViewController = new MainViewController("fxml" + File.separator +"main_view.fxml");
+        mainViewController.getChildren().addAll(menuBar, primaryView);
+        AnchorPane.setRightAnchor(menuBar, 0d);
+        AnchorPane.setTopAnchor(menuBar, 0d);
+        AnchorPane.setLeftAnchor(menuBar, 0d);
+
+        AnchorPane.setLeftAnchor(primaryView, 0d);
+        AnchorPane.setRightAnchor(primaryView, 0d);
+        AnchorPane.setTopAnchor(primaryView, 20d);
+        AnchorPane.setBottomAnchor(primaryView, 0d);
 
         // Set up scene
         Scene mainScene = new Scene(mainViewController);
 
         primaryStage.setScene(mainScene);
-        primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
+        primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("images" + File.separator +"icon.png")));
         primaryStage.setOnCloseRequest(e -> Platform.exit());
 
         // Set min. dimensions
@@ -110,14 +125,23 @@ public class ViewBuilder {
         buildRecordOverlay();
     }
 
+    private MenuBar buildMenuBar() {
+        MenuBar menuBar = new MenuBar();
+        menuBar.getStylesheets().add("images" + File.separator + "menubar.css");
+        menuBar.setMaxHeight(20);
+        menuBar.setMinHeight(20);
+
+        return menuBar;
+    }
+
     /**
      * <p>
      *     Builds the settings overlay.
      * </p>
      */
     private void buildSettingsOverlay() {
-        settingsOverlayViewController = new OverlayViewController("local_settings_overlay.fxml");
-        mainViewController.getChildren().add(settingsOverlayViewController);
+        settingsOverlayViewController = new OverlayViewController("fxml" + File.separator + "local_settings_overlay.fxml");
+        primaryView.getChildren().add(settingsOverlayViewController);
         AnchorPane.setBottomAnchor(settingsOverlayViewController, 60d);
         AnchorPane.setLeftAnchor(settingsOverlayViewController, 18d);
         settingsOverlayViewController.setVisible(false);
@@ -139,7 +163,7 @@ public class ViewBuilder {
         filterOverlayViewController.getChildren().add(borderPane);
 
         // Set up overlay on screen
-        mainViewController.getChildren().add(filterOverlayViewController);
+        primaryView.getChildren().add(filterOverlayViewController);
         AnchorPane.setBottomAnchor(filterOverlayViewController, 60d);
         AnchorPane.setLeftAnchor(filterOverlayViewController, 18d);
         filterOverlayViewController.setMaxSize(330d, 210d);
@@ -152,8 +176,8 @@ public class ViewBuilder {
      * </p>
      */
     private void buildRecordOverlay() {
-        recordOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
-        mainViewController.getChildren().add(recordOverlayViewController);
+        recordOverlayViewController = new OverlayViewController("fxml" + File.separator + "node_statistics_overlay.fxml");
+        primaryView.getChildren().add(recordOverlayViewController);
         AnchorPane.setBottomAnchor(recordOverlayViewController, 60d);
         AnchorPane.setLeftAnchor(recordOverlayViewController, 18d);
         recordOverlayViewController.setVisible(false);
@@ -165,8 +189,9 @@ public class ViewBuilder {
      * </p>
      */
     private void buildNodeStatisticsOverlay() {
-        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
-        mainViewController.getChildren().add(nodeStatisticsOverlay);
+        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("fxml" + File.separator
+                + "node_statistics_overlay.fxml");
+        primaryView.getChildren().add(nodeStatisticsOverlay);
         AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
         nodeStatisticsOverlay.setVisible(false);
@@ -178,8 +203,9 @@ public class ViewBuilder {
      * </p>
      */
     private void buildGeneralStatisticsOverlay() {
-        OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
-        mainViewController.getChildren().add(generalStatisticsOverlay);
+        OverlayViewController generalStatisticsOverlay = new OverlayViewController("fxml" + File.separator
+                + "general_statistics_overlay.fxml");
+        primaryView.getChildren().add(generalStatisticsOverlay);
         AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
     }
@@ -194,9 +220,9 @@ public class ViewBuilder {
         Button filterButton = buildFilterButton();
         Button recordButton = buildRecordButton();
 
-        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml", settingsButton,
-                filterButton, recordButton);
-        mainViewController.getChildren().add(mainToolBarController);
+        MainToolBarController mainToolBarController = new MainToolBarController("fxml" + File.separator + "main_toolbar.fxml"
+                , settingsButton, filterButton, recordButton);
+        primaryView.getChildren().add(mainToolBarController);
         AnchorPane.setBottomAnchor(mainToolBarController, 5d);
         AnchorPane.setLeftAnchor(mainToolBarController, 5d);
     }
@@ -207,7 +233,7 @@ public class ViewBuilder {
      * </p>
      */
     private Button buildSettingsButton() {
-        Button settingsButton = new ImageButton(".." + File.separator + "gear.png");
+        Button settingsButton = new ImageButton(".." + File.separator + "images" + File.separator + "gear.png");
         settingsButton.setOnAction(event -> {
             settingsOverlayViewController.setVisible(!settingsOverlayViewController.isVisible());
 
@@ -258,7 +284,7 @@ public class ViewBuilder {
      * </p>
      */
     private Button buildFilterButton() {
-        Button filterButton = new ImageButton(".." + File.separator + "filter.png");
+        Button filterButton = new ImageButton(".." + File.separator + "images" + File.separator + "filter.png");
         filterButton.setOnAction(event -> {
             filterOverlayViewController.setVisible(!filterOverlayViewController.isVisible());
 
@@ -292,7 +318,7 @@ public class ViewBuilder {
      * </p>
      */
     private Button buildRecordButton() {
-        ImageButton recordButton = new ImageButton(".." + File.separator + "record.png");
+        ImageButton recordButton = new ImageButton(".." + File.separator + "images" + File.separator + "record.png");
 
         recordButton.setOnAction(event -> {
             recordOverlayViewController.setVisible(!recordOverlayViewController.isVisible());

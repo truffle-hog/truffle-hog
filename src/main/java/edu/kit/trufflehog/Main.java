@@ -51,7 +51,7 @@ public class Main extends Application {
         if (osName.toLowerCase().contains("mac")) {
             try {
                 URL iconURL = Main.class.getResource(File.separator + "edu" + File.separator + "kit" + File.separator
-                        + "trufflehog" + File.separator + "view" + File.separator + "icon.png");
+                        + "trufflehog" + File.separator + "view" + File.separator + "images"+ File.separator +"icon.png");
                 Image image = new ImageIcon(iconURL).getImage();
                 com.apple.eawt.Application.getApplication().setDockIconImage(image);
             } catch (Exception e) {

@@ -31,7 +31,6 @@ public class MainViewController extends AnchorPaneController<MainInteraction> {
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
     public MainViewController(final String fxmlFileName) {
-
         super(fxmlFileName);
     }
 
@@ -41,17 +40,11 @@ public class MainViewController extends AnchorPaneController<MainInteraction> {
      * </p>
      */
     public void onExit() {
-
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void addCommand(final MainInteraction interactor, final IUserCommand command) {
-
         interactionMap.put(interactor, command);
     }
 }
