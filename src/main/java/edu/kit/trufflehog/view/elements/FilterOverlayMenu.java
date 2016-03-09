@@ -17,9 +17,11 @@
 
 package edu.kit.trufflehog.view.elements;
 
+import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.view.OverlayViewController;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -33,28 +35,57 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * <p>
+ *     The FilterOverlayMenu contains all loaded filters. Through it the user can add and remove filters. Further more,
+ *     the added/removed/updated filters are automatically updated accordingly in the database.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
 public class FilterOverlayMenu {
-    private ObservableList<FilterInput> data = FXCollections.observableArrayList();
+    private ObservableList<FilterInput> data;
+    private ConfigDataModel configDataModel;
 
     /**
+     * <p>
+     *     Creates a new FilterOverlayMenu with a {@link ConfigDataModel} object. This is needed to access the database
+     *     in order to save/remove/update filters.
+     * </p>
      *
-     * @return
+     * @param configDataModel The {@link ConfigDataModel} object used to save/remove/update filters to the database.
+     */
+    public FilterOverlayMenu(ConfigDataModel configDataModel) {
+        this.configDataModel = configDataModel;
+        this.data = FXCollections.observableArrayList();
+
+        // Load existing filters from hard drive into filter menu
+        Map<String, FilterInput> filterInputMap = configDataModel.getAllLoadedFilters();
+        Collection<FilterInput> filterInputList = filterInputMap.values();
+        data.addAll(filterInputList);
+    }
+
+    /**
+     * <p>
+     *     Creates a new OverlayViewController.
+     * </p>
+     *
+     * @return The new OverlayViewController.
      */
     public OverlayViewController setUpOverlayViewController() {
         return new OverlayViewController("filter_menu_overlay.fxml");
     }
 
     /**
+     * <p>
+     *     Sets up the entire TableView with all its functionalities.
+     * </p>
      *
-     * @return
+     * @return The created TableView.
      */
     public TableView setUpTableView() {
         // Set up table view
@@ -82,8 +113,15 @@ public class FilterOverlayMenu {
         activeColumn.setCellFactory(tableColumn -> {
             final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
             checkBoxTableCell.setSelectedStateCallback(index -> {
-                FilterInput filterInput = (FilterInput) tableView.getItems().get(index);
-                return filterInput.getBooleanProperty();
+                final FilterInput filterInput = (FilterInput) tableView.getItems().get(index);
+                BooleanProperty booleanProperty = filterInput.getBooleanProperty();
+
+                // Make sure the filter is updated in the database when the active status changes
+                booleanProperty.addListener((observable, oldValue, newValue) -> {
+                    configDataModel.updateFilterInput(filterInput);
+                });
+
+                return booleanProperty;
             });
 
             return checkBoxTableCell;
@@ -92,12 +130,12 @@ public class FilterOverlayMenu {
         tableView.setItems(data);
         tableView.setMinWidth(330);
 
-        // Set select/deselect on mouseclick
+        // Set select/deselect on mouse click
         tableView.setRowFactory(tableViewLambda -> {
             final TableRow<FilterInput> row = new TableRow<>();
             row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
                 final int index = row.getIndex();
-                if (index >= 0 && index < tableView.getItems().size() && tableView.getSelectionModel().isSelected(index)  ) {
+                if (index >= 0 && index < tableView.getItems().size() && tableView.getSelectionModel().isSelected(index)) {
                     tableView.getSelectionModel().clearSelection();
                     event.consume();
                 }
@@ -109,18 +147,21 @@ public class FilterOverlayMenu {
     }
 
     /**
+     * <p>
+     *     Sets up the OverlayMenu with all buttons from the existing table view.
+     * </p>
      *
-     * @param tableView
-     * @return
+     * @param tableView The table view to put on the overlay menu.
+     * @return A {@link BorderPane} containing the full menu.
      */
     public BorderPane setUpMenu(TableView tableView) {
         // Set up add button
         Button addButton = new ImageButton(".." + File.separator + "add.png");
         addButton.setOnAction(actionEvent -> {
             FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
-            data.add(filterInput);
+            addFilter(filterInput);
             filterInput = new FilterInput("Filter B", FilterType.BLACKLIST, null, null);
-            data.add(filterInput);
+            addFilter(filterInput);
         });
         addButton.setScaleX(0.5);
         addButton.setScaleY(0.5);
@@ -130,6 +171,7 @@ public class FilterOverlayMenu {
         removeButton.setOnAction(actionEvent -> {
             FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             data.remove(filterInput);
+            configDataModel.removeFilterInput(filterInput);
         });
         removeButton.setScaleX(0.5);
         removeButton.setScaleY(0.5);
@@ -151,10 +193,14 @@ public class FilterOverlayMenu {
     }
 
     /**
+     * <p>
+     *     Add a filter to the table view.
+     * </p>
      *
-     * @param filterInput
+     * @param filterInput The {@link FilterInput} object to add to the table view.
      */
     public void addFilter(FilterInput filterInput) {
         data.add(filterInput);
+        configDataModel.addFilterInput(filterInput);
     }
 }

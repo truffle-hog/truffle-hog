@@ -2,7 +2,6 @@ package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
-import edu.kit.trufflehog.model.configdata.IConfigData;
 import edu.kit.trufflehog.view.ViewBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +19,7 @@ public class Presenter {
     private static final Logger logger = LogManager.getLogger(Presenter.class);
 
     private static Presenter presenter;
-    private final IConfigData configData;
+    private final ConfigDataModel configDataModel;
     private final FileSystem fileSystem;
     private final ViewBuilder viewBuilder;
     private final ScheduledExecutorService executorService;
@@ -47,16 +46,17 @@ public class Presenter {
     private Presenter() {
         this.fileSystem = new FileSystem();
         this.executorService = new LoggedScheduledExecutor(10);
-        this.viewBuilder = new ViewBuilder();
 
-        IConfigData configDataTemp;
+        ConfigDataModel configDataTemp;
         try {
             configDataTemp = new ConfigDataModel(fileSystem, executorService);
         } catch (NullPointerException e) {
             configDataTemp = null;
             logger.error("Unable to set config data model", e);
         }
-        configData = configDataTemp;
+        configDataModel = configDataTemp;
+
+        this.viewBuilder = new ViewBuilder(configDataModel);
     }
 
     /**

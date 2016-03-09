@@ -19,6 +19,7 @@
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.Main;
+import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import eu.hansolo.enzo.notification.Notification;
@@ -47,6 +48,10 @@ import static edu.kit.trufflehog.Main.getPrimaryStage;
  * @version 1.0
  */
 public class ViewBuilder {
+    // General vars
+    private ConfigDataModel configDataModel;
+
+    // View related variables
     private Stage primaryStage;
     private MainViewController mainViewController;
 
@@ -59,6 +64,10 @@ public class ViewBuilder {
     private boolean recordButtonPressed = false;
 
     private TableView tableView;
+
+    public ViewBuilder(ConfigDataModel configDataModel) {
+        this.configDataModel = configDataModel;
+    }
 
     public void build() {
         loadFonts();
@@ -100,7 +109,7 @@ public class ViewBuilder {
 
     private void buildFilterMenuOverlay() {
         // Build filter menu
-        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu();
+        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configDataModel);
         filterOverlayViewController = filterOverlayMenu.setUpOverlayViewController();
         tableView = filterOverlayMenu.setUpTableView();
         BorderPane borderPane = filterOverlayMenu.setUpMenu(tableView);
