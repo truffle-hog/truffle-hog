@@ -32,13 +32,24 @@
 
 <fx:root opacity="0.8" prefHeight="210.0" prefWidth="330.0" styleClass="overlaybackground" type="GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
-        <URL value="@filter_menu_overlay.css" />
-        <URL value="@scrollbar.css" />
+        <URL value="@local_settings_overlay.css" />
     </stylesheets>
     <columnConstraints>
-      <ColumnConstraints hgrow="ALWAYS" />
+        <ColumnConstraints hgrow="ALWAYS" />
     </columnConstraints>
     <rowConstraints>
-      <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints vgrow="ALWAYS" />
     </rowConstraints>
+   <children>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <TabPane prefHeight="211.0" prefWidth="330.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Untitled Tab 1" />
+                <Tab text="Untitled Tab 2" />
+              </tabs>
+            </TabPane>
+         </children>
+      </AnchorPane>
+   </children>
 </fx:root>

@@ -116,7 +116,7 @@ public class ViewBuilder {
      * </p>
      */
     private void buildSettingsOverlay() {
-        settingsOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
+        settingsOverlayViewController = new OverlayViewController("local_settings_overlay.fxml");
         mainViewController.getChildren().add(settingsOverlayViewController);
         AnchorPane.setBottomAnchor(settingsOverlayViewController, 60d);
         AnchorPane.setLeftAnchor(settingsOverlayViewController, 18d);
