@@ -36,9 +36,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
@@ -57,7 +57,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
     private final FileSystem fileSystem;
     private final ExecutorService executorService;
     private final File settingsFile;
-    private final Map<Class, Map<String, StringProperty>> settingsMap = new HashMap<>();
+    private final Map<Class, Map<String, StringProperty>> settingsMap = new ConcurrentHashMap<>();
 
     private static final String CONFIG_FILE_NAME = "system_config.xml";
 
@@ -227,7 +227,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
     private void addToMap(final Class typeClass, final String key, final String value) {
         Map<String, StringProperty> propertyMap = settingsMap.get(typeClass);
         if (propertyMap == null) {
-            propertyMap =  new HashMap<>();
+            propertyMap =  new ConcurrentHashMap<>();
             settingsMap.put(typeClass, propertyMap);
         }
 
@@ -251,9 +251,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      * @param oldValue The old value that should be updated.
      * @param newValue The new value, that should overwrite the old value.
      */
-    private synchronized void updateSettingsFile(final Class typeClass,
-                                                 final String key,
-                                                 final String oldValue,
+    private synchronized void updateSettingsFile(final Class typeClass, final String key, final String oldValue,
                                                  final String newValue) {
         // synchronized because this always runs in its own thread
 

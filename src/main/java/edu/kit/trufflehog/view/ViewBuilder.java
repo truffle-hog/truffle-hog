@@ -22,7 +22,6 @@ import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
@@ -106,7 +105,7 @@ public class ViewBuilder {
 
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
-        primaryStage.setOnCloseRequest(e -> Platform.exit());
+        primaryStage.setOnCloseRequest(e -> System.exit(0));
 
         // Set min. dimensions
         primaryStage.setMinWidth(720d);

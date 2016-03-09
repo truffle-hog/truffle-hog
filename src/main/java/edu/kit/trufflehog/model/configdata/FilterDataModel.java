@@ -161,7 +161,9 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      *
      * @param filterInput The {@link FilterInput} to add to the database.
      */
-    public void addFilterToDatabase(FilterInput filterInput) {
+    public synchronized void addFilterToDatabase(FilterInput filterInput) {
+        // Synchronized because it runs in its own thread
+
         // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to add filter to database, connection is null");
@@ -204,7 +206,9 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      *
      * @param filterInput The {@link FilterInput} to remove from the database.
      */
-    public void removeFilterFromDatabase(FilterInput filterInput) {
+    public synchronized void removeFilterFromDatabase(FilterInput filterInput) {
+        // Synchronized because it runs in its own thread
+
         // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to remove filter from database, connection is null");
