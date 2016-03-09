@@ -22,8 +22,7 @@ root {
 .overlaybackground {
     -fx-background-color: #000000;
     -fx-opacity: 80%;
-    -fx-background-radius: 2;
-}
+    -fx-background-radius: 2;  }
 
 .text {
     -fx-fill: white;
@@ -35,6 +34,15 @@ root {
 
 .table-view {
     -fx-background-color:#000000;
+    -fx-background-insets: 0, 0, 0;
+    -fx-padding: 1;
+    -fx-border-radius: 10 10 0 0;
+    -fx-background-radius: 10 10 0 0;
+    -fx-focus-color: transparent;
+}
+
+.table-view:focused{
+    -fx-focus-color: transparent;
 }
 
 .table-row-cell:selected .text {

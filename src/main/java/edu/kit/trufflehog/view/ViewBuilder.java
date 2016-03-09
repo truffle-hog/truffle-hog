@@ -19,20 +19,17 @@
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.Main;
-import edu.kit.trufflehog.model.filter.FilterInput;
-import edu.kit.trufflehog.model.filter.FilterType;
+import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
+import edu.kit.trufflehog.view.elements.ImageButton;
 import eu.hansolo.enzo.notification.Notification;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
@@ -53,9 +50,9 @@ public class ViewBuilder {
     private Stage primaryStage;
     private MainViewController mainViewController;
 
-    private OverlayViewController recordOverlayMenu;
-    private OverlayViewController filterOverlayMenu;
-    private OverlayViewController settingsOverlayMenu;
+    private OverlayViewController recordOverlayViewController;
+    private OverlayViewController filterOverlayViewController;
+    private OverlayViewController settingsOverlayViewController;
 
     private boolean settingsButtonPressed = false;
     private boolean filterButtonPressed = false;
@@ -94,114 +91,37 @@ public class ViewBuilder {
     }
 
     private void buildSettingsOverlay() {
-        settingsOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
-        mainViewController.getChildren().add(settingsOverlayMenu);
-        AnchorPane.setBottomAnchor(settingsOverlayMenu, 60d);
-        AnchorPane.setLeftAnchor(settingsOverlayMenu, 18d);
-        settingsOverlayMenu.setVisible(false);
+        settingsOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
+        mainViewController.getChildren().add(settingsOverlayViewController);
+        AnchorPane.setBottomAnchor(settingsOverlayViewController, 60d);
+        AnchorPane.setLeftAnchor(settingsOverlayViewController, 18d);
+        settingsOverlayViewController.setVisible(false);
     }
 
     private void buildFilterMenuOverlay() {
-        filterOverlayMenu = new OverlayViewController("filter_menu_overlay.fxml");
-        ObservableList<FilterInput> data = FXCollections.observableArrayList();
+        // Build filter menu
+        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu();
+        filterOverlayViewController = filterOverlayMenu.setUpOverlayViewController();
+        tableView = filterOverlayMenu.setUpTableView();
+        BorderPane borderPane = filterOverlayMenu.setUpMenu(tableView);
 
-        // Set up table view
-        tableView = new TableView();
-        tableView.setEditable(true);
-
-        // Set up filter column
-        TableColumn nameColumn = new TableColumn("Filter");
-        nameColumn.setMinWidth(158);
-        tableView.getColumns().add(nameColumn);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("name"));
-
-        // Set up type column
-        TableColumn typeColumn = new TableColumn("Type");
-        typeColumn.setMinWidth(90);
-        tableView.getColumns().add(typeColumn);
-        typeColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("type"));
-
-        // Set up active column
-        TableColumn activeColumn = new TableColumn<>("Active");
-        activeColumn.setMinWidth(80);
-        tableView.getColumns().add(activeColumn);
-
-        // Set up callback for CheckBoxTableCell
-        activeColumn.setCellFactory(tableColumn -> {
-            final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
-            checkBoxTableCell.setSelectedStateCallback(index -> {
-                FilterInput filterInput = (FilterInput) tableView.getItems().get(index);
-                return filterInput.getBooleanProperty();
-            });
-
-            return checkBoxTableCell;
-        });
-
-        tableView.setItems(data);
-        tableView.setMinWidth(330);
-
-        // Set select/deselect on mouseclick
-        tableView.setRowFactory(tableViewLambda -> {
-            final TableRow<FilterInput> row = new TableRow<>();
-            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-                final int index = row.getIndex();
-                if (index >= 0 && index < tableView.getItems().size() && tableView.getSelectionModel().isSelected(index)  ) {
-                    tableView.getSelectionModel().clearSelection();
-                    event.consume();
-                }
-            });
-            return row;
-        });
-
-        // Set up add button
-        Button addButton = new ImageButton("add.png");
-        addButton.setOnAction(actionEvent -> {
-            FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
-            data.add(filterInput);
-            filterInput = new FilterInput("Filter B", FilterType.BLACKLIST, null, null);
-            data.add(filterInput);
-        });
-        addButton.setScaleX(0.5);
-        addButton.setScaleY(0.5);
-
-        // Set up remove button
-        Button removeButton = new ImageButton("remove.png");
-        removeButton.setOnAction(actionEvent -> {
-            FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
-            data.remove(filterInput);
-        });
-        removeButton.setScaleX(0.5);
-        removeButton.setScaleY(0.5);
-
-        // Set up components on overlay
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(tableView);
-
-        AnchorPane anchorPane = new AnchorPane();
-        anchorPane.getChildren().addAll(addButton, removeButton);
-        borderPane.setBottom(anchorPane);
-
-        AnchorPane.setBottomAnchor(addButton, 0d);
-        AnchorPane.setRightAnchor(addButton, 0d);
-        AnchorPane.setBottomAnchor(removeButton, 0d);
-        AnchorPane.setRightAnchor(removeButton, 30d);
-
-        filterOverlayMenu.getChildren().add(borderPane);
+        // Add menu to overlay
+        filterOverlayViewController.getChildren().add(borderPane);
 
         // Set up overlay on screen
-        mainViewController.getChildren().add(filterOverlayMenu);
-        AnchorPane.setBottomAnchor(filterOverlayMenu, 60d);
-        AnchorPane.setLeftAnchor(filterOverlayMenu, 18d);
-        filterOverlayMenu.setMaxSize(330d, 210d);
-        filterOverlayMenu.setVisible(false);
+        mainViewController.getChildren().add(filterOverlayViewController);
+        AnchorPane.setBottomAnchor(filterOverlayViewController, 60d);
+        AnchorPane.setLeftAnchor(filterOverlayViewController, 18d);
+        filterOverlayViewController.setMaxSize(330d, 210d);
+        filterOverlayViewController.setVisible(false);
     }
 
     private void buildRecordOverlay() {
-        recordOverlayMenu = new OverlayViewController("node_statistics_overlay.fxml");
-        mainViewController.getChildren().add(recordOverlayMenu);
-        AnchorPane.setBottomAnchor(recordOverlayMenu, 60d);
-        AnchorPane.setLeftAnchor(recordOverlayMenu, 18d);
-        recordOverlayMenu.setVisible(false);
+        recordOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
+        mainViewController.getChildren().add(recordOverlayViewController);
+        AnchorPane.setBottomAnchor(recordOverlayViewController, 60d);
+        AnchorPane.setLeftAnchor(recordOverlayViewController, 18d);
+        recordOverlayViewController.setVisible(false);
     }
 
     private void buildNodeStatisticsOverlay() {
@@ -232,7 +152,7 @@ public class ViewBuilder {
     }
 
     private Button buildSettingsButton() {
-        Button settingsButton = new ImageButton("gear.png");
+        Button settingsButton = new ImageButton(".." + File.separator + "gear.png");
         settingsButton.setOnAction(event -> {
             Stage settingsStage = new Stage();
             SettingsViewController settingsView = new SettingsViewController("settings_view.fxml");
@@ -266,11 +186,11 @@ public class ViewBuilder {
     }
 
     private Button buildFilterButton() {
-        Button filterButton = new ImageButton("filter.png");
+        Button filterButton = new ImageButton(".." + File.separator + "filter.png");
         filterButton.setOnAction(event -> {
-            settingsOverlayMenu.setVisible(false);
-            filterOverlayMenu.setVisible(!filterButtonPressed);
-            recordOverlayMenu.setVisible(false);
+            settingsOverlayViewController.setVisible(false);
+            filterOverlayViewController.setVisible(!filterButtonPressed);
+            recordOverlayViewController.setVisible(false);
             filterButtonPressed = !filterButtonPressed;
 
             // Deselect anything that was selected
@@ -288,12 +208,12 @@ public class ViewBuilder {
     }
 
     private Button buildRecordButton() {
-        ImageButton recordButton = new ImageButton("record.png");
+        ImageButton recordButton = new ImageButton(".." + File.separator + "record.png");
 
         recordButton.setOnAction(event -> {
-            settingsOverlayMenu.setVisible(false);
-            filterOverlayMenu.setVisible(false);
-            recordOverlayMenu.setVisible(!recordButtonPressed);
+            settingsOverlayViewController.setVisible(false);
+            filterOverlayViewController.setVisible(false);
+            recordOverlayViewController.setVisible(!recordButtonPressed);
             recordButtonPressed = !recordButtonPressed;
         });
 
@@ -308,7 +228,7 @@ public class ViewBuilder {
     }
 
     private void loadFonts() {
-        Font.loadFont(Main.class.getClassLoader().getResourceAsStream( "fonts" + File.separator + "DroidSans" +
+        Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts" + File.separator + "DroidSans" +
                 File.separator + "DroidSans.ttf"), 12);
     }
 }
