@@ -175,10 +175,12 @@ public class FilterOverlayMenu {
         // Set up remove button
         Button removeButton = new ImageButton(".." + File.separator + "remove.png");
         removeButton.setOnAction(actionEvent -> {
-            FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
-            data.remove(filterInput);
-            configDataModel.removeFilterInput(filterInput);
-            logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
+            if (!data.isEmpty()) {
+                FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
+                data.remove(filterInput);
+                configDataModel.removeFilterInput(filterInput);
+                logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
+            }
         });
         removeButton.setScaleX(0.5);
         removeButton.setScaleY(0.5);
