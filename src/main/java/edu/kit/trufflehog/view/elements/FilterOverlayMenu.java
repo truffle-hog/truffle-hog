@@ -186,6 +186,7 @@ public class FilterOverlayMenu {
         // Set up components on overlay
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(tableView);
+        tableView.setMinHeight(300);
 
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.getChildren().addAll(addButton, removeButton);

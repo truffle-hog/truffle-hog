@@ -22,13 +22,13 @@ root {
 .overlaybackground {
     -fx-background-color: #000000;
     -fx-opacity: 100%;
-    -fx-border-radius: 10 10 10 10;
-    -fx-background-radius: 10 10 10 10;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
 }
 
 .text {
     -fx-fill: white;
-    -fx-opacity: 80%;
+    -fx-opacity: 100%;
     -fx-font-size: 90%;
     -fx-font-weight: 100;
     -fx-font-family: 'Droid Sans';
@@ -45,17 +45,14 @@ root {
 .tab-pane {
     -fx-background-color: #282C34;
     -fx-opacity: 100%;
-    -fx-border-radius: 10 10 0 0;
-    -fx-background-radius: 10 10 0 0;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
 }
 
 .tab {
     -fx-background-color: #282C34;
     -fx-opacity: 100%;
-}
-
-.tab-pane:selected {
-    -fx-fill: #528BFF;
+    -fx-focus-color: #528BFF;
 }
 
 .tab-pane *.tab-header-background {

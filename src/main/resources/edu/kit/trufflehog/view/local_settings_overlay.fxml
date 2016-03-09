@@ -30,7 +30,7 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root opacity="0.8" prefHeight="210.0" prefWidth="330.0" styleClass="overlaybackground" type="GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root opacity="1.0" prefHeight="300.0" prefWidth="400.0" styleClass="overlaybackground" type="GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@local_settings_overlay.css" />
     </stylesheets>
@@ -41,12 +41,12 @@
         <RowConstraints vgrow="ALWAYS" />
     </rowConstraints>
    <children>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane prefHeight="300.0" prefWidth="400.0">
          <children>
-            <TabPane prefHeight="211.0" prefWidth="330.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane prefHeight="300.0" prefWidth="400.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Untitled Tab 1" />
-                <Tab text="Untitled Tab 2" />
+                <Tab text="Settings" />
+                <Tab text="Filter" />
               </tabs>
             </TabPane>
          </children>
