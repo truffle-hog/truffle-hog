@@ -122,6 +122,7 @@ public class ViewBuilder {
 
         buildToolbar();
 
+        // add keyboard shortcut: F11 for fullscreen
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
 
