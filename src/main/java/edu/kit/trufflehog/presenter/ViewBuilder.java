@@ -26,21 +26,17 @@ import edu.kit.trufflehog.view.controllers.IWindowController;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.scene.Node;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.File;
 
@@ -59,8 +55,8 @@ public class ViewBuilder {
 
     // View related variables
     private final Stage primaryStage;
-    private final MainViewController mainViewController = new MainViewController("main_view.fxml");
-    private final AnchorPane monitoringView = new AnchorPane();
+    private final MainViewController mainViewController;
+    private final AnchorPane monitoringView;
 
     private OverlayViewController recordOverlayViewController;
     private OverlayViewController filterOverlayViewController;
@@ -73,12 +69,15 @@ public class ViewBuilder {
      *     Creates the ViewBuilder, which builds the entire view.
      * </p>
      *
-     * @param configDataModel The {@link ConfigDataModel} that is necessary to save and load configurations, like filters
-     *                        or settings.
+     * @param configDataModel The {@link ConfigDataModel} that is necessary to save and load configurations, like
+     *                        filters or settings.
+     * @param primaryStage The primary stage, where everything is drawn upon.
      */
     public ViewBuilder(final ConfigDataModel configDataModel, final Stage primaryStage) {
         this.configDataModel = configDataModel;
         this.primaryStage = primaryStage;
+        this.monitoringView = new AnchorPane();
+        this.mainViewController = new MainViewController("main_view.fxml");
 
         if (this.primaryStage == null || this.configDataModel == null) {
             throw new NullPointerException("primaryStage and configDataModel must not be null");
@@ -91,7 +90,7 @@ public class ViewBuilder {
      *     components as well.
      * </p>
      *
-     * @param viewPort
+     * @param viewPort The viewport of the graph that should be drawn here
      */
     public void build(INetworkViewPort viewPort) {
         loadFonts();
@@ -100,12 +99,7 @@ public class ViewBuilder {
 
         final MenuBarViewController menuBar = buildMenuBar();
 
-        AnchorPane.setLeftAnchor(monitoringView, 0d);
-        AnchorPane.setRightAnchor(monitoringView, 0d);
-        AnchorPane.setTopAnchor(monitoringView, 29d);
-        AnchorPane.setBottomAnchor(monitoringView, 0d);
-
-        primaryView.getChildren().add(node);
+        monitoringView.getChildren().add(node);
         AnchorPane.setBottomAnchor(node, 0d);
         AnchorPane.setTopAnchor(node, 0d);
         AnchorPane.setLeftAnchor(node, 0d);
@@ -115,18 +109,9 @@ public class ViewBuilder {
         final Scene mainScene = new Scene(mainViewController);
         final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
 
-        //primaryStage.setScene(mainScene);
-        //primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
-
-        mainViewController.setCenter(primaryView);
+        mainViewController.setCenter(monitoringView);
 
         rootWindow.show();
-
-        // Really do quit the app when the main window closes
-        primaryStage.setOnCloseRequest(e -> {
-            Platform.exit();
-            System.exit(0);
-        });
 
         // Set min. dimensions
         primaryStage.setMinWidth(720d);
@@ -134,14 +119,14 @@ public class ViewBuilder {
 
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
-        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11), () -> {primaryStage.setFullScreen(!primaryStage.isFullScreen()); menuBar.setVisible(!menuBar.isVisible());});
-
-        buildToolbar();
-
-        // Add keyboard shortcut: F11 for fullscreen
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11), () -> {
+            primaryStage.setFullScreen(!primaryStage.isFullScreen());
+            menuBar.setVisible(!menuBar.isVisible());
+        });
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
 
+        buildToolbar();
         buildGeneralStatisticsOverlay();
         buildNodeStatisticsOverlay();
         buildSettingsOverlay();

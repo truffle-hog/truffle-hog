@@ -1,7 +1,5 @@
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.network.INetwork;
@@ -12,15 +10,8 @@ import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.executor.TruffleExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
-import edu.kit.trufflehog.util.bindings.PlatformIntegerBinding;
-import edu.kit.trufflehog.view.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -60,7 +51,6 @@ public class Presenter {
      * </p>
      */
     public Presenter(Stage primaryStage) {
-
         this.primaryStage = primaryStage;
 
         if (this.primaryStage == null) {
@@ -89,7 +79,6 @@ public class Presenter {
      * </p>
      */
     public void present() {
-
         initNetwork();
         viewBuilder.build(viewPort);
     }
