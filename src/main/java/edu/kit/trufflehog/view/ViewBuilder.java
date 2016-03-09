@@ -90,7 +90,7 @@ public class ViewBuilder {
 
         MenuBar menuBar = buildMenuBar();
 
-        mainViewController = new MainViewController("fxml" + File.separator +"main_view.fxml");
+        mainViewController = new MainViewController("main_view.fxml");
         mainViewController.getChildren().addAll(menuBar, primaryView);
         AnchorPane.setRightAnchor(menuBar, 0d);
         AnchorPane.setTopAnchor(menuBar, 0d);
@@ -105,8 +105,7 @@ public class ViewBuilder {
         Scene mainScene = new Scene(mainViewController);
 
         primaryStage.setScene(mainScene);
-        primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("images" + File.separator
-                + "icon.png")));
+        primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
         primaryStage.setOnCloseRequest(e -> Platform.exit());
 
         // Set min. dimensions
@@ -128,11 +127,11 @@ public class ViewBuilder {
 
     private MenuBar buildMenuBar() {
         // Get MenuBar
-        MenuBarViewController menuBarViewController = new MenuBarViewController("fxml" + File.separator + "menu_bar.fxml");
+        MenuBarViewController menuBarViewController = new MenuBarViewController("menu_bar.fxml");
         MenuBar menuBar = (MenuBar) menuBarViewController.getChildren().get(0);
 
         // Add css
-        String css = this.getClass().getResource("css" + File.separator + "menu_bar.css").toExternalForm();
+        String css = this.getClass().getResource("menu_bar.css").toExternalForm();
         menuBar.getStylesheets().add(css);
 
         // Set dimensions
@@ -148,7 +147,7 @@ public class ViewBuilder {
      * </p>
      */
     private void buildSettingsOverlay() {
-        settingsOverlayViewController = new OverlayViewController("fxml" + File.separator + "local_settings_overlay.fxml");
+        settingsOverlayViewController = new OverlayViewController("local_settings_overlay.fxml");
         primaryView.getChildren().add(settingsOverlayViewController);
         AnchorPane.setBottomAnchor(settingsOverlayViewController, 60d);
         AnchorPane.setLeftAnchor(settingsOverlayViewController, 18d);
@@ -184,7 +183,7 @@ public class ViewBuilder {
      * </p>
      */
     private void buildRecordOverlay() {
-        recordOverlayViewController = new OverlayViewController("fxml" + File.separator + "node_statistics_overlay.fxml");
+        recordOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
         primaryView.getChildren().add(recordOverlayViewController);
         AnchorPane.setBottomAnchor(recordOverlayViewController, 60d);
         AnchorPane.setLeftAnchor(recordOverlayViewController, 18d);
@@ -197,8 +196,7 @@ public class ViewBuilder {
      * </p>
      */
     private void buildNodeStatisticsOverlay() {
-        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("fxml" + File.separator
-                + "node_statistics_overlay.fxml");
+        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
         primaryView.getChildren().add(nodeStatisticsOverlay);
         AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
@@ -211,8 +209,7 @@ public class ViewBuilder {
      * </p>
      */
     private void buildGeneralStatisticsOverlay() {
-        OverlayViewController generalStatisticsOverlay = new OverlayViewController("fxml" + File.separator
-                + "general_statistics_overlay.fxml");
+        OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
         primaryView.getChildren().add(generalStatisticsOverlay);
         AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
@@ -228,8 +225,8 @@ public class ViewBuilder {
         Button filterButton = buildFilterButton();
         Button recordButton = buildRecordButton();
 
-        MainToolBarController mainToolBarController = new MainToolBarController("fxml" + File.separator + "main_toolbar.fxml"
-                , settingsButton, filterButton, recordButton);
+        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml", settingsButton,
+                filterButton, recordButton);
         primaryView.getChildren().add(mainToolBarController);
         AnchorPane.setBottomAnchor(mainToolBarController, 5d);
         AnchorPane.setLeftAnchor(mainToolBarController, 5d);
@@ -241,7 +238,7 @@ public class ViewBuilder {
      * </p>
      */
     private Button buildSettingsButton() {
-        Button settingsButton = new ImageButton(".." + File.separator + "images" + File.separator + "gear.png");
+        Button settingsButton = new ImageButton(".." + File.separator + "gear.png");
         settingsButton.setOnAction(event -> {
             settingsOverlayViewController.setVisible(!settingsOverlayViewController.isVisible());
 
@@ -292,7 +289,7 @@ public class ViewBuilder {
      * </p>
      */
     private Button buildFilterButton() {
-        Button filterButton = new ImageButton(".." + File.separator + "images" + File.separator + "filter.png");
+        Button filterButton = new ImageButton(".." + File.separator + "filter.png");
         filterButton.setOnAction(event -> {
             filterOverlayViewController.setVisible(!filterOverlayViewController.isVisible());
 
@@ -326,7 +323,7 @@ public class ViewBuilder {
      * </p>
      */
     private Button buildRecordButton() {
-        ImageButton recordButton = new ImageButton(".." + File.separator + "images" + File.separator + "record.png");
+        ImageButton recordButton = new ImageButton(".." + File.separator + "record.png");
 
         recordButton.setOnAction(event -> {
             recordOverlayViewController.setVisible(!recordOverlayViewController.isVisible());

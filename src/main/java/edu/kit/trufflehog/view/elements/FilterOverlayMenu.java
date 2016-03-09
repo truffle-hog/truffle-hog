@@ -81,7 +81,7 @@ public class FilterOverlayMenu {
      * @return The new OverlayViewController.
      */
     public OverlayViewController setUpOverlayViewController() {
-        return new OverlayViewController("fxml" + File.separator + "filter_menu_overlay.fxml");
+        return new OverlayViewController("filter_menu_overlay.fxml");
     }
 
     /**
@@ -162,7 +162,7 @@ public class FilterOverlayMenu {
      */
     public BorderPane setUpMenu(TableView tableView) {
         // Set up add button
-        Button addButton = new ImageButton(".." + File.separator + "images" + File.separator + "add.png");
+        Button addButton = new ImageButton(".." + File.separator + "add.png");
         addButton.setOnAction(actionEvent -> {
             FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
             addFilter(filterInput);
@@ -173,7 +173,7 @@ public class FilterOverlayMenu {
         addButton.setScaleY(0.5);
 
         // Set up remove button
-        Button removeButton = new ImageButton(".." + File.separator + "images" + File.separator + "remove.png");
+        Button removeButton = new ImageButton(".." + File.separator + "remove.png");
         removeButton.setOnAction(actionEvent -> {
             FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             data.remove(filterInput);

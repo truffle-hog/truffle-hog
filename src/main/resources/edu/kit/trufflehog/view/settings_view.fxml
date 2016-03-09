@@ -34,7 +34,24 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" stylesheets="@../css/settings_view.css" tabClosingPolicy="UNAVAILABLE" type="TabPane" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
+<!--
+  ~ This file is part of TruffleHog.
+  ~
+  ~ TruffleHog is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ TruffleHog is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" stylesheets="@settings_view.css" tabClosingPolicy="UNAVAILABLE" type="TabPane" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
   <tabs>
     <Tab text="General">
          <content>
@@ -108,7 +125,7 @@
                <center>
                   <ImageView fitHeight="100.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
-                        <Image url="@../images/logo_100px.png" />
+                        <Image url="@logo_100px.png" />
                      </image>
                   </ImageView>
                </center>
