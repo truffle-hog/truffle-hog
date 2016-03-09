@@ -156,19 +156,11 @@ public abstract class AbstractComposition implements IComposition {
     public boolean removeAll(Collection<?> c) {
 
         return components.values().removeAll(c);
-
-        /*boolean compositionWasModified = false;
-
-        for (Object o : c) {
-
-
-            compositionWasModified = this.removeComponent(component.getClass()) == null;
-        }
-        return compositionWasModified;*/
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
+
         return components.values().retainAll(c);
     }
 

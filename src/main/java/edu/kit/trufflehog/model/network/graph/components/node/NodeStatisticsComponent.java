@@ -68,6 +68,9 @@ public class NodeStatisticsComponent implements IComponent {
 
     @Override
     public boolean update(IComponent instance, IUpdater updater) {
+
+
+
         return updater.update(this, instance);
     }
 }

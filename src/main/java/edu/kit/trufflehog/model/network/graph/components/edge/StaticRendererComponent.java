@@ -18,6 +18,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.awt.Color;

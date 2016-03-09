@@ -20,9 +20,7 @@ import java.awt.geom.Rectangle2D;
 
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.components.edge.IRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastLayeredEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Context;

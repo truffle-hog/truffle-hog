@@ -17,8 +17,8 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
-import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 /**
@@ -44,10 +44,6 @@ public class ViewComponent implements IComponent {
         return renderer;
     }
 
-    @Override
-    public String name() {
-        return null;
-    }
 
     @Override
     public IComponent createDeepCopy(ICopyCreator copyCreator) {
@@ -62,5 +58,10 @@ public class ViewComponent implements IComponent {
     @Override
     public boolean update(IComponent instance, IUpdater updater) {
         return updater.update(this, instance);
+    }
+
+    @Override
+    public String name() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 }

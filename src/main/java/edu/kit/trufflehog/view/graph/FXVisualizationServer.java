@@ -157,9 +157,9 @@ public class FXVisualizationServer<V, E> extends JPanel
         setDoubleBuffered(false);
         this.addComponentListener(new FXVisualizationListener(this));
 
-        setPickSupport(new ShapePickSupport<V,E>(this));
-        setPickedVertexState(new MultiPickedState<V>());
-        setPickedEdgeState(new MultiPickedState<E>());
+        setPickSupport(new ShapePickSupport<>(this));
+        setPickedVertexState(new MultiPickedState<>());
+        setPickedEdgeState(new MultiPickedState<>());
 
         renderContext.setEdgeDrawPaintTransformer(new PickableEdgePaintTransformer<E>(getPickedEdgeState(), Color.black, Color.cyan));
         renderContext.setVertexFillPaintTransformer(new PickableVertexPaintTransformer<V>(getPickedVertexState(),

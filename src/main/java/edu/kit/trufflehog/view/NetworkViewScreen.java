@@ -3,14 +3,11 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
+import edu.kit.trufflehog.interaction.ToolBarInteraction;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.IRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastLayeredEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
@@ -21,35 +18,36 @@ import edu.kit.trufflehog.view.graph.control.FXDefaultModalGraphMouse;
 import edu.kit.trufflehog.view.graph.control.FXModalGraphMouse;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationModel;
+import edu.uci.ics.jung.visualization.control.GraphMouseListener;
+import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.decorators.PickableEdgePaintTransformer;
 import edu.uci.ics.jung.visualization.decorators.PickableVertexPaintTransformer;
-import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.Observable;
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.ObjectBinding;
-import javafx.beans.value.ObservableObjectValue;
-import javafx.beans.value.ObservableValue;
 import javafx.util.Duration;
+import org.apache.commons.collections15.Transformer;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
  * Created by jan on 13.01.16.
  */
-public class NetworkViewScreen extends NetworkGraphViewController {
+public class NetworkViewScreen extends NetworkGraphViewController implements ItemListener {
 
 	private FXVisualizationViewer<INode, IConnection> jungView;
 
@@ -60,6 +58,10 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 	private FXModalGraphMouse graphMouse;
 
 	private Timeline refresher;
+
+    /** The commands that are mapped to their interactions. **/
+    private final Map<GraphInteraction, IUserCommand> interactionMap =
+            new EnumMap<>(GraphInteraction.class);
 
 	public NetworkViewScreen(INetworkViewPort port, long refreshRate) {
 
@@ -203,15 +205,50 @@ public class NetworkViewScreen extends NetworkGraphViewController {
         });
 	}
 
+	public void setGraphMouse(FXVisualizationViewer.FXGraphMouse graphMouse) {
+		jungView.setGraphMouse(graphMouse);
+	}
+
+	public FXVisualizationViewer.FXGraphMouse getGraphMouse() {
+		return jungView.getGraphMouse();
+	}
+
+	public void addGraphMouseListener(GraphMouseListener<INode> gel) {
+		jungView.addGraphMouseListener(gel);
+	}
+
+	public void addKeyListener(KeyListener l) {
+		jungView.addKeyListener(l);
+	}
+
+	public void setEdgeToolTipTransformer(Transformer<IConnection, String> edgeToolTipTransformer) {
+		jungView.setEdgeToolTipTransformer(edgeToolTipTransformer);
+	}
+
+	public void setMouseEventToolTipTransformer(Transformer<MouseEvent, String> mouseEventToolTipTransformer) {
+		jungView.setMouseEventToolTipTransformer(mouseEventToolTipTransformer);
+	}
+
+	public void setVertexToolTipTransformer(Transformer<INode, String> vertexToolTipTransformer) {
+		jungView.setVertexToolTipTransformer(vertexToolTipTransformer);
+	}
+
+	public String getToolTipText(MouseEvent event) {
+		return jungView.getToolTipText(event);
+	}
 
 	@Override
-	public void setDoubleBuffered(boolean b) {
-		jungView.setDoubleBuffered(b);
+	public void setDoubleBuffered(boolean doubleBuffered) {
+		jungView.setDoubleBuffered(doubleBuffered);
 	}
 
 	@Override
 	public boolean isDoubleBuffered() {
 		return jungView.isDoubleBuffered();
+	}
+
+	public Dimension getSize() {
+		return jungView.getSize();
 	}
 
 	@Override
@@ -220,86 +257,96 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 	}
 
 	@Override
-	public void setModel(VisualizationModel<INode, IConnection> visualizationModel) {
-
+	public void setModel(VisualizationModel<INode, IConnection> model) {
+		jungView.setModel(model);
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent changeEvent) {
-
-		jungView.stateChanged(changeEvent);
-		//timeLine.playFromStart();
-
+	public void stateChanged(ChangeEvent e) {
+		jungView.stateChanged(e);
 	}
 
 	@Override
-	public void setRenderer(Renderer<INode, IConnection> renderer) {
-
+	public void setRenderer(Renderer<INode, IConnection> r) {
+		jungView.setRenderer(r);
 	}
 
 	@Override
 	public Renderer<INode, IConnection> getRenderer() {
-		return null;
+		return jungView.getRenderer();
 	}
 
 	@Override
 	public void setGraphLayout(Layout<INode, IConnection> layout) {
+		jungView.setGraphLayout(layout);
+	}
 
+	public void scaleToLayout(ScalingControl scaler) {
+		jungView.scaleToLayout(scaler);
 	}
 
 	@Override
 	public Layout<INode, IConnection> getGraphLayout() {
-		return null;
+		return jungView.getGraphLayout();
 	}
 
 	@Override
 	public Map<RenderingHints.Key, Object> getRenderingHints() {
-		return null;
+		return jungView.getRenderingHints();
 	}
 
 	@Override
-	public void setRenderingHints(Map<RenderingHints.Key, Object> map) {
-
+	public void setRenderingHints(Map<RenderingHints.Key, Object> renderingHints) {
+		jungView.setRenderingHints(renderingHints);
 	}
 
 	@Override
 	public void addPreRenderPaintable(Paintable paintable) {
+		jungView.addPreRenderPaintable(paintable);
+	}
 
+	public void prependPreRenderPaintable(Paintable paintable) {
+		jungView.prependPreRenderPaintable(paintable);
 	}
 
 	@Override
 	public void removePreRenderPaintable(Paintable paintable) {
-
+		jungView.removePreRenderPaintable(paintable);
 	}
 
 	@Override
 	public void addPostRenderPaintable(Paintable paintable) {
+		jungView.addPostRenderPaintable(paintable);
+	}
 
+	public void prependPostRenderPaintable(Paintable paintable) {
+		jungView.prependPostRenderPaintable(paintable);
 	}
 
 	@Override
 	public void removePostRenderPaintable(Paintable paintable) {
-
+		jungView.removePostRenderPaintable(paintable);
 	}
 
 	@Override
-	public void addChangeListener(ChangeListener changeListener) {
-
+	public void addChangeListener(ChangeListener l) {
+		jungView.addChangeListener(l);
 	}
 
 	@Override
-	public void removeChangeListener(ChangeListener changeListener) {
-
+	public void removeChangeListener(ChangeListener l) {
+		jungView.removeChangeListener(l);
 	}
 
 	@Override
 	public ChangeListener[] getChangeListeners() {
-		return new ChangeListener[0];
+		return jungView.getChangeListeners();
 	}
 
 	@Override
 	public void fireStateChanged() {
-		jungView.fireStateChanged();	}
+		jungView.fireStateChanged();
+	}
 
 	@Override
 	public PickedState<INode> getPickedVertexState() {
@@ -312,72 +359,81 @@ public class NetworkViewScreen extends NetworkGraphViewController {
 	}
 
 	@Override
-	public void setPickedVertexState(PickedState<INode> pickedState) {
-
-        jungView.setPickedVertexState(pickedState);
+	public void setPickedVertexState(PickedState<INode> pickedVertexState) {
+		jungView.setPickedVertexState(pickedVertexState);
 	}
 
 	@Override
-	public void setPickedEdgeState(PickedState<IConnection> pickedState) {
-        jungView.setPickedEdgeState(pickedState);
+	public void setPickedEdgeState(PickedState<IConnection> pickedEdgeState) {
+		jungView.setPickedEdgeState(pickedEdgeState);
 	}
 
 	@Override
 	public GraphElementAccessor<INode, IConnection> getPickSupport() {
-		return null;
+		return jungView.getPickSupport();
 	}
 
 	@Override
-	public void setPickSupport(
-			GraphElementAccessor<INode, IConnection> graphElementAccessor) {
-
+	public void setPickSupport(GraphElementAccessor<INode, IConnection> pickSupport) {
+		jungView.setPickSupport(pickSupport);
 	}
 
 	@Override
 	public Point2D getCenter() {
-		return null;
+		return jungView.getCenter();
 	}
 
 	@Override
 	public RenderContext<INode, IConnection> getRenderContext() {
-		return null;
+		return jungView.getRenderContext();
 	}
 
 	@Override
 	public void setRenderContext(RenderContext<INode, IConnection> renderContext) {
-
+		jungView.setRenderContext(renderContext);
 	}
 
-    @Override
-    public void repaint() {
-
-
-/*		if (jungView.getModel().getGraphLayout() instanceof Caching) {
-
-			((Caching) jungView.getModel().getGraphLayout()).clear();
-
-		}*/
-
-		jungView.repaint();
-    }
+	@Override
+	public void repaint() {
+		throw new UnsupportedOperationException("Operation not implemented yet");
+	}
 
 	@Override
 	public void setRefreshRate(int rate) {
-
+		throw new UnsupportedOperationException("Operation not implemented yet");
 	}
 
 	@Override
 	public void enableSmartRefresh(int maxRate) {
-
+		throw new UnsupportedOperationException("Operation not implemented yet");
 	}
 
 	@Override
 	public void disableSmartRefresh() {
-
+		throw new UnsupportedOperationException("Operation not implemented yet");
 	}
 
 	@Override
 	public void addCommand(GraphInteraction interaction, IUserCommand command) {
 
+        interactionMap.put(interaction, command);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+
+        // if ItemEvent is Vertex Selection
+
+        final IUserCommand<PickedState> command = interactionMap.get(GraphInteraction.VERTEX_SELECTED);
+
+        if (command != null) {
+
+            command.setSelection(getPickedVertexState());
+        }
+        interactionMap.get(GraphInteraction.VERTEX_SELECTED).setSelection(getPickedVertexState());
+
+        // else if ItemEvent is Connection Selection
+
+		throw new UnsupportedOperationException("Operation not implemented yet");
 	}
 }

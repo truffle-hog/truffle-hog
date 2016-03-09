@@ -72,8 +72,9 @@ public class FXDefaultModalGraphMouse<V,E> extends FXAbstractModalGraphMouse
      */
     @Override
     protected void loadPlugins() {
+
         pickingPlugin = new FXPickingGraphMousePlugin<V,E>();
-        animatedPickingPlugin = new AnimatedPickingGraphMousePlugin<V,E>();
+        animatedPickingPlugin = new FXAnimatedPickingGraphMousePlugin<V,E>();
         translatingPlugin = new TranslatingGraphMousePlugin(InputEvent.BUTTON1_MASK);
         scalingPlugin = new FXScalingGraphMousePlugin(new CrossoverScalingControl(), 0, in, out);
         rotatingPlugin = new RotatingGraphMousePlugin();

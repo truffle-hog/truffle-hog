@@ -50,21 +50,6 @@ public class EdgeStatisticsComponent implements IComponent {
         return true;
     }
 
-    public IComponent createDeepCopy() {
-
-        final IComponent copy = new EdgeStatisticsComponent(trafficProperty.get());
-
-        return copy;
-    }
-
-    public boolean update(IComponent update) {
-
-        // TODO maybe change to another value
-        setLastUpdateTimeProperty(Instant.now().toEpochMilli());
-        incrementTraffic(1);
-        return true;
-    }
-
     public long getLastUpdateTime() {
         return lastUpdateTime.get();
     }

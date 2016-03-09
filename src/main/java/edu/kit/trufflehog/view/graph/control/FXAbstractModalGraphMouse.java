@@ -113,16 +113,23 @@ public abstract class FXAbstractModalGraphMouse extends FXPluggableGraphMouse
      * setter for the Mode.
      */
     public void setMode(Mode mode) {
+
         if(this.mode != mode) {
+
             fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED,
                     this.mode, ItemEvent.DESELECTED));
             this.mode = mode;
+
             if(mode == Mode.TRANSFORMING) {
+
                 setTransformingMode();
+
             } else if(mode == Mode.PICKING) {
+
                 setPickingMode();
             }
             if(modeBox != null) {
+
                 modeBox.setSelectedItem(mode);
             }
             fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, mode, ItemEvent.SELECTED));
@@ -143,6 +150,7 @@ public abstract class FXAbstractModalGraphMouse extends FXPluggableGraphMouse
      * @see edu.uci.ics.jung.visualization.control.FXModalGraphMouse#setTransformingMode()
      */
     protected void setTransformingMode() {
+
         remove(pickingPlugin);
         remove(animatedPickingPlugin);
         add(translatingPlugin);
@@ -154,6 +162,7 @@ public abstract class FXAbstractModalGraphMouse extends FXPluggableGraphMouse
      * @param zoomAtMouse The zoomAtMouse to set.
      */
     public void setZoomAtMouse(boolean zoomAtMouse) {
+
         ((ScalingGraphMousePlugin) scalingPlugin).setZoomAtMouse(zoomAtMouse);
     }
     
@@ -161,6 +170,7 @@ public abstract class FXAbstractModalGraphMouse extends FXPluggableGraphMouse
      * listener to set the mode from an external event source
      */
     class ModeListener implements ItemListener {
+
         public void itemStateChanged(ItemEvent e) {
             setMode((Mode) e.getItem());
         }
@@ -170,6 +180,7 @@ public abstract class FXAbstractModalGraphMouse extends FXPluggableGraphMouse
      * @see edu.uci.ics.jung.visualization.control.FXModalGraphMouse#getModeListener()
      */
     public ItemListener getModeListener() {
+
 		if (modeListener == null) {
 			modeListener = new ModeListener();
 		}
@@ -194,6 +205,7 @@ public abstract class FXAbstractModalGraphMouse extends FXPluggableGraphMouse
 	 * @return Returns the modeBox.
 	 */
     public JComboBox getModeComboBox() {
+
         if(modeBox == null) {
             modeBox = new JComboBox(new Mode[]{Mode.TRANSFORMING, Mode.PICKING});
             modeBox.addItemListener(getModeListener());
@@ -208,7 +220,9 @@ public abstract class FXAbstractModalGraphMouse extends FXPluggableGraphMouse
      * @return the menu
      */
     public JMenu getModeMenu() {
+
         if(modeMenu == null) {
+
             modeMenu = new JMenu();// {
             Icon icon = BasicIconFactory.getMenuArrowIcon();
             modeMenu.setIcon(BasicIconFactory.getMenuArrowIcon());
@@ -232,6 +246,7 @@ public abstract class FXAbstractModalGraphMouse extends FXPluggableGraphMouse
                         setMode(Mode.PICKING);
                     }
                 }});
+
             ButtonGroup radio = new ButtonGroup();
             radio.add(transformingButton);
             radio.add(pickingButton);

@@ -185,7 +185,7 @@ public class FXVisualizationViewer<V,E> extends FXVisualizationServer<V,E> {
      * called by the superclass to display tooltips
      */
     public String getToolTipText(MouseEvent event) {
-        Layout<V,E> layout = getGraphLayout();
+        final Layout<V,E> layout = getGraphLayout();
         Point2D p = null;
         if(vertexToolTipTransformer != null) {
             p = event.getPoint();

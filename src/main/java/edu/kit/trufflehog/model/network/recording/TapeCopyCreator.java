@@ -21,6 +21,7 @@ import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.NetworkIOPort;
 import edu.kit.trufflehog.model.network.NetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.*;
+import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.*;
 import edu.kit.trufflehog.util.ICopyCreator;
 

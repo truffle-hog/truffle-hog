@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.awt.BasicStroke;
@@ -97,30 +98,6 @@ public class MulticastEdgeRendererComponent implements IRendererComponent {
 
     @Override
     public boolean isMutable() {
-        return true;
-    }
-
-    public IComponent createDeepCopy() {
-
-        final MulticastEdgeRendererComponent edgeRenderer = new MulticastEdgeRendererComponent();
-
-        edgeRenderer.setColorUnpicked(getColorUnpicked());
-        edgeRenderer.setColorPicked(getColorPicked());
-        edgeRenderer.setShape(getShape());
-        edgeRenderer.setStroke(getStroke());
-
-        edgeRenderer.setOpacity(getOpacity());
-        edgeRenderer.setLastUpdate(getLastUpdate());
-        return edgeRenderer;
-    }
-
-    public boolean update(IComponent update) {
-
-        strokeWidth = 5f;
-        multiplier = 1.05f;
-        opacity = 170;
-
-        setLastUpdate(Instant.now().toEpochMilli());
         return true;
     }
 

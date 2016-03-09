@@ -34,9 +34,9 @@ public class FXPluggableGraphMouse implements FXVisualizationViewer.FXGraphMouse
     MouseListener[] mouseListeners;
     MouseMotionListener[] mouseMotionListeners;
     MouseWheelListener[] mouseWheelListeners;
-    Set<GraphMousePlugin> mousePluginList = new LinkedHashSet<GraphMousePlugin>();
-    Set<MouseMotionListener> mouseMotionPluginList = new LinkedHashSet<MouseMotionListener>();
-    Set<MouseWheelListener> mouseWheelPluginList = new LinkedHashSet<MouseWheelListener>();
+    Set<GraphMousePlugin> mousePluginList = new LinkedHashSet<>();
+    Set<MouseMotionListener> mouseMotionPluginList = new LinkedHashSet<>();
+    Set<MouseWheelListener> mouseWheelPluginList = new LinkedHashSet<>();
 
     public void add(GraphMousePlugin plugin) {
         if(plugin instanceof MouseListener) {

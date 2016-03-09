@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.model.network.graph.components.edge;
+package edu.kit.trufflehog.model.network.graph.components;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 
@@ -14,7 +14,9 @@ import java.time.Instant;
 public interface IRendererComponent extends IComponent {
 
     Shape getShape();
+
     Color getColorUnpicked();
+
     Color getColorPicked();
 
     Stroke getStroke();

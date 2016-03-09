@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.awt.*;
@@ -95,27 +96,6 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
 
     @Override
     public boolean isMutable() {
-        return true;
-    }
-
-    public IComponent createDeepCopy() {
-
-        final BasicEdgeRendererComponent rendererComponent = new BasicEdgeRendererComponent();
-        rendererComponent.setColorPicked(getColorPicked());
-        rendererComponent.setColorUnpicked(getColorUnpicked());
-        rendererComponent.setShape(getShape());
-        rendererComponent.setStroke(getStroke());
-
-        return rendererComponent;
-    }
-
-    public boolean update(IComponent update) {
-
-        if (currentBrightness > 0.7) {
-            return true;
-        }
-        // TODO implement more
-        currentBrightness = 1;
         return true;
     }
 

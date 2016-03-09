@@ -7,5 +7,7 @@ import edu.kit.trufflehog.command.ICommand;
  *     Interface for view generated commands.
  * </p>
  */
-public interface IUserCommand extends ICommand {
+public interface IUserCommand<T> extends ICommand {
+
+    <S extends T> void setSelection(S selection);
 }

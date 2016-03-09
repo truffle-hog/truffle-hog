@@ -14,19 +14,30 @@
  *  You should have received a copy of the GNU General Public License
  *  along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.kit.trufflehog.util;
+package edu.kit.trufflehog.command.usercommand;
+
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.uci.ics.jung.visualization.picking.PickedState;
 
 /**
  * \brief
  * \details
- * \date 04.03.16
+ * \date 09.03.16
  * \copyright GNU Public License
  *
  * @author Jan Hermes
  * @version 0.0.1
  */
-public interface Mementable<T> {
+public class NodeSelectionCommand implements IUserCommand<PickedState<INode>> {
 
 
+    @Override
+    public <S extends PickedState<INode>> void setSelection(S selection) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
 
+    @Override
+    public void execute() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
 }
