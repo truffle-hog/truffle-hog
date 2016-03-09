@@ -20,9 +20,12 @@ package edu.kit.trufflehog;
 import edu.kit.trufflehog.presenter.Presenter;
 import javafx.application.Application;
 import javafx.stage.Stage;
-// TODO below
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.net.URL;
 
 /**
  * <p>
@@ -30,11 +33,10 @@ import javafx.stage.Stage;
  * </p>
  */
 public class Main extends Application {
-	private static Stage primaryStage;
-	private Presenter presenter;
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();
 
-	// TODO below
-	// private static final Logger logger = LogManager.getLogger(Main.class);
+    private static Stage primaryStage;
+	private Presenter presenter;
 
 	/**
 	 * <p>
@@ -44,6 +46,19 @@ public class Main extends Application {
      * @param args command line arguments
      */
 	public static void main(String[] args) {
+        // Set docking icon on mac
+        String osName = System.getProperty("os.name");
+        if (osName.toLowerCase().contains("mac")) {
+            try {
+                URL iconURL = Main.class.getResource(File.separator + "edu" + File.separator + "kit" + File.separator
+                        + "trufflehog" + File.separator + "view" + File.separator + "icon.png");
+                Image image = new ImageIcon(iconURL).getImage();
+                com.apple.eawt.Application.getApplication().setDockIconImage(image);
+            } catch (Exception e) {
+                logger.error("Unable to set docking icon, probably not running on a mac", e);
+            }
+        }
+
 		launch(args);
 	}
 

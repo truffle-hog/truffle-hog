@@ -38,6 +38,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.io.File;
+
 import static edu.kit.trufflehog.Main.getPrimaryStage;
 
 /**
@@ -306,6 +308,7 @@ public class ViewBuilder {
     }
 
     private void loadFonts() {
-        Font.loadFont(Main.class.getClassLoader().getResourceAsStream( "fonts/DroidSans/DroidSans.ttf"), 12);
+        Font.loadFont(Main.class.getClassLoader().getResourceAsStream( "fonts" + File.separator + "DroidSans" +
+                File.separator + "DroidSans.ttf"), 12);
     }
 }

@@ -45,6 +45,7 @@ dependencies {
     compile 'net.sf.jung:jung2:2.0.1'
     compile 'net.sf.jung:jung-graph-impl:2.0.1'
     compile 'net.sf.jung:jung-visualization:2.0.1'
+    compile 'com.apple:AppleJavaExtensions:1.4' // because we all want to be nice to Julian
 
     // test
     testCompile 'org.apache.commons:commons-collections4:4.1'
