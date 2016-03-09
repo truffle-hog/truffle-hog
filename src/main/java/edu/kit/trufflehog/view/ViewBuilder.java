@@ -25,16 +25,14 @@ import eu.hansolo.enzo.notification.Notification;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
@@ -60,6 +58,8 @@ public class ViewBuilder {
     private boolean settingsButtonPressed = false;
     private boolean filterButtonPressed = false;
     private boolean recordButtonPressed = false;
+
+    private TableView tableView;
 
     public void build() {
         loadFonts();
@@ -104,7 +104,7 @@ public class ViewBuilder {
         ObservableList<FilterInput> data = FXCollections.observableArrayList();
 
         // Set up table view
-        TableView tableView = new TableView();
+        tableView = new TableView();
         tableView.setEditable(true);
 
         // Set up filter column
@@ -137,6 +137,19 @@ public class ViewBuilder {
 
         tableView.setItems(data);
         tableView.setMinWidth(330);
+
+        // Set select/deselect on mouseclick
+        tableView.setRowFactory(tableViewLambda -> {
+            final TableRow<FilterInput> row = new TableRow<>();
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                final int index = row.getIndex();
+                if (index >= 0 && index < tableView.getItems().size() && tableView.getSelectionModel().isSelected(index)  ) {
+                    tableView.getSelectionModel().clearSelection();
+                    event.consume();
+                }
+            });
+            return row;
+        });
 
         // Set up add button
         Button addButton = new ImageButton("add.png");
@@ -257,6 +270,11 @@ public class ViewBuilder {
             filterOverlayMenu.setVisible(!filterButtonPressed);
             recordOverlayMenu.setVisible(false);
             filterButtonPressed = !filterButtonPressed;
+
+            // Deselect anything that was selected
+            if (!filterButtonPressed) {
+                tableView.getSelectionModel().clearSelection();
+            }
         });
 
         filterButton.setScaleX(0.8);
