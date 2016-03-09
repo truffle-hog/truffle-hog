@@ -19,6 +19,11 @@
     -fx-background-color: #282C34;
 }
 
+.menu {
+    -fx-accent: #0093ff;
+    -fx-focus-color: #0093ff;
+}
+
 .text {
     -fx-fill: white;
     -fx-opacity: 100%;
