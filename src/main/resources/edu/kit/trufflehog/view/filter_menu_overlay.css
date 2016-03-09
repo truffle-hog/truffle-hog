@@ -1,0 +1,55 @@
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+root {
+    display: block;
+}
+
+.overlaybackground {
+    -fx-background-color: #000000;
+    -fx-opacity: 80%;
+    -fx-background-radius: 2;  }
+
+.text {
+    -fx-fill: white;
+    -fx-opacity: 100%;
+    -fx-font-size: 90%;
+    -fx-font-weight: 100;
+    -fx-font-family: 'Droid Sans';
+}
+
+.table-view {
+    -fx-background-color:#000000;
+    -fx-background-insets: 0, 0, 0;
+    -fx-padding: 1;
+    -fx-border-radius: 10 10 0 0;
+    -fx-background-radius: 10 10 0 0;
+    -fx-focus-color: transparent;
+}
+
+.table-view:focused{
+    -fx-focus-color: transparent;
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: #2EA6D0;
+}
+
+.table-column {
+    -fx-background-color:#000000;
+}
+

@@ -3,18 +3,19 @@ package edu.kit.trufflehog.view;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.OverlayInteraction;
 import edu.kit.trufflehog.view.controllers.GridPaneController;
+import edu.kit.trufflehog.view.controllers.StackPaneController;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 /**
  * <p>
- *     The OverlayViewController provides GUI functionality for all
+ *     The NotificationViewController provides GUI functionality for all
  *     interactions that a user performs on an overlay that can be displayed
- *     as a floating (slightly transparent) view on top of the main view.
+ *     as a floating (slightly transparent) stack view on top of the main view.
  * </p>
  */
-public class OverlayViewController extends GridPaneController<OverlayInteraction> {
+public class NotificationViewController extends StackPaneController<OverlayInteraction> {
 
 	/**
      * <p>
@@ -32,7 +33,7 @@ public class OverlayViewController extends GridPaneController<OverlayInteraction
      *
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
-    public OverlayViewController(final String fxmlFileName) {
+    public NotificationViewController(final String fxmlFileName) {
         super(fxmlFileName);
     }
 

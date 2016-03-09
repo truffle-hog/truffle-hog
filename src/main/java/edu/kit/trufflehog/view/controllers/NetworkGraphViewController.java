@@ -16,39 +16,29 @@ import javafx.embed.swing.SwingNode;
  * 		an instance of a NetworkGraphViewController into the existing javafx environment easily.
  * </p>
  */
-public abstract class NetworkGraphViewController extends SwingNode
-		implements VisualizationServer<INode, IConnection>,
+public abstract class NetworkGraphViewController extends SwingNode implements VisualizationServer<INode, IConnection>,
 		IViewController<GraphInteraction> {
 
-	/** The wrapped instance of view controller notifier. **/
-	private final INotifier<IUserCommand> viewControllerNotifier =
-			new ViewControllerNotifier();
-
 	/**
-	 * {@inheritDoc}
+	 * <p>
+	 *     The wrapped instance of view controller notifier.
+	 * </p>
 	 */
+	private final INotifier<IUserCommand> viewControllerNotifier = new ViewControllerNotifier();
+
 	@Override
 	public final boolean addListener(final IListener<IUserCommand> listener) {
 
 		return viewControllerNotifier.addListener(listener);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public final boolean removeListener(final IListener<IUserCommand> listener) {
 		return viewControllerNotifier.removeListener(listener);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public final void notifyListeners(final IUserCommand message) {
 		viewControllerNotifier.notifyListeners(message);
 	}
-
-
-
 }

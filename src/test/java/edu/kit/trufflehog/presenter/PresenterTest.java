@@ -49,4 +49,5 @@ public class PresenterTest {
         Presenter presenter2 = Presenter.createPresenter();
         assertEquals(presenter, presenter2);
     }
+
 }

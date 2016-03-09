@@ -11,12 +11,17 @@ import javafx.scene.Scene;
 public interface IWindowController {
 
 	/**
-	 * Shows this window on the screen.
+	 * <p>
+     *     Shows this window on the screen.
+	 * </p>
 	 */
 	void show();
 
 	/**
-	 * Sets the scene to be displayed by the window controller.
+     * <p>
+     *     Sets the scene to be displayed by the window controller.
+     * </p>
+     *
 	 * @param scene the scene to be displayed
 	 */
 	void setScene(Scene scene);
