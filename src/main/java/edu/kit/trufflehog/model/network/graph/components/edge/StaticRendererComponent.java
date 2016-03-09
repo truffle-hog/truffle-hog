@@ -18,6 +18,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.awt.Color;
@@ -40,11 +41,15 @@ public class StaticRendererComponent implements IRendererComponent {
     private Color unpicked;
     private Stroke stroke;
 
-    public StaticRendererComponent(Shape shape, Color picked, Color unpicked, Stroke stroke) {
+    public StaticRendererComponent(Shape shape, Color colorPicked, Color colorUnpicked, Stroke stroke) {
+        if (colorPicked == null) throw new NullPointerException("colorPicked must not be null!");
+        if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
+        if (shape == null) throw new NullPointerException("shape must not be null!");
+        if (stroke == null) throw new NullPointerException("stroke must not be null!");
 
         this.shape = shape;
-        this.picked = picked;
-        this.unpicked = unpicked;
+        this.picked = colorPicked;
+        this.unpicked = colorUnpicked;
         this.stroke = stroke;
     }
 
@@ -70,26 +75,31 @@ public class StaticRendererComponent implements IRendererComponent {
 
     @Override
     public void setColorPicked(Color colorPicked) {
-
+        if (colorPicked == null) throw new NullPointerException("colorPicked must not be null!");
         this.picked = colorPicked;
     }
 
     @Override
     public void setColorUnpicked(Color colorUnpicked) {
-
+        if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
         this.unpicked = colorUnpicked;
     }
 
     @Override
     public void setShape(Shape shape) {
-
+        if (shape == null) throw new NullPointerException("shape must not be null!");
         this.shape = shape;
     }
 
     @Override
     public void setStroke(Stroke stroke) {
-
+        if (stroke == null) throw new NullPointerException("stroke must not be null!");
         this.stroke = stroke;
+    }
+
+    @Override
+    public void updateState() {
+        //TODO implement if needed
     }
 
     @Override
@@ -99,7 +109,8 @@ public class StaticRendererComponent implements IRendererComponent {
 
     @Override
     public IComponent createDeepCopy(ICopyCreator copyCreator) {
-        return null;
+        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
+        return copyCreator.createDeepCopy(this);
     }
 
     @Override
@@ -109,6 +120,14 @@ public class StaticRendererComponent implements IRendererComponent {
 
     @Override
     public boolean update(IComponent instance, IUpdater updater) {
-        return false;
+        if (instance == null) throw new NullPointerException("instance must not be null!");
+        if (updater == null) throw new NullPointerException("updater must not be null!");
+
+        return updater.update(this, instance);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return (o instanceof StaticRendererComponent);
     }
 }

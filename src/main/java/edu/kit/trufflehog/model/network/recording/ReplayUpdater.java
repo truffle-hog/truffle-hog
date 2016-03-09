@@ -22,14 +22,13 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.IRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-
-import javax.swing.text.View;
-import javax.xml.soap.Node;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 
 /**
  * \brief
@@ -74,6 +73,16 @@ public class ReplayUpdater implements IUpdater {
 
         nodeStatisticsComponent.setThroughputProperty(comp.getThroughput());
         return true;
+    }
+
+    @Override
+    public boolean update(NodeRendererComponent nodeRendererComponent, IComponent instance) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    @Override
+    public boolean update(PacketDataLoggingComponent packetDataLoggingComponent, IComponent instance) {
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override

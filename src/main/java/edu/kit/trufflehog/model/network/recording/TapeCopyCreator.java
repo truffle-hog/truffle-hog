@@ -21,9 +21,16 @@ import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.NetworkIOPort;
 import edu.kit.trufflehog.model.network.NetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.*;
+import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.*;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.util.ICopyCreator;
+import javafx.beans.property.IntegerProperty;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -107,6 +114,19 @@ public class TapeCopyCreator implements ICopyCreator {
     }
 
     @Override
+    public IComponent createDeepCopy(StaticRendererComponent staticRendererComponent) {
+        if (staticRendererComponent == null) throw new NullPointerException("staticRendererComponent must not be null!");
+        Color picked = staticRendererComponent.getColorPicked();
+        Color unpicked = staticRendererComponent.getColorUnpicked();
+        Shape shape = staticRendererComponent.getShape();
+        Stroke stroke = staticRendererComponent.getStroke();
+
+        final IComponent copy = new StaticRendererComponent(shape, picked, unpicked, stroke);
+
+        return copy;
+    }
+
+    @Override
     public IComponent createDeepCopy(ViewComponent viewComponent) {
 
         final IRendererComponent comp = viewComponent.getRenderer();
@@ -116,6 +136,37 @@ public class TapeCopyCreator implements ICopyCreator {
 
         return new ViewComponent(renderer);
 
+    }
+
+    @Override
+    public IComponent createDeepCopy(NodeRendererComponent nodeRendererComponent) {
+        if (nodeRendererComponent == null) throw new NullPointerException("nodeRendererComponent must not be null!");
+        Color picked = nodeRendererComponent.getColorPicked();
+        Color unpicked = nodeRendererComponent.getColorUnpicked();
+        Shape shape = nodeRendererComponent.getShape();
+
+        final NodeRendererComponent copy = new NodeRendererComponent(shape, picked, unpicked);
+
+        return copy;
+    }
+
+    @Override
+    public IComponent createDeepCopy(NodeStatisticsComponent nodeStatisticsComponent) {
+        if (nodeStatisticsComponent == null) throw new NullPointerException("nodeStatisticsComponent must not be null!");
+        IntegerProperty throughput = nodeStatisticsComponent.getThroughputProperty();
+
+        NodeStatisticsComponent copy = new NodeStatisticsComponent(throughput.getValue());
+
+        return copy;
+    }
+
+    @Override
+    public IComponent createDeepCopy(PacketDataLoggingComponent packetDataLoggingComponent) {
+        if (packetDataLoggingComponent == null) throw new NullPointerException("packetDataLoggingComponent must not be null!");
+
+        PacketDataLoggingComponent copy = new PacketDataLoggingComponent(packetDataLoggingComponent.getObservablePackets());
+
+        return copy;
     }
 
     @Override

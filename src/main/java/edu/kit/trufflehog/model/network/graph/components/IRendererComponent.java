@@ -1,4 +1,4 @@
-package edu.kit.trufflehog.model.network.graph.components.edge;
+package edu.kit.trufflehog.model.network.graph.components;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 
@@ -26,4 +26,6 @@ public interface IRendererComponent extends IComponent {
     void setShape(Shape shape);
 
     void setStroke(Stroke stroke);
+
+    void updateState();
 }

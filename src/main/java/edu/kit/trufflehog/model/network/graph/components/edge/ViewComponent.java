@@ -17,8 +17,8 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
-import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 /**
@@ -35,7 +35,7 @@ public class ViewComponent implements IComponent {
     private final IRendererComponent renderer;
 
     public ViewComponent(IRendererComponent renderer) {
-
+        if (renderer == null) throw new NullPointerException("renderer must not be null!");
         this.renderer = renderer;
     }
 
@@ -46,11 +46,12 @@ public class ViewComponent implements IComponent {
 
     @Override
     public String name() {
-        return null;
+        return "View component";
     }
 
     @Override
     public IComponent createDeepCopy(ICopyCreator copyCreator) {
+        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
         return copyCreator.createDeepCopy(this);
     }
 
@@ -61,6 +62,8 @@ public class ViewComponent implements IComponent {
 
     @Override
     public boolean update(IComponent instance, IUpdater updater) {
+        if (instance == null) throw new NullPointerException("instance must not be null!");
+        if (updater == null) throw new NullPointerException("updater must not be null!");
         return updater.update(this, instance);
     }
 }
