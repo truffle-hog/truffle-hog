@@ -46,14 +46,10 @@ public class NetworkIOPort implements INetworkIOPort {
 
     private final IUpdater liveUpdater = new LiveUpdater();
 
-    private final Service<Collection<IConnection>> copyService;
-
     public NetworkIOPort(final Graph<INode, IConnection> delegate) {
 
         maxConnectionSizeProperty.bind(maxTrafficBinding);
         maxThroughputProperty.bind(maxThroughputBinding);
-
-        copyService = new CopyService(copyCache, whileCopyBuffer, isCopying);
 
         this.delegate = delegate;
     }
