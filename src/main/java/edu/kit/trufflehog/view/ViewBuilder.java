@@ -98,7 +98,7 @@ public class ViewBuilder {
 
         AnchorPane.setLeftAnchor(primaryView, 0d);
         AnchorPane.setRightAnchor(primaryView, 0d);
-        AnchorPane.setTopAnchor(primaryView, 30d);
+        AnchorPane.setTopAnchor(primaryView, 29d);
         AnchorPane.setBottomAnchor(primaryView, 0d);
 
         // Set up scene
@@ -136,8 +136,8 @@ public class ViewBuilder {
         menuBar.getStylesheets().add(css);
 
         // Set dimensions
-        menuBar.setMaxHeight(30);
-        menuBar.setMinHeight(30);
+        menuBar.setMaxHeight(29);
+        menuBar.setMinHeight(29);
 
         return menuBar;
     }
