@@ -33,6 +33,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.Collection;
@@ -48,6 +50,8 @@ import java.util.Map;
  * @version 1.0
  */
 public class FilterOverlayMenu {
+    private static final Logger logger = LogManager.getLogger();
+
     private ObservableList<FilterInput> data;
     private ConfigDataModel configDataModel;
 
@@ -119,6 +123,7 @@ public class FilterOverlayMenu {
                 // Make sure the filter is updated in the database when the active status changes
                 booleanProperty.addListener((observable, oldValue, newValue) -> {
                     configDataModel.updateFilterInput(filterInput);
+                    logger.debug("Updated FilterInput: " + filterInput.getName() + " to table view and database.");
                 });
 
                 return booleanProperty;
@@ -172,6 +177,7 @@ public class FilterOverlayMenu {
             FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             data.remove(filterInput);
             configDataModel.removeFilterInput(filterInput);
+            logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
         });
         removeButton.setScaleX(0.5);
         removeButton.setScaleY(0.5);
@@ -202,5 +208,7 @@ public class FilterOverlayMenu {
     public void addFilter(FilterInput filterInput) {
         data.add(filterInput);
         configDataModel.addFilterInput(filterInput);
+
+        logger.debug("Added FilterInput: " + filterInput.getName() + " to table view and database.");
     }
 }

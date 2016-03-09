@@ -16,7 +16,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * </p>
  */
 public class Presenter {
-    private static final Logger logger = LogManager.getLogger(Presenter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static Presenter presenter;
     private final ConfigDataModel configDataModel;
