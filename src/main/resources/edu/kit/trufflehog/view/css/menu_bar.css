@@ -16,5 +16,13 @@
  */
 
 .menu-bar {
+    -fx-background-color: #528BFF;
+}
 
+.text {
+    -fx-fill: white;
+    -fx-opacity: 100%;
+    -fx-font-size: 90%;
+    -fx-font-weight: 100;
+    -fx-font-family: 'Droid Sans';
 }

@@ -98,14 +98,15 @@ public class ViewBuilder {
 
         AnchorPane.setLeftAnchor(primaryView, 0d);
         AnchorPane.setRightAnchor(primaryView, 0d);
-        AnchorPane.setTopAnchor(primaryView, 20d);
+        AnchorPane.setTopAnchor(primaryView, 30d);
         AnchorPane.setBottomAnchor(primaryView, 0d);
 
         // Set up scene
         Scene mainScene = new Scene(mainViewController);
 
         primaryStage.setScene(mainScene);
-        primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("images" + File.separator +"icon.png")));
+        primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("images" + File.separator
+                + "icon.png")));
         primaryStage.setOnCloseRequest(e -> Platform.exit());
 
         // Set min. dimensions
@@ -126,10 +127,17 @@ public class ViewBuilder {
     }
 
     private MenuBar buildMenuBar() {
-        MenuBar menuBar = new MenuBar();
-        menuBar.getStylesheets().add("images" + File.separator + "menubar.css");
-        menuBar.setMaxHeight(20);
-        menuBar.setMinHeight(20);
+        // Get MenuBar
+        MenuBarViewController menuBarViewController = new MenuBarViewController("fxml" + File.separator + "menu_bar.fxml");
+        MenuBar menuBar = (MenuBar) menuBarViewController.getChildren().get(0);
+
+        // Add css
+        String css = this.getClass().getResource("css" + File.separator + "menu_bar.css").toExternalForm();
+        menuBar.getStylesheets().add(css);
+
+        // Set dimensions
+        menuBar.setMaxHeight(30);
+        menuBar.setMinHeight(30);
 
         return menuBar;
     }

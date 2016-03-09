@@ -9,9 +9,8 @@ import java.util.Map;
 
 /**
  * <p>
- *     The MainViewController incorporates all GUI elements that belong to the
- *     primary scope of the application. This for example includes the top
- *     Menu Bar.
+ *     The MainViewController incorporates all GUI elements that belong to the primary scope of the application.
+ *     This for example includes the top Menu Bar and all the settings menus as well as the statistic windows.
  * </p>
  */
 public class MainViewController extends AnchorPaneController<MainInteraction> {
