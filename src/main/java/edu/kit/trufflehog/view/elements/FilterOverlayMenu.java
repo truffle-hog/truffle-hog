@@ -97,13 +97,13 @@ public class FilterOverlayMenu {
         tableView.setEditable(true);
 
         // Set up filter column
-        TableColumn nameColumn = new TableColumn("Filter");
+        final TableColumn nameColumn = new TableColumn("Filter");
         nameColumn.setMinWidth(158);
         tableView.getColumns().add(nameColumn);
         nameColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("name"));
 
         // Set up type column
-        TableColumn typeColumn = new TableColumn("Type");
+        final TableColumn typeColumn = new TableColumn("Type");
         typeColumn.setMinWidth(90);
         tableView.getColumns().add(typeColumn);
         typeColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("type"));
@@ -210,9 +210,11 @@ public class FilterOverlayMenu {
      * @param filterInput The {@link FilterInput} object to add to the table view.
      */
     public void addFilter(FilterInput filterInput) {
-        data.add(filterInput);
-        configDataModel.addFilterInput(filterInput);
+        if (filterInput != null) {
+            data.add(filterInput);
+            configDataModel.addFilterInput(filterInput);
 
-        logger.debug("Added FilterInput: " + filterInput.getName() + " to table view and database.");
+            logger.debug("Added FilterInput: " + filterInput.getName() + " to table view and database.");
+        }
     }
 }
