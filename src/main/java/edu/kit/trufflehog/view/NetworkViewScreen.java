@@ -197,6 +197,8 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
             final ViewComponent viewComponent = iConnection.getComponent(ViewComponent.class);
 
+			viewComponent.getRenderer().updateState();
+
             if (getPickedEdgeState().isPicked(iConnection)) {
                 return viewComponent.getRenderer().getColorPicked();
             } else {
@@ -395,7 +397,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	@Override
 	public void repaint() {
-		throw new UnsupportedOperationException("Operation not implemented yet");
+		jungView.repaint();
 	}
 
 	@Override

@@ -20,11 +20,15 @@ package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.view.*;
+import edu.kit.trufflehog.view.controllers.IWindowController;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
@@ -55,7 +59,7 @@ public class ViewBuilder {
     // View related variables
     private final Stage primaryStage;
     private final MainViewController mainViewController = new MainViewController("main_view.fxml");
-    private AnchorPane primaryView;
+    private final AnchorPane primaryView = new AnchorPane();
 
     private OverlayViewController recordOverlayViewController;
     private OverlayViewController filterOverlayViewController;
@@ -86,36 +90,37 @@ public class ViewBuilder {
      *     Builds the entire view. That means it connects all view components with each other and with other necessary
      *     components as well.
      * </p>
+     * @param viewPort
      */
-    public void build() {
+    public void build(INetworkViewPort viewPort) {
         loadFonts();
 
-        primaryView = new AnchorPane();
+        final Node node = new NetworkViewScreen(viewPort, 50);
 
-        MenuBar menuBar = buildMenuBar();
-
-        mainViewController.getChildren().addAll(menuBar, primaryView);
-        AnchorPane.setRightAnchor(menuBar, 0d);
-        AnchorPane.setTopAnchor(menuBar, 0d);
-        AnchorPane.setLeftAnchor(menuBar, 0d);
+        final MenuBarViewController menuBar = buildMenuBar();
 
         AnchorPane.setLeftAnchor(primaryView, 0d);
         AnchorPane.setRightAnchor(primaryView, 0d);
         AnchorPane.setTopAnchor(primaryView, 29d);
         AnchorPane.setBottomAnchor(primaryView, 0d);
 
-        // Set up scene
-        Scene mainScene = new Scene(mainViewController);
+        primaryView.getChildren().add(node);
+        AnchorPane.setBottomAnchor(node, 0d);
+        AnchorPane.setTopAnchor(node, 0d);
+        AnchorPane.setLeftAnchor(node, 0d);
+        AnchorPane.setRightAnchor(node, 0d);
 
-        primaryStage.setScene(mainScene);
-        primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
-        primaryStage.setOnCloseRequest(e -> System.exit(0));
+        // Set up scene
+        final Scene mainScene = new Scene(mainViewController);
+        final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
+
+        mainViewController.setCenter(primaryView);
+
+        rootWindow.show();
 
         // Set min. dimensions
         primaryStage.setMinWidth(720d);
         primaryStage.setMinHeight(480d);
-
-        primaryStage.show();
 
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
@@ -135,20 +140,11 @@ public class ViewBuilder {
         buildRecordOverlay();
     }
 
-    private MenuBar buildMenuBar() {
+    private MenuBarViewController buildMenuBar() {
         // Get MenuBar
         final MenuBarViewController menuBarViewController = new MenuBarViewController("menu_bar.fxml");
-        final MenuBar menuBar = (MenuBar) menuBarViewController.getChildren().get(0);
 
-        // Add css
-        final String css = this.getClass().getResource("/edu/kit/trufflehog/view/menu_bar.css").toExternalForm();
-        menuBar.getStylesheets().add(css);
-
-        // Set dimensions
-        menuBar.setMaxHeight(29);
-        menuBar.setMinHeight(29);
-
-        return menuBar;
+        return menuBarViewController;
     }
 
     /**

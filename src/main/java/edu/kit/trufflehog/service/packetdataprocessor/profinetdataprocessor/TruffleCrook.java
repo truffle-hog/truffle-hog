@@ -36,7 +36,7 @@ public class TruffleCrook extends TruffleReceiver {
             synchronized (this) {
                 try {
                     Truffle truffle = null;
-                    if (System.currentTimeMillis() - lastCreation > 1000) {
+                    if (System.currentTimeMillis() - lastCreation > 500) {
                         truffle = getTruffle();
                         lastCreation = System.currentTimeMillis();
                     }

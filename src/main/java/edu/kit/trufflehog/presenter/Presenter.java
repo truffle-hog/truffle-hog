@@ -12,7 +12,6 @@ import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.executor.TruffleExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.util.bindings.PlatformIntegerBinding;
 import edu.kit.trufflehog.view.*;
 import javafx.animation.KeyFrame;
@@ -92,7 +91,7 @@ public class Presenter {
     public void present() {
 
         initNetwork();
-        viewBuilder.build();
+        viewBuilder.build(viewPort);
     }
 
     private void initNetwork() {
@@ -165,13 +164,13 @@ public class Presenter {
         viewPort = viewPortSwitch;
     }
 
-    /*
-    private void initGUI() {
+
+   /* private void initGUI() {
 
         // setting up main window
         MainViewController mainView = new MainViewController("main_view.fxml");
         Scene mainScene = new Scene(mainView);
-        RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene);
+        RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
         //primaryStage.setScene(mainScene);
         //primaryStage.show();
         rootWindow.show();
@@ -266,6 +265,6 @@ public class Presenter {
         AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
 
-    }
-    */
+    }*/
+
 }

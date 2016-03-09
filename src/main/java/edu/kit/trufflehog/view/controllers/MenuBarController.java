@@ -6,32 +6,23 @@ import edu.kit.trufflehog.interaction.IInteraction;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.INotifier;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.Node;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.ToolBar;
 
 import java.io.IOException;
 
-
 /**
  * <p>
- *      The Basic abstraction for all BorderPane controllers. Every abstraction
- *      for javafx Components wraps a {@link ViewControllerNotifier} instance
- *      for implementation of the specific operations of the INotifier
- *      interface.
+ *     The ToolBarController is the Basic ToolBar class that will be
+ *     used by every ToolBar implementation in the application. Extending the
+ *     javafx {@link ToolBar} it can be placed on every javafx Component.
  * </p>
- *
- * @param <I> The type of interaction to be used in the ViewController
+ * @param <I> The type of interactions to be used on this toolbar
  */
-public abstract class BorderPaneController<I extends IInteraction> extends BorderPane implements IViewController<I> {
+public abstract class MenuBarController<I extends IInteraction> extends MenuBar implements IViewController<I> {
 
-    /**
-     * <p>
-     *     The wrapped instance of view controller notifier.
-     * </p>
-     */
-    private final INotifier<IUserCommand> viewControllerNotifier = new ViewControllerNotifier();
-
-    public BorderPaneController(String fxmlFile) {
-
+    public MenuBarController(String fxmlFile) {
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -41,12 +32,17 @@ public abstract class BorderPaneController<I extends IInteraction> extends Borde
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-
     }
+
+    /**
+     * <p>
+     *     The wrapped instance of view controller notifier.
+     * </p>
+     */
+    private final INotifier<IUserCommand> viewControllerNotifier = new ViewControllerNotifier();
 
     @Override
     public final boolean addListener(final IListener<IUserCommand> listener) {
-
         return viewControllerNotifier.addListener(listener);
     }
 
@@ -59,5 +55,4 @@ public abstract class BorderPaneController<I extends IInteraction> extends Borde
     public final void notifyListeners(final IUserCommand message) {
         viewControllerNotifier.notifyListeners(message);
     }
-
 }

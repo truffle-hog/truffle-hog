@@ -40,12 +40,11 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root type="MenuBar" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@menu_bar.css" />
     </stylesheets>
-   <children>
-      <MenuBar layoutX="-109.0" layoutY="-41.0">
+      <!--MenuBar layoutX="-109.0" layoutY="-41.0"-->
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -63,6 +62,5 @@
             </items>
           </Menu>
         </menus>
-      </MenuBar>
-   </children>
+      <!--/MenuBar-->
 </fx:root>

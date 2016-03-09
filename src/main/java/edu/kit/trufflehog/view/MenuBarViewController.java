@@ -37,6 +37,7 @@ package edu.kit.trufflehog.view;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.MainInteraction;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
+import edu.kit.trufflehog.view.controllers.MenuBarController;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -49,7 +50,7 @@ import java.util.Map;
  * @author Julian Brendl
  * @version 1.0
  */
-public class MenuBarViewController extends AnchorPaneController<MainInteraction> {
+public class MenuBarViewController extends MenuBarController<MainInteraction> {
     /**
      * <p>
      *     The commands that are mapped to their interactions.

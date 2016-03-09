@@ -89,6 +89,8 @@ public class Main extends Application {
 	@Override
 	public void stop() {
 		Platform.exit();
+
+        //TODO close services (TruffleReceiver otherwise produces a broken pipe)
 		System.exit(0);
 	}
 }

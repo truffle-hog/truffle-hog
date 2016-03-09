@@ -14,7 +14,7 @@ import java.util.Map;
  *     This for example includes the top Menu Bar and all the settings menus as well as the statistic windows.
  * </p>
  */
-public class MainViewController extends AnchorPaneController<MainInteraction> {
+public class MainViewController extends BorderPaneController<MainInteraction> {
     /**
      * <p>
      *     The commands that are mapped to their interactions.
