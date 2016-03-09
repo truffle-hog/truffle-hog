@@ -24,7 +24,6 @@ import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
@@ -60,10 +59,6 @@ public class ViewBuilder {
     private OverlayViewController recordOverlayViewController;
     private OverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
-
-    private boolean settingsButtonPressed = false;
-    private boolean filterButtonPressed = false;
-    private boolean recordButtonPressed = false;
 
     private TableView tableView;
 
@@ -214,26 +209,38 @@ public class ViewBuilder {
     private Button buildSettingsButton() {
         Button settingsButton = new ImageButton(".." + File.separator + "gear.png");
         settingsButton.setOnAction(event -> {
-            Stage settingsStage = new Stage();
-            SettingsViewController settingsView = new SettingsViewController("settings_view.fxml");
-            Scene settingsScene = new Scene(settingsView);
-            settingsStage.setScene(settingsScene);
-            settingsStage.show();
+            settingsOverlayViewController.setVisible(!settingsOverlayViewController.isVisible());
 
-            // CTRL+W for closing
-            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN)
-                    , settingsStage::close);
+            // Hide the filter menu if it is visible
+            if (filterOverlayViewController.isVisible()) {
+                filterOverlayViewController.setVisible(false);
+            }
 
-            // CTRL+S triggers info about program settings saving
-            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN),
-                    () -> {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Relax, no need to save anything here");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Oops. Seems you wanted to save the configuration by pressing CTRL+S. This" +
-                                " is not necessary thanks to the awesome always up-to-date saving design of TruffleHog.");
-                        alert.showAndWait();
-                    });
+            // Hide the record menu if it is visible
+            if (recordOverlayViewController.isVisible()) {
+                recordOverlayViewController.setVisible(false);
+            }
+
+//            Stage settingsStage = new Stage();
+//            SettingsViewController settingsView = new SettingsViewController("settings_view.fxml");
+//            Scene settingsScene = new Scene(settingsView);
+//            settingsStage.setScene(settingsScene);
+//            settingsStage.show();
+//
+//            // CTRL+W for closing
+//            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN)
+//                    , settingsStage::close);
+//
+//            // CTRL+S triggers info about program settings saving
+//            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN),
+//                    () -> {
+//                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//                        alert.setTitle("Relax, no need to save anything here");
+//                        alert.setHeaderText(null);
+//                        alert.setContentText("Oops. Seems you wanted to save the configuration by pressing CTRL+S. This" +
+//                                " is not necessary thanks to the awesome always up-to-date saving design of TruffleHog.");
+//                        alert.showAndWait();
+//                    });
         });
 
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN),
@@ -253,14 +260,21 @@ public class ViewBuilder {
     private Button buildFilterButton() {
         Button filterButton = new ImageButton(".." + File.separator + "filter.png");
         filterButton.setOnAction(event -> {
-            settingsOverlayViewController.setVisible(false);
-            filterOverlayViewController.setVisible(!filterButtonPressed);
-            recordOverlayViewController.setVisible(false);
-            filterButtonPressed = !filterButtonPressed;
+            filterOverlayViewController.setVisible(!filterOverlayViewController.isVisible());
 
             // Deselect anything that was selected
-            if (!filterButtonPressed) {
+            if (!filterOverlayViewController.isVisible()) {
                 tableView.getSelectionModel().clearSelection();
+            }
+
+            // Hide the settings menu if it is visible
+            if (settingsOverlayViewController.isVisible()) {
+                settingsOverlayViewController.setVisible(false);
+            }
+
+            // Hide the record menu if it is visible
+            if (recordOverlayViewController.isVisible()) {
+                recordOverlayViewController.setVisible(false);
             }
         });
 
@@ -281,10 +295,17 @@ public class ViewBuilder {
         ImageButton recordButton = new ImageButton(".." + File.separator + "record.png");
 
         recordButton.setOnAction(event -> {
-            settingsOverlayViewController.setVisible(false);
-            filterOverlayViewController.setVisible(false);
-            recordOverlayViewController.setVisible(!recordButtonPressed);
-            recordButtonPressed = !recordButtonPressed;
+            recordOverlayViewController.setVisible(!recordOverlayViewController.isVisible());
+
+            // Hide the settings menu if it is visible
+            if (settingsOverlayViewController.isVisible()) {
+                settingsOverlayViewController.setVisible(false);
+            }
+
+            // Hide the filter menu if it is visible
+            if (filterOverlayViewController.isVisible()) {
+                filterOverlayViewController.setVisible(false);
+            }
         });
 
         recordButton.setScaleX(0.8);
