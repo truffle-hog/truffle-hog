@@ -19,13 +19,11 @@ import java.io.IOException;
  * </p>
  * @param <I> The type of interactions to be used on this toolbar
  */
-public abstract class ToolBarController<I extends IInteraction> extends ToolBar
-        implements IViewController<I> {
+public abstract class ToolBarController<I extends IInteraction> extends ToolBar implements IViewController<I> {
 
     public ToolBarController(String fxmlFile, Node... items) {
         super(items);
-        final FXMLLoader fxmlLoader =
-                new FXMLLoader(getClass().getResource(fxmlFile));
+        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
@@ -36,30 +34,23 @@ public abstract class ToolBarController<I extends IInteraction> extends ToolBar
         }
     }
 
-    /** The wrapped instance of view controller notifier. **/
-    private final INotifier<IUserCommand> viewControllerNotifier =
-            new ViewControllerNotifier();
-
     /**
-     * {@inheritDoc}
+     * <p>
+     *     The wrapped instance of view controller notifier.
+     * </p>
      */
+    private final INotifier<IUserCommand> viewControllerNotifier = new ViewControllerNotifier();
+
     @Override
     public final boolean addListener(final IListener<IUserCommand> listener) {
-
         return viewControllerNotifier.addListener(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean removeListener(final IListener<IUserCommand> listener) {
         return viewControllerNotifier.removeListener(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void notifyListeners(final IUserCommand message) {
         viewControllerNotifier.notifyListeners(message);

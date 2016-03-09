@@ -21,13 +21,11 @@ import java.io.IOException;
  *
  * @param <I> The type of interaction to be used in the ViewController
  */
-public abstract class TabPaneController<I extends IInteraction> extends
-        TabPane implements IViewController<I> {
+public abstract class TabPaneController<I extends IInteraction> extends TabPane implements IViewController<I> {
 
     public TabPaneController(String fxmlFile) {
 
-        final FXMLLoader fxmlLoader =
-                new FXMLLoader(getClass().getResource(fxmlFile));
+        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
@@ -39,33 +37,26 @@ public abstract class TabPaneController<I extends IInteraction> extends
 
     }
 
-    /** The wrapped instance of view controller notifier. **/
-    private final INotifier<IUserCommand> viewControllerNotifier =
-            new ViewControllerNotifier();
-
-	/**
-     * {@inheritDoc}
+    /**
+     * <p>
+     *     The wrapped instance of view controller notifier.
+     * </p>
      */
+    private final INotifier<IUserCommand> viewControllerNotifier = new ViewControllerNotifier();
+
     @Override
     public final boolean addListener(final IListener<IUserCommand> listener) {
 
         return viewControllerNotifier.addListener(listener);
     }
 
-	/**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean removeListener(final IListener<IUserCommand> listener) {
         return viewControllerNotifier.removeListener(listener);
     }
 
-	/**
-     * {@inheritDoc}
-     */
     @Override
     public final void notifyListeners(final IUserCommand message) {
         viewControllerNotifier.notifyListeners(message);
     }
-
 }

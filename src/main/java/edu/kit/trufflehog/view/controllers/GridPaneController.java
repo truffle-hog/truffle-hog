@@ -6,7 +6,6 @@ import edu.kit.trufflehog.interaction.IInteraction;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.INotifier;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
@@ -22,13 +21,11 @@ import java.io.IOException;
  *
  * @param <I> The type of interaction to be used in the ViewController
  */
-public abstract class GridPaneController<I extends IInteraction> extends
-        GridPane implements IViewController<I> {
+public abstract class GridPaneController<I extends IInteraction> extends GridPane implements IViewController<I> {
 
     public GridPaneController(String fxmlFile) {
 
-        final FXMLLoader fxmlLoader =
-                new FXMLLoader(getClass().getResource(fxmlFile));
+        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
@@ -40,33 +37,27 @@ public abstract class GridPaneController<I extends IInteraction> extends
 
     }
 
-    /** The wrapped instance of view controller notifier. **/
+    /**
+     * <p>
+     *     The wrapped instance of view controller notifier.
+     * </p>
+     */
     private final INotifier<IUserCommand> viewControllerNotifier =
             new ViewControllerNotifier();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean addListener(final IListener<IUserCommand> listener) {
 
         return viewControllerNotifier.addListener(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean removeListener(final IListener<IUserCommand> listener) {
         return viewControllerNotifier.removeListener(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void notifyListeners(final IUserCommand message) {
         viewControllerNotifier.notifyListeners(message);
     }
-
 }
