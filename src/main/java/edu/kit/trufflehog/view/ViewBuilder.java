@@ -22,7 +22,6 @@ import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
-import eu.hansolo.enzo.notification.Notification;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -43,13 +42,15 @@ import static edu.kit.trufflehog.Main.getPrimaryStage;
 
 /**
  * <p>
+ *     The ViewBuilder builds an instance of the TruffleHog view. It connects all view components with each other and
+ *     with other vital components like the saving/loading of configurations.
  * </p>
  *
  * @author Julian Brendl, Maximilian Diez
  * @version 1.0
  */
 public class ViewBuilder {
-    // General vars
+    // General variables
     private ConfigDataModel configDataModel;
 
     // View related variables
@@ -66,10 +67,24 @@ public class ViewBuilder {
 
     private TableView tableView;
 
+    /**
+     * <p>
+     *     Creates the ViewBuilder, which builds the entire view.
+     * </p>
+     *
+     * @param configDataModel The {@link ConfigDataModel} that is necessary to save and load configurations, like filters
+     *                        or settings.
+     */
     public ViewBuilder(ConfigDataModel configDataModel) {
         this.configDataModel = configDataModel;
     }
 
+    /**
+     * <p>
+     *     Builds the entire view. That means it connects all view components with each other and with other necessary
+     *     components as well.
+     * </p>
+     */
     public void build() {
         loadFonts();
 
@@ -98,9 +113,13 @@ public class ViewBuilder {
         buildSettingsOverlay();
         buildFilterMenuOverlay();
         buildRecordOverlay();
-        startNotification();
     }
 
+    /**
+     * <p>
+     *     Builds the settings overlay.
+     * </p>
+     */
     private void buildSettingsOverlay() {
         settingsOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
         mainViewController.getChildren().add(settingsOverlayViewController);
@@ -109,6 +128,11 @@ public class ViewBuilder {
         settingsOverlayViewController.setVisible(false);
     }
 
+    /**
+     * <p>
+     *     Builds the filter menu overlay.
+     * </p>
+     */
     private void buildFilterMenuOverlay() {
         // Build filter menu
         FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configDataModel);
@@ -127,6 +151,11 @@ public class ViewBuilder {
         filterOverlayViewController.setVisible(false);
     }
 
+    /**
+     * <p>
+     *     Builds the record menu overlay.
+     * </p>
+     */
     private void buildRecordOverlay() {
         recordOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
         mainViewController.getChildren().add(recordOverlayViewController);
@@ -135,6 +164,11 @@ public class ViewBuilder {
         recordOverlayViewController.setVisible(false);
     }
 
+    /**
+     * <p>
+     *     Builds the node statistics overlay.
+     * </p>
+     */
     private void buildNodeStatisticsOverlay() {
         OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
         mainViewController.getChildren().add(nodeStatisticsOverlay);
@@ -143,6 +177,11 @@ public class ViewBuilder {
         nodeStatisticsOverlay.setVisible(false);
     }
 
+    /**
+     * <p>
+     *     Builds the general statistics overlay.
+     * </p>
+     */
     private void buildGeneralStatisticsOverlay() {
         OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
         mainViewController.getChildren().add(generalStatisticsOverlay);
@@ -150,6 +189,11 @@ public class ViewBuilder {
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
     }
 
+    /**
+     * <p>
+     *     Builds the toolbar (3 buttons on the bottom left corner).
+     * </p>
+     */
     private void buildToolbar() {
         Button settingsButton = buildSettingsButton();
         Button filterButton = buildFilterButton();
@@ -162,6 +206,11 @@ public class ViewBuilder {
         AnchorPane.setLeftAnchor(mainToolBarController, 5d);
     }
 
+    /**
+     * <p>
+     *     Builds the settings button.
+     * </p>
+     */
     private Button buildSettingsButton() {
         Button settingsButton = new ImageButton(".." + File.separator + "gear.png");
         settingsButton.setOnAction(event -> {
@@ -196,6 +245,11 @@ public class ViewBuilder {
         return settingsButton;
     }
 
+    /**
+     * <p>
+     *     Builds the filter button.
+     * </p>
+     */
     private Button buildFilterButton() {
         Button filterButton = new ImageButton(".." + File.separator + "filter.png");
         filterButton.setOnAction(event -> {
@@ -218,6 +272,11 @@ public class ViewBuilder {
         return filterButton;
     }
 
+    /**
+     * <p>
+     *     Builds the record button.
+     * </p>
+     */
     private Button buildRecordButton() {
         ImageButton recordButton = new ImageButton(".." + File.separator + "record.png");
 
@@ -234,10 +293,11 @@ public class ViewBuilder {
         return recordButton;
     }
 
-    private void startNotification() {
-        Notification.Notifier.INSTANCE.notifyInfo("Program started", "Congrats, you just started TruffleHog.");
-    }
-
+    /**
+     * <p>
+     *     Loads all custom fonts.
+     * </p>
+     */
     private void loadFonts() {
         Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts" + File.separator + "DroidSans" +
                 File.separator + "DroidSans.ttf"), 12);
