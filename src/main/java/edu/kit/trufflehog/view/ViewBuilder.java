@@ -117,7 +117,7 @@ public class ViewBuilder {
 
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
-        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11), () -> primaryStage.setFullScreen(!primaryStage.isFullScreen()));
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11), () -> {primaryStage.setFullScreen(!primaryStage.isFullScreen()); menuBar.setVisible(!menuBar.isVisible());});
 
 
         buildToolbar();
