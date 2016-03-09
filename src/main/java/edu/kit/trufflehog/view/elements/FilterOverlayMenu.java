@@ -112,6 +112,7 @@ public class FilterOverlayMenu {
         TableColumn activeColumn = new TableColumn<>("Active");
         activeColumn.setMinWidth(80);
         tableView.getColumns().add(activeColumn);
+        activeColumn.setSortable(false);
 
         // Set up callback for CheckBoxTableCell
         activeColumn.setCellFactory(tableColumn -> {
