@@ -1,29 +1,16 @@
 package edu.kit.trufflehog.model.network.recording;
 
-import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
-import edu.kit.trufflehog.util.ICopyCreator;
-import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.graph.Graph;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
-import org.apache.commons.collections15.Transformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
 import java.awt.geom.Point2D;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -44,10 +31,6 @@ public class NetworkTape implements INetworkTape {
     private final IntegerProperty currentWritingFrameProperty = new SimpleIntegerProperty(0);
 
     private final IntegerProperty frameCountProperty = new SimpleIntegerProperty(0);
-
-    private final ICopyCreator tapeCopyCreator = new TapeCopyCreator();
-
-
 
     public NetworkTape(int frameRate) {
         this.frameRate = frameRate;
@@ -86,9 +69,9 @@ public class NetworkTape implements INetworkTape {
     }
 
     @Override
-    public void write(INetworkViewPort networkViewPort) {
+    public void writeFrame(NetworkCopy networkCopy) {
 
-        frames.add(new NetworkFrame(networkViewPort, tapeCopyCreator));
+        frames.add(new NetworkFrame(networkCopy));
         currentWritingFrameProperty.set(currentWritingFrameProperty.get() + 1);
         frameCountProperty.set(frames.size() - 1);
     }
@@ -121,7 +104,7 @@ public class NetworkTape implements INetworkTape {
 
     public static class NetworkFrame implements INetworkFrame {
 
-        private final Map<INode, Point2D> nodeMap = new ConcurrentHashMap<>();
+        /*private final Map<INode, Point2D> nodeMap = new ConcurrentHashMap<>();
 
         private final Map<INode, INode> nodes = new ConcurrentHashMap<>();
 
@@ -132,70 +115,47 @@ public class NetworkTape implements INetworkTape {
         private final int maxConnectionSize;
 
         private final long viewTime;
-        private final Dimension dimension;
+        private final Dimension dimension;*/
 
-        private NetworkFrame(INetworkViewPort liveNetworkViewPort, ICopyCreator tapeCopyCreator) {
+        private final NetworkCopy copy;
 
-            //logger.debug(liveNetworkViewPort.getGraph().toString());
+        private NetworkFrame(NetworkCopy copy) {
 
-            liveNetworkViewPort.getGraph().getVertices().stream().forEach(node -> {
-
-                final INode copyNode = node.createDeepCopy(tapeCopyCreator);
-                final Point2D transform = liveNetworkViewPort.transform(node);
-                nodeMap.put(copyNode, new Point2D.Double(transform.getX(), transform.getY()));
-                nodes.put(copyNode, copyNode);
-            });
-
-            liveNetworkViewPort.getGraph().getEdges().stream().forEach(edge -> {
-
-                final IConnection connectionCopy = edge.createDeepCopy(tapeCopyCreator);
-                connections.add(connectionCopy);
-            });
-
-            maxThroughput = liveNetworkViewPort.getMaxThroughput();
+            this.copy = copy;
+/*            maxThroughput = liveNetworkViewPort.getMaxThroughput();
             maxConnectionSize = liveNetworkViewPort.getMaxConnectionSize();
             dimension = liveNetworkViewPort.getSize();
-            viewTime = liveNetworkViewPort.getViewTime();
+            viewTime = liveNetworkViewPort.getViewTime();*/
         }
 
         @Override
         public int getMaxConnectionSize() {
-            return maxConnectionSize;
+            return copy.getMaxConnectionSize();
         }
 
         @Override
         public int getMaxThroughput() {
-            return maxThroughput;
+            return copy.getMaxThroughput();
         }
 
         @Override
         public long getViewTime() {
-            return viewTime;
-        }
-
-        @Override
-        public int getVertexCount() {
-            return nodes.size();
+            return copy.getViewTime();
         }
 
         @Override
         public int getEdgeCount() {
-            return connections.size();
-        }
-
-        @Override
-        public Collection<INode> getVertices() {
-            return nodeMap.keySet();
+            return copy.getConnections().size();
         }
 
         @Override
         public Collection<IConnection> getEdges() {
-            return connections;
+            return copy.getConnections();
         }
 
         @Override
         public Point2D transform(INode iNode) {
-            return nodeMap.get(iNode);
+            return copy.transform(iNode.getAddress());
         }
 
     }

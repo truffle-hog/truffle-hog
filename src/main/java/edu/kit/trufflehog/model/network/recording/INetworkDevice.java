@@ -1,7 +1,6 @@
 package edu.kit.trufflehog.model.network.recording;
 
 import edu.kit.trufflehog.model.network.INetwork;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 
@@ -38,7 +37,7 @@ public interface INetworkDevice {
      * @return {@code true} if the is no record currently active on the given recording port,
      *          {@code false} otherwise
      */
-    boolean record(final INetworkViewPort network, final INetworkTape tape, final int framerate);
+    boolean record(final INetwork network, final INetworkTape tape, final int framerate);
 
 
     /**

@@ -2,6 +2,8 @@ package edu.kit.trufflehog.model.network;
 
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
+import edu.kit.trufflehog.util.DeepCopyable;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.beans.property.IntegerProperty;
@@ -15,7 +17,7 @@ import java.util.Collection;
  * has to give access
  * to specific Metadata of the Network
  */
-public interface INetworkViewPort extends Layout<INode, IConnection> {
+public interface INetworkViewPort extends Layout<INode, IConnection>, DeepCopyable<NetworkViewCopy> {
 
     /**
      * Returns the maximum number of connections that

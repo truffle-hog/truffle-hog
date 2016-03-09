@@ -22,7 +22,6 @@ import java.time.Instant;
  */
 public class MulticastLayeredEdgeRendererComponent implements IRendererComponent {
 
-
     private float multiplier = 1.0f;
 
     private long lastUpdate = Instant.now().toEpochMilli();

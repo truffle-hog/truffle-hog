@@ -1,10 +1,10 @@
 package edu.kit.trufflehog.model.network.recording;
 
 import edu.kit.trufflehog.model.network.INetwork;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
+import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -28,12 +28,14 @@ public class NetworkDevice implements INetworkDevice {
     private boolean isRecording = false;
     private boolean isLive = true;
 
+    private final ICopyCreator copyCreator = new TapeCopyCreator();
+
     private boolean userLocation = false;
     private IntegerProperty playbackFrameProperty = new SimpleIntegerProperty(0);
     private IntegerProperty playbackFrameCountProperty = new SimpleIntegerProperty(0);
 
     @Override
-    public boolean record(final INetworkViewPort network, final INetworkTape tape, final int framerate) {
+    public boolean record(final INetwork network, final INetworkTape tape, final int framerate) {
 
         // TODO check if there is an ongoin recording on the given tape
 /*        if (tape.isRecording) {
@@ -44,10 +46,13 @@ public class NetworkDevice implements INetworkDevice {
         isRecording = true;
         long frameLength = 1000 / framerate;
 
-        tape.write(network);
+        //tape.writeFrame(network);
 
         frameWriter = new Timeline(new KeyFrame(Duration.millis(frameLength), event -> {
-            tape.write(network);
+
+            final NetworkCopy copiedNetwork = network.createDeepCopy(copyCreator);
+
+            tape.writeFrame(copiedNetwork);
             playbackFrameCountProperty.set(tape.getFrameCount() - 1);
         }));
         frameWriter.setCycleCount(Timeline.INDEFINITE);

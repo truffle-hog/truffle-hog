@@ -21,20 +21,20 @@ import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentFRLayout;
+import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
+import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
-import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import org.apache.commons.collections15.Transformer;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 /**
  * \brief
@@ -189,5 +189,15 @@ public class NetworkViewPort implements INetworkViewPort {
     @Override
     public void graphIntersection(Collection<INode> vertices, Collection<IConnection> edges) {
         throw new UnsupportedOperationException("A live graph does not support this operation");
+    }
+
+    @Override
+    public NetworkViewCopy createDeepCopy(ICopyCreator copyCreator) {
+        return copyCreator.createDeepCopy(this);
+    }
+
+    @Override
+    public boolean isMutable() {
+        return false;
     }
 }

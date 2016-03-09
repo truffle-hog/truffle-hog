@@ -35,7 +35,7 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 	@Override
 	public INode createDeepCopy(ICopyCreator copyCreator) {
 
-        copyCreator.createDeepCopy(this);
+		copyCreator.createDeepCopy(this);
 
 		final INode node = new NetworkNode(address);
 
@@ -51,23 +51,23 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 		return node;
 	}
 
-    /**
-     * Updates this node with the given node
-     * @param update the node that updates this node
-     * @return true if the update was successful and values change, false otherwise
-     */
-    @Override
-    public boolean update(IComponent update, IUpdater updater) {
+	/**
+	 * Updates this node with the given node
+	 * @param update the node that updates this node
+	 * @return true if the update was successful and values change, false otherwise
+	 */
+	@Override
+	public boolean update(IComponent update, IUpdater updater) {
 
 		if (!this.equals(update)) {
-            // also implicit NULL check -> no check for null needed
+			// also implicit NULL check -> no check for null needed
 			return false;
 		}
-        // if it is equal than it is an INode thus we can safely cast it
-        final INode updateNode = (INode) update;
+		// if it is equal than it is an INode thus we can safely cast it
+		final INode updateNode = (INode) update;
 
-        return updater.update(this, updateNode);
-    }
+		return updater.update(this, updateNode);
+	}
 
 	@Override
 	public int hashCode() {

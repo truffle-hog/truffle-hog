@@ -1,9 +1,5 @@
 package edu.kit.trufflehog.model.network.graph;
 
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastLayeredEdgeRendererComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 /**
@@ -18,6 +14,7 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
     private final INode dest;
 
     private final int hashcode;
+
     public NetworkConnection(INode networkNodeSrc, INode networkNodeDest, IComponent... components) {
 
         src = networkNodeSrc;
@@ -96,6 +93,7 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
 
     @Override
     public IConnection createDeepCopy(ICopyCreator copyCreator) {
+
         return copyCreator.createDeepCopy(this);
     }
 

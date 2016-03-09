@@ -9,9 +9,8 @@ import javafx.event.EventHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class FrameHandler implements EventHandler<ActionEvent> {
@@ -45,29 +44,31 @@ public class FrameHandler implements EventHandler<ActionEvent> {
 
 //        logger.debug(playFrame.toString());
 
-        final Collection<INode> nodes = new ArrayList<>(replayNetwork.getViewPort().getGraph().getVertices());
+/*        final Collection<INode> nodes = replayNetwork.getViewPort().getGraph().getVertices());
 
         nodes.stream().forEach(vertex -> {
             replayNetwork.getViewPort().getGraph().removeVertex(vertex);
-        });
+        });*/
 
         replayNetwork.getViewPort().setMaxConnectionSize(playFrame.getMaxConnectionSize());
         replayNetwork.getViewPort().setMaxThroughput(playFrame.getMaxThroughput());
         replayNetwork.getViewPort().setViewTime(playFrame.getViewTime());
 
-        if (playFrame.getVertexCount() < replayNetwork.getViewPort().getGraph().getVertexCount() ||
-                playFrame.getEdgeCount() < replayNetwork.getViewPort().getGraph().getVertexCount()) {
+        if (playFrame.getEdgeCount() < replayNetwork.getViewPort().getGraph().getEdgeCount()) {
 
-            replayNetwork.getViewPort().graphIntersection(playFrame.getVertices(), playFrame.getEdges());
+            final List<INode> toBeDeleted = replayNetwork.getViewPort().getGraph().getVertices().stream().
+                    filter(v -> playFrame.transform(v) == null).collect(Collectors.toList());
+
+            toBeDeleted.stream().forEach(v -> replayNetwork.getViewPort().getGraph().removeVertex(v));
         }
 
-        playFrame.getVertices().stream().forEach(node -> {
+/*        playFrame.getVertices().stream().forEach(node -> {
 
             replayNetwork.getWritingPort().writeNode(node);
             if (getMovableNodes()) {
                 replayNetwork.getViewPort().setLocation(node, playFrame.transform(node));
             }
-        });
+        });*/
 
         playFrame.getEdges().stream().forEach(edge -> {
             replayNetwork.getWritingPort().writeConnection(edge);

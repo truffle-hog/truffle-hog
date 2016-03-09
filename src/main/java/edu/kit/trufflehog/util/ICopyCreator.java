@@ -16,15 +16,20 @@
  */
 package edu.kit.trufflehog.util;
 
+import edu.kit.trufflehog.model.network.LiveNetwork;
+import edu.kit.trufflehog.model.network.NetworkIOPort;
+import edu.kit.trufflehog.model.network.NetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.NetworkConnection;
-import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
+import edu.kit.trufflehog.model.network.recording.NetworkCopy;
+import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
+
+import java.util.Collection;
 
 /**
  * \brief
@@ -48,4 +53,11 @@ public interface ICopyCreator {
     IComponent createDeepCopy(EdgeStatisticsComponent edgeStatisticsComponent);
 
     IComponent createDeepCopy(ViewComponent viewComponent);
+
+    NetworkCopy createDeepCopy(LiveNetwork liveNetwork);
+
+    Collection<IConnection> createDeepCopy(NetworkIOPort networkIOPort);
+
+    NetworkViewCopy createDeepCopy(NetworkViewPort networkViewPort);
+
 }

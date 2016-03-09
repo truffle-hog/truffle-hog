@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.model.network.recording;
 
-import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import javafx.beans.property.IntegerProperty;
@@ -41,11 +40,9 @@ public interface INetworkTape {
 
     /**
      * Writes the given live Network onto the current writing frame.
-     * @param networkViewPort the live network to be written on the current writing frame
+     * @param network the live network to be written on the current writing frame
      */
-  //  void write(INetwork liveNetwork);
-
-    void write(INetworkViewPort networkViewPort);
+    void writeFrame(NetworkCopy network);
 
     /**
      * @return The number of frames on this network tape
@@ -72,11 +69,11 @@ public interface INetworkTape {
 
         long getViewTime();
 
-        int getVertexCount();
+        //int getVertexCount();
 
         int getEdgeCount();
 
-        Collection<INode> getVertices();
+        //Collection<INode> getVertices();
 
         Collection<IConnection> getEdges();
 

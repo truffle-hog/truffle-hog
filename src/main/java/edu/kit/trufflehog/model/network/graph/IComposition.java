@@ -9,7 +9,6 @@ import java.util.Collection;
 public interface IComposition extends IComponent, Collection<IComponent> {
 
     /**
-     *
      * Adds the specified Component to this Composition.
      *
      * @param component the component

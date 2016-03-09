@@ -16,18 +16,19 @@
  */
 package edu.kit.trufflehog.model.network.recording;
 
-import edu.kit.trufflehog.model.network.graph.IComponent;
-import edu.kit.trufflehog.model.network.graph.IConnection;
-import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.NetworkConnection;
-import edu.kit.trufflehog.model.network.graph.NetworkNode;
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.IRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
+import edu.kit.trufflehog.model.network.IAddress;
+import edu.kit.trufflehog.model.network.LiveNetwork;
+import edu.kit.trufflehog.model.network.NetworkIOPort;
+import edu.kit.trufflehog.model.network.NetworkViewPort;
+import edu.kit.trufflehog.model.network.graph.*;
+import edu.kit.trufflehog.model.network.graph.components.edge.*;
 import edu.kit.trufflehog.util.ICopyCreator;
+
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * \brief
@@ -39,6 +40,8 @@ import edu.kit.trufflehog.util.ICopyCreator;
  * @version 0.0.1
  */
 public class TapeCopyCreator implements ICopyCreator {
+
+    private Collection<IConnection> lastConnectionsCopied = new ArrayList<>();
 
 
     @Override
@@ -55,7 +58,6 @@ public class TapeCopyCreator implements ICopyCreator {
                 copy.addComponent(component);
             }
         });
-
         return copy;
     }
 
@@ -73,7 +75,6 @@ public class TapeCopyCreator implements ICopyCreator {
                 copy.addComponent(component);
             }
         });
-
         return copy;
     }
 
@@ -115,5 +116,61 @@ public class TapeCopyCreator implements ICopyCreator {
 
         return new ViewComponent(renderer);
 
+    }
+
+    @Override
+    public NetworkCopy createDeepCopy(LiveNetwork liveNetwork) {
+
+        final NetworkViewCopy viewCopy = liveNetwork.getViewPort().createDeepCopy(this);
+
+        return new NetworkCopy(liveNetwork.getWritingPort().createDeepCopy(this), viewCopy.getLocationMap(),
+                viewCopy.getMaxThroughput(), viewCopy.getMaxConnectionSize(),
+                viewCopy.getViewTime());
+    }
+
+    @Override
+    public Collection<IConnection> createDeepCopy(NetworkIOPort networkIOPort) {
+
+        networkIOPort.setCopying(true);
+
+        final Collection<IConnection> copiedCollection = new ArrayList<>();
+
+        networkIOPort.getCopyCache().stream().forEach(connection -> {
+            copiedCollection.add(connection.createDeepCopy(this));
+        });
+
+        // TODO maybe to this in background
+
+        networkIOPort.setCopying(false);
+
+        while (!networkIOPort.getCopyBuffer().isEmpty()) {
+
+            networkIOPort.getCopyCache().add(networkIOPort.getCopyBuffer().remove());
+        }
+
+        this.lastConnectionsCopied = copiedCollection;
+        return copiedCollection;
+    }
+
+    @Override
+    public NetworkViewCopy createDeepCopy(NetworkViewPort networkViewPort) {
+
+        final Map<IAddress, Point2D> locationMap = new HashMap<>();
+
+        lastConnectionsCopied.stream().forEach(connection -> {
+
+            final IAddress src = connection.getSrc().getAddress();
+            final IAddress dest = connection.getDest().getAddress();
+
+            final Point2D srcLoc = networkViewPort.transform(connection.getSrc());
+            final Point2D destLoc = networkViewPort.transform(connection.getDest());
+
+            locationMap.put(src, new Point2D.Double(srcLoc.getX(), srcLoc.getY()));
+            locationMap.put(dest, new Point2D.Double(destLoc.getX(), destLoc.getY()));
+        });
+        final NetworkViewCopy viewCopy = new NetworkViewCopy(locationMap, networkViewPort.getMaxConnectionSize(),
+                networkViewPort.getMaxThroughput(), networkViewPort.getViewTime());
+
+        return viewCopy;
     }
 }

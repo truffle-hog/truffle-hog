@@ -3,6 +3,7 @@ package edu.kit.trufflehog.model.network.recording;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.beans.property.IntegerProperty;
@@ -165,4 +166,13 @@ public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
         return getActiveViewPort().transform(iNode);
     }
 
+    @Override
+    public NetworkViewCopy createDeepCopy(ICopyCreator copyCreator) {
+        return getActiveViewPort().createDeepCopy(copyCreator);
+    }
+
+    @Override
+    public boolean isMutable() {
+        return true;
+    }
 }

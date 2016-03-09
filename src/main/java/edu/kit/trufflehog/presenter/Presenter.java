@@ -222,7 +222,7 @@ public class Presenter {
                 liveButton.setDisable(false);
             });
 
-            final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveViewPort, tape);
+            final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);
             recButton.setOnAction(h -> {
                 startRecordCommand.execute();
             });

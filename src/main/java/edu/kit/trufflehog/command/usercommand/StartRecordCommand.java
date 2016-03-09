@@ -16,7 +16,7 @@
  */
 package edu.kit.trufflehog.command.usercommand;
 
-import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkTape;
 
@@ -32,13 +32,13 @@ import edu.kit.trufflehog.model.network.recording.INetworkTape;
 public class StartRecordCommand implements IUserCommand {
 
     private final INetworkDevice networkDevice;
-    private final INetworkViewPort viewPort;
+    private final INetwork network;
     private final INetworkTape networkTape;
 
-    public StartRecordCommand(INetworkDevice networkDevice, INetworkViewPort viewPort, INetworkTape tape) {
+    public StartRecordCommand(INetworkDevice networkDevice, INetwork network, INetworkTape tape) {
 
         this.networkDevice = networkDevice;
-        this.viewPort = viewPort;
+        this.network = network;
         this.networkTape = tape;
 
     }
@@ -46,6 +46,6 @@ public class StartRecordCommand implements IUserCommand {
     @Override
     public void execute() {
 
-        networkDevice.record(viewPort, networkTape, 20);
+        networkDevice.record(network, networkTape, 20);
     }
 }

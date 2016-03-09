@@ -7,6 +7,7 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
+import edu.kit.trufflehog.util.ICopyCreator;
 import org.junit.Test;
 
 /**
@@ -37,7 +38,7 @@ public class NetworkTapeTest {
     @Test
     public void testWrite() throws Exception {
 
-
+        final ICopyCreator copyCreator = new TapeCopyCreator();
 
         final LiveNetwork liveNetwork = new LiveNetwork(new ConcurrentDirectedSparseGraph<>());
 
@@ -54,11 +55,11 @@ public class NetworkTapeTest {
         }
 
         final INetworkTape tape = new NetworkTape(25);
-        tape.write(liveNetwork.getViewPort());
+        tape.writeFrame(copyCreator.createDeepCopy(liveNetwork));
 
         liveNetwork.getWritingPort().writeNode(new NetworkNode(new MacAddress(0x00FFL)));
 
-        tape.write(liveNetwork.getViewPort());
+        tape.writeFrame(copyCreator.createDeepCopy(liveNetwork));
 
 
         System.out.println(tape.toString());
