@@ -2,7 +2,7 @@ root {
     display: block;
 }
 .overlaybackground {
-    -fx-background-color: #000000;
+    -fx-background-color: #282C34;
     -fx-background-radius: 2;
 }
 
