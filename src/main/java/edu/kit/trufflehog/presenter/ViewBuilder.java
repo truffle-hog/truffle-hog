@@ -16,15 +16,20 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package edu.kit.trufflehog.view;
+package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.view.*;
+import edu.kit.trufflehog.view.controllers.IWindowController;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
+import javafx.scene.Node;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
@@ -33,13 +38,11 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.File;
-
-import static edu.kit.trufflehog.Main.getPrimaryStage;
 
 /**
  * <p>
@@ -55,10 +58,9 @@ public class ViewBuilder {
     private ConfigDataModel configDataModel;
 
     // View related variables
-    private Stage primaryStage;
-    private MainViewController mainViewController;
-    private MenuBar menuBar;
-    private AnchorPane monitoringView;
+    private final Stage primaryStage;
+    private final MainViewController mainViewController = new MainViewController("main_view.fxml");
+    private final AnchorPane monitoringView = new AnchorPane();
 
     private OverlayViewController recordOverlayViewController;
     private OverlayViewController filterOverlayViewController;
@@ -74,8 +76,13 @@ public class ViewBuilder {
      * @param configDataModel The {@link ConfigDataModel} that is necessary to save and load configurations, like filters
      *                        or settings.
      */
-    public ViewBuilder(ConfigDataModel configDataModel) {
+    public ViewBuilder(final ConfigDataModel configDataModel, final Stage primaryStage) {
         this.configDataModel = configDataModel;
+        this.primaryStage = primaryStage;
+
+        if (this.primaryStage == null || this.configDataModel == null) {
+            throw new NullPointerException("primaryStage and configDataModel must not be null");
+        }
     }
 
     /**
@@ -83,31 +90,37 @@ public class ViewBuilder {
      *     Builds the entire view. That means it connects all view components with each other and with other necessary
      *     components as well.
      * </p>
+     *
+     * @param viewPort
      */
-    public void build() {
+    public void build(INetworkViewPort viewPort) {
         loadFonts();
 
-        primaryStage = getPrimaryStage();
-        monitoringView = new AnchorPane();
+        final Node node = new NetworkViewScreen(viewPort, 50);
 
-        MenuBar menuBar = buildMenuBar();
-
-        mainViewController = new MainViewController("main_view.fxml");
-        mainViewController.getChildren().addAll(menuBar, monitoringView);
-        AnchorPane.setRightAnchor(menuBar, 0d);
-        AnchorPane.setTopAnchor(menuBar, 0d);
-        AnchorPane.setLeftAnchor(menuBar, 0d);
+        final MenuBarViewController menuBar = buildMenuBar();
 
         AnchorPane.setLeftAnchor(monitoringView, 0d);
         AnchorPane.setRightAnchor(monitoringView, 0d);
         AnchorPane.setTopAnchor(monitoringView, 29d);
         AnchorPane.setBottomAnchor(monitoringView, 0d);
 
-        // Set up scene
-        Scene mainScene = new Scene(mainViewController);
+        primaryView.getChildren().add(node);
+        AnchorPane.setBottomAnchor(node, 0d);
+        AnchorPane.setTopAnchor(node, 0d);
+        AnchorPane.setLeftAnchor(node, 0d);
+        AnchorPane.setRightAnchor(node, 0d);
 
-        primaryStage.setScene(mainScene);
-        primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
+        // Set up scene
+        final Scene mainScene = new Scene(mainViewController);
+        final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
+
+        //primaryStage.setScene(mainScene);
+        //primaryStage.getIcons().add(new Image(RootWindowController.class.getResourceAsStream("icon.png")));
+
+        mainViewController.setCenter(primaryView);
+
+        rootWindow.show();
 
         // Really do quit the app when the main window closes
         primaryStage.setOnCloseRequest(e -> {
@@ -119,13 +132,9 @@ public class ViewBuilder {
         primaryStage.setMinWidth(720d);
         primaryStage.setMinHeight(480d);
 
-        primaryStage.show();
-
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
-        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11), () -> {
-            primaryStage.setFullScreen(!primaryStage.isFullScreen()); menuBar.setVisible(!menuBar.isVisible());
-        });
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11), () -> {primaryStage.setFullScreen(!primaryStage.isFullScreen()); menuBar.setVisible(!menuBar.isVisible());});
 
         buildToolbar();
 
@@ -148,20 +157,9 @@ public class ViewBuilder {
      *
      * @return The menu bar once it is built.
      */
-    private MenuBar buildMenuBar() {
-        // Get MenuBar
-        MenuBarViewController menuBarViewController = new MenuBarViewController("menu_bar.fxml");
-        menuBar = (MenuBar) menuBarViewController.getChildren().get(0);
-
-        // Add css - this is somehow necessary, the fxml doesn't work.
-        String css = this.getClass().getResource("menu_bar.css").toExternalForm();
-        menuBar.getStylesheets().add(css);
-
-        // Set dimensions
-        menuBar.setMaxHeight(29);
-        menuBar.setMinHeight(29);
-
-        return menuBar;
+    private MenuBarViewController buildMenuBar() {
+        final MenuBarViewController menuBarViewController = new MenuBarViewController("menu_bar.fxml");
+        return menuBarViewController;
     }
 
     /**
@@ -279,7 +277,7 @@ public class ViewBuilder {
      * </p>
      */
     private Button buildSettingsButton() {
-        Button settingsButton = new ImageButton(".." + File.separator + "gear.png");
+        Button settingsButton = new ImageButton("gear.png");
         settingsButton.setOnAction(event -> {
             settingsOverlayViewController.setVisible(!settingsOverlayViewController.isVisible());
 
@@ -330,7 +328,7 @@ public class ViewBuilder {
      * </p>
      */
     private Button buildFilterButton() {
-        Button filterButton = new ImageButton(".." + File.separator + "filter.png");
+        Button filterButton = new ImageButton("filter.png");
         filterButton.setOnAction(event -> {
             filterOverlayViewController.setVisible(!filterOverlayViewController.isVisible());
 
@@ -364,7 +362,7 @@ public class ViewBuilder {
      * </p>
      */
     private Button buildRecordButton() {
-        ImageButton recordButton = new ImageButton(".." + File.separator + "record.png");
+        ImageButton recordButton = new ImageButton("record.png");
 
         recordButton.setOnAction(event -> {
             recordOverlayViewController.setVisible(!recordOverlayViewController.isVisible());

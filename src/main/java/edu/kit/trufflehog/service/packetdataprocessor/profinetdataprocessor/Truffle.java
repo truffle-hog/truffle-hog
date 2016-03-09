@@ -22,6 +22,11 @@ public class Truffle implements IPacketData {
 
     }
 
+    Truffle(long from, long to) {
+        setAttribute(Long.class, "sourceMacAddress", from);
+        setAttribute(Long.class, "destMacAddress", to);
+    }
+
     /**
      * <p>
      *     This method adds a new element under the specified type and name to the Truffle.

@@ -1,7 +1,28 @@
-package edu.kit.trufflehog.model.network.graph;
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import edu.kit.trufflehog.model.network.INetworkViewPort;
+package edu.kit.trufflehog.model.network;
+
+import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentFRLayout;
+import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
+import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.beans.property.IntegerProperty;
@@ -13,9 +34,15 @@ import org.apache.commons.collections15.Transformer;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.time.Instant;
+import java.util.Collection;
 
 /**
- * Created by jan on 22.02.16.
+ * \brief
+ * \details
+ * \date 04.03.16
+ * \copyright GNU Public License
+ * @author Jan Hermes
+ * @version 0.0.1
  */
 public class NetworkViewPort implements INetworkViewPort {
 
@@ -99,7 +126,9 @@ public class NetworkViewPort implements INetworkViewPort {
 
     @Override
     public void setMaxConnectionSize(int size) {
+
         maxConnectionSizeProperty.set(size);
+
     }
 
     @Override
@@ -114,7 +143,9 @@ public class NetworkViewPort implements INetworkViewPort {
 
     @Override
     public void setMaxThroughput(int size) {
+
         maxThroughputProperty.set(size);
+
     }
 
     @Override
@@ -152,6 +183,21 @@ public class NetworkViewPort implements INetworkViewPort {
     @Override
     public void graphIntersection(Graph<INode, IConnection> graph) {
 
-        throw new UnsupportedOperationException("not supported, yet not know if in future");
+        throw new UnsupportedOperationException("A live graph does not support this operation");
+    }
+
+    @Override
+    public void graphIntersection(Collection<INode> vertices, Collection<IConnection> edges) {
+        throw new UnsupportedOperationException("A live graph does not support this operation");
+    }
+
+    @Override
+    public NetworkViewCopy createDeepCopy(ICopyCreator copyCreator) {
+        return copyCreator.createDeepCopy(this);
+    }
+
+    @Override
+    public boolean isMutable() {
+        return false;
     }
 }

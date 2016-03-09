@@ -1,28 +1,26 @@
-package edu.kit.trufflehog.model.network.graph;
+package edu.kit.trufflehog.model.network;
 
-import edu.kit.trufflehog.model.network.IAddress;
-import edu.kit.trufflehog.model.network.INetworkIOPort;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.LiveUpdater;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
-import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
+import edu.kit.trufflehog.util.ICopyCreator;
+import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
 import edu.uci.ics.jung.graph.Graph;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import org.apache.commons.collections15.keyvalue.MultiKey;
+import javafx.concurrent.Service;
+import org.apache.commons.collections4.keyvalue.MultiKey;
 
-import java.time.Duration;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by jan on 22.02.16.
@@ -34,13 +32,19 @@ public class NetworkIOPort implements INetworkIOPort {
     private final Map<IAddress, INode> idNodeMap = new ConcurrentHashMap<>();
     private final Map<MultiKey<IAddress>, IConnection> idConnectionMap = new ConcurrentHashMap<>();
 
+    private final Queue<IConnection> copyCache = new ConcurrentLinkedQueue<>();
+    private final Queue<IConnection> whileCopyBuffer = new LinkedList<>();
+    //private final BooleanProperty copyingProperty = new SimpleBooleanProperty(false);
+
+    private final AtomicBoolean isCopying = new AtomicBoolean(false);
+
     private final IntegerProperty maxThroughputProperty = new SimpleIntegerProperty(0);
     private final IntegerProperty maxConnectionSizeProperty = new SimpleIntegerProperty(0);
 
     private final MaximumOfValuesBinding maxTrafficBinding = new MaximumOfValuesBinding();
     private final MaximumOfValuesBinding maxThroughputBinding = new MaximumOfValuesBinding();
 
-    //private final IntegerProperty
+    private final IUpdater liveUpdater = new LiveUpdater();
 
     public NetworkIOPort(final Graph<INode, IConnection> delegate) {
 
@@ -50,23 +54,50 @@ public class NetworkIOPort implements INetworkIOPort {
         this.delegate = delegate;
     }
 
+/*    public Task<Collection<IConnection>> acceptCopyService(CopyService copyService) {
+
+        return copyService.createCopyTask(copyCache, whileCopyBuffer, isCopying);
+
+    }*/
+
+    synchronized
+    public void setCopying(boolean value) {
+
+        this.isCopying.set(value);
+    }
+
+    public Queue<IConnection> getCopyCache() {
+        return copyCache;
+    }
+
+    public Queue<IConnection> getCopyBuffer() {
+        return whileCopyBuffer;
+    }
+
+    synchronized
     @Override
     public void writeConnection(IConnection connection) {
 
         final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
         final IConnection existing = idConnectionMap.get(connectionKey);
 
-        if (existing != null) {
-            existing.update(connection);
-            return;
+        if (isCopying.get()) {
+            whileCopyBuffer.add(connection);
+        } else {
+            copyCache.add(connection);
         }
 
-        final EdgeStatisticsComponent edgeStat = connection.getComposition().getComponent(EdgeStatisticsComponent.class);
+        //copyCache.add(connection);
+
+        if (existing != null) {
+            existing.update(connection, liveUpdater);
+            return;
+        }
+        final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);
 
         if (edgeStat != null) {
             maxTrafficBinding.bindProperty(edgeStat.getTrafficProperty());
         }
-
         delegate.addEdge(connection, connection.getSrc(), connection.getDest());
         idConnectionMap.put(connectionKey, connection);
     }
@@ -77,20 +108,10 @@ public class NetworkIOPort implements INetworkIOPort {
         final INode existing = idNodeMap.get(node.getAddress());
 
         if (existing != null) {
-            existing.update(node);
-
-            //TODO Improve this!!! and decide where to create components (here or in commands)
-            /*
-            PacketDataLoggingComponent component = existing.getComposition().getComponent(PacketDataLoggingComponent.class);
-            if (component != null) {
-                IPacketData packetData = node.getComposition().getComponent(PacketDataLoggingComponent.class).getObservablePackets().get(0);
-                if (packetData != null) component.addPacket(packetData);
-            }
-            */
+            existing.update(node, liveUpdater);
             return;
         }
-
-        final NodeStatisticsComponent nodeStat = node.getComposition().getComponent(NodeStatisticsComponent.class);
+        final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);
 
         if (nodeStat != null) {
             maxThroughputBinding.bindProperty(nodeStat.getThroughputProperty());
@@ -133,55 +154,14 @@ public class NetworkIOPort implements INetworkIOPort {
         return maxThroughputProperty;
     }
 
+    @Override
+    public Collection<IConnection> createDeepCopy(ICopyCreator copyCreator) {
 
-    private static class MaximumOfValuesBinding extends IntegerBinding implements ChangeListener<Number>, ListChangeListener<IntegerProperty> {
-
-        private final ObservableList<IntegerProperty> boundProperties = FXCollections.observableArrayList();
-
-        private int max = 0;
-
-        public MaximumOfValuesBinding() {
-            super.bind(boundProperties);
-            boundProperties.addListener(this);
-        }
-
-        public void bindProperty(IntegerProperty property) {
-
-            property.addListener(this);
-            super.bind(property);
-            boundProperties.add(property);
-        }
-
-        @Override
-        protected int computeValue() {
-            return max;
-        }
-
-        @Override
-        public void onChanged(Change<? extends IntegerProperty> c) {
-
-            if (c.next()) {
-
-                c.getAddedSubList().stream().forEach(p -> {
-
-                    //System.out.println(p.get());
-
-                    if (p.get() > max) {
-                        max = p.get();
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-
-            //System.out.println(oldValue.intValue() + " " + newValue.intValue());
-
-            if (newValue.intValue() > max) {
-                max = newValue.intValue();
-            }
-        }
+        return copyCreator.createDeepCopy(this);
     }
 
+    @Override
+    public boolean isMutable() {
+        return false;
+    }
 }

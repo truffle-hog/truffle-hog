@@ -14,7 +14,7 @@ import org.apache.commons.collections15.Transformer;
  *      the creation is passed to the view so that the view can create appropriate layouts for the graph.
  * </p>
  */
-public class SetDisplayAlgorithmCommand implements IUserCommand{
+public class SetDisplayAlgorithmCommand implements IUserCommand<Void> {
     private final Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory;
     private final INetworkViewPort viewPort;
 
@@ -33,5 +33,10 @@ public class SetDisplayAlgorithmCommand implements IUserCommand{
     @Override
     public void execute() {
         viewPort.setLayoutFactory(layoutFactory);
+    }
+
+    @Override
+    public <S extends Void> void setSelection(S selection) {
+        throw new UnsupportedOperationException("Really don't do it!");
     }
 }

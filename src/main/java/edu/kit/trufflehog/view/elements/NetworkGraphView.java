@@ -348,4 +348,19 @@ public class NetworkGraphView extends NetworkGraphViewController {
                            final IUserCommand command) {
 		throw new UnsupportedOperationException("Not implemented yet!");
     }
+
+	@Override
+	public void setRefreshRate(int rate) {
+
+	}
+
+	@Override
+	public void enableSmartRefresh(int maxRate) {
+
+	}
+
+	@Override
+	public void disableSmartRefresh() {
+
+	}
 }

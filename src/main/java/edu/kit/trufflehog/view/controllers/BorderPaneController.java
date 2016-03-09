@@ -23,6 +23,13 @@ import java.io.IOException;
  */
 public abstract class BorderPaneController<I extends IInteraction> extends BorderPane implements IViewController<I> {
 
+    /**
+     * <p>
+     *     The wrapped instance of view controller notifier.
+     * </p>
+     */
+    private final INotifier<IUserCommand> viewControllerNotifier = new ViewControllerNotifier();
+
     public BorderPaneController(String fxmlFile) {
 
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
@@ -36,14 +43,6 @@ public abstract class BorderPaneController<I extends IInteraction> extends Borde
         }
 
     }
-
-    /**
-     * <p>
-     *     The wrapped instance of view controller notifier.
-     * </p>
-     */
-    private final INotifier<IUserCommand> viewControllerNotifier =
-            new ViewControllerNotifier();
 
     @Override
     public final boolean addListener(final IListener<IUserCommand> listener) {

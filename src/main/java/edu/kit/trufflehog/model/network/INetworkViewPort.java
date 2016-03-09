@@ -2,18 +2,22 @@ package edu.kit.trufflehog.model.network;
 
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
+import edu.kit.trufflehog.util.DeepCopyable;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import org.apache.commons.collections15.Transformer;
 
+import java.util.Collection;
+
 /**
  * A Networkview port provides all functionality that has to be accessed by the network view. Meaning it also
  * has to give access
  * to specific Metadata of the Network
  */
-public interface INetworkViewPort extends Layout<INode, IConnection> {
+public interface INetworkViewPort extends Layout<INode, IConnection>, DeepCopyable<NetworkViewCopy> {
 
     /**
      * Returns the maximum number of connections that
@@ -82,4 +86,6 @@ public interface INetworkViewPort extends Layout<INode, IConnection> {
      * @param graph
      */
     void graphIntersection(Graph<INode, IConnection> graph);
+
+    void graphIntersection(Collection<INode> vertices, Collection<IConnection> edges);
 }

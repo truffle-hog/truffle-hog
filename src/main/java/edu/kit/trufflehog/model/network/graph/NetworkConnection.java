@@ -1,8 +1,6 @@
 package edu.kit.trufflehog.model.network.graph;
 
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
+import edu.kit.trufflehog.util.ICopyCreator;
 
 /**
  * <p>
@@ -10,33 +8,26 @@ import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRende
  *     communication.
  * </p>
  */
-public class NetworkConnection implements IConnection {
+public class NetworkConnection extends AbstractComposition implements IConnection {
 
     private final INode src;
     private final INode dest;
-    private final IComposition composition;
 
     private final int hashcode;
-    public NetworkConnection(INode networkNodeSrc, INode networkNodeDest) {
+
+    public NetworkConnection(INode networkNodeSrc, INode networkNodeDest, IComponent... components) {
 
         src = networkNodeSrc;
         dest = networkNodeDest;
-        composition = new SimpleComposition();
 
         int result = 17;
         result = result + 31 * this.src.hashCode();
         result = result + 31 * this.dest.hashCode();
         hashcode = result;
 
-        composition.addComponent(new EdgeStatisticsComponent(1));
-
-        if (networkNodeDest.getAddress().isMulticast()) {
-            composition.addComponent(new MulticastEdgeRendererComponent());
-        } else {
-            composition.addComponent(new BasicEdgeRendererComponent());
+        for (IComponent c : components) {
+            this.addComponent(c);
         }
-
-
     }
 
     @Override
@@ -68,71 +59,60 @@ public class NetworkConnection implements IConnection {
     }
 
 
+    @Override
     public String name() {
         return "Network Connection";
     }
 
+    @Override
     public boolean isMutable() {
         return true;
     }
 
-    @Override
+
     public IConnection createDeepCopy() {
 
-        final IConnection copy = new NetworkConnection(getSrc().createDeepCopy(), getDest().createDeepCopy());
+        //TODO externalise
 
-        composition.getComponents().stream().forEach(component -> {
+/*        final IConnection copy = new NetworkConnection(getSrc().createDeepCopy(), getDest().createDeepCopy());
+
+        this.stream().forEach(component -> {
             if (component.isMutable()) {
 
-                copy.getComposition().addComponent(component.createDeepCopy());
+                copy.addComponent(component.createDeepCopy());
 
             } else {
-                copy.getComposition().addComponent(component);
+                copy.addComponent(component);
             }
         });
 
-        return copy;
+        return copy;*/
+        return null;
     }
 
-    /*
-     * Updates the given component if it existis in this node
-     * @param update the component to update this component
-     * @return true if it exists and was updated, false otherwise
-     *
+
     @Override
-    public boolean update(INode update) {
+    public IConnection createDeepCopy(ICopyCreator copyCreator) {
 
-        final IComponent existing = composition.getComponent(update.getClass());
+        return copyCreator.createDeepCopy(this);
+    }
 
-        if (existing == null) {
+    /**
+     * Updates this connection with the given connection
+     * @param update the connection that updates this connection
+     * @return true if this connection was updated, false if there was no success in updating
+     *              or no values changes
+     */
+    @Override
+    public boolean update(IComponent instance, IUpdater updater) {
+
+        if (!this.equals(instance)) {
+            // also implicit NULL check -> no check for null needed
             return false;
         }
+        // if it is equal than it is an IConnection thus we can safely cast it
+        final IConnection updateConnection = (IConnection) instance;
 
-        return existing.update(update);
-    }
-    */
-
-    @Override
-    public boolean update(IConnection update) {
-
-        if (!this.equals(update)) {
-            return false;
-        }
-        /*TODO fix this
-        update.getComposition().getComponents().stream().forEach(c -> {
-
-            if (c.isMutable()) {
-                final IComponent existing = getComponent(c.getClass());
-                existing.update(c);
-            }
-        });
-        */
-        return true;
-
-    }
-
-    @Override
-    public IComposition getComposition() {
-        return composition;
+        return updater.update(this, updateConnection);
     }
 }

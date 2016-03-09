@@ -7,4 +7,5 @@ package edu.kit.trufflehog.interaction;
  * </p>
  */
 public enum GraphInteraction implements IInteraction {
+    VERTEX_SELECTED
 }

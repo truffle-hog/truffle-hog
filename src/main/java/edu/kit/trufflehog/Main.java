@@ -19,6 +19,7 @@ package edu.kit.trufflehog;
 
 import edu.kit.trufflehog.presenter.Presenter;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 
@@ -34,9 +35,6 @@ import java.net.URL;
  */
 public class Main extends Application {
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();
-
-    private static Stage primaryStage;
-	private Presenter presenter;
 
 	/**
 	 * <p>
@@ -72,15 +70,16 @@ public class Main extends Application {
 	}
 
 	/**
-	 * JavaFX start method. This method mainly initializes the GUI-part of the application.
+	 * JavaFX start method.
 	 *
 	 * @param primaryStage Supplied by system
      */
 	@Override
 	public void start(Stage primaryStage) {
-		Main.primaryStage = primaryStage;
+
+		// TODO horror
 		primaryStage.setTitle("TruffleHog");
-		this.presenter = Presenter.createPresenter();
+		final Presenter presenter = new Presenter(primaryStage);
 		presenter.present();
 	}
 
@@ -89,15 +88,9 @@ public class Main extends Application {
 	 */
 	@Override
 	public void stop() {
-	}
+		Platform.exit();
 
-	/**
-	 * Getter for the primary JavaFX stage supplied by the system for use by the {@link Presenter}. As there can
-	 * must only be one primaryStage it is used in a static context.
-	 *
-	 * @return primaryStage
-     */
-	public static Stage getPrimaryStage() {
-		return primaryStage;
+        //TODO close services (TruffleReceiver otherwise produces a broken pipe)
+		System.exit(0);
 	}
 }

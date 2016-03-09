@@ -162,7 +162,7 @@ public class FilterOverlayMenu {
      */
     public BorderPane setUpMenu(TableView tableView) {
         // Set up add button
-        Button addButton = new ImageButton(".." + File.separator + "add.png");
+        Button addButton = new ImageButton("add.png");
         addButton.setOnAction(actionEvent -> {
             FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
             addFilter(filterInput);
@@ -173,7 +173,7 @@ public class FilterOverlayMenu {
         addButton.setScaleY(0.5);
 
         // Set up remove button
-        Button removeButton = new ImageButton(".." + File.separator + "remove.png");
+        Button removeButton = new ImageButton("remove.png");
         removeButton.setOnAction(actionEvent -> {
             FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             if (!data.isEmpty() && filterInput != null) {
