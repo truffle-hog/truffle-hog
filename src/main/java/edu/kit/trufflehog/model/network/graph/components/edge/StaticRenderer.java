@@ -18,7 +18,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
-import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.awt.Color;
@@ -34,14 +34,14 @@ import java.awt.Stroke;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class StaticRendererComponent implements IRendererComponent {
+public class StaticRenderer implements IRenderer {
 
     private Shape shape;
     private Color picked;
     private Color unpicked;
     private Stroke stroke;
 
-    public StaticRendererComponent(Shape shape, Color colorPicked, Color colorUnpicked, Stroke stroke) {
+    public StaticRenderer(Shape shape, Color colorPicked, Color colorUnpicked, Stroke stroke) {
         if (colorPicked == null) throw new NullPointerException("colorPicked must not be null!");
         if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
         if (shape == null) throw new NullPointerException("shape must not be null!");
@@ -103,12 +103,7 @@ public class StaticRendererComponent implements IRendererComponent {
     }
 
     @Override
-    public String name() {
-        return "Static Renderer Component";
-    }
-
-    @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+    public IRenderer createDeepCopy(ICopyCreator copyCreator) {
         if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
         return copyCreator.createDeepCopy(this);
     }
@@ -119,7 +114,7 @@ public class StaticRendererComponent implements IRendererComponent {
     }
 
     @Override
-    public boolean update(IComponent instance, IUpdater updater) {
+    public boolean update(IRenderer instance, IUpdater updater) {
         if (instance == null) throw new NullPointerException("instance must not be null!");
         if (updater == null) throw new NullPointerException("updater must not be null!");
 
@@ -128,6 +123,6 @@ public class StaticRendererComponent implements IRendererComponent {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof StaticRendererComponent);
+        return (o instanceof StaticRenderer);
     }
 }

@@ -273,25 +273,28 @@ public class FXPickingGraphMousePlugin<V, E> extends AbstractGraphMousePlugin
     @SuppressWarnings("unchecked")
     public void mouseDragged(MouseEvent e) {
         if(locked == false) {
-            FXVisualizationViewer<V,E> vv = (FXVisualizationViewer)e.getSource();
+
+            final FXVisualizationViewer<V,E> vv = (FXVisualizationViewer)e.getSource();
+
             if(vertex != null) {
-                Point p = e.getPoint();
-                Point2D graphPoint = vv.getRenderContext().getMultiLayerTransformer().inverseTransform(p);
-                Point2D graphDown = vv.getRenderContext().getMultiLayerTransformer().inverseTransform(down);
-                Layout<V,E> layout = vv.getGraphLayout();
-                double dx = graphPoint.getX()-graphDown.getX();
-                double dy = graphPoint.getY()-graphDown.getY();
-                PickedState<V> ps = vv.getPickedVertexState();
+
+                final Point p = e.getPoint();
+                final Point2D graphPoint = vv.getRenderContext().getMultiLayerTransformer().inverseTransform(p);
+                final Point2D graphDown = vv.getRenderContext().getMultiLayerTransformer().inverseTransform(down);
+                final Layout<V,E> layout = vv.getGraphLayout();
+                final double dx = graphPoint.getX()-graphDown.getX();
+                final double dy = graphPoint.getY()-graphDown.getY();
+                final PickedState<V> ps = vv.getPickedVertexState();
                 
                 for(V v : ps.getPicked()) {
-                    Point2D vp = layout.transform(v);
+                    final Point2D vp = layout.transform(v);
                     vp.setLocation(vp.getX()+dx, vp.getY()+dy);
                     layout.setLocation(v, vp);
                 }
                 down = p;
 
             } else {
-                Point2D out = e.getPoint();
+                final Point2D out = e.getPoint();
                 if(e.getModifiers() == this.addToSelectionModifiers ||
                         e.getModifiers() == modifiers) {
                     rect.setFrameFromDiagonal(down,out);

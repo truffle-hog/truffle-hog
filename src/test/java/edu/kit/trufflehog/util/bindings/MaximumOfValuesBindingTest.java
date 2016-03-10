@@ -27,6 +27,7 @@ public class MaximumOfValuesBindingTest {
         binding = new MaximumOfValuesBinding();
     }
 
+    //FIXME: Fix this whole test class and the Binding.
     @Ignore
     @Test
     public void testBindProperty() throws Exception {

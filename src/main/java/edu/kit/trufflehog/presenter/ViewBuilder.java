@@ -103,7 +103,7 @@ public class ViewBuilder {
     public void build(INetworkViewPort viewPort) {
         loadFonts();
 
-        final Node node = new NetworkViewScreen(viewPort, 50);
+        final Node node = new NetworkViewScreen(viewPort, 10);
 
         final MenuBarViewController menuBar = buildMenuBar();
 

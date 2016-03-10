@@ -20,8 +20,8 @@ import java.awt.geom.Rectangle2D;
 
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
+import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Context;
 import edu.uci.ics.jung.graph.util.EdgeIndexFunction;
@@ -194,7 +194,7 @@ public class FXEdgeShape  {
 
             if (connection.getDest().getAddress().isMulticast()) {
 
-                final IRendererComponent rendererComp = connection.getComponent(ViewComponent.class).getRenderer();
+                final IRenderer rendererComp = connection.getComponent(ViewComponent.class).getRenderer();
                 return rendererComp.getShape();
             }
 

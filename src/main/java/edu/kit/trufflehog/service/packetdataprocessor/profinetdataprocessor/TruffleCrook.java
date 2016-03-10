@@ -35,11 +35,9 @@ public class TruffleCrook extends TruffleReceiver {
         while(!Thread.interrupted()) {
             synchronized (this) {
                 try {
-                    Truffle truffle = null;
-                    if (System.currentTimeMillis() - lastCreation > 500) {
-                        truffle = getTruffle();
-                        lastCreation = System.currentTimeMillis();
-                    }
+                    Thread.sleep(1000);
+
+                    final Truffle truffle = getTruffle();
 
                     if (truffle != null) {
                         notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, node -> System.out.println("Dummy filter")));
@@ -56,9 +54,8 @@ public class TruffleCrook extends TruffleReceiver {
     private Truffle getTruffle() {
         int a1 = (int)(Math.random()*maxAddresses);
         int a2 = (int)(Math.random()*maxAddresses);
-        Truffle truffle = new Truffle(addresses[a1], addresses[a2]);
 
-        return truffle;
+        return new Truffle(addresses[0], addresses[a2]);
     }
 
     private void init() {

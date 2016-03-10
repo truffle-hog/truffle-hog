@@ -11,8 +11,9 @@ import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
 import edu.uci.ics.jung.graph.Graph;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.concurrent.Service;
 import org.apache.commons.collections4.keyvalue.MultiKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -26,6 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by jan on 22.02.16.
  */
 public class NetworkIOPort implements INetworkIOPort {
+
+    private static final Logger logger = LogManager.getLogger();
 
     private final Graph<INode, IConnection> delegate;
 
@@ -93,6 +96,7 @@ public class NetworkIOPort implements INetworkIOPort {
             existing.update(connection, liveUpdater);
             return;
         }
+
         final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);
 
         if (edgeStat != null) {
@@ -111,6 +115,7 @@ public class NetworkIOPort implements INetworkIOPort {
             existing.update(node, liveUpdater);
             return;
         }
+
         final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);
 
         if (nodeStat != null) {

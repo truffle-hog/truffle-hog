@@ -30,6 +30,7 @@ public class PlatformIntegerBindingTest {
         binding = new PlatformIntegerBinding(tester);
     }
 
+    //FIXME: fix test or PlatformIntegerBinding?
     @Ignore
     @Test
     public void testChanged() throws Exception {
