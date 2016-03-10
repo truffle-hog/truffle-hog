@@ -53,5 +53,5 @@
        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="error_text" text="This is an error" textAlignment="CENTER" wrappingWidth="500.0">
        </Text>
     </children>
-   </VBox>
+</VBox>
 </fx:root>
