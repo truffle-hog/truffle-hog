@@ -19,6 +19,7 @@ package edu.kit.trufflehog.model.filter;
 
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.cell.CheckBoxTableCell;
 
@@ -341,38 +342,20 @@ public class FilterInput implements Serializable {
         observableRules.setAll(rules);
         booleanProperty = new SimpleBooleanProperty(active);
 
-        // Add listeners to them
-//        nameProperty.addListener((observable, oldValue, newValue) -> {
-//            name = newValue;
-//        });
-//        typeProperty.addListener((observable, oldValue, newValue) -> {
-//            if (newValue.equals(FilterType.WHITELIST.name())) {
-//                type = FilterType.WHITELIST;
-//            } else {
-//                type = FilterType.BLACKLIST;
-//            }
-//        });
-//        originProperty.addListener((observable, oldValue, newValue) -> {
-//            if (newValue.equals(FilterOrigin.IP.name())) {
-//                origin = FilterOrigin.IP;
-//            } else if (newValue.equals(FilterOrigin.MAC.name())) {
-//                origin = FilterOrigin.MAC;
-//            } else {
-//                origin = FilterOrigin.SELECTION;
-//            }
-//        });
-//        observableRules.addListener((ListChangeListener<String>) c -> {
-//            rules.clear();
-//            rules.addAll(observableRules);
-//        });
-//        booleanProperty.addListener((observable, oldValue, newValue) -> {
-//            active = newValue;
-//
-//            if (newValue) {
-//                Notification.Notifier.INSTANCE.notifyInfo("Filter Active", name + " was just activated.");
-//            } else {
-//                Notification.Notifier.INSTANCE.notifyInfo("Filter Inactive", name + " was just deactivated.");
-//            }
-//        });
+
+        originProperty.addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(FilterOrigin.IP.name())) {
+                origin = FilterOrigin.IP;
+            } else if (newValue.equals(FilterOrigin.MAC.name())) {
+                origin = FilterOrigin.MAC;
+            } else {
+                origin = FilterOrigin.SELECTION;
+            }
+        });
+
+        observableRules.addListener((ListChangeListener<String>) c -> {
+            rules.clear();
+            rules.addAll(observableRules);
+        });
     }
 }

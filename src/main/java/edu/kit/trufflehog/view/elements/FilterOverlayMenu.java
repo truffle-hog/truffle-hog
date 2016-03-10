@@ -19,9 +19,12 @@ package edu.kit.trufflehog.view.elements;
 
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.FilterOrigin;
+import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.view.AddFilterMenuViewController;
 import edu.kit.trufflehog.view.OverlayViewController;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -102,6 +105,8 @@ public class FilterOverlayMenu {
         // Set up table view
         final TableView tableView = new TableView();
         tableView.setEditable(true);
+        tableView.setMinWidth(452);
+        tableView.setMinHeight(280);
 
         // Set up columns
         setUpFilterColumn(tableView);
@@ -110,10 +115,8 @@ public class FilterOverlayMenu {
         setUpColorColumn(tableView);
         setUpActiveColumn(tableView);
 
-
+        // Insert data from database into table
         tableView.setItems(data);
-        tableView.setMinWidth(452);
-        tableView.setMinHeight(280);
 
         // Set select/deselect on mouse click
         tableView.setRowFactory(tableViewLambda -> {
@@ -138,14 +141,28 @@ public class FilterOverlayMenu {
      * </p>
      */
     private void setUpFilterColumn(TableView tableView) {
+        // Set up filter column
         final TableColumn filterColumn = new TableColumn("Filter");
         filterColumn.setMinWidth(150);
         filterColumn.setPrefWidth(150);
         tableView.getColumns().add(filterColumn);
         filterColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, String>,
                 ObservableValue<String>>() {
+
+            // Set up callback for filter property
             public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
-                return p.getValue().getNameProperty();
+                final FilterInput filterInput = p.getValue();
+                final StringProperty stringProperty =  filterInput.getNameProperty();
+
+                // Make sure the filter is updated in the database when the name changes
+                stringProperty.addListener((observable, oldValue, newValue) -> {
+                    filterInput.setName(newValue);
+
+                    configDataModel.updateFilterInput(filterInput);
+                    logger.debug("Updated FilterInput: " + filterInput.getName() + " to table view and database.");
+                });
+
+                return stringProperty;
             }
         });
     }
@@ -157,14 +174,32 @@ public class FilterOverlayMenu {
      * </p>
      */
     private void setUpTypeColumn(TableView tableView) {
+        // Set up type column
         final TableColumn typeColumn = new TableColumn("Type");
         typeColumn.setMinWidth(90);
         typeColumn.setPrefWidth(90);
         tableView.getColumns().add(typeColumn);
         typeColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, String>,
                 ObservableValue<String>>() {
+
+            // Set up callback for type property
             public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
-                return p.getValue().getTypeProperty();
+                final FilterInput filterInput = p.getValue();
+                final StringProperty stringProperty =  filterInput.getTypeProperty();
+
+                // Make sure the filter is updated in the database when the type changes
+                stringProperty.addListener((observable, oldValue, newValue) -> {
+                    if (newValue.equals(FilterType.WHITELIST.name())) {
+                        filterInput.setType(FilterType.WHITELIST);
+                    } else {
+                        filterInput.setType(FilterType.BLACKLIST);
+                    }
+
+                    configDataModel.updateFilterInput(filterInput);
+                    logger.debug("Updated FilterInput: " + filterInput.getName() + " to table view and database.");
+                });
+
+                return stringProperty;
             }
         });
     }
@@ -176,14 +211,34 @@ public class FilterOverlayMenu {
      * </p>
      */
     private void setUpOriginColumn(TableView tableView) {
+        // Set up origin column
         final TableColumn originColumn = new TableColumn("Filtered By");
         originColumn.setMinWidth(90);
         originColumn.setPrefWidth(90);
         tableView.getColumns().add(originColumn);
         originColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, String>,
                 ObservableValue<String>>() {
+
+            // Set up callback for origin property
             public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
-                return p.getValue().getOriginProperty();
+                final FilterInput filterInput = p.getValue();
+                final StringProperty stringProperty =  filterInput.getOriginProperty();
+
+                // Make sure the filter is updated in the database when the origin changes
+                stringProperty.addListener((observable, oldValue, newValue) -> {
+                    if (newValue.equals(FilterOrigin.IP.name())) {
+                        filterInput.setOrigin(FilterOrigin.IP);
+                    } else if (newValue.equals(FilterOrigin.MAC.name())) {
+                        filterInput.setOrigin(FilterOrigin.MAC);
+                    } else {
+                        filterInput.setOrigin(FilterOrigin.SELECTION);
+                    }
+
+                    configDataModel.updateFilterInput(filterInput);
+                    logger.debug("Updated FilterInput: " + filterInput.getName() + " to table view and database.");
+                });
+
+                return stringProperty;
             }
         });
     }
@@ -222,10 +277,12 @@ public class FilterOverlayMenu {
             final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
             checkBoxTableCell.setSelectedStateCallback(index -> {
                 final FilterInput filterInput = (FilterInput) tableView.getItems().get(index);
-                BooleanProperty booleanProperty = filterInput.getBooleanProperty();
+                final BooleanProperty booleanProperty = filterInput.getBooleanProperty();
 
                 // Make sure the filter is updated in the database when the active status changes
                 booleanProperty.addListener((observable, oldValue, newValue) -> {
+                    filterInput.setActive(newValue);
+
                     configDataModel.updateFilterInput(filterInput);
                     logger.debug("Updated FilterInput: " + filterInput.getName() + " to table view and database.");
                 });
