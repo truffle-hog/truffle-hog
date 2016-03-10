@@ -8,7 +8,7 @@ import edu.kit.trufflehog.service.replaylogging.ReplayLogger;
  *     Command supposed to change the time interval of taking snapshots by the {@link ReplayLogger}.
  * </p>
  */
-public class SetLoggingIntervalCommand implements IUserCommand {
+public class SetLoggingIntervalCommand implements IUserCommand<Void> {
     private final ConfigDataModel configModel;
 
     /**
@@ -24,5 +24,10 @@ public class SetLoggingIntervalCommand implements IUserCommand {
     @Override
     public void execute() {
 
+    }
+
+    @Override
+    public <S extends Void> void setSelection(S selection) {
+        throw new UnsupportedOperationException("You shouldn't be doing this!");
     }
 }

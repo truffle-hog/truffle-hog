@@ -63,8 +63,10 @@ public class CommandQueueManager {
 
         //TODO: Profile and optimize?
 
-        if (registeredQueues == 0)
+        if (registeredQueues == 0) {
+            //TODO: return empty queue
             return null;
+        }
 
         while (availableElementQueue.isEmpty()) {
             this.wait();

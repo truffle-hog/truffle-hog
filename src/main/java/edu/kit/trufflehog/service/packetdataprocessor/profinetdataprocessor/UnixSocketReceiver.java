@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 public class UnixSocketReceiver extends TruffleReceiver {
 
     private final INetworkWritingPort networkWritingPort;
-    private final List<IFilter> filters;
+    private final IFilter filter;
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private final Logger logger = LogManager.getLogger();
 
@@ -40,9 +40,9 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *     Creates the UnixSocketReceiver.
      * </p>
      */
-    public UnixSocketReceiver(final INetworkWritingPort networkWritingPort, final List<IFilter> filters) {
+    public UnixSocketReceiver(final INetworkWritingPort networkWritingPort, final IFilter filter) {
         this.networkWritingPort = networkWritingPort;
-        this.filters = filters;
+        this.filter = filter;
     }
 
     /**
@@ -72,7 +72,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                     final Truffle truffle = getTruffle();
 
                     if (truffle != null) {
-                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filters));
+                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filter));
                     }
                 } catch (InterruptedException e) {
                     logger.debug("UnixSocketReceiver interrupted. Exiting...");

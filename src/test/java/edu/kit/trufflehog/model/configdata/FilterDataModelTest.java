@@ -20,6 +20,7 @@ package edu.kit.trufflehog.model.configdata;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterType;
+import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -47,6 +49,7 @@ import static org.mockito.Mockito.when;
  */
 public class FilterDataModelTest {
     private FileSystem fileSystem;
+    private ExecutorService executorService;
     private FilterDataModel filterDataModel;
     private File databaseFile;
 
@@ -60,11 +63,11 @@ public class FilterDataModelTest {
     @Before
     public void setUp() throws Exception {
         this.databaseFile = new File("./src/test/resources/data/config/filters.sql");
-
+        this.executorService = new LoggedScheduledExecutor(10);
         this.fileSystem = mock(FileSystem.class);
         when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
         when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config"));
-        this.filterDataModel = new FilterDataModel(fileSystem);
+        this.filterDataModel = new FilterDataModel(fileSystem, executorService);
     }
 
     /**
@@ -76,6 +79,7 @@ public class FilterDataModelTest {
      */
     @After
     public void tearDown() throws Exception {
+        executorService.shutdownNow();
         if (databaseFile.exists()) {
             FileUtils.forceDelete(databaseFile);
         }
@@ -98,8 +102,11 @@ public class FilterDataModelTest {
         for (int i = 0; i < size; i++) {
             FilterInput filterInput = generateRandomFilterInput();
             filterInputs.add(filterInput);
-            filterDataModel.addFilterToDatabase(filterInput);
+            filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
         }
+
+        // Wait for all threads to finish
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
@@ -116,6 +123,9 @@ public class FilterDataModelTest {
             updatedFilterInputs.add(updateFilterInput(filterInput));
             filterDataModel.updateFilterInDatabase(filterInput);
         }
+
+        // Wait for all threads to finish
+        Thread.sleep(5000);
 
         // Retrieve them
         filterDataModel.load();
@@ -144,8 +154,11 @@ public class FilterDataModelTest {
         for (int i = 0; i < size; i++) {
             FilterInput filterInput = generateRandomFilterInput();
             filterInputs.add(filterInput);
-            filterDataModel.addFilterToDatabase(filterInput);
+            filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
         }
+
+        // Wait for all threads to finish
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
@@ -174,8 +187,11 @@ public class FilterDataModelTest {
         for (int i = 0; i < size; i++) {
             FilterInput filterInput = generateRandomFilterInput();
             filterInputs.add(filterInput);
-            filterDataModel.addFilterToDatabase(filterInput);
+            filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
         }
+
+        // Wait for all threads to finish
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
@@ -187,7 +203,10 @@ public class FilterDataModelTest {
         }
 
         // Delete them
-        filterInputFromDB.forEach((name, value) -> filterDataModel.removeFilterFromDatabase(value));
+        filterInputFromDB.forEach((name, value) -> filterDataModel.removeFilterFromDatabaseAsynchronous(value));
+
+        // Wait for all threads to finish
+        Thread.sleep(5000);
 
         // Retrieve them
         filterDataModel.load();
@@ -208,9 +227,11 @@ public class FilterDataModelTest {
     @Test
     public void testForDuplicateEntry() throws Exception {
         FilterInput filterInput = generateRandomFilterInput();
-        filterDataModel.addFilterToDatabase(filterInput);
-        filterDataModel.addFilterToDatabase(filterInput);
+        filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
+        filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
 
+        // Wait for all threads to finish
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
@@ -230,7 +251,10 @@ public class FilterDataModelTest {
      */
     @Test
     public void testForNullEntry() throws Exception {
-        filterDataModel.addFilterToDatabase(null);
+        filterDataModel.addFilterToDatabaseAsynchronous(null);
+
+        // Wait for all threads to finish
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
@@ -251,11 +275,15 @@ public class FilterDataModelTest {
     public void testForEntryWithSameName() throws Exception {
         FilterInput filterInput1 = generateRandomFilterInput();
         FilterInput filterInput2 = updateFilterInput(filterInput1);
-        filterDataModel.addFilterToDatabase(filterInput1);
-        filterDataModel.addFilterToDatabase(filterInput2);
+        filterDataModel.addFilterToDatabaseAsynchronous(filterInput1);
+        filterDataModel.addFilterToDatabaseAsynchronous(filterInput2);
+
+        // Wait for all threads to finish
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
+
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
         assertEquals(1, filterInputFromDB.size());
 
@@ -276,7 +304,10 @@ public class FilterDataModelTest {
     @Test
     public void testGet() throws Exception {
         FilterInput filterInput = generateRandomFilterInput();
-        filterDataModel.addFilterToDatabase(filterInput);
+        filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
+
+        // Wait for all threads to finish
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
