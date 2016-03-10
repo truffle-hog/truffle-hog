@@ -2,8 +2,10 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
-import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -17,8 +19,9 @@ import java.awt.geom.Ellipse2D;
  *
  * TODO FIX GETTER!!!
  */
-public class BasicEdgeRendererComponent implements IRendererComponent {
+public class BasicEdgeRenderer implements IRenderer {
 
+    private static final Logger logger = LogManager.getLogger();
 
     Color colorUnpicked = new Color(0x7f7784);
     float[] hsbValsUnpicked = new float[3];
@@ -32,10 +35,10 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
     //TODO change this!
     private Stroke stroke = new BasicStroke();
 
-    private float stepSize = 0.1f;
-    private float currentBrightness;
+    private float stepSize = 0.01f;
+    private float currentBrightness = 0.5f;
 
-    public BasicEdgeRendererComponent() {
+    public BasicEdgeRenderer() {
 
         Color.RGBtoHSB(colorUnpicked.getRed(), colorUnpicked.getGreen(), colorUnpicked.getBlue(), hsbValsUnpicked);
         Color.RGBtoHSB(colorPicked.getRed(), colorPicked.getGreen(), colorPicked.getBlue(), hsbValsPicked);
@@ -57,7 +60,8 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
     @Override
     public Color getColorPicked() {
         // TODO implement
-        return new Color(Color.HSBtoRGB(hsbValsPicked[0], hsbValsPicked[1], currentBrightness));
+        return new Color(Color.HSBtoRGB(hsbValsPicked[0], hsbValsPicked[1],
+                (currentBrightness <= 0.7f) ? (currentBrightness + 0.3f) : 1.0f));
     }
 
     @Override
@@ -67,14 +71,18 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
 
     @Override
     public void setColorUnpicked(Color colorUnpicked) {
+
         if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
+
         this.colorUnpicked = colorUnpicked;
         Color.RGBtoHSB(this.colorUnpicked.getRed(), this.colorUnpicked.getGreen(), this.colorUnpicked.getBlue(), hsbValsPicked);
     }
 
     @Override
     public void setShape(Shape shape) {
+
         if (shape == null) throw new NullPointerException("shape must not be null!");
+
         this.shape = shape;
     }
 
@@ -86,16 +94,21 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
 
     @Override
     public void updateState() {
-        if (currentBrightness <= hsbValsPicked[2]) {
-            currentBrightness = hsbValsPicked[2];
+
+
+        if (currentBrightness <= 0.5f) {
+            currentBrightness = 0.5f;
+
         } else {
+
             currentBrightness -= stepSize;
         }
-    }
 
-    @Override
-    public String name() {
-        return "Node Renderer";
+/*        if (currentBrightness <= hsbValsUnpicked[2]) {
+            currentBrightness = hsbValsUnpicked[2];
+        } else {
+            currentBrightness -= stepSize;
+        }*/
     }
 
     @Override
@@ -111,13 +124,13 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
     }
 
     @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+    public IRenderer createDeepCopy(ICopyCreator copyCreator) {
         if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
         return copyCreator.createDeepCopy(this);
     }
 
     @Override
-    public boolean update(IComponent instance, IUpdater updater) {
+    public boolean update(IRenderer instance, IUpdater updater) {
         if (instance == null) throw new NullPointerException("instance must not be null!");
         if (updater == null) throw new NullPointerException("updater must not be null!");
         return updater.update(this, instance);
@@ -125,7 +138,7 @@ public class BasicEdgeRendererComponent implements IRendererComponent {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof BasicEdgeRendererComponent);
+        return (o instanceof BasicEdgeRenderer);
     }
 
     public float getCurrentBrightness() {

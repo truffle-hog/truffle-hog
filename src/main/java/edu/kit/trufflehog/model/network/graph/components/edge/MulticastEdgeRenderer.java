@@ -2,7 +2,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
-import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.awt.BasicStroke;
@@ -22,7 +22,7 @@ import java.time.Instant;
  *
  * //TODO FIX GETTER!!!
  */
-public class MulticastEdgeRendererComponent implements IRendererComponent {
+public class MulticastEdgeRenderer implements IRenderer {
 
     private long lastUpdate = Instant.now().toEpochMilli();
 
@@ -37,7 +37,7 @@ public class MulticastEdgeRendererComponent implements IRendererComponent {
 
     private Stroke stroke = new BasicStroke(strokeWidth);
 
-    public MulticastEdgeRendererComponent() {
+    public MulticastEdgeRenderer() {
 
         // TODO implement
     }
@@ -99,12 +99,6 @@ public class MulticastEdgeRendererComponent implements IRendererComponent {
         multiplier *= 1.3f;
     }
 
-
-    @Override
-    public String name() {
-        return "Multicast Edge Renderer";
-    }
-
     @Override
     public boolean isMutable() {
         return true;
@@ -128,13 +122,13 @@ public class MulticastEdgeRendererComponent implements IRendererComponent {
     }
 
     @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+    public IRenderer createDeepCopy(ICopyCreator copyCreator) {
         if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
         return copyCreator.createDeepCopy(this);
     }
 
     @Override
-    public boolean update(IComponent instance, IUpdater updater) {
+    public boolean update(IRenderer instance, IUpdater updater) {
         if (instance == null) throw new NullPointerException("instance must not be null!");
         if (updater == null) throw new NullPointerException("updater must not be null!");
         return updater.update(this, instance);
@@ -142,7 +136,7 @@ public class MulticastEdgeRendererComponent implements IRendererComponent {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof MulticastEdgeRendererComponent);
+        return (o instanceof MulticastEdgeRenderer);
     }
 
     public void setStrokeWidth(float strokeWidth) {

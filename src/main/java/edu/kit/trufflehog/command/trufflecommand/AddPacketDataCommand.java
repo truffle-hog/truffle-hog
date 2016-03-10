@@ -7,14 +7,12 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
-
-import java.util.List;
 
 /**
  * <p>
@@ -55,9 +53,9 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1));
 
         if (destAddress.isMulticast()) {
-            connection.addComponent(new ViewComponent(new MulticastEdgeRendererComponent()));
+            connection.addComponent(new ViewComponent(new MulticastEdgeRenderer()));
         } else {
-            connection.addComponent(new ViewComponent(new BasicEdgeRendererComponent()));
+            connection.addComponent(new ViewComponent(new BasicEdgeRenderer()));
         }
         writingPort.writeNode(sourceNode);
         writingPort.writeNode(destNode);

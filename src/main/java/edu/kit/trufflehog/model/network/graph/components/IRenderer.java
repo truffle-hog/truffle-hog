@@ -1,6 +1,8 @@
 package edu.kit.trufflehog.model.network.graph.components;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.util.DeepCopyable;
+import edu.kit.trufflehog.util.Updatable;
 
 import java.awt.Color;
 import java.awt.Shape;
@@ -11,7 +13,7 @@ import java.time.Instant;
 /**
  * Created by root on 26.02.16.
  */
-public interface IRendererComponent extends IComponent {
+public interface IRenderer extends DeepCopyable<IRenderer>, Updatable<IRenderer> {
 
     Shape getShape();
 

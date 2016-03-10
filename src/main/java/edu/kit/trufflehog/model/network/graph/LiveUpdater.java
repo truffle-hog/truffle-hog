@@ -16,16 +16,19 @@
  */
 package edu.kit.trufflehog.model.network.graph;
 
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.*;
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 /**
  * \brief
@@ -37,6 +40,8 @@ import java.time.Instant;
  * @version 0.0.1
  */
 public class LiveUpdater implements IUpdater {
+
+    private Logger logger = LogManager.getLogger();
 
     @Override
     public boolean update(INode node, INode update) {
@@ -57,7 +62,7 @@ public class LiveUpdater implements IUpdater {
     }
 
     @Override
-    public boolean update(NodeRendererComponent nodeRendererComponent, IComponent instance) {
+    public boolean update(NodeRenderer nodeRendererComponent, IRenderer instance) {
         //TODO does one need to update this?
         return true;
     }
@@ -79,23 +84,24 @@ public class LiveUpdater implements IUpdater {
     }
 
     @Override
-    public boolean update(MulticastEdgeRendererComponent multicastEdgeRendererComponent, IComponent instance) {
+    public boolean update(MulticastEdgeRenderer multicastEdgeRenderer, IRenderer instance) {
 
-        multicastEdgeRendererComponent.setStrokeWidth(5f);
-        multicastEdgeRendererComponent.setMultiplier(1.05f);
-        multicastEdgeRendererComponent.setOpacity(170);
+        multicastEdgeRenderer.setStrokeWidth(5f);
+        multicastEdgeRenderer.setMultiplier(1.05f);
+        multicastEdgeRenderer.setOpacity(170);
 
-        multicastEdgeRendererComponent.setLastUpdate(Instant.now().toEpochMilli());
+        multicastEdgeRenderer.setLastUpdate(Instant.now().toEpochMilli());
         return true;
     }
 
     @Override
-    public boolean update(BasicEdgeRendererComponent basicEdgeRendererComponent, IComponent instance) {
-        if (basicEdgeRendererComponent.getCurrentBrightness() > 0.7) {
+    public boolean update(BasicEdgeRenderer basicEdgeRenderer, IRenderer instance) {
+        if (basicEdgeRenderer.getCurrentBrightness() > 0.7) {
             return true;
         }
+
         // TODO implement more
-        basicEdgeRendererComponent.setCurrentBrightness(1);
+        basicEdgeRenderer.setCurrentBrightness(1.0f);
         return true;
     }
 
@@ -108,7 +114,7 @@ public class LiveUpdater implements IUpdater {
     }
 
     @Override
-    public boolean update(StaticRendererComponent component, IComponent instance) {
+    public boolean update(StaticRenderer component, IRenderer instance) {
 
         throw new UnsupportedOperationException("this operation should not be performed by the live updater");
     }
@@ -116,12 +122,10 @@ public class LiveUpdater implements IUpdater {
     @Override
     public boolean update(ViewComponent viewComponent, IComponent instance) {
 
-        if (!(instance instanceof ViewComponent)) {
+        if (!viewComponent.equals(instance)) {
             return false;
         }
         final ViewComponent other = (ViewComponent) instance;
-
         return viewComponent.getRenderer().update(other.getRenderer(), this);
-
     }
 }

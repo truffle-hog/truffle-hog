@@ -20,18 +20,14 @@ import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.*;
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
-
-import javax.swing.text.View;
-import javax.xml.soap.Node;
 
 /**
  * \brief
@@ -79,7 +75,7 @@ public class ReplayUpdater implements IUpdater {
     }
 
     @Override
-    public boolean update(NodeRendererComponent nodeRendererComponent, IComponent instance) {
+    public boolean update(NodeRenderer nodeRenderer, IRenderer instance) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -89,12 +85,12 @@ public class ReplayUpdater implements IUpdater {
     }
 
     @Override
-    public boolean update(MulticastEdgeRendererComponent multicastEdgeRendererComponent, IComponent instance) {
+    public boolean update(MulticastEdgeRenderer multicastEdgeRendererComponent, IRenderer instance) {
 
-        if (!(instance instanceof MulticastEdgeRendererComponent)) {
+        if (!(instance instanceof MulticastEdgeRenderer)) {
             return false;
         }
-        final MulticastEdgeRendererComponent comp = (MulticastEdgeRendererComponent) instance;
+        final MulticastEdgeRenderer comp = (MulticastEdgeRenderer) instance;
 
         multicastEdgeRendererComponent.setStroke(comp.getStroke());
         multicastEdgeRendererComponent.setShape(comp.getShape());
@@ -105,12 +101,12 @@ public class ReplayUpdater implements IUpdater {
     }
 
     @Override
-    public boolean update(BasicEdgeRendererComponent basicEdgeRendererComponent, IComponent instance) {
+    public boolean update(BasicEdgeRenderer basicEdgeRendererComponent, IRenderer instance) {
 
-        if (!(instance instanceof BasicEdgeRendererComponent)) {
+        if (!(instance instanceof BasicEdgeRenderer)) {
             return false;
         }
-        final BasicEdgeRendererComponent comp = (BasicEdgeRendererComponent) instance;
+        final BasicEdgeRenderer comp = (BasicEdgeRenderer) instance;
 
         basicEdgeRendererComponent.setStroke(comp.getStroke());
         basicEdgeRendererComponent.setShape(comp.getShape());
@@ -135,12 +131,12 @@ public class ReplayUpdater implements IUpdater {
     }
 
     @Override
-    public boolean update(StaticRendererComponent component, IComponent instance) {
+    public boolean update(StaticRenderer component, IRenderer instance) {
 
-        if (!(instance instanceof IRendererComponent)) {
+        if (!(instance instanceof IRenderer)) {
             return false;
         }
-        final IRendererComponent other = (IRendererComponent) instance;
+        final IRenderer other = (IRenderer) instance;
 
         component.setColorPicked(other.getColorPicked());
         component.setColorUnpicked(other.getColorUnpicked());

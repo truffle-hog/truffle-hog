@@ -3,12 +3,11 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
-import edu.kit.trufflehog.interaction.ToolBarInteraction;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.graph.decorators.FXEdgeShape;
@@ -181,7 +180,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 /*        jungView.getRenderContext().setVertexShapeTransformer(iNode -> {
 
-            final NodeRendererComponent rendererComponent = iNode.getComponent(NodeRendererComponent.class);
+            final NodeRenderer rendererComponent = iNode.getComponent(NodeRenderer.class);
 
             if (rendererComponent == null) {
                 return new ConstantT

@@ -2,7 +2,7 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
-import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.awt.geom.Rectangle2D;
  * @author Jan Hermes
  * @version 0.1
  */
-public class NodeRendererComponent implements IRendererComponent {
+public class NodeRenderer implements IRenderer {
     private Shape shape = new Rectangle2D.Double(-50,-50,100,100);
     private Color colorPicked = new Color(0xf0caa3);
     private Color colorUnpicked = new Color(0xab7d63);
@@ -26,7 +26,7 @@ public class NodeRendererComponent implements IRendererComponent {
      *     Creates a component using default values.
      * </p>
      */
-    public NodeRendererComponent() {
+    public NodeRenderer() {
 
     }
 
@@ -38,7 +38,7 @@ public class NodeRendererComponent implements IRendererComponent {
      * @param colorPicked The color to use if the node is selected
      * @param colorUnpicked The color to use if the node is not selected
      */
-    public NodeRendererComponent(Shape shape, Color colorPicked, Color colorUnpicked) {
+    public NodeRenderer(Shape shape, Color colorPicked, Color colorUnpicked) {
         if (shape == null) throw new NullPointerException("shape must not be null!");
         if (colorPicked == null) throw new NullPointerException("colorPicked must not be null!");
         if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
@@ -127,23 +127,18 @@ public class NodeRendererComponent implements IRendererComponent {
     }
 
     @Override
-    public String name() {
-        return "Node Renderer";
-    }
-
-    @Override
     public boolean isMutable() {
         return true;
     }
 
     @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+    public IRenderer createDeepCopy(ICopyCreator copyCreator) {
         if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
         return copyCreator.createDeepCopy(this);
     }
 
     @Override
-    public boolean update(IComponent instance, IUpdater updater) {
+    public boolean update(IRenderer instance, IUpdater updater) {
         if (instance == null) throw new NullPointerException("instance must not be null!");
         if (updater == null) throw new NullPointerException("updater must not be null!");
         return updater.update(this, instance);
@@ -151,6 +146,6 @@ public class NodeRendererComponent implements IRendererComponent {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof NodeRendererComponent);
+        return (o instanceof NodeRenderer);
     }
 }

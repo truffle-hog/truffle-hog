@@ -14,11 +14,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.kit.trufflehog.model.network.graph.components.edge;
+package edu.kit.trufflehog.model.network.graph.components;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
-import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 /**
@@ -32,14 +31,14 @@ import edu.kit.trufflehog.util.ICopyCreator;
  */
 public class ViewComponent implements IComponent {
 
-    private final IRendererComponent renderer;
+    private final IRenderer renderer;
 
-    public ViewComponent(IRendererComponent renderer) {
+    public ViewComponent(IRenderer renderer) {
         if (renderer == null) throw new NullPointerException("renderer must not be null!");
         this.renderer = renderer;
     }
 
-    public IRendererComponent getRenderer() {
+    public IRenderer getRenderer() {
 
         return renderer;
     }
@@ -62,8 +61,17 @@ public class ViewComponent implements IComponent {
 
     @Override
     public boolean update(IComponent instance, IUpdater updater) {
+
         if (instance == null) throw new NullPointerException("instance must not be null!");
         if (updater == null) throw new NullPointerException("updater must not be null!");
         return updater.update(this, instance);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        // TODO check if more equals checking necessary
+        return o instanceof ViewComponent && ((ViewComponent) o).getRenderer().equals(this.getRenderer());
+
     }
 }

@@ -21,12 +21,12 @@ import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.NetworkIOPort;
 import edu.kit.trufflehog.model.network.NetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.*;
-import edu.kit.trufflehog.model.network.graph.components.IRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
+import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.*;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
-import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
 
@@ -86,9 +86,9 @@ public class TapeCopyCreator implements ICopyCreator {
     }
 
     @Override
-    public IComponent createDeepCopy(MulticastEdgeRendererComponent multicastEdgeRendererComponent) {
+    public IRenderer createDeepCopy(MulticastEdgeRenderer multicastEdgeRendererComponent) {
 
-        final StaticRendererComponent edgeRenderer = new StaticRendererComponent(multicastEdgeRendererComponent.getShape(),
+        final StaticRenderer edgeRenderer = new StaticRenderer(multicastEdgeRendererComponent.getShape(),
                 multicastEdgeRendererComponent.getColorPicked(), multicastEdgeRendererComponent.getColorUnpicked(), multicastEdgeRendererComponent.getStroke());
 
         //edgeRenderer.setOpacity(multicastEdgeRendererComponent.getOpacity());
@@ -97,9 +97,9 @@ public class TapeCopyCreator implements ICopyCreator {
     }
 
     @Override
-    public IComponent createDeepCopy(BasicEdgeRendererComponent basicEdgeRendererComponent) {
+    public IRenderer createDeepCopy(BasicEdgeRenderer basicEdgeRendererComponent) {
 
-        final StaticRendererComponent edgeRenderer = new StaticRendererComponent(basicEdgeRendererComponent.getShape(),
+        final StaticRenderer edgeRenderer = new StaticRenderer(basicEdgeRendererComponent.getShape(),
                 basicEdgeRendererComponent.getColorPicked(), basicEdgeRendererComponent.getColorUnpicked(), basicEdgeRendererComponent.getStroke());
 
         return edgeRenderer;
@@ -114,14 +114,14 @@ public class TapeCopyCreator implements ICopyCreator {
     }
 
     @Override
-    public IComponent createDeepCopy(StaticRendererComponent staticRendererComponent) {
+    public IRenderer createDeepCopy(StaticRenderer staticRendererComponent) {
         if (staticRendererComponent == null) throw new NullPointerException("staticRendererComponent must not be null!");
         Color picked = staticRendererComponent.getColorPicked();
         Color unpicked = staticRendererComponent.getColorUnpicked();
         Shape shape = staticRendererComponent.getShape();
         Stroke stroke = staticRendererComponent.getStroke();
 
-        final IComponent copy = new StaticRendererComponent(shape, picked, unpicked, stroke);
+        final IRenderer copy = new StaticRenderer(shape, picked, unpicked, stroke);
 
         return copy;
     }
@@ -129,9 +129,9 @@ public class TapeCopyCreator implements ICopyCreator {
     @Override
     public IComponent createDeepCopy(ViewComponent viewComponent) {
 
-        final IRendererComponent comp = viewComponent.getRenderer();
+        final IRenderer comp = viewComponent.getRenderer();
 
-        final StaticRendererComponent renderer = new StaticRendererComponent(comp.getShape(),
+        final StaticRenderer renderer = new StaticRenderer(comp.getShape(),
                 comp.getColorPicked(), comp.getColorUnpicked(), comp.getStroke());
 
         return new ViewComponent(renderer);
@@ -139,13 +139,13 @@ public class TapeCopyCreator implements ICopyCreator {
     }
 
     @Override
-    public IComponent createDeepCopy(NodeRendererComponent nodeRendererComponent) {
+    public IRenderer createDeepCopy(NodeRenderer nodeRendererComponent) {
         if (nodeRendererComponent == null) throw new NullPointerException("nodeRendererComponent must not be null!");
         Color picked = nodeRendererComponent.getColorPicked();
         Color unpicked = nodeRendererComponent.getColorUnpicked();
         Shape shape = nodeRendererComponent.getShape();
 
-        final NodeRendererComponent copy = new NodeRendererComponent(shape, picked, unpicked);
+        final NodeRenderer copy = new NodeRenderer(shape, picked, unpicked);
 
         return copy;
     }

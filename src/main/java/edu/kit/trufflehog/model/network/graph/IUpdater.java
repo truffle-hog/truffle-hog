@@ -16,12 +16,12 @@
  */
 package edu.kit.trufflehog.model.network.graph;
 
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.StaticRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.ViewComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.*;
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.StaticRenderer;
+import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 
@@ -40,19 +40,19 @@ public interface IUpdater {
 
     boolean update(NodeStatisticsComponent nodeStatisticsComponent, IComponent instance);
 
-    boolean update(NodeRendererComponent nodeRendererComponent, IComponent instance);
+    boolean update(NodeRenderer nodeRenderer, IRenderer instance);
 
     boolean update(PacketDataLoggingComponent packetDataLoggingComponent, IComponent instance);
 
     boolean update(IConnection oldValue, IConnection newValue);
 
-    boolean update(MulticastEdgeRendererComponent multicastEdgeRendererComponent, IComponent instance);
+    boolean update(MulticastEdgeRenderer multicastEdgeRenderer, IRenderer instance);
 
-    boolean update(BasicEdgeRendererComponent basicEdgeRendererComponent, IComponent instance);
+    boolean update(BasicEdgeRenderer basicEdgeRenderer, IRenderer instance);
 
     boolean update(EdgeStatisticsComponent edgeStatisticsComponent, IComponent instance);
 
-    boolean update(StaticRendererComponent component, IComponent instance);
+    boolean update(StaticRenderer component, IRenderer instance);
 
     boolean update(ViewComponent viewComponent, IComponent instance);
 }

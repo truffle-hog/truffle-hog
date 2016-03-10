@@ -18,7 +18,7 @@
 package edu.kit.trufflehog.model.filter;
 
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -30,9 +30,9 @@ import java.util.List;
  *     is created, it is checked against all filters contained in the MacroFilter.
  * </p>
  * <p>
- *     When a filter is found that matches a certain node, the corresponding {@link NodeRendererComponent} is updated,
+ *     When a filter is found that matches a certain node, the corresponding {@link NodeRenderer} is updated,
  *     where information about how the node should be displayed is kept. The view then renders the node according to its
- *     NodeRendererComponent.
+ *     NodeRenderer.
  * </p>
  *
  * @author Mark Giraud, Julian Brendl
