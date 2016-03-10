@@ -30,29 +30,29 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root maxHeight="400.0" maxWidth="500.0" minHeight="400.0" minWidth="500.0" opacity="1.0" prefHeight="400.0" prefWidth="500.0" styleClass="background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="500.0" maxWidth="600.0" minHeight="500.0" minWidth="600.0" opacity="1.0" prefHeight="500.0" prefWidth="600.0" styleClass="background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <stylesheets>
       <URL value="@add_filter_menu_overlay.css" />
    </stylesheets>
     <children>
-       <Text layoutX="30.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title_text" text="Create Filter" />
-       <ComboBox layoutX="193.0" layoutY="114.0" prefHeight="27.0" prefWidth="167.0" />
-       <Text layoutX="58.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Type: " />
-       <Text layoutX="56.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Name:" />
-       <TextField fx:id="nameTextField" layoutX="193.0" layoutY="69.0" />
-       <Text layoutX="58.0" layoutY="194.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Generate from:" />
-       <ComboBox layoutX="193.0" layoutY="175.0" prefHeight="27.0" prefWidth="167.0" />
-       <Text layoutX="58.0" layoutY="229.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Rules:" />
-       <TextArea layoutX="193.0" layoutY="224.0" prefHeight="81.0" prefWidth="252.0" />
-       <Line endX="460.0" layoutX="131.0" layoutY="343.0" styleClass="line_underline" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-       <Button fx:id="createButton" layoutX="403.0" layoutY="359.0" mnemonicParsing="false" text="Create" />
-       <Button fx:id="cancelButton" layoutX="331.0" layoutY="359.0" mnemonicParsing="false" text="Cancel" />
-       <Line endX="460.0" layoutX="123.0" layoutY="50.0" styleClass="line_underline" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-       <VBox layoutX="1.0" layoutY="317.0" prefHeight="17.0" prefWidth="500.0">
-        <children>
-           <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="error_text" text="This is an error" textAlignment="CENTER" wrappingWidth="500.0">
+       <Text layoutX="30.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title_text" text="Filter" />
+       <ComboBox fx:id="typeComboBox" layoutX="217.0" layoutY="114.0" prefHeight="27.0" prefWidth="167.0" />
+       <Text layoutX="77.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Type: " />
+       <Text layoutX="78.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Name:" />
+       <TextField fx:id="nameTextField" layoutX="217.0" layoutY="70.0" />
+       <Text layoutX="78.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Filter by:" />
+       <ComboBox fx:id="filterByComboBox" layoutX="217.0" layoutY="197.0" prefHeight="27.0" prefWidth="167.0" />
+       <Text layoutX="78.0" layoutY="278.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Rules:" />
+       <TextArea fx:id="rulesTextArea" layoutX="215.0" layoutY="265.0" prefHeight="81.0" prefWidth="339.0" />
+       <Button fx:id="createButton" layoutX="517.0" layoutY="452.0" mnemonicParsing="false" styleClass="action_button" text="Apply" />
+       <Button fx:id="cancelButton" layoutX="445.0" layoutY="452.0" mnemonicParsing="false" styleClass="action_button" text="Cancel" />
+       <Line endX="560.0" layoutX="123.0" layoutY="50.0" styleClass="line_underline" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+     <Text fx:id="errorText" layoutY="419.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="error_text" textAlignment="CENTER" wrappingWidth="600.0">
            </Text>
-        </children>
-       </VBox>
+      <ColorPicker fx:id="colorPicker" layoutX="218.0" layoutY="155.0" />
+      <Text layoutX="78.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Color:" />
+      <Text layoutX="225.0" layoutY="370.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Hint: To add multiple rules, seperate them with a &#10;semicolon." />
+      <Line endX="560.0" layoutX="474.0" layoutY="437.0" styleClass="line_underline" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+      <Button fx:id="helpButton" layoutX="30.0" layoutY="452.0" mnemonicParsing="false" styleClass="help_button" text="Help" />
    </children>
 </fx:root>

@@ -39,11 +39,18 @@ import java.util.List;
  *             matched by the filter either count as safe (whitelist) or unsafe (blacklist).
  *         </li>
  *         <li>
+ *             Origin: The origin of the filter. A filter can originate from an IP Address, from a MAC Address, or
+ *             from the current selection. This indicates upon what criteria the filter filters.
+ *         </li>
+ *         <li>
  *             Rules: The rules of the filter define what the filter matches. These are regular expressions matching
  *             IP addresses, MAC addresses and more.
  *         </li>
  *         <li>
  *             Color: The color of the filter determines what color a matched node should become.
+ *         </li>
+ *         <li>
+ *             Active: Whether this filter is currently being applied on the network or not.
  *         </li>
  *     </ul>
  * </p>
@@ -54,6 +61,7 @@ import java.util.List;
 public class FilterInput implements Serializable {
     private final String name;
     private final FilterType type;
+    private final FilterOrigin origin;
     private final List<String> rules;
     private final Color color;
     private boolean active;
@@ -74,6 +82,10 @@ public class FilterInput implements Serializable {
      *             matched by the filter either count as safe (whitelist) or unsafe (blacklist).
      *         </li>
      *         <li>
+     *             Origin: The origin of the filter. A filter can originate from an IP Address, from a MAC Address, or
+     *             from the current selection. This indicates upon what criteria the filter filters.
+     *         </li>
+     *         <li>
      *             Rules: The rules of the filter define what the filter matches. These are regular expressions matching
      *             IP addresses, MAC addresses and more.
      *         </li>
@@ -88,12 +100,15 @@ public class FilterInput implements Serializable {
      *
      * @param name The name of this filter.
      * @param type The type of this filter.
+     * @param origin The origin of this filter.
      * @param rules The rules that define this filter.
      * @param color The color that a node should become if it matches with the filter.
      */
-    public FilterInput(final String name, final FilterType type, final List<String> rules, final Color color) {
+    public FilterInput(final String name, final FilterType type, final FilterOrigin origin, final List<String> rules,
+                       final Color color) {
         this.name = name;
         this.type = type;
+        this.origin = origin;
         this.rules = rules;
         this.color = color;
         this.active = false;
@@ -122,6 +137,18 @@ public class FilterInput implements Serializable {
      */
     public FilterType getType() {
         return type;
+    }
+
+    /**
+     * <p>
+     *     Gets the origin of the filter. A filter can originate from an IP Address, from a MAC Address, or from the
+     *     current selection. This indicates upon what criteria the filter filters.
+     * </p>
+     *
+     * @return The origin of this filter.
+     */
+    public FilterOrigin getOrigin() {
+        return origin;
     }
 
     /**

@@ -47,7 +47,6 @@
 }
 
 .text {
-    -fx-fill: #282C34;
     -fx-opacity: 100%;
     -fx-font-size: 100%;
     -fx-font-weight: 200;
@@ -58,6 +57,15 @@
     -fx-stroke: #528BFF;
 }
 
-.button {
+
+.action_button {
     -fx-background-color: #528BFF;
+    -fx-text-fill: #282C34;
+}
+
+.help_button {
+    -fx-background-color: #282C34;
+    -fx-border-color: #528BFF;
+    -fx-border-radius: 5;
+    -fx-text-fill: #528BFF;
 }

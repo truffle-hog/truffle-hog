@@ -143,8 +143,8 @@ public class ViewBuilder {
         rootWindow.show();
 
         // Set min. dimensions
-        primaryStage.setMinWidth(720d);
-        primaryStage.setMinHeight(480d);
+        primaryStage.setMinWidth(950d);
+        primaryStage.setMinHeight(650d);
 
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);

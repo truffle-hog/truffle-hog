@@ -19,6 +19,7 @@ package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.FilterOrigin;
 import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import org.apache.commons.io.FileUtils;
@@ -346,7 +347,7 @@ public class FilterDataModelTest {
         Color color = new Color(color_r, color_g, color_b, color_a);
 
         // Generate FilterInput object
-        return new FilterInput(name, FilterType.BLACKLIST, rules, color);
+        return new FilterInput(name, FilterType.BLACKLIST, FilterOrigin.IP, rules, color);
     }
 
     /**
@@ -375,7 +376,7 @@ public class FilterDataModelTest {
         int color_a = (int) (Math.random() * 255);
         Color color = new Color(color_r, color_g, color_b, color_a);
 
-        return new FilterInput(filterInput.getName(), FilterType.BLACKLIST, rules, color);
+        return new FilterInput(filterInput.getName(), FilterType.BLACKLIST, FilterOrigin.MAC, rules, color);
     }
 
     /**
