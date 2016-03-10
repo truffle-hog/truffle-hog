@@ -15,49 +15,49 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-root {
-    display: block;
-}
-
-.overlaybackground {
-    -fx-background-color: #21252B;
-    -fx-opacity: 95%;
+.background {
+    -fx-background-color: #282C34;
+    -fx-opacity: 100%;
     -fx-background-radius: 2;
+    -fx-border-radius: 2;
 }
 
-.text {
+.title_text {
     -fx-fill: #9BA2B1;
     -fx-opacity: 100%;
-    -fx-font-size: 90%;
-    -fx-font-weight: 100;
+    -fx-font-size: 130%;
+    -fx-font-weight: 200;
     -fx-font-family: 'Droid Sans';
 }
 
-.table-view {
-    -fx-background-color:#282C34;
-    -fx-opacity: 95%;
-    -fx-background-insets: 0, 0, 0;
-    -fx-padding: 1;
-    -fx-border-radius: 10 10 0 0;
-    -fx-background-radius: 10 10 0 0;
-    -fx-focus-color: transparent;
-}
-
-.table-view > .column-header-background > .nested-column-header > .column-header.table-column {
-    -fx-background-color: #21252B;
-}
-
-.table-view:focused{
-    -fx-focus-color: transparent;
-}
-
-.table-row-cell:selected .text {
-    -fx-fill: #528BFF;
-}
-
-.table-column {
-    -fx-background-color:#282C34;
+.body_text {
+    -fx-fill: #9BA2B1;
     -fx-opacity: 100%;
-    -fx-accent: #528BFF;
+    -fx-font-size: 110%;
+    -fx-font-weight: 200;
+    -fx-font-family: 'Droid Sans';
 }
 
+.error_text {
+    -fx-fill: red;
+    -fx-opacity: 100%;
+    -fx-font-size: 110%;
+    -fx-font-weight: 200;
+    -fx-font-family: 'Droid Sans';
+}
+
+.text {
+    -fx-fill: #282C34;
+    -fx-opacity: 100%;
+    -fx-font-size: 100%;
+    -fx-font-weight: 200;
+    -fx-font-family: 'Droid Sans';
+}
+
+.line_underline {
+    -fx-stroke: #528BFF;
+}
+
+.button {
+    -fx-background-color: #528BFF;
+}

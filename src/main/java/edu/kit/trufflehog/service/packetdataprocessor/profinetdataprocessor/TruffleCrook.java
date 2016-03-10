@@ -42,6 +42,8 @@ public class TruffleCrook extends TruffleReceiver {
                     if (truffle != null) {
                         notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, node -> System.out.println("Dummy filter")));
                     }
+
+                    Thread.sleep(10);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }

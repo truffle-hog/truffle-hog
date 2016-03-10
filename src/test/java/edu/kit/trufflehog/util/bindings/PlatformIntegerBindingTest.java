@@ -34,7 +34,6 @@ public class PlatformIntegerBindingTest {
     @Ignore
     @Test
     public void testChanged() throws Exception {
-
         tester.setValue(5);
         assertEquals(5, binding.get());
     }

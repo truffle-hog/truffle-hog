@@ -13,9 +13,8 @@ import java.io.IOException;
 
 /**
  * <p>
- *      The Basic abstraction for all AnchorPane controllers. Every abstraction
- *      for javafx Components wraps a {@link ViewControllerNotifier} instance
- *      for implementation of the specific operations of the INotifier
+ *      The Basic abstraction for all AnchorPane controllers. Every abstraction for javafx Components wraps a
+ *      {@link ViewControllerNotifier} instance for implementation of the specific operations of the INotifier
  *      interface.
  * </p>
  *
@@ -23,8 +22,14 @@ import java.io.IOException;
  */
 public abstract class AnchorPaneController<I extends IInteraction> extends AnchorPane implements IViewController<I> {
 
+    /**
+     * <p>
+     *     Creates a new AnchorPaneController based on the given fxml file
+     * </p>
+     *
+     * @param fxmlFile
+     */
     public AnchorPaneController(String fxmlFile) {
-
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -34,7 +39,6 @@ public abstract class AnchorPaneController<I extends IInteraction> extends Ancho
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-
     }
 
     /**
@@ -60,5 +64,4 @@ public abstract class AnchorPaneController<I extends IInteraction> extends Ancho
     public final void notifyListeners(final IUserCommand message) {
         viewControllerNotifier.notifyListeners(message);
     }
-
 }

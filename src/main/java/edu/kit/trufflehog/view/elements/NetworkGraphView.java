@@ -103,8 +103,6 @@ public class NetworkGraphView extends NetworkGraphViewController {
     public NetworkGraphView(final Layout<INode, IConnection> layout,
                             final Transformer<Graph<INode, IConnection>,
                                     Layout<INode, IConnection>> layoutFactory) {
-
-
 		throw new UnsupportedOperationException("Not implemented yet!");
     }
 

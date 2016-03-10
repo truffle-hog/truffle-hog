@@ -52,7 +52,7 @@ public class ConfigDataModel implements IConfigData {
      */
     public ConfigDataModel(final FileSystem fileSystem, final ExecutorService executorService) throws NullPointerException{
         this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
-        this.filterDataModel = new FilterDataModel(fileSystem);
+        this.filterDataModel = new FilterDataModel(fileSystem, executorService);
         this.executorService = executorService;
     }
 
@@ -64,7 +64,7 @@ public class ConfigDataModel implements IConfigData {
      * @param filterInput The {@link FilterInput} to update.
      */
     public void updateFilterInput(final FilterInput filterInput) {
-        executorService.submit(() -> filterDataModel.updateFilterInDatabase(filterInput));
+        filterDataModel.updateFilterInDatabase(filterInput);
     }
 
     /**
@@ -75,7 +75,7 @@ public class ConfigDataModel implements IConfigData {
      * @param filterInput The {@link FilterInput} to add to the database.
      */
     public void addFilterInput(final FilterInput filterInput) {
-        executorService.submit(() -> filterDataModel.addFilterToDatabase(filterInput));
+        filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
     }
 
     /**
@@ -86,7 +86,7 @@ public class ConfigDataModel implements IConfigData {
      * @param filterInput The {@link FilterInput} to remove from the database.
      */
     public void removeFilterInput(final FilterInput filterInput) {
-        executorService.submit(() -> filterDataModel.removeFilterFromDatabase(filterInput));
+        filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
     }
 
     /**

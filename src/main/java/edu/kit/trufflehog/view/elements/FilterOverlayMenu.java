@@ -19,7 +19,7 @@ package edu.kit.trufflehog.view.elements;
 
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.filter.FilterInput;
-import edu.kit.trufflehog.model.filter.FilterType;
+import edu.kit.trufflehog.view.AddFilterMenuViewController;
 import edu.kit.trufflehog.view.OverlayViewController;
 import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
@@ -33,10 +33,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
@@ -52,8 +52,9 @@ import java.util.Map;
 public class FilterOverlayMenu {
     private static final Logger logger = LogManager.getLogger();
 
-    private ObservableList<FilterInput> data;
-    private ConfigDataModel configDataModel;
+    private final ObservableList<FilterInput> data;
+    private final ConfigDataModel configDataModel;
+    private final AddFilterMenuViewController addFilterOverlayMenu;
 
     /**
      * <p>
@@ -62,10 +63,12 @@ public class FilterOverlayMenu {
      * </p>
      *
      * @param configDataModel The {@link ConfigDataModel} object used to save/remove/update filters to the database.
+     * @param stackPane The groundView of the app on which the add filter menu should be drawn.
      */
-    public FilterOverlayMenu(ConfigDataModel configDataModel) {
+    public FilterOverlayMenu(ConfigDataModel configDataModel, StackPane stackPane) {
         this.configDataModel = configDataModel;
         this.data = FXCollections.observableArrayList();
+        this.addFilterOverlayMenu = new AddFilterMenuViewController(stackPane, "add_filter_menu_overlay.fxml", this);
 
         // Load existing filters from hard drive into filter menu
         Map<String, FilterInput> filterInputMap = configDataModel.getAllLoadedFilters();
@@ -164,10 +167,7 @@ public class FilterOverlayMenu {
         // Set up add button
         Button addButton = new ImageButton("add.png");
         addButton.setOnAction(actionEvent -> {
-            FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
-            addFilter(filterInput);
-            filterInput = new FilterInput("Filter B", FilterType.BLACKLIST, null, null);
-            addFilter(filterInput);
+            addFilterOverlayMenu.showMenu();
         });
         addButton.setScaleX(0.5);
         addButton.setScaleY(0.5);

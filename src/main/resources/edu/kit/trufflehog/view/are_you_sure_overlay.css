@@ -15,17 +15,15 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package edu.kit.trufflehog;
 
-/**
- * <p>
- * </p>
- *
- * @author Julian Brendl
- * @version 1.0
- */
-public class Debug {
-    public static void main(String[] args) {
-        System.out.println("sdff");
-    }
+.background {
+    -fx-background-color: #282C34;
+    -fx-opacity: 100%;
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
+}
+
+.anchor-pane {
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
 }

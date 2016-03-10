@@ -10,11 +10,11 @@ import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComp
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
-import edu.kit.trufflehog.view.graph.decorators.FXEdgeShape;
-import edu.kit.trufflehog.view.graph.renderers.FXRenderer;
 import edu.kit.trufflehog.view.graph.FXVisualizationViewer;
 import edu.kit.trufflehog.view.graph.control.FXDefaultModalGraphMouse;
 import edu.kit.trufflehog.view.graph.control.FXModalGraphMouse;
+import edu.kit.trufflehog.view.graph.decorators.FXEdgeShape;
+import edu.kit.trufflehog.view.graph.renderers.FXRenderer;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.visualization.RenderContext;
@@ -99,7 +99,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 		initRenderers();
 
-		jungView.setBackground(new Color(0x9dc4bf));
+		jungView.setBackground(new Color(0xE8EAF6));
 		//jungView.setBackground(new Color(0x5e6d67));
 		jungView.setPreferredSize(new Dimension(350, 350));
 		// Show vertex and edge labels
