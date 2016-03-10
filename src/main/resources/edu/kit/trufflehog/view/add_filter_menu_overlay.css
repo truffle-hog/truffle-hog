@@ -20,6 +20,7 @@
     -fx-opacity: 100%;
     -fx-background-radius: 2;
     -fx-border-radius: 2;
+    -fx-focus-color: #528BFF;
 }
 
 .title_text {

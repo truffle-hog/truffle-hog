@@ -188,7 +188,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         // Check if filter with this name already exists
         List<String> currentFilterNames = filterOverlayMenu.getAllFilterNames();
         if (currentFilterNames.contains(name)) {
-            errorText.setText("The name already exists.");
+            errorText.setText("The name already exists. Please choose a different name.");
             return null;
         }
 
@@ -234,7 +234,6 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         // Check if rules are valid
         List<String> ruleList = processRules(rules, filterOrigin);
         if (ruleList == null) {
-            errorText.setText("A rule you entered does not have the correct format.");
             return null;
         }
 
@@ -244,8 +243,23 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         return new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt);
     }
 
+    /**
+     * <p>
+     *     This method parses the rules string and makes sure that every rule is either MAC or IP conform, and not both.
+     *     Rules cannot be mixed. That means either all rules are IP based or all rules are MAC based.
+     * </p>
+     *
+     * @param rules The rules string from the menu that the user entered.
+     * @param filterOrigin The origin type of the filter. In other words whether the filter filters by IP or MAC.
+     * @return A list of parsed and valid rules, or null if a rule was not valid.
+     */
     private List<String> processRules(String rules, FilterOrigin filterOrigin) {
         String[] ruleArray = rules.split(";");
+
+        if (ruleArray.length == 0) {
+            errorText.setText("Please enter at least one rule.");
+            return null;
+        }
 
         // Define MAC and IP regex
         String macRegex = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
@@ -266,7 +280,8 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
 
         // Check each rule to see whether it matches its regex
         for (String rule : ruleArray) {
-            rule = rule.replaceAll("\\s+","");
+            // Remove whitespaces and line breaks
+            rule = rule.replaceAll("\\s+","").replaceAll("\n","").replaceAll("\r", "");;
 
             boolean match1 = pattern1.matcher(rule.toLowerCase()).matches();
             boolean match2 = false;
@@ -275,7 +290,11 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
             }
 
             if (!match1 && !match2) {
-                errorText.setText("A rule does not have the valid format.");
+                if (filterOrigin.equals(FilterOrigin.IP)) {
+                    errorText.setText("A rule does not have the valid IP-Address format.");
+                } else {
+                    errorText.setText("A rule does not have the valid MAC-Address format.");
+                }
                 return null;
             }
         }
@@ -284,6 +303,11 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         return Arrays.asList(ruleArray);
     }
 
+    /**
+     * <p>
+     *     This method opens a the filter manual page where more is explained about how the filters work.
+     * </p>
+     */
     private void help() {
 
     }
