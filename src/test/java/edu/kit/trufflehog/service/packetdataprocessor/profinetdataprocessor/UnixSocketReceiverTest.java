@@ -31,15 +31,15 @@ import static org.mockito.Mockito.verify;
 public class UnixSocketReceiverTest {
 
     UnixSocketReceiver receiver;
-    List<IFilter> mockedFilterList;
+    IFilter mockedFilter;
     Thread testRunner;
     IListener<ITruffleCommand> mockedListener;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
-        mockedFilterList = new LinkedList<>();
-        receiver = new UnixSocketReceiver(mock(INetworkWritingPort.class), mockedFilterList);
+        mockedFilter = mock(IFilter.class);
+        receiver = new UnixSocketReceiver(mock(INetworkWritingPort.class), mockedFilter);
 
         mockedListener = (IListener<ITruffleCommand>) mock(IListener.class);
         receiver.addListener(mockedListener);
@@ -52,7 +52,7 @@ public class UnixSocketReceiverTest {
     public void tearDown() throws Exception {
         testRunner.interrupt();
 
-        mockedFilterList = null;
+        mockedFilter = null;
         receiver = null;
         testRunner = null;
     }

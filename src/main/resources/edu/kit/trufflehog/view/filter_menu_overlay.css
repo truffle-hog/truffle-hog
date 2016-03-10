@@ -20,12 +20,13 @@ root {
 }
 
 .overlaybackground {
-    -fx-background-color: #000000;
-    -fx-opacity: 80%;
-    -fx-background-radius: 2;  }
+    -fx-background-color: #21252B;
+    -fx-opacity: 95%;
+    -fx-background-radius: 2;
+}
 
 .text {
-    -fx-fill: white;
+    -fx-fill: #9BA2B1;
     -fx-opacity: 100%;
     -fx-font-size: 90%;
     -fx-font-weight: 100;
@@ -33,7 +34,8 @@ root {
 }
 
 .table-view {
-    -fx-background-color:#000000;
+    -fx-background-color:#282C34;
+    -fx-opacity: 95%;
     -fx-background-insets: 0, 0, 0;
     -fx-padding: 1;
     -fx-border-radius: 10 10 0 0;
@@ -41,15 +43,21 @@ root {
     -fx-focus-color: transparent;
 }
 
+.table-view > .column-header-background > .nested-column-header > .column-header.table-column {
+    -fx-background-color: #21252B;
+}
+
 .table-view:focused{
     -fx-focus-color: transparent;
 }
 
 .table-row-cell:selected .text {
-    -fx-fill: #2EA6D0;
+    -fx-fill: #528BFF;
 }
 
 .table-column {
-    -fx-background-color:#000000;
+    -fx-background-color:#282C34;
+    -fx-opacity: 100%;
+    -fx-accent: #528BFF;
 }
 

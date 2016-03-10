@@ -28,6 +28,7 @@ import java.sql.*;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 
 /**
  * <p>
@@ -46,6 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
 class FilterDataModel implements IConfigDataModel<FilterInput> {
     private static final Logger logger = LogManager.getLogger();
 
+    private final ExecutorService executorService;
     private final Map<String, FilterInput> loadedFilters;
     private final Connection connection;
 
@@ -58,7 +60,8 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      *
      * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
      */
-    public FilterDataModel(FileSystem fileSystem) {
+    public FilterDataModel(FileSystem fileSystem, ExecutorService executorService) {
+        this.executorService = executorService;
 
         // Not sure why this map has to be concurrent, but in the unit tests I got concurrent hash map exceptions when
         // it was not. Perhaps the database library is asynchronous, though I am not sure how that would affect this map.
@@ -145,15 +148,18 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      * @param filterInput The {@link FilterInput} to update.
      */
     public void updateFilterInDatabase(FilterInput filterInput) {
-        removeFilterFromDatabase(filterInput);
-        addFilterToDatabase(filterInput);
+        executorService.submit(() -> {
+            removeFilterFromDatabaseSynchronous(filterInput);
+            addFilterToDataBaseSynchronous(filterInput);
+        });
     }
 
     /**
      * <p>
-     *     Adds a {@link FilterInput} to the database. The internal map is updated as well. The FilterInput object is
-     *     stored as a base64 string and not as a {@link Clob} because the internal implementation of the database does
-     *     not provide a CLOB implementation. However since it is OS agnostic, we decided to go with it anyway.
+     *     Adds a {@link FilterInput} to the database asynchronously. The internal map is updated as well. The
+     *     FilterInput object is stored as a base64 string and not as a {@link Clob} because the internal
+     *     implementation of the database does not provide a CLOB implementation. However since it is OS agnostic,
+     *     we decided to go with it anyway.
      * </p>
      * <p>
      *     If filterInput is null, nothing is added.
@@ -161,7 +167,24 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      *
      * @param filterInput The {@link FilterInput} to add to the database.
      */
-    public void addFilterToDatabase(FilterInput filterInput) {
+    public void addFilterToDatabaseAsynchronous(final FilterInput filterInput) {
+        executorService.submit(() -> addFilterToDataBaseSynchronous(filterInput));
+    }
+
+    /**
+     * <p>
+     *     Adds a {@link FilterInput} to the database synchronously. The internal map is updated as well. The FilterInput
+     *     object is stored as a base64 string and not as a {@link Clob} because the internal implementation of the
+     *     database does not provide a CLOB implementation. However since it is OS agnostic, we decided to go with it
+     *     anyway.
+     * </p>
+     * <p>
+     *     If filterInput is null, nothing is added.
+     * </p>
+     *
+     * @param filterInput The {@link FilterInput} to add to the database.
+     */
+    private void addFilterToDataBaseSynchronous(FilterInput filterInput) {
         // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to add filter to database, connection is null");
@@ -185,7 +208,10 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
         try {
             String sql = "INSERT INTO FILTERS(ID,FILTER) " +
                     "VALUES('" + filterInput.getName() + "','" + filterBase64 + "');";
-            connection.createStatement().executeUpdate(sql);
+
+            synchronized (this) {
+                connection.createStatement().executeUpdate(sql);
+            }
 
             // Only update the map if the database query was successful
             loadedFilters.put(filterInput.getName(), filterInput);
@@ -196,7 +222,7 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *     Removes a {@link FilterInput} from the database. The internal map is updated as well.
+     *     Removes a {@link FilterInput} from the database asynchronously. The internal map is updated as well.
      * </p>
      * <p>
      *     If filterInput is null, nothing is done.
@@ -204,7 +230,23 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      *
      * @param filterInput The {@link FilterInput} to remove from the database.
      */
-    public void removeFilterFromDatabase(FilterInput filterInput) {
+    public void removeFilterFromDatabaseAsynchronous(FilterInput filterInput) {
+        executorService.submit(() -> removeFilterFromDatabaseSynchronous(filterInput));
+    }
+
+    /**
+     * <p>
+     *     Removes a {@link FilterInput} from the database synchronously. The internal map is updated as well.
+     * </p>
+     * <p>
+     *     If filterInput is null, nothing is done.
+     * </p>
+     *
+     * @param filterInput The {@link FilterInput} to remove from the database.
+     */
+    private void removeFilterFromDatabaseSynchronous(FilterInput filterInput) {
+        // Synchronized because it runs in its own thread
+
         // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to remove filter from database, connection is null");
@@ -219,7 +261,10 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
         // Remove the filterInput from the database
         try {
-            connection.createStatement().executeUpdate("DELETE from FILTERS where ID='"+ filterInput.getName() +"';");
+            synchronized (this) {
+                connection.createStatement().executeUpdate("DELETE from FILTERS where ID='" + filterInput.getName()
+                        + "';");
+            }
 
             // Only update the map if the database query was successful
             loadedFilters.remove(filterInput.getName());

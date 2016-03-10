@@ -103,8 +103,6 @@ public class NetworkGraphView extends NetworkGraphViewController {
     public NetworkGraphView(final Layout<INode, IConnection> layout,
                             final Transformer<Graph<INode, IConnection>,
                                     Layout<INode, IConnection>> layoutFactory) {
-
-
 		throw new UnsupportedOperationException("Not implemented yet!");
     }
 
@@ -350,4 +348,19 @@ public class NetworkGraphView extends NetworkGraphViewController {
                            final IUserCommand command) {
 		throw new UnsupportedOperationException("Not implemented yet!");
     }
+
+	@Override
+	public void setRefreshRate(int rate) {
+
+	}
+
+	@Override
+	public void enableSmartRefresh(int maxRate) {
+
+	}
+
+	@Override
+	public void disableSmartRefresh() {
+
+	}
 }

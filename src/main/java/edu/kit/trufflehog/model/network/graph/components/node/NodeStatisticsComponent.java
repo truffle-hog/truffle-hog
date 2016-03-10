@@ -1,29 +1,26 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
-import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by jan on 23.02.16.
  */
 public class NodeStatisticsComponent implements IComponent {
 
+    private static final Logger logger = LogManager.getLogger(NodeStatisticsComponent.class);
+    
     private final IntegerProperty throughputProperty = new SimpleIntegerProperty(1);
-
-    private ObjectProperty<NodeStatisticsComponent> objectProperty;
 
     public NodeStatisticsComponent(int initial) {
 
         throughputProperty.set(initial);
-        objectProperty = new SimpleObjectProperty<NodeStatisticsComponent>(this) {
-        };
     }
-
-    public ObjectProperty<NodeStatisticsComponent> getObjectProperty() {return objectProperty; }
 
     public IntegerProperty getThroughputProperty() {
         return throughputProperty;
@@ -43,7 +40,7 @@ public class NodeStatisticsComponent implements IComponent {
 
     @Override
     public String name() {
-        return "traffic info";
+        return "Traffic info";
     }
 
     @Override
@@ -51,19 +48,29 @@ public class NodeStatisticsComponent implements IComponent {
         return true;
     }
 
+
     @Override
-    public IComponent createDeepCopy() {
+    public String toString() {
 
-        final IComponent copy = new NodeStatisticsComponent(throughputProperty.get());
+        return name() + ": " + "Throughput=" + getThroughput();
 
-        return copy;
     }
 
     @Override
-    public boolean update(INode update) {
+    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
+        return copyCreator.createDeepCopy(this);
+    }
 
-        // TODO maybe change to another value
-        incrementThroughput(1);
-        return true;
+    @Override
+    public boolean update(IComponent instance, IUpdater updater) {
+        if (instance == null) throw new NullPointerException("instance must not be null!");
+        if (updater == null) throw new NullPointerException("updater must not be null!");
+        return updater.update(this, instance);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return (o instanceof NodeStatisticsComponent);
     }
 }

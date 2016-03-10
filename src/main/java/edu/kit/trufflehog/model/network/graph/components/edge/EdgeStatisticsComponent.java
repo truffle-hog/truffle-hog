@@ -1,7 +1,8 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
-import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -41,28 +42,11 @@ public class EdgeStatisticsComponent implements IComponent {
 
     @Override
     public String name() {
-        return "traffic info";
+        return "Traffic info";
     }
 
     @Override
     public boolean isMutable() {
-        return true;
-    }
-
-    @Override
-    public IComponent createDeepCopy() {
-
-        final IComponent copy = new EdgeStatisticsComponent(trafficProperty.get());
-
-        return copy;
-    }
-
-    @Override
-    public boolean update(INode update) {
-
-        // TODO maybe change to another value
-        setLastUpdateTimeProperty(Instant.now().toEpochMilli());
-        incrementTraffic(1);
         return true;
     }
 
@@ -76,5 +60,23 @@ public class EdgeStatisticsComponent implements IComponent {
 
     public void setLastUpdateTimeProperty(long value) {
         lastUpdateTimeProperty().setValue(value);
+    }
+
+    @Override
+    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
+        return copyCreator.createDeepCopy(this);
+    }
+
+    @Override
+    public boolean update(IComponent instance, IUpdater updater) {
+        if (instance == null) throw new NullPointerException("instance must not be null!");
+        if (updater == null) throw new NullPointerException("updater must not be null!");
+        return updater.update(this, instance);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return (o instanceof EdgeStatisticsComponent);
     }
 }

@@ -7,26 +7,26 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
-import edu.kit.trufflehog.model.network.graph.components.node.MulticastNodeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
-
-
-import java.util.List;
 
 
 /**
  * <p>
  *     Command used to add Truffle data to the graph. It updates the INodes and IConnections and creates new ones if
- *     necessary (i.e. when new devices enter the network). After the creation, the new nodes get checked with the
+ *     necessary (i.e. when new devices enter the network). After the creation, the new node get checked with the
  *     Filter objects and marked accordingly.
  * </p>
  */
 public class AddPacketDataCommand implements ITruffleCommand {
 
     private final INetworkWritingPort writingPort;
-    private final List<IFilter> filterList;
+    private final IFilter filter;
     private final IPacketData data;
 
     /**
@@ -35,11 +35,12 @@ public class AddPacketDataCommand implements ITruffleCommand {
      * </p>
      * @param writingPort {@link INetworkWritingPort} to add data to
      * @param packet Truffle to get data from
-     * @param filters List of filters to check
+     * @param filter The filter to check.
      */
-    public AddPacketDataCommand(final INetworkWritingPort writingPort, final IPacketData packet, final List<IFilter> filters) {
+
+    public AddPacketDataCommand(INetworkWritingPort writingPort, IPacketData packet, IFilter filter) {
         this.writingPort = writingPort;
-        filterList = filters;
+        this.filter = filter;
         this.data = packet;
     }
 
@@ -49,20 +50,17 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final MacAddress sourceAddress = new MacAddress(data.getAttribute(Long.class, "sourceMacAddress"));
         final MacAddress destAddress = new MacAddress(data.getAttribute(Long.class, "destMacAddress"));
 
-        final INode sourceNode = new NetworkNode(sourceAddress);
-        final INode destNode = new NetworkNode(destAddress);
-        final IConnection connection = new NetworkConnection(sourceNode, destNode);
 
-        destNode.getComposition().addComponent(new PacketDataLoggingComponent());
-        destNode.getComposition().getComponent(PacketDataLoggingComponent.class).addPacket(data);
-        MulticastNodeRendererComponent mnrc = new MulticastNodeRendererComponent();
-        destNode.getComposition().addComponent(mnrc);
+        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1));
+        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1));
 
-        sourceNode.getComposition().addComponent(new PacketDataLoggingComponent());
-        sourceNode.getComposition().getComponent(PacketDataLoggingComponent.class).addPacket(data);
-        sourceNode.getComposition().addComponent(new MulticastNodeRendererComponent());
+        final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1));
 
-
+        if (destAddress.isMulticast()) {
+            connection.addComponent(new ViewComponent(new MulticastEdgeRenderer()));
+        } else {
+            connection.addComponent(new ViewComponent(new BasicEdgeRenderer()));
+        }
         writingPort.writeNode(sourceNode);
         writingPort.writeNode(destNode);
         writingPort.writeConnection(connection);

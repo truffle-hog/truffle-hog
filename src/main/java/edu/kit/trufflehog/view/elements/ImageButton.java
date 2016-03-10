@@ -32,6 +32,7 @@ public class ImageButton extends Button {
     private final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-opacity: 0.65; -fx-padding: 5, 6, 6, 5;";
 
     public ImageButton(String imageurl) {
+
         setGraphic(new ImageView(new Image(getClass().getResourceAsStream(imageurl))));
         setStyle(STYLE_NORMAL);
 

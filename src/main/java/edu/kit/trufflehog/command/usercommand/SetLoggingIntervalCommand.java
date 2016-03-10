@@ -9,21 +9,27 @@ import javafx.beans.property.IntegerProperty;
  *     Command supposed to change the time interval of taking snapshots by the {@link ReplayLogger}.
  * </p>
  */
-public class SetLoggingIntervalCommand implements IUserCommand {
-    private final IntegerProperty intprop;
+
+public class SetLoggingIntervalCommand implements IUserCommand<Void> {
+    private final ConfigDataModel configModel;
 
     /**
      * <p>
      *     Creates new command and provides the integer in a property object.
      * </p>
-     * @param intprop Integer to update.
+     * @param cdm Integer to update.
      */
-    SetLoggingIntervalCommand(final IntegerProperty intprop) {
-        this.intprop = intprop;
+    SetLoggingIntervalCommand(final ConfigDataModel cdm) {
+        this.configModel = cdm;
     }
 
     @Override
     public void execute() {
 
+    }
+
+    @Override
+    public <S extends Void> void setSelection(S selection) {
+        throw new UnsupportedOperationException("You shouldn't be doing this!");
     }
 }
