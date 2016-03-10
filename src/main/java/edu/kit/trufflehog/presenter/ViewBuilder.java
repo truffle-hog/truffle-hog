@@ -130,7 +130,7 @@ public class ViewBuilder {
         AnchorPane.setTopAnchor(stackPane, 0d);
         AnchorPane.setLeftAnchor(stackPane, 0d);
         AnchorPane.setRightAnchor(stackPane, 0d);
-//        AnchorPane.setBottomAnchor(stackPane, 0d);
+        AnchorPane.setBottomAnchor(stackPane, 0d);
         groundView.getChildren().add(stackPane);
         stackPane.setVisible(false);
 

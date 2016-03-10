@@ -3,9 +3,10 @@ package edu.kit.trufflehog.util.bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * \brief
@@ -26,6 +27,7 @@ public class MaximumOfValuesBindingTest {
         binding = new MaximumOfValuesBinding();
     }
 
+    @Ignore
     @Test
     public void testBindProperty() throws Exception {
 

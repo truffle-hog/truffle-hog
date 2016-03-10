@@ -45,7 +45,6 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
     private final FilterOverlayMenu filterOverlayMenu;
     private final TranslateTransition transitioShow;
     private final TranslateTransition transitionHide;
-    private final OverlayViewController viewController;
     private final StackPane stackPane;
 
     // FXML variables
@@ -68,24 +67,23 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
     public AddFilterMenuViewController(StackPane stackPane, String fxml, FilterOverlayMenu filterOverlayMenu) {
         super(fxml);
         this.filterOverlayMenu = filterOverlayMenu;
-        this.viewController = new OverlayViewController(fxml);
         this.stackPane = stackPane;
-        this.stackPane.getChildren().add(viewController);
-        StackPane.setAlignment(viewController, Pos.TOP_CENTER);
+        this.stackPane.getChildren().add(this);
+        StackPane.setAlignment(this, Pos.TOP_CENTER);
 
         // Set up transition animation to show menu
-        transitioShow = new TranslateTransition(Duration.seconds(0.5), viewController);
+        transitioShow = new TranslateTransition(Duration.seconds(0.5), this);
         transitioShow.setFromY(-450);
         transitioShow.setToY(0);
 
         // Set up transition animation to hide menu
-        transitionHide = new TranslateTransition(Duration.seconds(0.5), viewController);
+        transitionHide = new TranslateTransition(Duration.seconds(0.5), this);
         transitionHide.setFromY(0);
         transitionHide.setToY(-450);
 
         // Hide by default
         stackPane.setVisible(false);
-        viewController.setVisible(false);
+        this.setVisible(false);
 
         // Set the add filter mechanic
         createButton.setOnAction(eventHandler ->  {
@@ -105,9 +103,9 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
      * </p>
      */
     public void showMenu() {
-        StackPane.setAlignment(viewController, Pos.TOP_CENTER);
+        StackPane.setAlignment(this, Pos.TOP_CENTER);
         stackPane.setVisible(true);
-        viewController.setVisible(true);
+        this.setVisible(true);
         transitioShow.play();
     }
 
@@ -117,25 +115,23 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
      * </p>
      */
     public void hideMenu() {
-        stackPane.setVisible(false);
         transitionHide.play();
+        transitionHide.setOnFinished(event -> {
+            stackPane.setVisible(false);
+            this.setVisible(false);
+        });
     }
 
-//    @FXML
-//    public void cancelAction(final ActionEvent event) {
-//        hideMenu();
-//    }
-
     private FilterInput createFilterInput() {
-        return new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
+        String name = nameTextField.getText();
+        if (name == null || name == "" || name.length() > 50) {
+            return null;
+        }
+
+        return new FilterInput(name, FilterType.BLACKLIST, null, null);
     }
 
     @Override
     public void addCommand(OverlayInteraction interaction, IUserCommand command) {
-
-    }
-
-    public void test() {
-        System.out.println(nameTextField.getText());
     }
 }

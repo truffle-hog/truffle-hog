@@ -175,7 +175,6 @@ public class FilterOverlayMenu {
         // Set up remove button
         Button removeButton = new ImageButton("remove.png");
         removeButton.setOnAction(actionEvent -> {
-            addFilterOverlayMenu.test();
             FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             if (!data.isEmpty() && filterInput != null) {
                 data.remove(filterInput);

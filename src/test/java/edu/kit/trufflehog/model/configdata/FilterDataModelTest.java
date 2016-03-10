@@ -231,7 +231,7 @@ public class FilterDataModelTest {
         filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
 
         // Wait for all threads to finish
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
@@ -254,7 +254,7 @@ public class FilterDataModelTest {
         filterDataModel.addFilterToDatabaseAsynchronous(null);
 
         // Wait for all threads to finish
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
@@ -279,7 +279,7 @@ public class FilterDataModelTest {
         filterDataModel.addFilterToDatabaseAsynchronous(filterInput2);
 
         // Wait for all threads to finish
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
@@ -307,7 +307,7 @@ public class FilterDataModelTest {
         filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
 
         // Wait for all threads to finish
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         // Retrieve them
         filterDataModel.load();
