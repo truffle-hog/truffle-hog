@@ -12,6 +12,7 @@ import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truf
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -68,6 +69,9 @@ public class Presenter {
             logger.error("Unable to set config data model", e);
         }
         configDataModel = configDataTemp;
+
+
+        primaryStage.setOnCloseRequest(event -> finish());
 
         this.viewBuilder = new ViewBuilder(configDataModel, primaryStage);
     }
@@ -151,6 +155,13 @@ public class Presenter {
         networkDevice.goLive(liveNetwork, viewPortSwitch);
 
         viewPort = viewPortSwitch;
+    }
+
+    public void finish() {
+        Platform.exit();
+
+        //TODO close services (TruffleReceiver otherwise produces a broken pipe)
+        System.exit(0);
     }
 
 
