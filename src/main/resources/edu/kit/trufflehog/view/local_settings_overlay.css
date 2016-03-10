@@ -28,7 +28,7 @@ root {
 }
 
 .text {
-    -fx-fill: white;
+    -fx-fill: #9BA2B1;
     -fx-opacity: 100%;
     -fx-font-size: 90%;
     -fx-font-weight: 200;
@@ -36,7 +36,7 @@ root {
 }
 
 .title_text {
-    -fx-fill: white;
+    -fx-fill: #9BA2B1;
     -fx-opacity: 100%;
     -fx-font-size: 130%;
     -fx-font-weight: 200;

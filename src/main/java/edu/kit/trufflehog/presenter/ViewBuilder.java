@@ -36,6 +36,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -54,10 +55,11 @@ public class ViewBuilder {
     // General variables
     private ConfigDataModel configDataModel;
 
-    // View related variables
+    // View layers
     private final Stage primaryStage;
     private final MainViewController mainViewController;
     private final AnchorPane groundView;
+    private final StackPane stackPane;
     private final SplitPane splitPane;
     private final AnchorPane monitoringView;
 
@@ -80,12 +82,13 @@ public class ViewBuilder {
         this.configDataModel = configDataModel;
         this.primaryStage = primaryStage;
         this.groundView = new AnchorPane();
+        this.stackPane = new StackPane();
         this.splitPane = new SplitPane();
         this.monitoringView = new AnchorPane();
         this.mainViewController = new MainViewController("main_view.fxml");
 
         if (this.primaryStage == null || this.configDataModel == null) {
-            throw new NullPointerException("primaryStage and configDataModel must not be null");
+            throw new NullPointerException("primaryStage and configDataModel shouldn't be null.");
         }
     }
 
@@ -122,6 +125,14 @@ public class ViewBuilder {
         AnchorPane.setTopAnchor(node, 0d);
         AnchorPane.setLeftAnchor(node, 0d);
         AnchorPane.setRightAnchor(node, 0d);
+
+        // We add a stackPane here for the PopOverOverlays that are displayed on it
+        AnchorPane.setTopAnchor(stackPane, 0d);
+        AnchorPane.setLeftAnchor(stackPane, 0d);
+        AnchorPane.setRightAnchor(stackPane, 0d);
+//        AnchorPane.setBottomAnchor(stackPane, 0d);
+        groundView.getChildren().add(stackPane);
+        stackPane.setVisible(false);
 
         // Set up scene
         final Scene mainScene = new Scene(mainViewController);
@@ -184,7 +195,7 @@ public class ViewBuilder {
      */
     private void buildFilterMenuOverlay() {
         // Build filter menu
-        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configDataModel, groundView);
+        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configDataModel, stackPane);
         filterOverlayViewController = filterOverlayMenu.setUpOverlayViewController();
         tableView = filterOverlayMenu.setUpTableView();
         BorderPane borderPane = filterOverlayMenu.setUpMenu(tableView);

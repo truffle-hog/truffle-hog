@@ -26,8 +26,21 @@
     -fx-focus-color: #528BFF;
 }
 
-.text {
-    -fx-fill: white;
+
+.menu .label {
+    -fx-text-fill: #9BA2B1;
+    -fx-opacity: 100%;
+    -fx-font-size: 90%;
+    -fx-font-weight: 100;
+    -fx-font-family: 'Droid Sans';
+}
+
+.menu:showing .label {
+    -fx-text-fill: #21252B;
+}
+
+.menu-item .label {
+    -fx-text-fill: #21252B;
     -fx-opacity: 100%;
     -fx-font-size: 90%;
     -fx-font-weight: 100;
