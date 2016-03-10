@@ -30,9 +30,7 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root maxHeight="400.0" maxWidth="500.0" minHeight="400.0" minWidth="500.0" opacity="1.0" prefHeight="400.0"
-         prefWidth="500.0" styleClass="background" type="GridPane" xmlns="http://javafx.com/javafx/8"
-         xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="400.0" maxWidth="500.0" minHeight="400.0" minWidth="500.0" opacity="1.0" prefHeight="400.0" prefWidth="500.0" styleClass="background" type="GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <stylesheets>
       <URL value="@add_filter_menu_overlay.css" />
    </stylesheets>
@@ -50,7 +48,7 @@
                <TextArea layoutX="193.0" layoutY="224.0" prefHeight="81.0" prefWidth="252.0" />
                <Line endX="460.0" layoutX="131.0" layoutY="343.0" styleClass="line_underline" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                <Button fx:id="createButton" layoutX="403.0" layoutY="359.0" mnemonicParsing="false" text="Create" />
-               <Button fx:id="cancelButton" layoutX="331.0" layoutY="359.0" mnemonicParsing="false" text="Cancel" />
+               <Button fx:id="cancelButton" layoutX="331.0" layoutY="359.0" mnemonicParsing="false" onAction="#cancelAction" text="Cancel" />
                <Line endX="460.0" layoutX="123.0" layoutY="50.0" styleClass="line_underline" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                <VBox layoutX="1.0" layoutY="317.0" prefHeight="17.0" prefWidth="500.0">
                 <children>

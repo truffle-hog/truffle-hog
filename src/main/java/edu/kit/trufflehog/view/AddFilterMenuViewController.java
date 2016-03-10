@@ -24,6 +24,7 @@ import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.view.controllers.GridPaneController;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -119,6 +120,11 @@ public class AddFilterMenuViewController extends GridPaneController<OverlayInter
     public void hideMenu() {
         stackPane.setVisible(false);
         transitionHide.play();
+    }
+
+    @FXML
+    public void cancelAction(final ActionEvent event) {
+        hideMenu();
     }
 
     private FilterInput createFilterInput() {
