@@ -1,9 +1,17 @@
 package edu.kit.trufflehog.command.trufflecommand;
 
-import edu.kit.trufflehog.model.filter.Filter;
-import edu.kit.trufflehog.model.graph.IConnection;
-import edu.kit.trufflehog.model.graph.NetworkNode;
+
+import edu.kit.trufflehog.model.filter.IFilter;
+import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.MacAddress;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.NetworkIOPort;
+import edu.kit.trufflehog.model.network.graph.NetworkNode;
+import edu.kit.trufflehog.model.network.graph.components.node.MulticastNodeRendererComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,70 +26,31 @@ import static org.mockito.Mockito.*;
  */
 public class AddPacketDataCommandTest {
 
-    private AddPacketDataCommand apdc;
-    private INetworkGraph graph;
-    private Filter filter;
-    private List<Filter> filterList;
-    private IPacketData truffle;
+    private INetworkWritingPort writingPort;
+    private List<IFilter> filterList;
+    private IPacketData data;
 
     @Before
     public void setup() {
-        truffle = mock(IPacketData.class);
-        when(truffle.getAttribute(Long.class, "sourceMacAddress")).thenReturn(1L);
-        when(truffle.getAttribute(Long.class, "destinationMacAddress")).thenReturn(2L);
-
-        filter = new Filter();
-        filterList = new LinkedList<>();
-        filterList.add(filter);
-
-        graph = mock(INetworkGraph.class);
-
-        apdc = new AddPacketDataCommand(graph, truffle, filterList);
-
+        writingPort = mock(NetworkIOPort.class);
+        filterList = new LinkedList<IFilter>();
+        data = mock(Truffle.class);
+        when(data.getAttribute(Long.class, "sourceMacAddress")).thenReturn(1L);
+        when(data.getAttribute(Long.class, "destMacAddress")).thenReturn(2L);
     }
-
     @After
     public void teardown() {
-        apdc = null;
-        graph = null;
-        filter = null;
-        filterList = null;
-        truffle = null;
+        writingPort = null;
+        filterList= null;
+        data = null;
     }
 
     @Test
-    public void addTwoNewNodesByMacAddressToGraphTest() {
-        when(graph.getNetworkNodeByMACAddress(1L)).thenReturn(null);
-        when(graph.getNetworkNodeByMACAddress(2L)).thenReturn(null);
+    public void AddPacketDataCommandTest() {
+        AddPacketDataCommand apdc = new AddPacketDataCommand(writingPort, data, filterList);
         apdc.execute();
-        verify(graph, times(1)).addNetworkEdge(any(IConnection.class), any(NetworkNode.class), any(NetworkNode.class));
-    }
-
-    @Test
-    public void addDestinationNodeByMacAddressToGraphTest() {
-        NetworkNode testNode = mock(NetworkNode.class);
-        when(graph.getNetworkNodeByMACAddress(1L)).thenReturn(testNode);
-        apdc.execute();
-        verify(graph, times(1)).addNetworkEdge(any(IConnection.class), eq(testNode), any(NetworkNode.class));
-    }
-
-    @Test
-    public void addSourceNodeByMacAddressToGraphTest() {
-        NetworkNode testNode = mock(NetworkNode.class);
-        when(graph.getNetworkNodeByMACAddress(2L)).thenReturn(testNode);
-        apdc.execute();
-        verify(graph, times(1)).addNetworkEdge(any(IConnection.class), any(NetworkNode.class), eq(testNode));
-    }
-
-    @Test
-    public void addNoNewNodesByMacAddressToGraphTest() {
-        NetworkNode testNode = mock(NetworkNode.class);
-        NetworkNode testNode2 = mock(NetworkNode.class);
-        IConnection testEdge = mock(IConnection.class);
-        when(graph.getNetworkNodeByMACAddress(1L)).thenReturn(testNode);
-        when(graph.getNetworkNodeByMACAddress(2L)).thenReturn(testNode2);
-        when(graph.getNetworkEdge(testNode,testNode2)).thenReturn(testEdge);
-        apdc.execute();
-        verify(graph, times(0)).addNetworkEdge(testEdge, testNode, testNode2);
+        verify(writingPort, times(2)).writeNode(any(INode.class));
+        verify(writingPort, times(1)).writeConnection(any(IConnection.class));
+       // verify(any(INode.class), times(2)).getComposition().addComponent(any(MulticastNodeRendererComponent.class));
     }
 }

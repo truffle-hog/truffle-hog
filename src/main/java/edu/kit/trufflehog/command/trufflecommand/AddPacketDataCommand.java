@@ -37,7 +37,7 @@ public class AddPacketDataCommand implements ITruffleCommand {
      * @param packet Truffle to get data from
      * @param filters List of filters to check
      */
-    public AddPacketDataCommand(final INetworkWritingPort writingPort, final Truffle packet, final List<IFilter> filters) {
+    public AddPacketDataCommand(final INetworkWritingPort writingPort, final IPacketData packet, final List<IFilter> filters) {
         this.writingPort = writingPort;
         filterList = filters;
         this.data = packet;
