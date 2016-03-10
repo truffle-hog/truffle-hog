@@ -3,21 +3,16 @@ package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
-import edu.kit.trufflehog.model.network.MacAddress;
+import edu.kit.trufflehog.model.network.NetworkIOPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.NetworkIOPort;
-import edu.kit.trufflehog.model.network.graph.NetworkNode;
-import edu.kit.trufflehog.model.network.graph.components.node.MulticastNodeRendererComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.logging.Filter;
 
 import static org.mockito.Mockito.*;
 
@@ -27,13 +22,13 @@ import static org.mockito.Mockito.*;
 public class AddPacketDataCommandTest {
 
     private INetworkWritingPort writingPort;
-    private List<IFilter> filterList;
+    private IFilter filter;
     private IPacketData data;
 
     @Before
     public void setup() {
         writingPort = mock(NetworkIOPort.class);
-        filterList = new LinkedList<IFilter>();
+        filter = mock(IFilter.class);
         data = mock(Truffle.class);
         when(data.getAttribute(Long.class, "sourceMacAddress")).thenReturn(1L);
         when(data.getAttribute(Long.class, "destMacAddress")).thenReturn(2L);
@@ -41,13 +36,13 @@ public class AddPacketDataCommandTest {
     @After
     public void teardown() {
         writingPort = null;
-        filterList= null;
+        filter = null;
         data = null;
     }
 
     @Test
     public void AddPacketDataCommandTest() {
-        AddPacketDataCommand apdc = new AddPacketDataCommand(writingPort, data, filterList);
+        AddPacketDataCommand apdc = new AddPacketDataCommand(writingPort, data, filter);
         apdc.execute();
         verify(writingPort, times(2)).writeNode(any(INode.class));
         verify(writingPort, times(1)).writeConnection(any(IConnection.class));
