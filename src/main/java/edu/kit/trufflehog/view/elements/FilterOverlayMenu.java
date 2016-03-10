@@ -22,6 +22,7 @@ import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.view.AddFilterMenuViewController;
 import edu.kit.trufflehog.view.OverlayViewController;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -34,6 +35,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -98,24 +100,120 @@ public class FilterOverlayMenu {
      */
     public TableView setUpTableView() {
         // Set up table view
-        TableView tableView = new TableView();
+        final TableView tableView = new TableView();
         tableView.setEditable(true);
 
-        // Set up filter column
-        final TableColumn nameColumn = new TableColumn("Filter");
-        nameColumn.setMinWidth(158);
-        tableView.getColumns().add(nameColumn);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("name"));
+        // Set up columns
+        setUpFilterColumn(tableView);
+        setUpTypeColumn(tableView);
+        setUpOriginColumn(tableView);
+        setUpColorColumn(tableView);
+        setUpActiveColumn(tableView);
 
-        // Set up type column
+
+        tableView.setItems(data);
+        tableView.setMinWidth(452);
+        tableView.setMinHeight(280);
+
+        // Set select/deselect on mouse click
+        tableView.setRowFactory(tableViewLambda -> {
+            final TableRow<FilterInput> row = new TableRow<>();
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                final int index = row.getIndex();
+                if (index >= 0 && index < tableView.getItems().size() && tableView.getSelectionModel().isSelected(index)) {
+                    tableView.getSelectionModel().clearSelection();
+                    event.consume();
+                }
+            });
+            return row;
+        });
+
+        return tableView;
+    }
+
+    /**
+     * <p>
+     *     Create the filter column, which holds the name of the filter and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpFilterColumn(TableView tableView) {
+        final TableColumn filterColumn = new TableColumn("Filter");
+        filterColumn.setMinWidth(150);
+        filterColumn.setPrefWidth(150);
+        tableView.getColumns().add(filterColumn);
+        filterColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, String>,
+                ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
+                return p.getValue().getNameProperty();
+            }
+        });
+    }
+
+    /**
+     * <p>
+     *     Create the type column, which holds the type of the filter and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpTypeColumn(TableView tableView) {
         final TableColumn typeColumn = new TableColumn("Type");
         typeColumn.setMinWidth(90);
+        typeColumn.setPrefWidth(90);
         tableView.getColumns().add(typeColumn);
-        typeColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("type"));
+        typeColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, String>,
+                ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
+                return p.getValue().getTypeProperty();
+            }
+        });
+    }
 
+    /**
+     * <p>
+     *     Create the origin column, which holds the type of the origin and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpOriginColumn(TableView tableView) {
+        final TableColumn originColumn = new TableColumn("Filtered By");
+        originColumn.setMinWidth(90);
+        originColumn.setPrefWidth(90);
+        tableView.getColumns().add(originColumn);
+        originColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, String>,
+                ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
+                return p.getValue().getOriginProperty();
+            }
+        });
+    }
+
+    /**
+     * <p>
+     *     Create the color column, which holds the color and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpColorColumn(TableView tableView) {
+        final TableColumn colorColumn = new TableColumn("Color");
+        colorColumn.setMinWidth(50);
+        colorColumn.setPrefWidth(50);
+        colorColumn.setSortable(false);
+        tableView.getColumns().add(colorColumn);
+        colorColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("color"));
+    }
+
+    /**
+     * <p>
+     *     Create the active column, which holds the activity state and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpActiveColumn(TableView tableView) {
         // Set up active column
         TableColumn activeColumn = new TableColumn<>("Active");
-        activeColumn.setMinWidth(80);
+        activeColumn.setMinWidth(70);
+        activeColumn.setPrefWidth(70);
         tableView.getColumns().add(activeColumn);
         activeColumn.setSortable(false);
 
@@ -137,24 +235,6 @@ public class FilterOverlayMenu {
 
             return checkBoxTableCell;
         });
-
-        tableView.setItems(data);
-        tableView.setMinWidth(330);
-
-        // Set select/deselect on mouse click
-        tableView.setRowFactory(tableViewLambda -> {
-            final TableRow<FilterInput> row = new TableRow<>();
-            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-                final int index = row.getIndex();
-                if (index >= 0 && index < tableView.getItems().size() && tableView.getSelectionModel().isSelected(index)) {
-                    tableView.getSelectionModel().clearSelection();
-                    event.consume();
-                }
-            });
-            return row;
-        });
-
-        return tableView;
     }
 
     /**

@@ -17,9 +17,9 @@
 
 package edu.kit.trufflehog.model.filter;
 
-import eu.hansolo.enzo.notification.Notification;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.cell.CheckBoxTableCell;
 
 import java.awt.*;
@@ -59,12 +59,20 @@ import java.util.List;
  * @version 1.0
  */
 public class FilterInput implements Serializable {
-    private final String name;
-    private final FilterType type;
-    private final FilterOrigin origin;
-    private final List<String> rules;
-    private final Color color;
+    // Serializable variables
+    private String name;
+    private FilterType type;
+    private FilterOrigin origin;
+    private List<String> rules;
+    private Color color;
     private boolean active;
+
+    // Property variables for table view
+    private transient StringProperty nameProperty;
+    private transient StringProperty typeProperty;
+    private transient StringProperty originProperty;
+    private transient ObjectProperty<Color> colorProperty;
+    private transient ObservableList<String> observableRules;
     private transient BooleanProperty booleanProperty;
 
     /**
@@ -121,10 +129,21 @@ public class FilterInput implements Serializable {
      *     Gets the name of this filter. It has to be unique.
      * </p>
      *
-     * @return the name of this filter.
+     * @return The name of this filter.
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * <p>
+     *     Gets the name property of this filter. It has to be unique.
+     * </p>
+     *
+     * @return The name property of this filter.
+     */
+    public StringProperty getNameProperty() {
+        return nameProperty;
     }
 
     /**
@@ -141,6 +160,18 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
+     *     Gets the type property of this filter. A filter can either be a whitelist or a blacklist, that means all
+     *     nodes matched by the filter either count as safe (whitelist) or unsafe (blacklist).
+     * </p>
+     *
+     * @return The type property of this filter.
+     */
+    public StringProperty getTypeProperty() {
+        return typeProperty;
+    }
+
+    /**
+     * <p>
      *     Gets the origin of the filter. A filter can originate from an IP Address, from a MAC Address, or from the
      *     current selection. This indicates upon what criteria the filter filters.
      * </p>
@@ -153,11 +184,23 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
+     *     Gets the origin property of the filter. A filter can originate from an IP Address, from a MAC Address, or
+     *     from the current selection. This indicates upon what criteria the filter filters.
+     * </p>
+     *
+     * @return The origin property of this filter.
+     */
+    public StringProperty getOriginProperty() {
+        return originProperty;
+    }
+
+    /**
+     * <p>
      *     Gets the set of rules for this filter. The rules of the filter define what the filter matches. These are
      *     regular expressions matching IP addresses, MAC addresses and more.
      * </p>
      *
-     * @return the set of rules for this filter.
+     * @return The set of rules for this filter.
      */
     public List<String> getRules() {
         return rules;
@@ -169,10 +212,22 @@ public class FilterInput implements Serializable {
      *     become.
      * </p>
      *
-     * @return the color for this filter.
+     * @return The color for this filter.
      */
     public Color getColor() {
         return color;
+    }
+
+    /**
+     * <p>
+     *     Gets the color property for this filter. The color of the filter determines what color a matched node should
+     *     become.
+     * </p>
+     *
+     * @return The color property for this filter.
+     */
+    public ObjectProperty<Color> getColorProperty() {
+        return colorProperty;
     }
 
     /**
@@ -189,6 +244,77 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
+     *     Sets the name of this filter. It has to be unique.
+     * </p>
+     *
+     * @param name The new name of this filter.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * <p>
+     *     Sets the type of this filter. A filter can either be a whitelist or a blacklist, that means all nodes
+     *     matched by the filter either count as safe (whitelist) or unsafe (blacklist).
+     * </p>
+     *
+     * @param type The type of this filter.
+     */
+    public void setType(FilterType type) {
+        this.type = type;
+    }
+
+    /**
+     * <p>
+     *     Sets the origin of the filter. A filter can originate from an IP Address, from a MAC Address, or from the
+     *     current selection. This indicates upon what criteria the filter filters.
+     * </p>
+     *
+     * @param origin The origin of this filter.
+     */
+    public void setOrigin(FilterOrigin origin) {
+        this.origin = origin;
+    }
+
+    /**
+     * <p>
+     *     Sets the set of rules for this filter. The rules of the filter define what the filter matches. These are
+     *     regular expressions matching IP addresses, MAC addresses and more.
+     * </p>
+     *
+     * @param rules The set of rules for this filter.
+     */
+    public void setRules(List<String> rules) {
+        this.rules = rules;
+    }
+
+    /**
+     * <p>
+     *     Sets the color for this filter. The color of the filter determines what color a matched node should
+     *     become.
+     * </p>
+     *
+     * @param color The color for this filter.
+     */
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    /**
+     * <p>
+     *     Sets the current activity state. That means the parameter sets whether or not the filter will be applied on
+     *     the current network.
+     * </p>
+     *
+     * @param active The activity state of the filter.
+     */
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    /**
+     * <p>
      *     Gets the BooleanProperty behind the activity state. This is mapped to the {@link CheckBoxTableCell} in the
      *     table view in the filters menu.
      * </p>
@@ -201,21 +327,52 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
-         *     Since {@link BooleanProperty} objects cannot be serialized, THIS METHOD HAS TO BE CALLED AFTER EACH
-     *     DESERIALIZATION OF A FILTERINPUT OBJECT to recreate the connection between the BooleanProperty and the
-     *     normal boolean value that was serialized.
+     *     Since {@link Property} objects cannot be serialized, THIS METHOD HAS TO BE CALLED AFTER EACH
+     *     DESERIALIZATION OF A FILTERINPUT OBJECT to recreate the connection between the Properties and the
+     *     normal values that were serialized.
      * </p>
      */
     public void load() {
+        // Instantiate property objects
+        nameProperty = new SimpleStringProperty(name);
+        typeProperty = new SimpleStringProperty(type.name());
+        originProperty = new SimpleStringProperty(origin.name());
+        observableRules = FXCollections.observableArrayList();
+        observableRules.setAll(rules);
         booleanProperty = new SimpleBooleanProperty(active);
-        booleanProperty.addListener((observable, oldValue, newValue) -> {
-            active = newValue;
 
-            if (newValue) {
-                Notification.Notifier.INSTANCE.notifyInfo("Filter Active", name + " was just activated.");
-            } else {
-                Notification.Notifier.INSTANCE.notifyInfo("Filter Inactive", name + " was just deactivated.");
-            }
-        });
+        // Add listeners to them
+//        nameProperty.addListener((observable, oldValue, newValue) -> {
+//            name = newValue;
+//        });
+//        typeProperty.addListener((observable, oldValue, newValue) -> {
+//            if (newValue.equals(FilterType.WHITELIST.name())) {
+//                type = FilterType.WHITELIST;
+//            } else {
+//                type = FilterType.BLACKLIST;
+//            }
+//        });
+//        originProperty.addListener((observable, oldValue, newValue) -> {
+//            if (newValue.equals(FilterOrigin.IP.name())) {
+//                origin = FilterOrigin.IP;
+//            } else if (newValue.equals(FilterOrigin.MAC.name())) {
+//                origin = FilterOrigin.MAC;
+//            } else {
+//                origin = FilterOrigin.SELECTION;
+//            }
+//        });
+//        observableRules.addListener((ListChangeListener<String>) c -> {
+//            rules.clear();
+//            rules.addAll(observableRules);
+//        });
+//        booleanProperty.addListener((observable, oldValue, newValue) -> {
+//            active = newValue;
+//
+//            if (newValue) {
+//                Notification.Notifier.INSTANCE.notifyInfo("Filter Active", name + " was just activated.");
+//            } else {
+//                Notification.Notifier.INSTANCE.notifyInfo("Filter Inactive", name + " was just deactivated.");
+//            }
+//        });
     }
 }

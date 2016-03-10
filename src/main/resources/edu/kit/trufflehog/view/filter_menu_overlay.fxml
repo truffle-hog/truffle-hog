@@ -30,7 +30,7 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root opacity="0.8" prefHeight="210.0" prefWidth="330.0" styleClass="overlaybackground" type="GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root opacity="0.8" prefHeight="300.0" prefWidth="400.0" styleClass="overlaybackground" type="GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@filter_menu_overlay.css" />
         <URL value="@scrollbar.css" />
