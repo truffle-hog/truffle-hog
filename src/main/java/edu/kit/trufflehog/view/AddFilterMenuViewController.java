@@ -21,7 +21,7 @@ import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.OverlayInteraction;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterType;
-import edu.kit.trufflehog.view.controllers.GridPaneController;
+import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
@@ -42,7 +42,7 @@ import javafx.util.Duration;
  * @author Julian Brendl
  * @version 1.0
  */
-public class AddFilterMenuViewController extends GridPaneController<OverlayInteraction> {
+public class AddFilterMenuViewController extends AnchorPaneController<OverlayInteraction> {
     private final FilterOverlayMenu filterOverlayMenu;
     private final TranslateTransition transitioShow;
     private final TranslateTransition transitionHide;
