@@ -7,6 +7,7 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.*;
+import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.executor.TruffleExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
@@ -126,9 +127,6 @@ public class Presenter {
         // Tell the network observation device to start recording the
         // given network with 25fps on the created tape
 
-        final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
-        //final CommandExecutor commandExecutor = new CommandExecutor();
-        //commandExecutorService.execute(commandExecutor);
 
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
         // TODO change this to real filter
@@ -137,10 +135,11 @@ public class Presenter {
 
         truffleReceiver.connect();
 
-        final TruffleExecutor executor = new TruffleExecutor();
-        commandExecutorService.execute(executor);
-        //truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
-        truffleReceiver.addListener(executor);
+        // Initialize the command executor and register it.
+        final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
+        final CommandExecutor commandExecutor = new CommandExecutor();
+        commandExecutorService.execute(commandExecutor);
+        truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 
         // play that ongoing recording on the given viewportswitch
         //networkDevice.play(tape, viewPortSwitch);

@@ -376,12 +376,7 @@ error:
  */
 int getNextTruffle(JNIEnv *env, Truffle *truffle)
 {
-
-    ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
-
-}
-
-  /*  fd_set read_fds, write_fds, except_fds;
+    fd_set read_fds, write_fds, except_fds;
     FD_ZERO(&read_fds);
     FD_ZERO(&write_fds);
     FD_ZERO(&except_fds);
@@ -414,7 +409,7 @@ error:
 noMessageReceived:
 	debug("read failed");
 	return -2;
-}*/
+}
 
 /*
  * Class:     edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver
@@ -423,6 +418,7 @@ noMessageReceived:
  */
 JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_getTruffle(JNIEnv *env, jobject thisObj)
 {
+    /*
     jclass truffleClass = getTruffleClass(env);
     _CHECK_JAVA_EXCEPTION(env);
 
@@ -536,9 +532,31 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
     //////////////////////////
 
 	return truffleObject;
+	*/
 
-noSetAttribute:
-    throwNoSuchMethodError(env, "SetAttribute method not found");
+    Truffle truffle;
+    check(getNextTruffle(env, &truffle) >= 0, "getNextTruffle failed!");
+
+    // get truffle class
+    jclass truffleClass = getTruffleClass(env);
+    _CHECK_JAVA_EXCEPTION(env);
+
+	// get buildTruffle method
+    jmethodID buildTruffleMID = (*env)->GetStaticMethodID(env, truffleClass, "buildTruffle", "(JJJJLjava/lang/String;S)Ledu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle;");
+    _CHECK_JAVA_EXCEPTION(env);
+    check_to(buildTruffleMID != 0, noBuildTruffle, "buildTruffle method not found");
+
+    jstring nameStr = (*env)->NewStringUTF(env, "put name here");
+    _CHECK_JAVA_EXCEPTION(env);
+    check(nameStr != NULL, "could not create name string");
+
+	jobject truffleObject = (*env)->CallStaticObjectMethod(env, truffleClass, buildTruffleMID, truffle.etherHeader.sourceMacAddress, truffle.etherHeader.destMacAddress, 0, 0, nameStr, 0);
+    _CHECK_JAVA_EXCEPTION(env);
+
+    return truffleObject;
+
+noBuildTruffle:
+    throwNoSuchMethodError(env, "buildTruffle method not found");
     return NULL;
 
 error:

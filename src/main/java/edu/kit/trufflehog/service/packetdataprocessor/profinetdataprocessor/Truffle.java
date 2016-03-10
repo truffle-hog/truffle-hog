@@ -1,7 +1,10 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
+import edu.kit.trufflehog.model.network.IPAddress;
+import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 
+import javax.crypto.Mac;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,9 +25,52 @@ public class Truffle implements IPacketData {
 
     }
 
-    Truffle(long from, long to) {
-        setAttribute(Long.class, "sourceMacAddress", from);
-        setAttribute(Long.class, "destMacAddress", to);
+    //TODO remove this and use buildTruffle()
+    Truffle(long from, long to) throws InvalidProfinetPacket {
+        buildTruffle(from, to, 0, 0, "", (short) 0);
+    }
+
+    /**
+     * <p>
+     *     This method builds a {@link Truffle} with the specified arguments as data.
+     *     The source and destination mac addresses must always be valid.
+     *     If any of the other arguments is null or invalid it is omitted from the
+     *     data and an exception might be thrown.
+     * </p>
+     *
+     * @param srcMACAddr the source MAC address. MUST be valid
+     * @param dstMACAddr the destination MAC address. MUST be valid
+     * @param srcIPAddr the source IP address. Can be omitted by passing 0
+     * @param dstIPAddr the destination IP address. Can be omitted by passing 0
+     * @param deviceName the device name. Can be omitted by passing null
+     * @return the built {@link Truffle}
+     * @throws InvalidProfinetPacket
+     */
+    static Truffle buildTruffle(final long srcMACAddr,
+                                final long dstMACAddr,
+                                final long srcIPAddr,
+                                final long dstIPAddr,
+                                final String deviceName,
+                                final short etherType) throws InvalidProfinetPacket {
+        final Truffle truffle = new Truffle();
+
+        if (srcMACAddr == 0 || dstMACAddr == 0)
+            throw new InvalidProfinetPacket("source/destination MAC address invalid");
+
+        truffle.setAttribute(MacAddress.class, "sourceMacAddress", new MacAddress(srcMACAddr));
+        truffle.setAttribute(MacAddress.class, "destMacAddress", new MacAddress(dstMACAddr));
+
+        if (srcIPAddr != 0)
+            truffle.setAttribute(IPAddress.class, "sourceIPAddress", new IPAddress(srcIPAddr));
+        if (dstIPAddr != 0)
+            truffle.setAttribute(IPAddress.class, "destIPAddress", new IPAddress(dstIPAddr));
+
+        if (deviceName != null)
+            truffle.setAttribute(String.class, "deviceName", deviceName);
+
+        truffle.setAttribute(Short.class, "etherType", etherType);
+
+        return truffle;
     }
 
     /**
@@ -73,17 +119,17 @@ public class Truffle implements IPacketData {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        Long srcMacAddress = getAttribute(Long.class, "sourceMacAddress");
-        Long destMacAddress = getAttribute(Long.class, "destMacAddress");
+        MacAddress srcMacAddress = getAttribute(MacAddress.class, "sourceMacAddress");
+        MacAddress destMacAddress = getAttribute(MacAddress.class, "destMacAddress");
         Short etherType = getAttribute(Short.class, "etherType");
 
         sb.append("Source mac address: ");
         if (srcMacAddress != null) {
-            sb.append(Long.toHexString(srcMacAddress));
+            sb.append(srcMacAddress);
         }
         sb.append("\nDestination mac address: ");
         if (destMacAddress != null) {
-            sb.append(Long.toHexString(destMacAddress));
+            sb.append(destMacAddress);
         }
         sb.append("\nEther type: ");
         if (etherType != null) {
