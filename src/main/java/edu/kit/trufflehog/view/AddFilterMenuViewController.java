@@ -185,6 +185,13 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
             return null;
         }
 
+        // Check if filter with this name already exists
+        List<String> currentFilterNames = filterOverlayMenu.getAllFilterNames();
+        if (currentFilterNames.contains(name)) {
+            errorText.setText("The name already exists.");
+            return null;
+        }
+
         // Check if type is valid
         if (filterType == null) {
             errorText.setText("Please choose a filter type.");

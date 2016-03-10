@@ -38,7 +38,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -200,6 +202,19 @@ public class FilterOverlayMenu {
         AnchorPane.setRightAnchor(removeButton, 30d);
 
         return borderPane;
+    }
+
+    /**
+     * <p>
+     *     Gets a list with all names of all filters currently loaded.
+     * </p>
+     *
+     * @return A list with all names of all filters currently loaded.
+     */
+    public List<String> getAllFilterNames() {
+        return data.stream()
+                .map(FilterInput::getName)
+                .collect(Collectors.toList());
     }
 
     /**
