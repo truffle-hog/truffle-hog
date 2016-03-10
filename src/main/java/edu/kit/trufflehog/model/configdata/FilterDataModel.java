@@ -121,6 +121,11 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
                 String base64String = rs.getString("filter");
                 FilterInput filterInput = fromBase64(base64String);
                 if (filterInput != null) {
+
+                    // VERY IMPORTANT: This makes sure that we can map the filter activity state to a check box in the
+                    // table view in the filters menu
+                    filterInput.load();
+
                     loadedFilters.put(filterInput.getName(), filterInput);
                 } else {
                     logger.error("Found null filter input object while loading from database, skipping");

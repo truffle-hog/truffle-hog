@@ -6,14 +6,14 @@ import edu.kit.trufflehog.interaction.IInteraction;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.INotifier;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 
 
 /**
  * <p>
- *      The Basic abstraction for all BorderPane controllers. Every abstraction
+ *      The Basic abstraction for all StackPane controllers. Every abstraction
  *      for javafx Components wraps a {@link ViewControllerNotifier} instance
  *      for implementation of the specific operations of the INotifier
  *      interface.
@@ -21,9 +21,9 @@ import java.io.IOException;
  *
  * @param <I> The type of interaction to be used in the ViewController
  */
-public abstract class BorderPaneController<I extends IInteraction> extends BorderPane implements IViewController<I> {
+public abstract class StackPaneController<I extends IInteraction> extends StackPane implements IViewController<I> {
 
-    public BorderPaneController(String fxmlFile) {
+    public StackPaneController(String fxmlFile) {
 
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
         fxmlLoader.setRoot(this);
@@ -42,8 +42,7 @@ public abstract class BorderPaneController<I extends IInteraction> extends Borde
      *     The wrapped instance of view controller notifier.
      * </p>
      */
-    private final INotifier<IUserCommand> viewControllerNotifier =
-            new ViewControllerNotifier();
+    private final INotifier<IUserCommand> viewControllerNotifier = new ViewControllerNotifier();
 
     @Override
     public final boolean addListener(final IListener<IUserCommand> listener) {
@@ -60,5 +59,4 @@ public abstract class BorderPaneController<I extends IInteraction> extends Borde
     public final void notifyListeners(final IUserCommand message) {
         viewControllerNotifier.notifyListeners(message);
     }
-
 }
