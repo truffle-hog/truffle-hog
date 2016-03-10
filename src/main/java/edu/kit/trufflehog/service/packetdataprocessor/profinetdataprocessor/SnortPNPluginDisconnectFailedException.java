@@ -8,7 +8,7 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
  * @author Mark Giraud
  * @version 1.0
  */
-public class SnortPNPluginDisconnectFailedException extends Exception {
+public class SnortPNPluginDisconnectFailedException extends ProfinetProcessorException {
 
     SnortPNPluginDisconnectFailedException() {
         super();

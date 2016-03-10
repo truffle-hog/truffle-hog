@@ -35,6 +35,7 @@ import java.net.URL;
  */
 public class Main extends Application {
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();
+    private Presenter presenter;
 
 	/**
 	 * <p>
@@ -79,7 +80,7 @@ public class Main extends Application {
 
 		// TODO horror
 		primaryStage.setTitle("TruffleHog");
-		final Presenter presenter = new Presenter(primaryStage);
+		presenter = new Presenter(primaryStage);
 		presenter.present();
 	}
 
@@ -91,6 +92,7 @@ public class Main extends Application {
 		Platform.exit();
 
         //TODO close services (TruffleReceiver otherwise produces a broken pipe)
+        presenter.shutdown();
 		System.exit(0);
 	}
 }

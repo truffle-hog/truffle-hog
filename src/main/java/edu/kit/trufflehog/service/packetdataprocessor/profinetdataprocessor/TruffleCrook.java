@@ -55,7 +55,13 @@ public class TruffleCrook extends TruffleReceiver {
         int a1 = (int)(Math.random()*maxAddresses);
         int a2 = (int)(Math.random()*maxAddresses);
 
-        return new Truffle(addresses[0], addresses[a2]);
+        try {
+            return Truffle.buildTruffle(addresses[0], addresses[a2], 0, 0, null, (short) 0);
+        } catch (InvalidProfinetPacket invalidProfinetPacket) {
+            invalidProfinetPacket.printStackTrace();
+        }
+
+        return null;
     }
 
     private void init() {
