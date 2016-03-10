@@ -15,7 +15,7 @@ import java.util.Map;
  * </p>
  *
  * @author Mark Giraud
- * @version 1.0
+ * @version 1.1
  */
 public class Truffle implements IPacketData {
 
@@ -23,11 +23,6 @@ public class Truffle implements IPacketData {
 
     Truffle() {
 
-    }
-
-    //TODO remove this and use buildTruffle()
-    Truffle(long from, long to) throws InvalidProfinetPacket {
-        buildTruffle(from, to, 0, 0, "", (short) 0);
     }
 
     /**

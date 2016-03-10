@@ -32,8 +32,12 @@ public class IPAddress implements IAddress {
     }
 
     @Override
+    public boolean equals(Object other) {
+        return other instanceof IPAddress && address == ((IPAddress) other).address;
+    }
+
+    @Override
     public String toString() {
-        //TODO implement this
-        throw new UnsupportedOperationException("Not yet implemented!");
+        return Long.toHexString(address);
     }
 }
