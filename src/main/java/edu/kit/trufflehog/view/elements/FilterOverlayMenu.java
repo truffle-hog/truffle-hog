@@ -36,7 +36,6 @@ import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
@@ -52,8 +51,9 @@ import java.util.Map;
 public class FilterOverlayMenu {
     private static final Logger logger = LogManager.getLogger();
 
-    private ObservableList<FilterInput> data;
-    private ConfigDataModel configDataModel;
+    private final ObservableList<FilterInput> data;
+    private final ConfigDataModel configDataModel;
+    private final AddFilterOverlayMenu addFilterOverlayMenu;
 
     /**
      * <p>
@@ -62,10 +62,12 @@ public class FilterOverlayMenu {
      * </p>
      *
      * @param configDataModel The {@link ConfigDataModel} object used to save/remove/update filters to the database.
+     * @param groundView The groundView of the app on which the add filter menu should be drawn.
      */
-    public FilterOverlayMenu(ConfigDataModel configDataModel) {
+    public FilterOverlayMenu(ConfigDataModel configDataModel, AnchorPane groundView) {
         this.configDataModel = configDataModel;
         this.data = FXCollections.observableArrayList();
+        this.addFilterOverlayMenu = new AddFilterOverlayMenu(groundView);
 
         // Load existing filters from hard drive into filter menu
         Map<String, FilterInput> filterInputMap = configDataModel.getAllLoadedFilters();
@@ -175,6 +177,7 @@ public class FilterOverlayMenu {
         // Set up remove button
         Button removeButton = new ImageButton("remove.png");
         removeButton.setOnAction(actionEvent -> {
+            addFilterOverlayMenu.hideMenu();
             FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             if (!data.isEmpty() && filterInput != null) {
                 data.remove(filterInput);
@@ -210,6 +213,7 @@ public class FilterOverlayMenu {
      * @param filterInput The {@link FilterInput} object to add to the table view.
      */
     public void addFilter(FilterInput filterInput) {
+        addFilterOverlayMenu.showMenu();
         if (filterInput != null) {
             data.add(filterInput);
             configDataModel.addFilterInput(filterInput);

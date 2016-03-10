@@ -25,16 +25,17 @@ import edu.kit.trufflehog.view.*;
 import edu.kit.trufflehog.view.controllers.IWindowController;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -56,6 +57,8 @@ public class ViewBuilder {
     // View related variables
     private final Stage primaryStage;
     private final MainViewController mainViewController;
+    private final AnchorPane groundView;
+    private final SplitPane splitPane;
     private final AnchorPane monitoringView;
 
     private OverlayViewController recordOverlayViewController;
@@ -76,6 +79,8 @@ public class ViewBuilder {
     public ViewBuilder(final ConfigDataModel configDataModel, final Stage primaryStage) {
         this.configDataModel = configDataModel;
         this.primaryStage = primaryStage;
+        this.groundView = new AnchorPane();
+        this.splitPane = new SplitPane();
         this.monitoringView = new AnchorPane();
         this.mainViewController = new MainViewController("main_view.fxml");
 
@@ -99,6 +104,19 @@ public class ViewBuilder {
 
         final MenuBarViewController menuBar = buildMenuBar();
 
+        // Set up the ground view. This is always the full center of the BorderPane. We add the splitPane to it
+        // because it is right on top of it.
+        groundView.getChildren().add(splitPane);
+        splitPane.setOrientation(Orientation.HORIZONTAL);
+
+        // Now we fix the splitPane to the edges of the groundView
+        AnchorPane.setBottomAnchor(splitPane, 0d);
+        AnchorPane.setTopAnchor(splitPane, 0d);
+        AnchorPane.setLeftAnchor(splitPane, 0d);
+        AnchorPane.setRightAnchor(splitPane, 0d);
+
+        // Now we add the actual view to the split pane, the monitoring view.
+        splitPane.getItems().addAll(monitoringView);
         monitoringView.getChildren().add(node);
         AnchorPane.setBottomAnchor(node, 0d);
         AnchorPane.setTopAnchor(node, 0d);
@@ -109,7 +127,7 @@ public class ViewBuilder {
         final Scene mainScene = new Scene(mainViewController);
         final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
 
-        mainViewController.setCenter(monitoringView);
+        mainViewController.setCenter(groundView);
 
         rootWindow.show();
 
@@ -132,7 +150,6 @@ public class ViewBuilder {
         buildSettingsOverlay();
         buildFilterMenuOverlay();
         buildRecordOverlay();
-        buildAddFilterOverlay();
     }
 
     /**
@@ -145,24 +162,6 @@ public class ViewBuilder {
     private MenuBarViewController buildMenuBar() {
         final MenuBarViewController menuBarViewController = new MenuBarViewController("menu_bar.fxml");
         return menuBarViewController;
-    }
-
-    /**
-     * <p>
-     *
-     * </p>
-     */
-    private void buildAddFilterOverlay() {
-        recordOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
-        monitoringView.getChildren().add(recordOverlayViewController);
-        HBox stackPane = new HBox();
-        stackPane.getChildren().add(recordOverlayViewController);
-        AnchorPane.setTopAnchor(stackPane, 0d);
-        AnchorPane.setLeftAnchor(stackPane, 0d);
-        AnchorPane.setRightAnchor(stackPane, 0d);
-        AnchorPane.setBottomAnchor(stackPane, 0d);
-        recordOverlayViewController.setMaxWidth(200);
-        recordOverlayViewController.setVisible(true);
     }
 
     /**
@@ -185,7 +184,7 @@ public class ViewBuilder {
      */
     private void buildFilterMenuOverlay() {
         // Build filter menu
-        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configDataModel);
+        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configDataModel, groundView);
         filterOverlayViewController = filterOverlayMenu.setUpOverlayViewController();
         tableView = filterOverlayMenu.setUpTableView();
         BorderPane borderPane = filterOverlayMenu.setUpMenu(tableView);
