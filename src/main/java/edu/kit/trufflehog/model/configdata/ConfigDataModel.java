@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutorService;
 public class ConfigDataModel implements IConfigData {
     private final IConfigDataModel<StringProperty> settingsDataModel;
     private final FilterDataModel filterDataModel;
+    private final ExecutorService executorService;
 
     /**
      * <p>
@@ -50,8 +51,9 @@ public class ConfigDataModel implements IConfigData {
      * @throws NullPointerException Thrown when it was impossible to get config data for some reason.
      */
     public ConfigDataModel(final FileSystem fileSystem, final ExecutorService executorService) throws NullPointerException{
-        settingsDataModel = new SettingsDataModel(fileSystem, executorService);
-        filterDataModel = new FilterDataModel(fileSystem);
+        this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
+        this.filterDataModel = new FilterDataModel(fileSystem);
+        this.executorService = executorService;
     }
 
     /**
@@ -62,7 +64,7 @@ public class ConfigDataModel implements IConfigData {
      * @param filterInput The {@link FilterInput} to update.
      */
     public void updateFilterInput(final FilterInput filterInput) {
-        filterDataModel.updateFilterInDatabase(filterInput);
+        executorService.submit(() -> filterDataModel.updateFilterInDatabase(filterInput));
     }
 
     /**
@@ -73,7 +75,7 @@ public class ConfigDataModel implements IConfigData {
      * @param filterInput The {@link FilterInput} to add to the database.
      */
     public void addFilterInput(final FilterInput filterInput) {
-        filterDataModel.addFilterToDatabase(filterInput);
+        executorService.submit(() -> filterDataModel.addFilterToDatabase(filterInput));
     }
 
     /**
@@ -84,7 +86,7 @@ public class ConfigDataModel implements IConfigData {
      * @param filterInput The {@link FilterInput} to remove from the database.
      */
     public void removeFilterInput(final FilterInput filterInput) {
-        filterDataModel.removeFilterFromDatabase(filterInput);
+        executorService.submit(() -> filterDataModel.removeFilterFromDatabase(filterInput));
     }
 
     /**

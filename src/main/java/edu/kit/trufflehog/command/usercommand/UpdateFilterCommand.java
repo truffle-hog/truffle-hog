@@ -10,7 +10,7 @@ import java.util.List;
  *     Command used to run filters on a graph. Can be used to update the graph after filter preferences have changed.
  * </p>
  */
-public class UpdateFilterCommand implements IUserCommand {
+public class UpdateFilterCommand implements IUserCommand<Void> {
 
     private final INetworkWritingPort network;
     private final List<IFilter> filterList;
@@ -30,5 +30,10 @@ public class UpdateFilterCommand implements IUserCommand {
     @Override
     public void execute() {
 
+    }
+
+    @Override
+    public <S extends Void> void setSelection(S selection) {
+        throw new UnsupportedOperationException("Please stop!");
     }
 }

@@ -97,13 +97,13 @@ public class FilterOverlayMenu {
         tableView.setEditable(true);
 
         // Set up filter column
-        TableColumn nameColumn = new TableColumn("Filter");
+        final TableColumn nameColumn = new TableColumn("Filter");
         nameColumn.setMinWidth(158);
         tableView.getColumns().add(nameColumn);
         nameColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("name"));
 
         // Set up type column
-        TableColumn typeColumn = new TableColumn("Type");
+        final TableColumn typeColumn = new TableColumn("Type");
         typeColumn.setMinWidth(90);
         tableView.getColumns().add(typeColumn);
         typeColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("type"));
@@ -162,7 +162,7 @@ public class FilterOverlayMenu {
      */
     public BorderPane setUpMenu(TableView tableView) {
         // Set up add button
-        Button addButton = new ImageButton(".." + File.separator + "add.png");
+        Button addButton = new ImageButton("add.png");
         addButton.setOnAction(actionEvent -> {
             FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
             addFilter(filterInput);
@@ -173,12 +173,14 @@ public class FilterOverlayMenu {
         addButton.setScaleY(0.5);
 
         // Set up remove button
-        Button removeButton = new ImageButton(".." + File.separator + "remove.png");
+        Button removeButton = new ImageButton("remove.png");
         removeButton.setOnAction(actionEvent -> {
             FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
-            data.remove(filterInput);
-            configDataModel.removeFilterInput(filterInput);
-            logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
+            if (!data.isEmpty() && filterInput != null) {
+                data.remove(filterInput);
+                configDataModel.removeFilterInput(filterInput);
+                logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
+            }
         });
         removeButton.setScaleX(0.5);
         removeButton.setScaleY(0.5);
@@ -186,6 +188,7 @@ public class FilterOverlayMenu {
         // Set up components on overlay
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(tableView);
+        tableView.setMinHeight(300);
 
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.getChildren().addAll(addButton, removeButton);
@@ -207,9 +210,11 @@ public class FilterOverlayMenu {
      * @param filterInput The {@link FilterInput} object to add to the table view.
      */
     public void addFilter(FilterInput filterInput) {
-        data.add(filterInput);
-        configDataModel.addFilterInput(filterInput);
+        if (filterInput != null) {
+            data.add(filterInput);
+            configDataModel.addFilterInput(filterInput);
 
-        logger.debug("Added FilterInput: " + filterInput.getName() + " to table view and database.");
+            logger.debug("Added FilterInput: " + filterInput.getName() + " to table view and database.");
+        }
     }
 }

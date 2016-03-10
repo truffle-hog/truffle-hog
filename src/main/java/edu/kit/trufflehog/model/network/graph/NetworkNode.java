@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.io.Serializable;
 
@@ -10,23 +11,21 @@ import java.io.Serializable;
  *     Node in the graph to represent a device in the network. Stores important device data and logs.
  * </p>
  */
-public class NetworkNode implements Serializable, INode {
+public class NetworkNode extends AbstractComposition implements Serializable, INode {
 
 	private final IAddress address;
 	private final int hashcode;
-	private final IComposition composition;
 
-	public NetworkNode(IAddress address) {
+    public NetworkNode(IAddress address, IComponent... components) {
         super();
 
-		this.address = address;
-		this.hashcode = address.hashCode();
+        this.address = address;
+        this.hashcode = this.address.hashCode();
 
-        composition = new SimpleComposition();
-
-		// TODO maybe not make this default component
-		composition.addComponent(new NodeStatisticsComponent(1));
-	}
+        for (IComponent c : components) {
+            this.addComponent(c);
+        }
+    }
 
 	@Override
 	public IAddress getAddress() {
@@ -34,58 +33,41 @@ public class NetworkNode implements Serializable, INode {
 	}
 
 	@Override
-	public INode createDeepCopy() {
+	public INode createDeepCopy(ICopyCreator copyCreator) {
+
+		copyCreator.createDeepCopy(this);
 
 		final INode node = new NetworkNode(address);
 
-		composition.getComponents().stream().forEach(component -> {
+		components.values().stream().forEach(component -> {
 			if (component.isMutable()) {
 
-				composition.addComponent(component.createDeepCopy());
+				node.addComponent(component.createDeepCopy(copyCreator));
 
 			} else {
-				composition.addComponent(component);
+				node.addComponent(component);
 			}
 		});
 		return node;
 	}
 
-    /*
-    **
-     * Updates the given component if it existis in this node
-     * @param update the component to update this component
-     * @return true if it exists and was updated, false otherwise
-     *
+	/**
+	 * Updates this node with the given node
+	 * @param update the node that updates this node
+	 * @return true if the update was successful and values change, false otherwise
+	 */
 	@Override
-    public boolean update(IComponent update) {
+	public boolean update(IComponent update, IUpdater updater) {
 
-        final IComponent existing = composition.getComponent(update.getClass());
+		if (!this.equals(update)) {
+			// also implicit NULL check -> no check for null needed
+			return false;
+		}
+		// if it is equal than it is an INode thus we can safely cast it
+		final INode updateNode = (INode) update;
 
-        if (existing == null) {
-            return false;
-        }
-
-        return existing.update(update);
-    }
-    */
-
-    public boolean update(INode update) {
-
-        if (!this.equals(update)) {
-            return false;
-        }
-
-        update.getComposition().getComponents().stream().forEach(c -> {
-
-            if (c.isMutable()) {
-                final IComponent existing = composition.getComponent(c.getClass());
-                existing.update(update);
-            }
-        });
-
-        return true;
-
-    }
+		return updater.update(this, updateNode);
+	}
 
 	@Override
 	public int hashCode() {
@@ -99,28 +81,26 @@ public class NetworkNode implements Serializable, INode {
 		if (!(o instanceof INode)) {
 			return false;
 		}
-
 		final INode other = (INode) o;
-
 		return getAddress().equals(other.getAddress());
-
 	}
 
     @Override
     public String toString() {
-        return address.toString();
+
+        return getComponent(NodeStatisticsComponent.class).toString();
+
+        //return address.toString();
     }
 
 
+	@Override
 	public String name() {
 		return "Network Node";
 	}
 
+	@Override
 	public boolean isMutable() {
 		return true;
 	}
-
-    public IComposition getComposition() {
-        return composition;
-    }
 }

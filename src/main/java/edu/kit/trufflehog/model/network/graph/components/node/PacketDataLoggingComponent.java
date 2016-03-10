@@ -2,7 +2,9 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
+import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -70,19 +72,22 @@ public class PacketDataLoggingComponent implements IComponent {
         return true;
     }
 
-    @Override
-    public IComponent createDeepCopy() {
 
-        // because IPacketData is immutable, do not have to copy them explicitly
-        return new PacketDataLoggingComponent(dataList);
+    @Override
+    public IComponent createDeepCopy(ICopyCreator copyCreator) {
+        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
+        return copyCreator.createDeepCopy(this);
     }
 
     @Override
-    public boolean update(INode update) {
-        PacketDataLoggingComponent logComponent = update.getComposition().getComponent(PacketDataLoggingComponent.class);
-        if (logComponent == null) return false;
-        dataList.addAll(logComponent.getObservablePackets());
+    public boolean update(IComponent instance, IUpdater updater) {
+        if (instance == null) throw new NullPointerException("instance must not be null!");
+        if (updater == null) throw new NullPointerException("updater must not be null!");
+        return updater.update(this, instance);
+    }
 
-        return true;
+    @Override
+    public boolean equals(Object o) {
+        return (o instanceof PacketDataLoggingComponent);
     }
 }
