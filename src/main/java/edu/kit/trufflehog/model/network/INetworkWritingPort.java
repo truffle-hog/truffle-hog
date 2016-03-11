@@ -1,5 +1,7 @@
 package edu.kit.trufflehog.model.network;
 
+import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.util.DeepCopyable;
@@ -22,4 +24,10 @@ public interface INetworkWritingPort extends DeepCopyable<Collection<IConnection
      * @param node the node to be written into teh network
      */
     void writeNode(INode node);
+
+    /**
+     * Uses a filter to update all nodes for legality
+     * @param filter filter to be applied to the graph
+     */
+    void applyFilter(IFilter filter);
 }

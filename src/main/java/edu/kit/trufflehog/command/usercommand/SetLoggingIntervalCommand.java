@@ -13,7 +13,7 @@ public class SetLoggingIntervalCommand implements IUserCommand<Void> {
 
     /**
      * <p>
-     *     Creates new command and provides config object.
+     *     Creates new command and provides the integer in a property object.
      * </p>
      * @param config {@link ConfigData} to manipulate
      */

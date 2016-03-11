@@ -21,7 +21,14 @@ import edu.kit.trufflehog.presenter.Presenter;
 import edu.kit.trufflehog.presenter.nativebuild.NativeBuilder;
 import edu.kit.trufflehog.presenter.nativebuild.osx.OSXBuilder;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.net.URL;
 
 /**
  * <p>
@@ -37,8 +44,21 @@ public class Main extends Application {
 	 * </p>
 	 *
      * @param args command line arguments
-     */;
+     */
 	public static void main(String[] args) {
+        // Set docking icon on mac
+        String osName = System.getProperty("os.name");
+        if (osName.toLowerCase().contains("mac")) {
+            try {
+                URL iconURL = Main.class.getResource(File.separator + "edu" + File.separator + "kit" + File.separator
+                        + "trufflehog" + File.separator + "view" + File.separator +"icon.png");
+                Image image = new ImageIcon(iconURL).getImage();
+                com.apple.eawt.Application.getApplication().setDockIconImage(image);
+            } catch (Exception e) {
+                logger.error("Unable to set docking icon, probably not running on a mac", e);
+            }
+        }
+
 		launch(args);
 	}
 
