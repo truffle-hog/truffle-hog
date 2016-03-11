@@ -55,18 +55,18 @@
 }
 
 .line_underline {
-    -fx-stroke: #528BFF;
+    -fx-stroke: #9BA2B1;
 }
 
 
 .action_button {
-    -fx-background-color: #528BFF;
+    -fx-background-color: #9BA2B1;
     -fx-text-fill: #282C34;
 }
 
 .help_button {
     -fx-background-color: #282C34;
-    -fx-border-color: #528BFF;
+    -fx-border-color: #9BA2B1;
     -fx-border-radius: 5;
-    -fx-text-fill: #528BFF;
+    -fx-text-fill: #9BA2B1;
 }
