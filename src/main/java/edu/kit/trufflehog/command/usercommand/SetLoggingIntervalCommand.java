@@ -2,23 +2,25 @@ package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.service.replaylogging.ReplayLogger;
+import javafx.beans.property.IntegerProperty;
 
 /**
  * <p>
  *     Command supposed to change the time interval of taking snapshots by the {@link ReplayLogger}.
  * </p>
  */
+
 public class SetLoggingIntervalCommand implements IUserCommand<Void> {
     private final ConfigDataModel configModel;
 
     /**
      * <p>
-     *     Creates new command and provides config object.
+     *     Creates new command and provides the integer in a property object.
      * </p>
-     * @param config {@link ConfigDataModel} to manipulate
+     * @param cdm Integer to update.
      */
-    SetLoggingIntervalCommand(final ConfigDataModel config) {
-        configModel = config;
+    SetLoggingIntervalCommand(final ConfigDataModel cdm) {
+        this.configModel = cdm;
     }
 
     @Override

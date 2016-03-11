@@ -7,12 +7,14 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
+
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
+
 
 /**
  * <p>
@@ -35,6 +37,7 @@ public class AddPacketDataCommand implements ITruffleCommand {
      * @param packet Truffle to get data from
      * @param filter The filter to check.
      */
+
     public AddPacketDataCommand(INetworkWritingPort writingPort, IPacketData packet, IFilter filter) {
         this.writingPort = writingPort;
         this.filter = filter;
@@ -46,6 +49,7 @@ public class AddPacketDataCommand implements ITruffleCommand {
 
         final MacAddress sourceAddress = data.getAttribute(MacAddress.class, "sourceMacAddress");
         final MacAddress destAddress = data.getAttribute(MacAddress.class, "destMacAddress");
+
 
         final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1));
         final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1));
