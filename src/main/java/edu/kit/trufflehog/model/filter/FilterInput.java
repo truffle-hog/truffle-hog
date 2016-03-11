@@ -17,7 +17,7 @@
 
 package edu.kit.trufflehog.model.filter;
 
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import javafx.beans.property.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import org.apache.logging.log4j.LogManager;
@@ -284,9 +284,9 @@ public class FilterInput implements Serializable {
      *     normal values that were serialized.
      * </p>
      *
-     * @param configDataModel The {@link ConfigDataModel} object used to update this filter to the database.
+     * @param configData The {@link ConfigData} object used to update this filter to the database.
      */
-    public void load(ConfigDataModel configDataModel) {
+    public void load(ConfigData configData) {
         // Instantiate property objects
         nameProperty = new SimpleStringProperty(name);
         typeProperty = new SimpleStringProperty(type.name());
@@ -300,7 +300,7 @@ public class FilterInput implements Serializable {
             originProperty = new SimpleStringProperty(origin.name());
         }
 
-        bind(configDataModel);
+        bind(configData);
     }
 
     /**
@@ -309,12 +309,12 @@ public class FilterInput implements Serializable {
      *     updated.
      * </p>
      *
-     * @param configDataModel The {@link ConfigDataModel} object used to update this filter to the database.
+     * @param configData The {@link ConfigData} object used to update this filter to the database.
      */
-    private void bind(ConfigDataModel configDataModel) {
+    private void bind(ConfigData configData) {
         // Bind name to database update function
         nameProperty.addListener((observable, oldValue, newValue) -> {
-            configDataModel.updateFilterInput(this, newValue);
+            configData.updateFilterInput(this, newValue);
             logger.debug("Updated name for FilterInput: " + name + " to table view and database.");
         });
 
@@ -326,7 +326,7 @@ public class FilterInput implements Serializable {
                 type = FilterType.BLACKLIST;
             }
 
-            configDataModel.updateFilterInput(this);
+            configData.updateFilterInput(this);
             logger.debug("Updated type for FilterInput: " + name + " to table view and database.");
         });
 
@@ -340,7 +340,7 @@ public class FilterInput implements Serializable {
                 origin = FilterOrigin.SELECTION;
             }
 
-            configDataModel.updateFilterInput(this);
+            configData.updateFilterInput(this);
             logger.debug("Updated origin for FilterInput: " + name + " to table view and database.");
         });
 
@@ -348,7 +348,7 @@ public class FilterInput implements Serializable {
         colorProperty.addListener((observable, oldValue, newValue) -> {
             color = newValue;
 
-            configDataModel.updateFilterInput(this);
+            configData.updateFilterInput(this);
             logger.debug("Updated color for FilterInput: " + name + " to table view and database.");
         });
 
@@ -356,7 +356,7 @@ public class FilterInput implements Serializable {
         activeProperty.addListener((observable, oldValue, newValue) -> {
             active = newValue;
 
-            configDataModel.updateFilterInput(this);
+            configData.updateFilterInput(this);
             logger.debug("Updated activity state for FilterInput: " + name + " to table view and database.");
         });
     }

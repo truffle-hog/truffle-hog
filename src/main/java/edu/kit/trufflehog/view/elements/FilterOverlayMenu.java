@@ -17,7 +17,7 @@
 
 package edu.kit.trufflehog.view.elements;
 
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.view.AddFilterMenuViewController;
 import edu.kit.trufflehog.view.OverlayViewController;
@@ -57,26 +57,26 @@ public class FilterOverlayMenu {
     private static final Logger logger = LogManager.getLogger();
 
     private final ObservableList<FilterInput> data;
-    private final ConfigDataModel configDataModel;
+    private final ConfigData configData;
     private final AddFilterMenuViewController addFilterOverlayMenu;
 
     /**
      * <p>
-     *     Creates a new FilterOverlayMenu with a {@link ConfigDataModel} object. This is needed to access the database
+     *     Creates a new FilterOverlayMenu with a {@link ConfigData} object. This is needed to access the database
      *     in order to save/remove/update filters.
      * </p>
      *
-     * @param configDataModel The {@link ConfigDataModel} object used to save/remove/update filters to the database.
+     * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      * @param stackPane The groundView of the app on which the add filter menu should be drawn.
      */
-    public FilterOverlayMenu(ConfigDataModel configDataModel, StackPane stackPane) {
-        this.configDataModel = configDataModel;
+    public FilterOverlayMenu(ConfigData configData, StackPane stackPane) {
+        this.configData = configData;
         this.data = FXCollections.observableArrayList();
         this.addFilterOverlayMenu = new AddFilterMenuViewController(stackPane, "add_filter_menu_overlay.fxml", this,
-                configDataModel);
+                configData);
 
         // Load existing filters from hard drive into filter menu
-        Map<String, FilterInput> filterInputMap = configDataModel.getAllLoadedFilters();
+        Map<String, FilterInput> filterInputMap = configData.getAllLoadedFilters();
         Collection<FilterInput> filterInputList = filterInputMap.values();
         data.addAll(filterInputList);
     }
@@ -296,7 +296,7 @@ public class FilterOverlayMenu {
             final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             if (!data.isEmpty() && filterInput != null) {
                 data.remove(filterInput);
-                configDataModel.removeFilterInput(filterInput);
+                configData.removeFilterInput(filterInput);
                 logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
             }
         });
@@ -357,7 +357,7 @@ public class FilterOverlayMenu {
     public void addFilter(FilterInput filterInput) {
         if (filterInput != null) {
             data.add(filterInput);
-            configDataModel.addFilterInput(filterInput);
+            configData.addFilterInput(filterInput);
 
             logger.debug("Added FilterInput: " + filterInput.getName() + " to table view and database.");
         }

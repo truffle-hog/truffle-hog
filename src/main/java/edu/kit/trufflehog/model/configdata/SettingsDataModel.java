@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * @author Julian Brendl
  * @version 1.0
  */
-class SettingsDataModel extends IConfigDataModel<StringProperty> {
+class SettingsDataModel extends ConfigDataModel<StringProperty> {
     private static final Logger logger = LogManager.getLogger(SettingsDataModel.class);
 
     private final FileSystem fileSystem;
@@ -74,6 +74,8 @@ class SettingsDataModel extends IConfigDataModel<StringProperty> {
         if (settingsFile == null) {
             throw new NullPointerException("Unable to get config file");
         }
+
+        load();
     }
 
     /**
@@ -81,8 +83,7 @@ class SettingsDataModel extends IConfigDataModel<StringProperty> {
      *     Loads all settings found on the hard drive into memory.
      * </p>
      */
-    @Override
-    public void load() {
+    private void load() {
         settingsMap.clear();
 
         try {

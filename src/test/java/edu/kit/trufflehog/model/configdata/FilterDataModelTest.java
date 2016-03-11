@@ -110,7 +110,6 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel.load();
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -129,7 +128,7 @@ public class FilterDataModelTest {
         Thread.sleep(5000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -162,7 +161,7 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -195,7 +194,7 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -210,7 +209,7 @@ public class FilterDataModelTest {
         Thread.sleep(5000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure none were found
@@ -235,7 +234,7 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         assertEquals(1, filterInputFromDB.size());
@@ -258,7 +257,7 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         assertEquals(0, filterInputFromDB.size());
@@ -281,7 +280,7 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
 
         // Make sure they are equal
         assertEquals(filterInput.getName(), filterDataModel.get(null, filterInput.getName()).getName());

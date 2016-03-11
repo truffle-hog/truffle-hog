@@ -1,6 +1,6 @@
 package edu.kit.trufflehog.command.usercommand;
 
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.service.replaylogging.ReplayLogger;
 
 /**
@@ -9,15 +9,15 @@ import edu.kit.trufflehog.service.replaylogging.ReplayLogger;
  * </p>
  */
 public class SetLoggingIntervalCommand implements IUserCommand<Void> {
-    private final ConfigDataModel configModel;
+    private final ConfigData configModel;
 
     /**
      * <p>
      *     Creates new command and provides config object.
      * </p>
-     * @param config {@link ConfigDataModel} to manipulate
+     * @param config {@link ConfigData} to manipulate
      */
-    SetLoggingIntervalCommand(final ConfigDataModel config) {
+    SetLoggingIntervalCommand(final ConfigData config) {
         configModel = config;
     }
 

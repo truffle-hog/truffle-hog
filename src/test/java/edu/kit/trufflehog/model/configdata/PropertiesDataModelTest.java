@@ -65,7 +65,6 @@ public class PropertiesDataModelTest {
     @Test
     public void testEn() throws Exception {
         this.propertiesDataModel = new PropertiesDataModel(new Locale("en"), fileSystem);
-        propertiesDataModel.load();
         String value = propertiesDataModel.get("test_property");
         assertEquals("this is a test", value);
     }
@@ -80,7 +79,6 @@ public class PropertiesDataModelTest {
     @Test
     public void testDe() throws Exception {
         this.propertiesDataModel = new PropertiesDataModel(new Locale("de"), fileSystem);
-        propertiesDataModel.load();
         String value = propertiesDataModel.get("test_property");
         assertEquals("das ist ein test", value);
     }
@@ -106,7 +104,6 @@ public class PropertiesDataModelTest {
         }
 
         this.propertiesDataModel = new PropertiesDataModel(new Locale("en"), fileSystem);
-        propertiesDataModel.load();
 
         boolean exists = new File(fileSystem.getConfigFolder() + File.separator + "system_properties_en.properties")
                 .exists();

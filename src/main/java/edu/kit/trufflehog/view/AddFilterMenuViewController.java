@@ -19,7 +19,7 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.OverlayInteraction;
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterOrigin;
 import edu.kit.trufflehog.model.filter.FilterType;
@@ -55,7 +55,7 @@ import java.util.stream.IntStream;
 public class AddFilterMenuViewController extends AnchorPaneController<OverlayInteraction> {
     private static final Logger logger = LogManager.getLogger();
 
-    private final ConfigDataModel configDataModel;
+    private final ConfigData configData;
 
     private final FilterOverlayMenu filterOverlayMenu;
     private final TranslateTransition transitioShow;
@@ -86,9 +86,9 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
     private Button helpButton;
 
     // Labels
-    private final String MAC_LABEL = "MAC-Address";
-    private final String IP_LABEL = "IP-Address";
-    private final String SELECTION_LABEL = "Current Selection";
+    private final String MAC_LABEL;
+    private final String IP_LABEL;
+    private final String SELECTION_LABEL;
 
     /**
      * <p>
@@ -100,16 +100,21 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
      * @param fxml The fxml to load.
      * @param filterOverlayMenu The filterOverlayMenu where the {@link TableView} is held that the filter should be
      *                          added to.
-     * @param configDataModel The {@link ConfigDataModel} object used to save/remove/update filters to the database.
+     * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      */
     public AddFilterMenuViewController(StackPane stackPane, String fxml, FilterOverlayMenu filterOverlayMenu,
-                                       ConfigDataModel configDataModel) {
+                                       ConfigData configData) {
         super(fxml);
-        this.configDataModel = configDataModel;
+        this.configData = configData;
         this.filterOverlayMenu = filterOverlayMenu;
         this.stackPane = stackPane;
         this.stackPane.getChildren().add(this);
         StackPane.setAlignment(this, Pos.TOP_CENTER);
+
+        // Load the labels
+        MAC_LABEL = configData.getProperty("MAC_LABEL");
+        IP_LABEL = configData.getProperty("IP_LABEL");
+        SELECTION_LABEL = configData.getProperty("SELECTION_LABEL");
 
         // Set up transition animation to show menu
         transitioShow = new TranslateTransition(Duration.seconds(0.5), this);
@@ -298,7 +303,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         if (!filterInputUpated.getRules().equals(filterInput.getRules())) {
             filterInput.setRules(filterInputUpated.getRules());
 
-            configDataModel.updateFilterInput(filterInput);
+            configData.updateFilterInput(filterInput);
             logger.debug("Updated rules for FilterInput: " + filterInput.getName() + " to database.");
         }
 
@@ -387,7 +392,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
                 (int) (color.getBlue() * 255));
 
         FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt);
-        filterInput.load(configDataModel); // Binds properties to database
+        filterInput.load(configData); // Binds properties to database
 
         return filterInput;
     }

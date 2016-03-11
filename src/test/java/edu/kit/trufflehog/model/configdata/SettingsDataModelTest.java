@@ -125,7 +125,6 @@ public class SettingsDataModelTest {
      */
     @Test
     public void testLoad() throws Exception {
-        settingsDataModel.load();
         assertEquals("007", settingsDataModel.get(Integer.class, "test-integer").getValue());
         assertEquals("hello world", settingsDataModel.get(String.class, "test-string").getValue());
         assertEquals("true", settingsDataModel.get(Boolean.class, "test-boolean").getValue());
@@ -176,7 +175,7 @@ public class SettingsDataModelTest {
      * @throws Exception Passes any errors that occurred during the test on
      */
     private void testGetEntrySuccess(Class classType, String key, String oldValue, String newValue) throws Exception {
-        settingsDataModel.load();
+        settingsDataModel = new SettingsDataModel(fileSystem, executorService);
         StringProperty property1 = settingsDataModel.get(classType, key);
         assertEquals(true, property1.getValue().equals(oldValue));
 
@@ -187,7 +186,7 @@ public class SettingsDataModelTest {
 
         Thread.sleep(500); // sleep because the saving to file happens in another thread
 
-        settingsDataModel.load();
+        settingsDataModel = new SettingsDataModel(fileSystem, executorService);
         property1 = settingsDataModel.get(classType, key);
         assertEquals(true, property1.getValue().equals(newValue));
 
@@ -195,7 +194,7 @@ public class SettingsDataModelTest {
 
         Thread.sleep(500); // sleep because the saving to file happens in another thread
 
-        settingsDataModel.load();
+        settingsDataModel = new SettingsDataModel(fileSystem, executorService);
         property1 = settingsDataModel.get(classType, key);
         assertEquals(true, property1.getValue().equals(oldValue));
     }

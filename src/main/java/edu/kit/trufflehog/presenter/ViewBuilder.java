@@ -19,7 +19,7 @@
 package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.Main;
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.view.*;
 import edu.kit.trufflehog.view.controllers.IWindowController;
@@ -53,7 +53,7 @@ import java.io.File;
  */
 public class ViewBuilder {
     // General variables
-    private ConfigDataModel configDataModel;
+    private ConfigData configData;
 
     // View layers
     private final Stage primaryStage;
@@ -74,12 +74,12 @@ public class ViewBuilder {
      *     Creates the ViewBuilder, which builds the entire view.
      * </p>
      *
-     * @param configDataModel The {@link ConfigDataModel} that is necessary to save and load configurations, like
+     * @param configData The {@link ConfigData} that is necessary to save and load configurations, like
      *                        filters or settings.
      * @param primaryStage The primary stage, where everything is drawn upon.
      */
-    public ViewBuilder(final ConfigDataModel configDataModel, final Stage primaryStage) {
-        this.configDataModel = configDataModel;
+    public ViewBuilder(final ConfigData configData, final Stage primaryStage) {
+        this.configData = configData;
         this.primaryStage = primaryStage;
         this.groundView = new AnchorPane();
         this.stackPane = new StackPane();
@@ -87,8 +87,8 @@ public class ViewBuilder {
         this.monitoringView = new AnchorPane();
         this.mainViewController = new MainViewController("main_view.fxml");
 
-        if (this.primaryStage == null || this.configDataModel == null) {
-            throw new NullPointerException("primaryStage and configDataModel shouldn't be null.");
+        if (this.primaryStage == null || this.configData == null) {
+            throw new NullPointerException("primaryStage and configData shouldn't be null.");
         }
     }
 
@@ -195,7 +195,7 @@ public class ViewBuilder {
      */
     private void buildFilterMenuOverlay() {
         // Build filter menu
-        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configDataModel, stackPane);
+        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configData, stackPane);
         filterOverlayViewController = filterOverlayMenu.setUpOverlayViewController();
         tableView = filterOverlayMenu.setUpTableView();
         BorderPane borderPane = filterOverlayMenu.setUpMenu(tableView);

@@ -38,7 +38,7 @@ import java.util.Properties;
  * @author Julian Brendl
  * @version 1.0
  */
-class PropertiesDataModel extends IConfigDataModel<String> {
+class PropertiesDataModel extends ConfigDataModel<String> {
     private static final Logger logger = LogManager.getLogger();
     private final FileSystem fileSystem;
     private final Locale locale;
@@ -57,15 +57,16 @@ class PropertiesDataModel extends IConfigDataModel<String> {
         this.fileSystem = fileSystem;
         this.locale = language;
         properties = new Properties();
+
+        load();
     }
 
-    @Override
-    public String get(Class classType, String key) {
-        return properties.getProperty(key);
-    }
-
-    @Override
-    public void load() {
+    /**
+     * <p>
+     *     Loads all configurations found on the hard drive into memory.
+     * </p>
+     */
+    private void load() {
         // Look for correct language file
         final String fileName = "system_properties_" + locale + ".properties";
         final String fileDefaultName = "system_properties_en.properties";
@@ -95,5 +96,10 @@ class PropertiesDataModel extends IConfigDataModel<String> {
         } catch (IOException e) {
             logger.fatal("Unable to find default property file to load");
         }
+    }
+
+    @Override
+    public String get(Class classType, String key) {
+        return properties.getProperty(key);
     }
 }

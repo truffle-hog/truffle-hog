@@ -44,7 +44,7 @@ import java.util.concurrent.ExecutorService;
  * @author Julian Brendl
  * @version 1.0
  */
-class FilterDataModel extends IConfigDataModel<FilterInput> {
+class FilterDataModel extends ConfigDataModel<FilterInput> {
     private static final Logger logger = LogManager.getLogger();
 
     private final ExecutorService executorService;
@@ -100,6 +100,8 @@ class FilterDataModel extends IConfigDataModel<FilterInput> {
         if (databaseFile.length() == 0) {
             createDatabase();
         }
+
+        loadFilters();
     }
 
     /**
@@ -363,10 +365,5 @@ class FilterDataModel extends IConfigDataModel<FilterInput> {
     @Override
     public FilterInput get(Class classType, String key) {
         return loadedFilters.get(key);
-    }
-
-    @Override
-    public void load() {
-        loadFilters();
     }
 }

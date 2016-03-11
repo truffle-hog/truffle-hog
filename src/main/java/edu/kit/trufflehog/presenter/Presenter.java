@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
@@ -34,7 +34,7 @@ public class Presenter {
     private static final Logger logger = LogManager.getLogger();
 
     private static Presenter presenter;
-    private final ConfigDataModel configDataModel;
+    private final ConfigData configData;
     private final FileSystem fileSystem;
     private final ViewBuilder viewBuilder;
     private final ScheduledExecutorService executorService;
@@ -61,19 +61,19 @@ public class Presenter {
         this.fileSystem = new FileSystem();
         this.executorService = new LoggedScheduledExecutor(10);
 
-        ConfigDataModel configDataTemp;
+        ConfigData configDataTemp;
         try {
-            configDataTemp = new ConfigDataModel(fileSystem, executorService);
+            configDataTemp = new ConfigData(fileSystem, executorService);
         } catch (NullPointerException e) {
             configDataTemp = null;
             logger.error("Unable to set config data model", e);
         }
-        configDataModel = configDataTemp;
+        configData = configDataTemp;
 
 
         primaryStage.setOnCloseRequest(event -> finish());
 
-        this.viewBuilder = new ViewBuilder(configDataModel, primaryStage);
+        this.viewBuilder = new ViewBuilder(configData, primaryStage);
     }
 
     /**
