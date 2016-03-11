@@ -7,9 +7,11 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.*;
+import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.executor.TruffleExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.stage.Stage;
@@ -38,6 +40,7 @@ public class Presenter {
     private final ViewBuilder viewBuilder;
     private final ScheduledExecutorService executorService;
     private final Stage primaryStage;
+    private TruffleReceiver truffleReceiver;
     private INetworkViewPort liveViewPort;
     private INetworkViewPort viewPort;
     private INetworkViewPortSwitch viewPortSwitch;
@@ -126,31 +129,40 @@ public class Presenter {
         // Tell the network observation device to start recording the
         // given network with 25fps on the created tape
 
-        final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
-        //final CommandExecutor commandExecutor = new CommandExecutor();
-        //commandExecutorService.execute(commandExecutor);
 
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
+
         // TODO change this to real filter
+        // TODO register the truffleReceiver somewhere so we can start or stop it.
         final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
+        //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, node -> System.out.println("dummy filter"));
         truffleFetchService.execute(truffleReceiver);
 
         truffleReceiver.connect();
 
-        final TruffleExecutor executor = new TruffleExecutor();
-        commandExecutorService.execute(executor);
-        //truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
-        truffleReceiver.addListener(executor);
+        // Initialize the command executor and register it.
+        final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
+        final CommandExecutor commandExecutor = new CommandExecutor();
+        commandExecutorService.execute(commandExecutor);
+        truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 
         // play that ongoing recording on the given viewportswitch
         //networkDevice.play(tape, viewPortSwitch);
-
-
 
         // track the live network on the given viewportswitch
         networkDevice.goLive(liveNetwork, viewPortSwitch);
 
         viewPort = viewPortSwitch;
+    }
+
+    /**
+     * This method shuts down any services that are still running properly.
+     */
+    public void shutdown() {
+
+        if (truffleReceiver != null)
+            truffleReceiver.disconnect();
+
     }
 
 
