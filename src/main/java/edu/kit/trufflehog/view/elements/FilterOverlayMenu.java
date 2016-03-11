@@ -28,20 +28,22 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -255,7 +257,30 @@ public class FilterOverlayMenu {
         colorColumn.setPrefWidth(50);
         colorColumn.setSortable(false);
         tableView.getColumns().add(colorColumn);
-        colorColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("color"));
+        colorColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, Color>("color"));
+
+        // SETTING THE CELL FACTORY FOR THE ALBUM ART
+        colorColumn.setCellFactory(param -> new TableCell<FilterInput, Color>() {
+            Rectangle rectangle = new Rectangle();
+
+            @Override
+            public void updateItem(Color item, boolean empty) {
+                if (item != null) {
+                    HBox hBox = new HBox();
+                    hBox.getChildren().add(rectangle);
+                    rectangle.setHeight(20);
+                    rectangle.setWidth(30);
+                    hBox.setAlignment(Pos.CENTER);
+
+                    // Copy to JavaFX color
+                    javafx.scene.paint.Color color = new javafx.scene.paint.Color(item.getRed(), item.getGreen(),
+                            item.getBlue(), 1);
+                    rectangle.setFill(color);
+
+                    setGraphic(hBox);
+                }
+            }
+        });
     }
 
     /**
