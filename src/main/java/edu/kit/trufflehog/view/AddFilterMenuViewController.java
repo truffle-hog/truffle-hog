@@ -362,18 +362,14 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
 
         // Map the string to the actual FilterOrigin object. This is done so that
         FilterOrigin filterOrigin;
-        switch (filterOriginString) {
-            case "IP-Address":
-                filterOrigin = FilterOrigin.IP;
-                break;
-            case "MAC-Address":
-                filterOrigin = FilterOrigin.MAC;
-                break;
-            case "Current Selection":
-                filterOrigin = FilterOrigin.SELECTION;
-                break;
-            default:
-                filterOrigin = null;
+        if (filterOriginString.equals(IP_LABEL)) {
+            filterOrigin = FilterOrigin.IP;
+        } else if (filterOriginString.equals(MAC_LABEL)) {
+            filterOrigin = FilterOrigin.MAC;
+        } else if (filterOriginString.equals(SELECTION_LABEL)) {
+            filterOrigin = FilterOrigin.SELECTION;
+        } else {
+            filterOrigin = null;
         }
 
         if (filterOrigin == null) {

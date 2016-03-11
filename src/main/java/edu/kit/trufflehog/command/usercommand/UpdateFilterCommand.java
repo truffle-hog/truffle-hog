@@ -1,12 +1,7 @@
 package edu.kit.trufflehog.command.usercommand;
 
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
-import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
-
-import java.lang.reflect.Field;
-import java.util.List;
 
 /**
  * <p>
