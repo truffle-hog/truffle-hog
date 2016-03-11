@@ -44,7 +44,7 @@ import java.util.concurrent.ExecutorService;
  * @author Julian Brendl
  * @version 1.0
  */
-class FilterDataModel implements IConfigDataModel<FilterInput> {
+class FilterDataModel extends IConfigDataModel<FilterInput> {
     private static final Logger logger = LogManager.getLogger();
 
     private final ExecutorService executorService;

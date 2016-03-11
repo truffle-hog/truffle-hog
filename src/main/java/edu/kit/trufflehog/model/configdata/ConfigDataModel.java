@@ -22,7 +22,9 @@ import edu.kit.trufflehog.model.filter.FilterInput;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 
+import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -36,10 +38,10 @@ import java.util.concurrent.ExecutorService;
  * @author Julian Brendl
  * @version 1.0
  */
-public class ConfigDataModel implements IConfigData {
+public class ConfigDataModel {
     private final IConfigDataModel<StringProperty> settingsDataModel;
+    private final IConfigDataModel<String> propertiesDataModel;
     private final FilterDataModel filterDataModel;
-    private final ExecutorService executorService;
 
     /**
      * <p>
@@ -53,7 +55,8 @@ public class ConfigDataModel implements IConfigData {
     public ConfigDataModel(final FileSystem fileSystem, final ExecutorService executorService) throws NullPointerException{
         this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
         this.filterDataModel = new FilterDataModel(fileSystem, executorService);
-        this.executorService = executorService;
+        Locale locale = new Locale(getSetting(String.class, "language").getValue());
+        this.propertiesDataModel = new PropertiesDataModel(locale, fileSystem);
 
         // Load all settings on creation
         load();
@@ -123,7 +126,8 @@ public class ConfigDataModel implements IConfigData {
      * </p>
      */
     private void load() {
-        settingsDataModel.load();
+        settingsDataModel.load(); // This has to be loaded first, because other settings might depend on it.
+        propertiesDataModel.load();
         filterDataModel.load();
 
         // VERY IMPORTANT: This makes sure that we can map the filter activity state to a check box in the
@@ -131,14 +135,25 @@ public class ConfigDataModel implements IConfigData {
         filterDataModel.getAllFilters().forEach((name, filter) -> filter.load(this));
     }
 
-    @Override
+    /**
+     * <p>
+     *     Gets the value mapped to the given key in the currently loaded {@link Properties} object, or null if the key
+     *     does not exist.
+     * </p>
+     *
+     * @param typeClass The type of the object. For example, "007" could be of type java.lang.Integer, that way
+     *                  one knows that "007" can be parsed into a real integer value of 007.
+     * @param key The key of the value to get in the currently loaded {@link Properties} object.
+     * @return The value mapped to the key, if it exists, else null.
+     */
     public StringProperty getSetting(final Class typeClass, final String key) {
         return settingsDataModel.get(typeClass, key);
     }
 
     /**
-     * {@inheritDoc}
-     *
+     * <p>
+     *     Gets the filter input object that is mapped to the given key.
+     * </p>
      * <p>
      *     The given name must be the same name as the name that is stored inside the name parameter of the
      *     {@link FilterInput} object.
@@ -147,7 +162,6 @@ public class ConfigDataModel implements IConfigData {
      * @param name The name that belongs to the FilterInput object that should be retrieved.
      * @return The FilterInput object that has the matching name.
      */
-    @Override
     public FilterInput getFilter(final String name) {
         return filterDataModel.get(name);
     }

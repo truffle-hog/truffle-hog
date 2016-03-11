@@ -17,15 +17,25 @@
 
 package edu.kit.trufflehog.model.configdata;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.file.Files;
+
 /**
  * <p>
  *     The IConfigDataModel is an abstraction to any "settings fetch service". In other words, any class that
- *     loads settings from the hard drive should implement this class. Optionally you can pass a specific class to
+ *     loads settings from the hard drive should extend this class. Optionally you can pass a specific class to
  *     the get method to clarify of what type you want your result to be, so that you can then safely convert to that
  *     type.
  * </p>
  * <p>
- *     When implementing this class and there is no need for the class type, still implement the
+ *     When extendin this class and there is no need for the class type, still implement the
  *     {@link IConfigDataModel#get(Class classType, String key)} method and ignore the additional parameter. Others
  *     can call on the {@link IConfigDataModel#get(String key)} method and your method will still be executed.
  * </p>
@@ -33,7 +43,8 @@ package edu.kit.trufflehog.model.configdata;
  * @author Julian Brendl
  * @version 1.0
  */
-public interface IConfigDataModel<T> {
+abstract class IConfigDataModel<T> {
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * <p>
@@ -47,7 +58,14 @@ public interface IConfigDataModel<T> {
      * @param key The key of the value that should be retrieved.
      * @return The value mapped to the key, if it exists, else null.
      */
-    T get(Class classType, String key);
+    abstract T get(Class classType, String key);
+
+    /**
+     * <p>
+     *     Loads all configurations found on the hard drive into memory.
+     * </p>
+     */
+    abstract void load();
 
     /**
      * <p>
@@ -58,14 +76,49 @@ public interface IConfigDataModel<T> {
      * @param key The key of the value that should be retrieved.
      * @return The value mapped to the key, if it exists, else null.
      */
-    default T get(String key) {
+    T get(String key) {
         return get(null, key);
     }
 
     /**
      * <p>
-     *     Loads all configurations found on the hard drive into memory.
+     *     Copies the a file from the resources folder to the target file.
      * </p>
+     *
+     * @param fileName The name of the file to copy
+     * @param targetFile The file object to which to copy the file
+     * @return True if the copy operation was successful, else false
      */
-    void load();
+    File copyFromResources(final String fileName, final File targetFile) {
+        // Set file path to the default file in resources
+        ClassLoader classLoader = getClass().getClassLoader();
+        String filePath = "edu" + File.separator + "kit" + File.separator + "trufflehog" + File.separator + "config"
+                + File.separator + fileName;
+
+        // Get the file from the resources
+        File resourceFile = null;
+        URL url = classLoader.getResource(filePath);
+        if (url != null) {
+
+            // Decode from URL style to get rid of illegal characters in string like %20 etc.
+            try {
+                resourceFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                logger.error("Unable to decode URL to string", e);
+            }
+        } else {
+            logger.error("Unable to get file from resources");
+        }
+
+        // Copy the file to data/config
+        try {
+            if (resourceFile != null) {
+                Files.copy(resourceFile.getCanonicalFile().toPath(), targetFile.getCanonicalFile().toPath());
+            }
+        } catch (IOException e) {
+            logger.error("Unable to copy " + fileName + " from resources to target file: " + targetFile.getName(), e);
+            return null;
+        }
+        return resourceFile;
+    }
 }
