@@ -47,7 +47,6 @@ import static org.mockito.Mockito.when;
  * @version 1.0
  */
 public class SettingsDataModelTest {
-
     private FileSystem fileSystem;
     private ExecutorService executorService;
     private SettingsDataModel settingsDataModel;

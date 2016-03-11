@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This file is part of TruffleHog.
+  ~
+  ~ TruffleHog is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ TruffleHog is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+  -->
 <trufflehog>
   <head>
     <!-- The version of Truffle Hog that this file is meant for. -->
@@ -11,7 +27,6 @@
             ___________________________________________________________________________________________________________
             Below is an example of an entry. Each entry needs a key, a value and a type. The type is the class
             that the value belongs to. For example, here 007 is an integer, thus it is of type java.lang.Integer.
-
             IMPORTANT: It is key that the type is the fully qualified name of the desired class, other wise Java will
             not find the class. That means use java.lang.Integer and not Integer.
 

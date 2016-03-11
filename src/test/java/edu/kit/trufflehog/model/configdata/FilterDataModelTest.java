@@ -266,36 +266,6 @@ public class FilterDataModelTest {
 
     /**
      * <p>
-     *     Makes sure that when two FileInputs with the same name but different rules and color are added, the later one
-     *     overwrites the previous one.
-     * </p>
-     *
-     * @throws Exception Passes any errors that occurred during the test on
-     */
-    @Test
-    public void testForEntryWithSameName() throws Exception {
-        FilterInput filterInput1 = generateRandomFilterInput();
-        FilterInput filterInput2 = updateFilterInput(filterInput1);
-        filterDataModel.addFilterToDatabaseAsynchronous(filterInput1);
-        filterDataModel.addFilterToDatabaseAsynchronous(filterInput2);
-
-        // Wait for all threads to finish
-        Thread.sleep(1000);
-
-        // Retrieve them
-        filterDataModel.load();
-
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
-        assertEquals(1, filterInputFromDB.size());
-
-        // Make sure the updated version was retrieved
-        assertEquals(filterInput2.getName(), filterDataModel.get(null, filterInput1.getName()).getName());
-        assertEquals(filterInput2.getRules(), filterDataModel.get(null, filterInput1.getName()).getRules());
-        assertEquals(filterInput2.getColor(), filterDataModel.get(null, filterInput1.getName()).getColor());
-    }
-
-    /**
-     * <p>
      *     Adds a randomly generated filterInput into the database and retrieves it with the get method to test if it
      *     works properly.
      * </p>
