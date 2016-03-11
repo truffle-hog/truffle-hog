@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.network.recording;
 
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -35,6 +36,14 @@ public class NetworkWritingPortSwitch implements INetworkWritingPortSwitch {
     @Override
     public void writeNode(INode node) {
         activePort.writeNode(node);
+    }
+
+    @Override
+    public void applyFilter(IFilter filter) {
+        /*for (INode node : delegate.getVertices()) {
+                filter.check(node);
+            }*/
+        //nothing to do here
     }
 
     @Override

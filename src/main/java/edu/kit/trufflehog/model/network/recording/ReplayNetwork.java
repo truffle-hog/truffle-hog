@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.network.recording;
 
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.*;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
@@ -325,6 +326,14 @@ public class ReplayNetwork implements INetwork {
             }
             delegate.getGraph().addVertex(node);
             idNodeMap.put(node.getAddress(), node);
+        }
+
+        @Override
+        public void applyFilter(IFilter filter) {
+            /*for (INode node : delegate.getVertices()) {
+                filter.check(node);
+            }*/
+            //nothing to do here
         }
 
         @Override
