@@ -8,10 +8,8 @@ import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.service.executor.TruffleExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -163,12 +161,15 @@ public class Presenter {
      * This method shuts down any services that are still running properly.
      */
     public void finish() {
+        // Exit the view
         Platform.exit();
 
+        // Disconnect the truffleReceiver
         if (truffleReceiver != null) {
             truffleReceiver.disconnect();
         }
 
+        // Shut down the system
         System.exit(0);
     }
 
