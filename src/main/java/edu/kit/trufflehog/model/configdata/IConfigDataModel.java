@@ -89,7 +89,7 @@ abstract class IConfigDataModel<T> {
      * @param targetFile The file object to which to copy the file
      * @return True if the copy operation was successful, else false
      */
-    File copyFromResources(final String fileName, final File targetFile) {
+    boolean copyFromResources(final String fileName, final File targetFile) {
         // Set file path to the default file in resources
         ClassLoader classLoader = getClass().getClassLoader();
         String filePath = "edu" + File.separator + "kit" + File.separator + "trufflehog" + File.separator + "config"
@@ -117,8 +117,8 @@ abstract class IConfigDataModel<T> {
             }
         } catch (IOException e) {
             logger.error("Unable to copy " + fileName + " from resources to target file: " + targetFile.getName(), e);
-            return null;
+            return false;
         }
-        return resourceFile;
+        return true;
     }
 }

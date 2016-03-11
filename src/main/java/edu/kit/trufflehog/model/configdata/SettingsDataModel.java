@@ -143,7 +143,7 @@ class SettingsDataModel extends IConfigDataModel<StringProperty> {
         }
 
         // If it is null, copy the config file from resources into the data/config
-        if (!configFile.exists() && copyFromResources(CONFIG_FILE_NAME, configFile) != null) {
+        if (!configFile.exists() && !copyFromResources(CONFIG_FILE_NAME, configFile)) {
             return null;
         }
 

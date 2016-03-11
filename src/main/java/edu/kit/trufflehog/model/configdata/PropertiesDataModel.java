@@ -77,13 +77,8 @@ class PropertiesDataModel extends IConfigDataModel<String> {
             return;
         }
 
-        // If not found, load it from resource folder
-        if (!propertyFile.exists()) {
-            propertyFile = copyFromResources(fileName, propertyFile);
-        }
-
-        // If still not found, load the default file in english
-        if (propertyFile == null) {
+        // If not found, load it from resource folder, and if that fails, load the default file in english
+        if (!propertyFile.exists() && !copyFromResources(fileName, propertyFile)) {
             try {
                 propertyFile = new File(fileSystem.getConfigFolder().getCanonicalPath() + File.separator
                         + fileDefaultName);

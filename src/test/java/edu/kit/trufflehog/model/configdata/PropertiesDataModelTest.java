@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * <p>
+ *     Tests the basic functionalities of the property loading and copying mechanism.
  * </p>
  *
  * @author Julian Brendl
@@ -40,6 +41,13 @@ public class PropertiesDataModelTest {
     private FileSystem fileSystem;
     private PropertiesDataModel propertiesDataModel;
 
+    /**
+     * <p>
+     *     Sets everything up for every test
+     * </p>
+     *
+     * @throws Exception Passes any errors that occurred during the test on
+     */
     @Before
     public void setUp() throws Exception {
         this.fileSystem = mock(FileSystem.class);
@@ -47,50 +55,67 @@ public class PropertiesDataModelTest {
         when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config"));
     }
 
+    /**
+     * <p>
+     *     Tests whether the english property file can be loaded and whether the test property can be accessed.
+     * </p>
+     *
+     * @throws Exception Passes any errors that occurred during the test on
+     */
     @Test
     public void testEn() throws Exception {
-        testLoad(new Locale("en"));
+        this.propertiesDataModel = new PropertiesDataModel(new Locale("en"), fileSystem);
         propertiesDataModel.load();
         String value = propertiesDataModel.get("test_property");
         assertEquals("this is a test", value);
-
-        testWithNoFile();
-        testLoad(new Locale("en"));
-        propertiesDataModel.load();
-        value = propertiesDataModel.get("test_property");
-        assertEquals("this is a test", value);
-
-        if (fileSystem.getConfigFolder().exists()) {
-            FileUtils.deleteDirectory(fileSystem.getConfigFolder());
-            fileSystem.getConfigFolder().mkdir();
-        }
     }
 
+    /**
+     * <p>
+     *     Tests whether the german property file can be loaded and whether the test property can be accessed.
+     * </p>
+     *
+     * @throws Exception Passes any errors that occurred during the test on
+     */
     @Test
     public void testDe() throws Exception {
-        testLoad(new Locale("de"));
+        this.propertiesDataModel = new PropertiesDataModel(new Locale("de"), fileSystem);
         propertiesDataModel.load();
         String value = propertiesDataModel.get("test_property");
         assertEquals("das ist ein test", value);
+    }
 
-        testWithNoFile();
-        testLoad(new Locale("de"));
+    /**
+     * <p>
+     *     Tests whether the property file is copied correctly if it was not present before.
+     * </p>
+     *
+     * @throws Exception Passes any errors that occurred during the test on
+     */
+    @Test
+    public void testWithNoFile() throws Exception {
+        this.fileSystem = mock(FileSystem.class);
+        when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
+        when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config-error-test"));
+
+        if (fileSystem.getConfigFolder().exists()) {
+            FileUtils.deleteDirectory(fileSystem.getConfigFolder());
+            fileSystem.getConfigFolder().mkdir();
+        } else {
+            fileSystem.getConfigFolder().mkdir();
+        }
+
+        this.propertiesDataModel = new PropertiesDataModel(new Locale("en"), fileSystem);
         propertiesDataModel.load();
-        value = propertiesDataModel.get("test_property");
-        assertEquals("das ist ein test", value);
+
+        boolean exists = new File(fileSystem.getConfigFolder() + File.separator + "system_properties_en.properties")
+                .exists();
 
         if (fileSystem.getConfigFolder().exists()) {
             FileUtils.deleteDirectory(fileSystem.getConfigFolder());
             fileSystem.getConfigFolder().mkdir();
         }
-    }
 
-    private void testWithNoFile() throws Exception {
-        when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
-        when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config-error-test"));
-    }
-
-    private void testLoad(Locale locale) throws Exception {
-        this.propertiesDataModel = new PropertiesDataModel(locale, fileSystem);
+        assertEquals(true, exists);
     }
 }
