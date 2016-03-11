@@ -6,8 +6,10 @@ import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.graph.FXVisualizationViewer;
@@ -25,6 +27,7 @@ import edu.uci.ics.jung.visualization.decorators.PickableEdgePaintTransformer;
 import edu.uci.ics.jung.visualization.decorators.PickableVertexPaintTransformer;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
+import edu.uci.ics.jung.visualization.transform.AffineTransformer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -33,11 +36,13 @@ import org.apache.commons.collections15.Transformer;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.View;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.EnumMap;
@@ -155,19 +160,23 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
         });
 
 		jungView.getRenderContext().setVertexShapeTransformer(iNode -> {
-
-            //final Ellipse2D circle = new Ellipse2D.Double(-1, -1, 2, 2);
-            // in this case, the vertex is twice as large
-
-            //System.out.println(layout.transform(iNode));
-
             final NodeStatisticsComponent statComp = iNode.getComponent(NodeStatisticsComponent.class);
+            final ViewComponent viewComponent = iNode.getComponent(ViewComponent.class);
+
             int currentSize = statComp.getThroughput();
             long maxSize = viewPort.getMaxThroughput();
             double relation = (double) currentSize / (double) maxSize;
             double sizeMulti = (50.0 * relation) + 10;
-            return new Ellipse2D.Double(-sizeMulti, -sizeMulti, 2*sizeMulti, 2*sizeMulti);
-            //return AffineTransform.getScaleInstance(sizeMulti, sizeMulti).createTransformedShape(circle);
+
+            if (viewComponent != null) {
+                final IRenderer renderer = iNode.getComponent(ViewComponent.class).getRenderer();
+                return AffineTransform.getScaleInstance(sizeMulti/100, sizeMulti/100).createTransformedShape(renderer.getShape());
+            } else {
+                final IRenderer renderer = new NodeRenderer();
+                final ViewComponent vc = new ViewComponent(renderer);
+                iNode.add(vc);
+                return renderer.getShape();
+            }
         });
 
         final Color base = new Color(0x7f7784);
