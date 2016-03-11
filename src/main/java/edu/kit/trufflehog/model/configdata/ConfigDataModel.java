@@ -54,6 +54,9 @@ public class ConfigDataModel implements IConfigData {
         this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
         this.filterDataModel = new FilterDataModel(fileSystem, executorService);
         this.executorService = executorService;
+
+        // Load all settings on creation
+        load();
     }
 
     /**
@@ -86,7 +89,7 @@ public class ConfigDataModel implements IConfigData {
      * @param filterInput The {@link FilterInput} to remove from the database.
      */
     public void removeFilterInput(final FilterInput filterInput) {
-        filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
+        filterDataModel.removeFilterFromDatabaseAsynchronous(filterInput);
     }
 
     /**
@@ -105,9 +108,13 @@ public class ConfigDataModel implements IConfigData {
      *     Loads all settings that are stored on the hard drive into the program.
      * </p>
      */
-    public void load() {
+    private void load() {
         settingsDataModel.load();
         filterDataModel.load();
+
+        // VERY IMPORTANT: This makes sure that we can map the filter activity state to a check box in the
+        // table view in the filters menu
+        filterDataModel.getAllFilters().forEach((name, filter) -> filter.load(this));
     }
 
     @Override

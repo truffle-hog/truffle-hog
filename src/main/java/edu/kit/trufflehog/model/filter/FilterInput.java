@@ -17,11 +17,11 @@
 
 package edu.kit.trufflehog.model.filter;
 
+import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -60,6 +60,8 @@ import java.util.List;
  * @version 1.0
  */
 public class FilterInput implements Serializable {
+    private static final transient Logger logger = LogManager.getLogger();
+
     // Serializable variables
     private String name;
     private FilterType type;
@@ -73,8 +75,7 @@ public class FilterInput implements Serializable {
     private transient StringProperty typeProperty;
     private transient StringProperty originProperty;
     private transient ObjectProperty<Color> colorProperty;
-    private transient ObservableList<String> observableRules;
-    private transient BooleanProperty booleanProperty;
+    private transient BooleanProperty activeProperty;
 
     /**
      * <p>
@@ -121,8 +122,6 @@ public class FilterInput implements Serializable {
         this.rules = rules;
         this.color = color;
         this.active = false;
-
-        load();
     }
 
     /**
@@ -245,41 +244,6 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
-     *     Sets the name of this filter. It has to be unique.
-     * </p>
-     *
-     * @param name The new name of this filter.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * <p>
-     *     Sets the type of this filter. A filter can either be a whitelist or a blacklist, that means all nodes
-     *     matched by the filter either count as safe (whitelist) or unsafe (blacklist).
-     * </p>
-     *
-     * @param type The type of this filter.
-     */
-    public void setType(FilterType type) {
-        this.type = type;
-    }
-
-    /**
-     * <p>
-     *     Sets the origin of the filter. A filter can originate from an IP Address, from a MAC Address, or from the
-     *     current selection. This indicates upon what criteria the filter filters.
-     * </p>
-     *
-     * @param origin The origin of this filter.
-     */
-    public void setOrigin(FilterOrigin origin) {
-        this.origin = origin;
-    }
-
-    /**
-     * <p>
      *     Sets the set of rules for this filter. The rules of the filter define what the filter matches. These are
      *     regular expressions matching IP addresses, MAC addresses and more.
      * </p>
@@ -292,38 +256,14 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
-     *     Sets the color for this filter. The color of the filter determines what color a matched node should
-     *     become.
-     * </p>
-     *
-     * @param color The color for this filter.
-     */
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    /**
-     * <p>
-     *     Sets the current activity state. That means the parameter sets whether or not the filter will be applied on
-     *     the current network.
-     * </p>
-     *
-     * @param active The activity state of the filter.
-     */
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    /**
-     * <p>
      *     Gets the BooleanProperty behind the activity state. This is mapped to the {@link CheckBoxTableCell} in the
      *     table view in the filters menu.
      * </p>
      *
      * @return the BooleanProperty that is is mapped to the {@link CheckBoxTableCell} in the table view in the filters menu.
      */
-    public BooleanProperty getBooleanProperty() {
-        return booleanProperty;
+    public BooleanProperty getActiveProperty() {
+        return activeProperty;
     }
 
     /**
@@ -332,17 +272,56 @@ public class FilterInput implements Serializable {
      *     DESERIALIZATION OF A FILTERINPUT OBJECT to recreate the connection between the Properties and the
      *     normal values that were serialized.
      * </p>
+     *
+     * @param configDataModel The {@link ConfigDataModel} object used to update this filter to the database.
      */
-    public void load() {
+    public void load(ConfigDataModel configDataModel) {
         // Instantiate property objects
         nameProperty = new SimpleStringProperty(name);
         typeProperty = new SimpleStringProperty(type.name());
-        originProperty = new SimpleStringProperty(origin.name());
-        observableRules = FXCollections.observableArrayList();
-        observableRules.setAll(rules);
-        booleanProperty = new SimpleBooleanProperty(active);
+        colorProperty = new SimpleObjectProperty<>(color);
+        activeProperty = new SimpleBooleanProperty(active);
 
+        // Make the origin look nicer on screen
+        if (origin.equals(FilterOrigin.SELECTION)) {
+            originProperty = new SimpleStringProperty("Selection");
+        } else {
+            originProperty = new SimpleStringProperty(origin.name());
+        }
 
+        bind(configDataModel);
+    }
+
+    /**
+     * <p>
+     *     Binds this filterInput to the database update function, so that when their value change, they are automatically
+     *     updated.
+     * </p>
+     *
+     * @param configDataModel The {@link ConfigDataModel} object used to update this filter to the database.
+     */
+    private void bind(ConfigDataModel configDataModel) {
+        // Bind name to database update function
+        nameProperty.addListener((observable, oldValue, newValue) -> {
+            name = newValue;
+
+            configDataModel.updateFilterInput(this);
+            logger.debug("Updated name for FilterInput: " + name + " to table view and database.");
+        });
+
+        // Bind type to database update function
+        typeProperty.addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(FilterType.WHITELIST.name())) {
+                type = FilterType.WHITELIST;
+            } else {
+                type = FilterType.BLACKLIST;
+            }
+
+            configDataModel.updateFilterInput(this);
+            logger.debug("Updated type for FilterInput: " + name + " to table view and database.");
+        });
+
+        // Bind origin to database update function
         originProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(FilterOrigin.IP.name())) {
                 origin = FilterOrigin.IP;
@@ -351,11 +330,25 @@ public class FilterInput implements Serializable {
             } else {
                 origin = FilterOrigin.SELECTION;
             }
+
+            configDataModel.updateFilterInput(this);
+            logger.debug("Updated origin for FilterInput: " + name + " to table view and database.");
         });
 
-        observableRules.addListener((ListChangeListener<String>) c -> {
-            rules.clear();
-            rules.addAll(observableRules);
+        // Bind color to database update function
+        colorProperty.addListener((observable, oldValue, newValue) -> {
+            color = newValue;
+
+            configDataModel.updateFilterInput(this);
+            logger.debug("Updated color for FilterInput: " + name + " to table view and database.");
+        });
+
+        // Bind activity state to database update function
+        activeProperty.addListener((observable, oldValue, newValue) -> {
+            active = newValue;
+
+            configDataModel.updateFilterInput(this);
+            logger.debug("Updated activity state for FilterInput: " + name + " to table view and database.");
         });
     }
 }

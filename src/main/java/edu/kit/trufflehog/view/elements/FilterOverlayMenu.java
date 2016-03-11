@@ -19,12 +19,8 @@ package edu.kit.trufflehog.view.elements;
 
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.filter.FilterInput;
-import edu.kit.trufflehog.model.filter.FilterOrigin;
-import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.view.AddFilterMenuViewController;
 import edu.kit.trufflehog.view.OverlayViewController;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,7 +28,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -77,7 +72,8 @@ public class FilterOverlayMenu {
     public FilterOverlayMenu(ConfigDataModel configDataModel, StackPane stackPane) {
         this.configDataModel = configDataModel;
         this.data = FXCollections.observableArrayList();
-        this.addFilterOverlayMenu = new AddFilterMenuViewController(stackPane, "add_filter_menu_overlay.fxml", this);
+        this.addFilterOverlayMenu = new AddFilterMenuViewController(stackPane, "add_filter_menu_overlay.fxml", this,
+                configDataModel);
 
         // Load existing filters from hard drive into filter menu
         Map<String, FilterInput> filterInputMap = configDataModel.getAllLoadedFilters();
@@ -153,18 +149,7 @@ public class FilterOverlayMenu {
 
             // Set up callback for filter property
             public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
-                final FilterInput filterInput = p.getValue();
-                final StringProperty stringProperty =  filterInput.getNameProperty();
-
-                // Make sure the filter is updated in the database when the name changes
-                stringProperty.addListener((observable, oldValue, newValue) -> {
-                    filterInput.setName(newValue);
-
-                    configDataModel.updateFilterInput(filterInput);
-                    logger.debug("Updated FilterInput: " + filterInput.getName() + " to table view and database.");
-                });
-
-                return stringProperty;
+                return p.getValue().getNameProperty();
             }
         });
     }
@@ -186,22 +171,7 @@ public class FilterOverlayMenu {
 
             // Set up callback for type property
             public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
-                final FilterInput filterInput = p.getValue();
-                final StringProperty stringProperty =  filterInput.getTypeProperty();
-
-                // Make sure the filter is updated in the database when the type changes
-                stringProperty.addListener((observable, oldValue, newValue) -> {
-                    if (newValue.equals(FilterType.WHITELIST.name())) {
-                        filterInput.setType(FilterType.WHITELIST);
-                    } else {
-                        filterInput.setType(FilterType.BLACKLIST);
-                    }
-
-                    configDataModel.updateFilterInput(filterInput);
-                    logger.debug("Updated FilterInput: " + filterInput.getName() + " to table view and database.");
-                });
-
-                return stringProperty;
+                return p.getValue().getTypeProperty();
             }
         });
     }
@@ -223,24 +193,7 @@ public class FilterOverlayMenu {
 
             // Set up callback for origin property
             public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
-                final FilterInput filterInput = p.getValue();
-                final StringProperty stringProperty =  filterInput.getOriginProperty();
-
-                // Make sure the filter is updated in the database when the origin changes
-                stringProperty.addListener((observable, oldValue, newValue) -> {
-                    if (newValue.equals(FilterOrigin.IP.name())) {
-                        filterInput.setOrigin(FilterOrigin.IP);
-                    } else if (newValue.equals(FilterOrigin.MAC.name())) {
-                        filterInput.setOrigin(FilterOrigin.MAC);
-                    } else {
-                        filterInput.setOrigin(FilterOrigin.SELECTION);
-                    }
-
-                    configDataModel.updateFilterInput(filterInput);
-                    logger.debug("Updated FilterInput: " + filterInput.getName() + " to table view and database.");
-                });
-
-                return stringProperty;
+                return p.getValue().getOriginProperty();
             }
         });
     }
@@ -257,14 +210,24 @@ public class FilterOverlayMenu {
         colorColumn.setPrefWidth(50);
         colorColumn.setSortable(false);
         tableView.getColumns().add(colorColumn);
-        colorColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, Color>("color"));
 
-        // SETTING THE CELL FACTORY FOR THE ALBUM ART
+        // Set the cell value factory for the color
+        colorColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, Color>,
+                ObservableValue<Color>>() {
+
+            // Set up callback for origin property
+            public ObservableValue<Color> call(TableColumn.CellDataFeatures<FilterInput, Color> p) {
+                return p.getValue().getColorProperty();
+            }
+        });
+
+        // Set the cell factory for the color
         colorColumn.setCellFactory(param -> new TableCell<FilterInput, Color>() {
             Rectangle rectangle = new Rectangle();
 
             @Override
             public void updateItem(Color item, boolean empty) {
+                // Add the color to the row
                 if (item != null) {
                     HBox hBox = new HBox();
                     hBox.getChildren().add(rectangle);
@@ -273,11 +236,16 @@ public class FilterOverlayMenu {
                     hBox.setAlignment(Pos.CENTER);
 
                     // Copy to JavaFX color
-                    javafx.scene.paint.Color color = new javafx.scene.paint.Color(item.getRed(), item.getGreen(),
+                    javafx.scene.paint.Color color = javafx.scene.paint.Color.rgb(item.getRed(), item.getGreen(),
                             item.getBlue(), 1);
                     rectangle.setFill(color);
 
                     setGraphic(hBox);
+                }
+
+                // Remove the color if the row has been removed
+                if (empty) {
+                    setGraphic(null);
                 }
             }
         });
@@ -300,20 +268,8 @@ public class FilterOverlayMenu {
         // Set up callback for CheckBoxTableCell
         activeColumn.setCellFactory(tableColumn -> {
             final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
-            checkBoxTableCell.setSelectedStateCallback(index -> {
-                final FilterInput filterInput = (FilterInput) tableView.getItems().get(index);
-                final BooleanProperty booleanProperty = filterInput.getBooleanProperty();
-
-                // Make sure the filter is updated in the database when the active status changes
-                booleanProperty.addListener((observable, oldValue, newValue) -> {
-                    filterInput.setActive(newValue);
-
-                    configDataModel.updateFilterInput(filterInput);
-                    logger.debug("Updated FilterInput: " + filterInput.getName() + " to table view and database.");
-                });
-
-                return booleanProperty;
-            });
+            checkBoxTableCell.setSelectedStateCallback(index -> ((FilterInput) tableView.getItems().get(index))
+                    .getActiveProperty());
 
             return checkBoxTableCell;
         });
@@ -329,17 +285,15 @@ public class FilterOverlayMenu {
      */
     public BorderPane setUpMenu(TableView tableView) {
         // Set up add button
-        Button addButton = new ImageButton("add.png");
-        addButton.setOnAction(actionEvent -> {
-            addFilterOverlayMenu.showMenu();
-        });
+        final Button addButton = new ImageButton("add.png");
+        addButton.setOnAction(actionEvent -> addFilterOverlayMenu.showMenu());
         addButton.setScaleX(0.5);
         addButton.setScaleY(0.5);
 
         // Set up remove button
-        Button removeButton = new ImageButton("remove.png");
+        final Button removeButton = new ImageButton("remove.png");
         removeButton.setOnAction(actionEvent -> {
-            FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
+            final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             if (!data.isEmpty() && filterInput != null) {
                 data.remove(filterInput);
                 configDataModel.removeFilterInput(filterInput);
@@ -349,19 +303,33 @@ public class FilterOverlayMenu {
         removeButton.setScaleX(0.5);
         removeButton.setScaleY(0.5);
 
+
+        // Set up edit button
+        final Button editButton = new ImageButton("edit.png");
+        editButton.setOnAction(actionEvent -> {
+            final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
+            if (!data.isEmpty() && filterInput != null) {
+                addFilterOverlayMenu.showMenu(filterInput);
+            }
+        });
+        editButton.setScaleX(0.45);
+        editButton.setScaleY(0.45);
+
         // Set up components on overlay
-        BorderPane borderPane = new BorderPane();
+        final BorderPane borderPane = new BorderPane();
         borderPane.setCenter(tableView);
         tableView.setMinHeight(300);
 
         AnchorPane anchorPane = new AnchorPane();
-        anchorPane.getChildren().addAll(addButton, removeButton);
+        anchorPane.getChildren().addAll(addButton, removeButton, editButton);
         borderPane.setBottom(anchorPane);
 
         AnchorPane.setBottomAnchor(addButton, 0d);
         AnchorPane.setRightAnchor(addButton, 0d);
         AnchorPane.setBottomAnchor(removeButton, 0d);
         AnchorPane.setRightAnchor(removeButton, 30d);
+        AnchorPane.setBottomAnchor(editButton, 0d);
+        AnchorPane.setRightAnchor(editButton, 60d);
 
         return borderPane;
     }

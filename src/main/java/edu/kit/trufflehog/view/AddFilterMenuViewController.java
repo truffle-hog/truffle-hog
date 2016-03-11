@@ -19,6 +19,7 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.OverlayInteraction;
+import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterOrigin;
 import edu.kit.trufflehog.model.filter.FilterType;
@@ -32,11 +33,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 /**
  * <p>
@@ -49,10 +53,15 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 public class AddFilterMenuViewController extends AnchorPaneController<OverlayInteraction> {
+    private static final Logger logger = LogManager.getLogger();
+
+    private final ConfigDataModel configDataModel;
+
     private final FilterOverlayMenu filterOverlayMenu;
     private final TranslateTransition transitioShow;
     private final TranslateTransition transitionHide;
     private final StackPane stackPane;
+    private FilterInput updatingFilter; // The filter that is being updated if there is one.
 
     // FXML variables
     @FXML
@@ -76,16 +85,27 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
     @FXML
     private Button helpButton;
 
+    // Labels
+    private final String MAC_LABEL = "MAC-Address";
+    private final String IP_LABEL = "IP-Address";
+    private final String SELECTION_LABEL = "Current Selection";
+
     /**
      * <p>
-     *     Creates a new AddFilterMenuViewController. Through the AddFilterMenuViewController you can add filters.
+     *     Creates a new AddFilterMenuViewController. Through the AddFilterMenuViewController you can add or edit
+     *     filters.
      * </p>
      *
      * @param stackPane The stackPane to put the menu on.
      * @param fxml The fxml to load.
+     * @param filterOverlayMenu The filterOverlayMenu where the {@link TableView} is held that the filter should be
+     *                          added to.
+     * @param configDataModel The {@link ConfigDataModel} object used to save/remove/update filters to the database.
      */
-    public AddFilterMenuViewController(StackPane stackPane, String fxml, FilterOverlayMenu filterOverlayMenu) {
+    public AddFilterMenuViewController(StackPane stackPane, String fxml, FilterOverlayMenu filterOverlayMenu,
+                                       ConfigDataModel configDataModel) {
         super(fxml);
+        this.configDataModel = configDataModel;
         this.filterOverlayMenu = filterOverlayMenu;
         this.stackPane = stackPane;
         this.stackPane.getChildren().add(this);
@@ -107,24 +127,102 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
 
         // Fill comboboxes
         typeComboBox.getItems().setAll(FilterType.BLACKLIST, FilterType.WHITELIST);
-        filterByComboBox.getItems().setAll("IP-Address", "MAC-Address", "Current Selection");
+        filterByComboBox.getItems().setAll(IP_LABEL, MAC_LABEL, SELECTION_LABEL);
 
         // Set the buttons
-        createButton.setOnAction(eventHandler ->  addFilter());
+        createButton.setOnAction(eventHandler ->  {
+            if (updatingFilter == null) {
+                addFilter();
+            } else {
+                updateFilter(updatingFilter);
+            }
+        });
         cancelButton.setOnAction(eventHandler -> cancel());
         helpButton.setOnAction(eventHandler -> help());
     }
 
     /**
      * <p>
-     *     Shows the menu: starts the slide in animation.
+     *     Shows the menu: starts the slide in animation. This method should be called when a new filter should be
+     *     created.
      * </p>
      */
     public void showMenu() {
+       showMenu(null);
+    }
+
+    /**
+     * <p>
+     *     Shows the menu: starts the slide in animation. This method will out the form with the data of the given
+     *     filter input, and should thus only be called if a filter input should be edited.
+     * </p>
+     */
+    public void showMenu(FilterInput filterInput) {
+        if (filterInput != null) {
+            updatingFilter = filterInput;
+            nameTextField.setText(filterInput.getName());
+            typeComboBox.setValue(filterInput.getType());
+
+            // Convert to correct color object
+            colorPicker.setValue(javafx.scene.paint.Color.rgb(filterInput.getColor().getRed(),
+                    filterInput.getColor().getGreen(), filterInput.getColor().getBlue(), 1));
+
+            // Display origin type correctly
+            if (filterInput.getOrigin().equals(FilterOrigin.IP)) {
+                filterByComboBox.setValue(IP_LABEL);
+            } else if (filterInput.getOrigin().equals(FilterOrigin.MAC)) {
+                filterByComboBox.setValue(MAC_LABEL);
+            } else {
+                filterByComboBox.setValue(SELECTION_LABEL);
+            }
+
+            rulesTextArea.setText(concatRules(filterInput.getRules()));
+        } else {
+            updatingFilter = null;
+        }
+
         StackPane.setAlignment(this, Pos.TOP_CENTER);
         stackPane.setVisible(true);
         this.setVisible(true);
         transitioShow.play();
+    }
+
+    /**
+     * <p>
+     *     Clears the menu of all entries.
+     * </p>
+     */
+    private void clearMenu() {
+        nameTextField.setText("");
+        typeComboBox.setValue(null);
+        colorPicker.setValue(Color.WHITE);
+        filterByComboBox.setValue(null);
+        rulesTextArea.setText("");
+        errorText.setText("");
+        updatingFilter = null;
+    }
+
+    /**
+     * <p>
+     *     Takes a list of rules and concatenates them in a matter that makes the string easily readable.
+     * </p>
+     *
+     * @param rules The rules to concatenate to one string.
+     * @return The rules when they are completely concatenated.
+     */
+    private String concatRules(List<String> rules) {
+        final String[] ruleArray = rules.toArray(new String[rules.size()]);
+        return IntStream.range(0, ruleArray.length)
+                .mapToObj(i -> {
+                    // Add a new line to every third element in the stream
+                    if (i % 3 == 2) {
+                        return ruleArray[i] + ";\n";
+                    } else {
+                        return ruleArray[i] + ";    ";
+                    }
+                })
+                .reduce((currentRule, rule) -> currentRule += rule)
+                .orElse("");
     }
 
     /**
@@ -146,6 +244,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
      * </p>
      */
     private void cancel() {
+        clearMenu();
         hideMenu();
     }
 
@@ -158,8 +257,53 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         FilterInput filterInput = createFilterInput();
         if (filterInput != null) {
             filterOverlayMenu.addFilter(filterInput);
+            clearMenu();
             hideMenu();
         }
+    }
+
+    /**
+     * <p>
+     *     Adds a new filter to the list.
+     * </p>
+     */
+    private void updateFilter(FilterInput filterInput) {
+        FilterInput filterInputUpated = createFilterInput();
+
+        if (filterInputUpated == null) {
+            return;
+        }
+
+        // Update name
+        if (!filterInputUpated.getName().equals(filterInput.getName())) {
+            filterInput.getNameProperty().setValue(filterInputUpated.getName());
+        }
+
+        // Update type
+        if (!filterInputUpated.getType().equals(filterInput.getType())) {
+            filterInput.getTypeProperty().setValue(filterInputUpated.getTypeProperty().getValue());
+        }
+
+        // Update color
+        if (!filterInputUpated.getColor().equals(filterInput.getColor())) {
+            filterInput.getColorProperty().setValue(filterInputUpated.getColorProperty().getValue());
+        }
+
+        // Update origin
+        if (!filterInputUpated.getOrigin().equals(filterInput.getOrigin())) {
+            filterInput.getOriginProperty().setValue(filterInputUpated.getOriginProperty().getValue());
+        }
+
+        // Update rules and save to database, since they don't have a listener (since they are not shown in the table)
+        if (!filterInputUpated.getRules().equals(filterInput.getRules())) {
+            filterInput.setRules(filterInputUpated.getRules());
+
+            configDataModel.updateFilterInput(filterInput);
+            logger.debug("Updated rules for FilterInput: " + filterInput.getName() + " to database.");
+        }
+
+        clearMenu();
+        hideMenu();
     }
 
     /**
@@ -185,9 +329,10 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
             return null;
         }
 
-        // Check if filter with this name already exists
+        // Check if filter with this name already exists, but only if we are not editing a current filter (there the
+        // name can be changed)
         List<String> currentFilterNames = filterOverlayMenu.getAllFilterNames();
-        if (currentFilterNames.contains(name)) {
+        if (currentFilterNames.contains(name) && updatingFilter == null) {
             errorText.setText("The name already exists. Please choose a different name.");
             return null;
         }
@@ -238,9 +383,13 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         }
 
         // Convert JavaFX color to the java.awt color object
-        java.awt.Color colorAwt = new java.awt.Color((int) color.getRed(), (int) color.getGreen(), (int) color.getBlue());
+        java.awt.Color colorAwt = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
 
-        return new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt);
+        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt);
+        filterInput.load(configDataModel); // Binds properties to database
+
+        return filterInput;
     }
 
     /**
@@ -254,6 +403,15 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
      * @return A list of parsed and valid rules, or null if a rule was not valid.
      */
     private List<String> processRules(String rules, FilterOrigin filterOrigin) {
+        // If the last character of the string is a semicolon, remove it
+        String lastChar = rules.substring(rules.length() - 1);
+        if (lastChar.equals(";")) {
+            rules = rules.substring(0, rules.length() - 1);
+        }
+
+        // Remove whitespaces and line breaks
+        rules = rules.replaceAll("\\s+","").replaceAll("\n","").replaceAll("\r", "");
+
         String[] ruleArray = rules.split(";");
 
         if (ruleArray.length == 0) {
@@ -280,9 +438,6 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
 
         // Check each rule to see whether it matches its regex
         for (String rule : ruleArray) {
-            // Remove whitespaces and line breaks
-            rule = rule.replaceAll("\\s+","").replaceAll("\n","").replaceAll("\r", "");;
-
             boolean match1 = pattern1.matcher(rule.toLowerCase()).matches();
             boolean match2 = false;
             if (pattern2 != null) {
