@@ -3,6 +3,7 @@ package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.NetworkIOPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -30,8 +31,8 @@ public class AddPacketDataCommandTest {
         writingPort = mock(NetworkIOPort.class);
         filter = mock(IFilter.class);
         data = mock(Truffle.class);
-        when(data.getAttribute(Long.class, "sourceMacAddress")).thenReturn(1L);
-        when(data.getAttribute(Long.class, "destMacAddress")).thenReturn(2L);
+        when(data.getAttribute(MacAddress.class, "sourceMacAddress")).thenReturn(new MacAddress(1L, false));
+        when(data.getAttribute(MacAddress.class, "destMacAddress")).thenReturn(new MacAddress(2L, false));
     }
     @After
     public void teardown() {
