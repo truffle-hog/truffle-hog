@@ -137,6 +137,17 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
+     *     Sets the name of this filter. It has to be unique.
+     * </p>
+     *
+     * @param name The name of this filter.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * <p>
      *     Gets the name property of this filter. It has to be unique.
      * </p>
      *
@@ -303,9 +314,7 @@ public class FilterInput implements Serializable {
     private void bind(ConfigDataModel configDataModel) {
         // Bind name to database update function
         nameProperty.addListener((observable, oldValue, newValue) -> {
-            name = newValue;
-
-            configDataModel.updateFilterInput(this);
+            configDataModel.updateFilterInput(this, newValue);
             logger.debug("Updated name for FilterInput: " + name + " to table view and database.");
         });
 

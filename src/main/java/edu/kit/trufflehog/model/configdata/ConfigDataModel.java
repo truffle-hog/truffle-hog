@@ -72,6 +72,20 @@ public class ConfigDataModel implements IConfigData {
 
     /**
      * <p>
+     *     Updates a {@link FilterInput} entry in the database by deleting it and adding it again.
+     *     When the name changes, things get more complicated, because the database is index by names. Thus the old
+     *     entry has to be removed before the new one is added. Since this has to be done synchronously, it requires
+     *     an extra method, because the default is asynchronous.
+     * </p>
+     *
+     * @param filterInput The {@link FilterInput} to update.
+     */
+    public void updateFilterInput(final FilterInput filterInput, final String newName) {
+        filterDataModel.updateFilterInDatabase(filterInput, newName);
+    }
+
+    /**
+     * <p>
      *     Adds a {@link FilterInput} to the database.
      * </p>
      *
