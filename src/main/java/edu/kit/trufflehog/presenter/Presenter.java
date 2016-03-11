@@ -134,8 +134,8 @@ public class Presenter {
 
         // TODO change this to real filter
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-        //final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
-        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, node -> System.out.println("dummy filter"));
+        final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
+        //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, node -> System.out.println("dummy filter"));
         truffleFetchService.execute(truffleReceiver);
 
         truffleReceiver.connect();
