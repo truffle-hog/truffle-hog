@@ -1,19 +1,18 @@
 package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.service.executor.TruffleExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +34,7 @@ public class Presenter {
     private static final Logger logger = LogManager.getLogger();
 
     private static Presenter presenter;
-    private final ConfigDataModel configDataModel;
+    private final ConfigData configData;
     private final FileSystem fileSystem;
     private final ViewBuilder viewBuilder;
     private final ScheduledExecutorService executorService;
@@ -63,16 +62,19 @@ public class Presenter {
         this.fileSystem = new FileSystem();
         this.executorService = new LoggedScheduledExecutor(10);
 
-        ConfigDataModel configDataTemp;
+        ConfigData configDataTemp;
         try {
-            configDataTemp = new ConfigDataModel(fileSystem, executorService);
+            configDataTemp = new ConfigData(fileSystem, executorService);
         } catch (NullPointerException e) {
             configDataTemp = null;
             logger.error("Unable to set config data model", e);
         }
-        configDataModel = configDataTemp;
+        configData = configDataTemp;
 
-        this.viewBuilder = new ViewBuilder(configDataModel, primaryStage);
+
+        primaryStage.setOnCloseRequest(event -> finish());
+
+        this.viewBuilder = new ViewBuilder(configData, primaryStage);
     }
 
     /**
@@ -158,11 +160,17 @@ public class Presenter {
     /**
      * This method shuts down any services that are still running properly.
      */
-    public void shutdown() {
+    public void finish() {
+        // Exit the view
+        Platform.exit();
 
-        if (truffleReceiver != null)
+        // Disconnect the truffleReceiver
+        if (truffleReceiver != null) {
             truffleReceiver.disconnect();
+        }
 
+        // Shut down the system
+        System.exit(0);
     }
 
 

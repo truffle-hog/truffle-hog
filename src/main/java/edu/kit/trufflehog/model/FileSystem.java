@@ -17,7 +17,7 @@
 
 package edu.kit.trufflehog.model;
 
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.truffledatalog.TruffleLogger;
 import edu.kit.trufflehog.service.replaylogging.ReplayLog;
 import org.apache.logging.log4j.LogManager;
@@ -51,7 +51,7 @@ import java.net.URISyntaxException;
  *         <li>
  *             Config folder:
  *             <p>
- *                 This is where the config files for the {@link ConfigDataModel} are saved to.
+ *                 This is where the config files for the {@link ConfigData} are saved to.
  *             </p>
  *         </li>
  *         <br></br>

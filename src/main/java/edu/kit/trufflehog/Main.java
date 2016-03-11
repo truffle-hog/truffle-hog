@@ -18,15 +18,10 @@
 package edu.kit.trufflehog;
 
 import edu.kit.trufflehog.presenter.Presenter;
+import edu.kit.trufflehog.presenter.nativebuild.NativeBuilder;
+import edu.kit.trufflehog.presenter.nativebuild.osx.OSXBuilder;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.net.URL;
 
 /**
  * <p>
@@ -34,30 +29,16 @@ import java.net.URL;
  * </p>
  */
 public class Main extends Application {
-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();
-    private Presenter presenter;
+	private Presenter presenter;
 
 	/**
 	 * <p>
 	 *     The main method of TruffleHog.
 	 * </p>
 	 *
-     * @param args command line arguments
-     */
+	 * @param args command line arguments
+	 */
 	public static void main(String[] args) {
-        // Set docking icon on mac
-        String osName = System.getProperty("os.name");
-        if (osName.toLowerCase().contains("mac")) {
-            try {
-                URL iconURL = Main.class.getResource(File.separator + "edu" + File.separator + "kit" + File.separator
-                        + "trufflehog" + File.separator + "view" + File.separator +"icon.png");
-                Image image = new ImageIcon(iconURL).getImage();
-                com.apple.eawt.Application.getApplication().setDockIconImage(image);
-            } catch (Exception e) {
-                logger.error("Unable to set docking icon, probably not running on a mac", e);
-            }
-        }
-
 		launch(args);
 	}
 
@@ -74,9 +55,10 @@ public class Main extends Application {
 	 * JavaFX start method.
 	 *
 	 * @param primaryStage Supplied by system
-     */
+	 */
 	@Override
 	public void start(Stage primaryStage) {
+		buildNative();
 
 		// TODO horror
 		primaryStage.setTitle("TruffleHog");
@@ -89,10 +71,16 @@ public class Main extends Application {
 	 */
 	@Override
 	public void stop() {
-		Platform.exit();
+		presenter.finish();
+	}
 
-        //TODO close services (TruffleReceiver otherwise produces a broken pipe)
-        presenter.shutdown();
-		System.exit(0);
+	/**
+	 * <p>
+	 *     Builds components native to the operating system (for example the doc icon on Mac OSX).
+	 * </p>
+	 */
+	private void buildNative() {
+		NativeBuilder nativeBuilder = new OSXBuilder();
+		nativeBuilder.build();
 	}
 }
