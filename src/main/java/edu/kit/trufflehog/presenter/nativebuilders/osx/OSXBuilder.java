@@ -15,9 +15,9 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package edu.kit.trufflehog.presenter.nativebuild.osx;
+package edu.kit.trufflehog.presenter.nativebuilders.osx;
 
-import edu.kit.trufflehog.presenter.nativebuild.NativeBuilder;
+import edu.kit.trufflehog.presenter.nativebuilders.NativeBuilder;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;

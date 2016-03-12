@@ -1,0 +1,71 @@
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.background {
+    -fx-background-color: #21252B;
+    -fx-opacity: 100%;
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
+    -fx-focus-color: #528BFF;
+}
+
+.title_text {
+    -fx-fill: #9BA2B1;
+    -fx-opacity: 100%;
+    -fx-font-size: 300%;
+    -fx-font-weight: 200;
+    -fx-font-family: 'Droid Sans';
+}
+
+.split-pane {
+    -fx-background-color: #282C34;
+    -fx-opacity: 100%;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-focus-color: #528BFF;
+    -fx-border-color: #21252B;
+}
+
+.list-view_right {
+    -fx-background-color: #282C34;
+    -fx-opacity: 100%;
+    -fx-focus-color: #528BFF;
+    -fx-border-color: #21252B;
+    -fx-background-radius: 0 10 10 0;
+    -fx-border-radius: 0 10 10 0;
+}
+
+.list-view_left {
+    -fx-background-color: #282C34;
+    -fx-opacity: 100%;
+    -fx-focus-color: #528BFF;
+    -fx-border-color: #21252B;
+    -fx-background-radius: 10 0 0 10;
+    -fx-border-radius: 10 0 0 10;
+}
+
+
+.split-pane *.horizontal-grabber {
+    -fx-background-color: transparent, transparent;
+}
+
+.split-pane-divider {
+    -fx-padding: 0;
+    -fx-border-color:  #21252B;
+    -fx-background-color: #21252B;
+    -fx-background-insets: 0, 1 0 1 0;;
+}

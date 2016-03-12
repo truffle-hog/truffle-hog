@@ -58,7 +58,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
     private final ConfigData configData;
 
     private final FilterOverlayMenu filterOverlayMenu;
-    private final TranslateTransition transitioShow;
+    private final TranslateTransition transitionShow;
     private final TranslateTransition transitionHide;
     private final StackPane stackPane;
     private FilterInput updatingFilter; // The filter that is being updated if there is one.
@@ -117,9 +117,9 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         SELECTION_LABEL = configData.getProperty("SELECTION_LABEL");
 
         // Set up transition animation to show menu
-        transitioShow = new TranslateTransition(Duration.seconds(0.5), this);
-        transitioShow.setFromY(-450);
-        transitioShow.setToY(0);
+        transitionShow = new TranslateTransition(Duration.seconds(0.5), this);
+        transitionShow.setFromY(-450);
+        transitionShow.setToY(0);
 
         // Set up transition animation to hide menu
         transitionHide = new TranslateTransition(Duration.seconds(0.5), this);
@@ -189,7 +189,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         StackPane.setAlignment(this, Pos.TOP_CENTER);
         stackPane.setVisible(true);
         this.setVisible(true);
-        transitioShow.play();
+        transitionShow.play();
     }
 
     /**
@@ -330,7 +330,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         Pattern namePattern = Pattern.compile("[A-Za-z0-9. _-]{1,50}");
         Matcher nameMatcher = namePattern.matcher(name);
         if (!nameMatcher.matches()) {
-            errorText.setText("The name you entered is not valid.");
+            errorText.setText(configData.getProperty("NAME_ERROR"));
             return null;
         }
 
@@ -338,25 +338,19 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         // name can be changed)
         List<String> currentFilterNames = filterOverlayMenu.getAllFilterNames();
         if (currentFilterNames.contains(name) && updatingFilter == null) {
-            errorText.setText("The name already exists. Please choose a different name.");
+            errorText.setText(configData.getProperty("NAME_ALREADY_EXISTS"));
             return null;
         }
 
         // Check if type is valid
         if (filterType == null) {
-            errorText.setText("Please choose a filter type.");
-            return null;
-        }
-
-        // Check if origin is valid
-        if (filterOriginString == null) {
-            errorText.setText("Please choose what you would like to filter by.");
+            errorText.setText(configData.getProperty("FILTER_TYPE_ERROR"));
             return null;
         }
 
         // Check if color is not null (should never be)
         if (color == null) {
-            errorText.setText("Please choose a color.");
+            errorText.setText(configData.getProperty("COLOR_ERROR"));
             return null;
         }
 
@@ -373,7 +367,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         }
 
         if (filterOrigin == null) {
-            errorText.setText("Please choose what you would like to filter by.");
+            errorText.setText(configData.getProperty("ORIGIN_ERROR"));
             return null;
         }
 
@@ -416,7 +410,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         String[] ruleArray = rules.split(";");
 
         if (ruleArray.length == 0) {
-            errorText.setText("Please enter at least one rule.");
+            errorText.setText(configData.getProperty("MISSING_RULE_ERROR"));
             return null;
         }
 
@@ -447,15 +441,15 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
 
             if (!match1 && !match2) {
                 if (filterOrigin.equals(FilterOrigin.IP)) {
-                    errorText.setText("A rule does not have the valid IP-Address format.");
+                    errorText.setText(configData.getProperty("INVALID_IP_RULE"));
                 } else {
-                    errorText.setText("A rule does not have the valid MAC-Address format.");
+                    errorText.setText(configData.getProperty("INVALID_MAC_RULE"));
                 }
                 return null;
             }
         }
 
-        // If we got to here, everything should have passed
+        // If we got here, everything should have passed
         return Arrays.asList(ruleArray);
     }
 

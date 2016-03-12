@@ -7,6 +7,7 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.*;
+import edu.kit.trufflehog.presenter.viewbuilders.ViewBuilder;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
@@ -36,9 +37,9 @@ public class Presenter {
     private static Presenter presenter;
     private final ConfigData configData;
     private final FileSystem fileSystem;
-    private final ViewBuilder viewBuilder;
     private final ScheduledExecutorService executorService;
     private final Stage primaryStage;
+    private ViewBuilder viewBuilder;
     private TruffleReceiver truffleReceiver;
     private INetworkViewPort liveViewPort;
     private INetworkViewPort viewPort;
@@ -73,8 +74,6 @@ public class Presenter {
 
 
         primaryStage.setOnCloseRequest(event -> finish());
-
-        this.viewBuilder = new ViewBuilder(configData, primaryStage);
     }
 
     /**
@@ -85,7 +84,8 @@ public class Presenter {
      */
     public void present() {
         initNetwork();
-        viewBuilder.build(viewPort);
+        this.viewBuilder = new ViewBuilder(configData, primaryStage, viewPort);
+        viewBuilder.build();
     }
 
     private void initNetwork() {
