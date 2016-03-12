@@ -23,10 +23,18 @@
     -fx-focus-color: #528BFF;
 }
 
-.title_text {
+#title_text {
+    -fx-fill: #9BA2B1;
+    -fx-opacity: 150%;
+    -fx-font-size: 200%;
+    -fx-font-weight: 200;
+    -fx-font-family: 'Droid Sans';
+}
+
+#sub_title_text {
     -fx-fill: #9BA2B1;
     -fx-opacity: 100%;
-    -fx-font-size: 300%;
+    -fx-font-size: 120%;
     -fx-font-weight: 200;
     -fx-font-family: 'Droid Sans';
 }
@@ -38,6 +46,17 @@
     -fx-border-radius: 10;
     -fx-focus-color: #528BFF;
     -fx-border-color: #21252B;
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-text-fill: #528BFF;
+}
+
+.list-cell {
+    -fx-background-color: #282C34;
+    -fx-text-fill: #9BA2B1;
+    -fx-opacity: 100%;
+    -fx-font-family: 'Droid Sans';
 }
 
 .list-view_right {

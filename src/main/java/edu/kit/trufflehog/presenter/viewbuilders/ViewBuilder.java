@@ -21,10 +21,10 @@ package edu.kit.trufflehog.presenter.viewbuilders;
 import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
-import edu.kit.trufflehog.view.MainViewController;
-import edu.kit.trufflehog.view.MenuBarViewController;
-import edu.kit.trufflehog.view.RootWindowController;
+import edu.kit.trufflehog.view.*;
 import edu.kit.trufflehog.view.controllers.IWindowController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
@@ -37,8 +37,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
@@ -55,7 +53,6 @@ public class ViewBuilder {
 
     // View viewbuilders
     private final IViewBuilder liveViewBuilder;
-    private final IViewBuilder startViewBuilder;
 
     // View layers
     private final Stage primaryStage;
@@ -63,7 +60,7 @@ public class ViewBuilder {
     private final AnchorPane groundView;
     private final StackPane stackPane;
     private final SplitPane splitPane;
-    private final List<AnchorPane> views;
+    private final ViewSwitcher viewSwitcher;
 
     /**
      * <p>
@@ -81,10 +78,9 @@ public class ViewBuilder {
         this.groundView = new AnchorPane();
         this.stackPane = new StackPane();
         this.splitPane = new SplitPane();
-        this.views = new ArrayList<>();
+        this.viewSwitcher = new ViewSwitcher();
         this.mainViewController = new MainViewController("main_view.fxml");
 
-        this.startViewBuilder = new StartViewBuilder();
         this.liveViewBuilder = new LiveViewBuilder(configData, stackPane, primaryStage, viewPort);
 
         if (this.primaryStage == null || this.configData == null) {
@@ -103,7 +99,7 @@ public class ViewBuilder {
         loadFonts();
 
         // Load menu bar
-        final MenuBarViewController menuBar = buildMenuBar();
+        final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml");
 
         // Set up the ground view. This is always the full center of the BorderPane. We add the splitPane to it
         // because it is right on top of it.
@@ -134,7 +130,7 @@ public class ViewBuilder {
         rootWindow.show();
 
         // Set min. dimensions
-        primaryStage.setMinWidth(950d);
+        primaryStage.setMinWidth(1000d);
         primaryStage.setMinHeight(650d);
 
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
@@ -148,22 +144,15 @@ public class ViewBuilder {
 
         // Now we add the actual views to the split pane
         //AnchorPane liveView = liveViewBuilder.buildView();
-        AnchorPane startView = startViewBuilder.buildView();
-        views.add(startView);
-        //views.add(liveView);
-        splitPane.getItems().addAll(startView);
-    }
+        ObservableList<String> liveItems = FXCollections.observableArrayList("Demo", "Profinet");
+        ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724"
+                , "capture-457", "capture-167");
 
-    /**
-     * <p>
-     *     Builds the top menu bar which contains file, edit, help etc.
-     * </p>
-     *
-     * @return The menu bar once it is built.
-     */
-    private MenuBarViewController buildMenuBar() {
-        final MenuBarViewController menuBarViewController = new MenuBarViewController("menu_bar.fxml");
-        return menuBarViewController;
+        AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
+        AnchorPane liveView = liveViewBuilder.buildView();
+        viewSwitcher.putView("start", startView);
+        viewSwitcher.putView("Demo", liveView);
+        splitPane.getItems().addAll(startView);
     }
 
     /**

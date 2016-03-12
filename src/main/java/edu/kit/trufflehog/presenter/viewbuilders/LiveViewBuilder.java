@@ -57,6 +57,9 @@ class LiveViewBuilder implements IViewBuilder {
 
         liveView.getChildren().add(node);
 
+        liveView.setMinWidth(200d);
+        liveView.setMinHeight(200d);
+
         AnchorPane.setBottomAnchor(node, 0d);
         AnchorPane.setTopAnchor(node, 0d);
         AnchorPane.setLeftAnchor(node, 0d);

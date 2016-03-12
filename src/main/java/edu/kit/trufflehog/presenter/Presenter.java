@@ -57,7 +57,7 @@ public class Presenter {
         this.primaryStage = primaryStage;
 
         if (this.primaryStage == null) {
-            throw new NullPointerException("primary stage must not be null");
+            throw new NullPointerException("primary stage should not be null");
         }
 
         this.fileSystem = new FileSystem();
@@ -71,7 +71,6 @@ public class Presenter {
             logger.error("Unable to set config data model", e);
         }
         configData = configDataTemp;
-
 
         primaryStage.setOnCloseRequest(event -> finish());
     }
