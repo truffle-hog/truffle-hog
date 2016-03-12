@@ -184,7 +184,7 @@ public class SettingsDataModelTest {
 
         property2.setValue(newValue);
 
-        Thread.sleep(500); // sleep because the saving to file happens in another thread
+        Thread.sleep(1000); // sleep because the saving to file happens in another thread
 
         settingsDataModel = new SettingsDataModel(fileSystem, executorService);
         property1 = settingsDataModel.get(classType, key);
@@ -192,7 +192,7 @@ public class SettingsDataModelTest {
 
         property1.setValue(oldValue);
 
-        Thread.sleep(500); // sleep because the saving to file happens in another thread
+        Thread.sleep(1000); // sleep because the saving to file happens in another thread
 
         settingsDataModel = new SettingsDataModel(fileSystem, executorService);
         property1 = settingsDataModel.get(classType, key);
