@@ -40,7 +40,7 @@ public class IPFilter implements IFilter {
 
     }
 
-    public void addIPRule(final String rule) {
+    public void addInput(final FilterInput filterInput) {
 
     }
 }

@@ -21,6 +21,7 @@ import edu.kit.trufflehog.model.network.graph.components.edge.*;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
@@ -111,6 +112,12 @@ public class LiveUpdater implements IUpdater {
         edgeStatisticsComponent.setLastUpdateTimeProperty(Instant.now().toEpochMilli());
         edgeStatisticsComponent.incrementTraffic(1);
         return true;
+    }
+
+    @Override
+    public boolean update(NodeInfoComponent nodeInfoComponent, IComponent instance) {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
     }
 
     @Override
