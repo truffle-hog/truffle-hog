@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.filter;
 
+import edu.kit.trufflehog.model.network.InvalidMACAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
@@ -51,7 +52,11 @@ public class MACAddressFilter implements IFilter {
                 macAddress += b;
             }
 
-            macAddresses.add(new MacAddress(macAddress));
+            try {
+                macAddresses.add(new MacAddress(macAddress));
+            } catch (InvalidMACAddress invalidMACAddress) {
+                // nothing to do here because we can't pass invalid addresses.
+            }
         }
 
         macAddresses.stream().forEach(addresses::add);

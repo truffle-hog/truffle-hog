@@ -8,25 +8,17 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 /**
- * Created by jan on 23.02.16.
+ * <p>
+ *     This class contains all tests for the {@link MacAddress} class.
+ * </p>
+ * @author Jan Hermes, Mark Giraud
  */
 public class MacAddressTest {
 
     private IAddress address;
-
-    private final long small = 0x000000000001L;
-    private final String smallString = "00:00:00:00:00:01";
-
-    private final long middle = 0x0000FF000000L;
-    private final String middleString = "00:00:ff:00:00:00";
-
-    private final long big = 0xFF7f7f7f0000L;
-    private final String bigString = "ff:7f:7f:7f:00:00";
 
     @Before
     public void setUp() throws Exception {
@@ -38,6 +30,16 @@ public class MacAddressTest {
     @After
     public void tearDown() throws Exception {
 
+    }
+
+    @Test(expected = InvalidMACAddress.class)
+    public void macAddress_constructor_throws_on_too_small_address() throws Exception {
+        new MacAddress(-1);
+    }
+
+    @Test(expected = InvalidMACAddress.class)
+    public void macAddress_constructor_throws_on_too_large_address() throws Exception {
+        new MacAddress(0xFFFFFFFFFFFFFL);
     }
 
     @Test
@@ -91,10 +93,6 @@ public class MacAddressTest {
 
         assertNotEquals(smallest, biggest);
         assertNotEquals(addressA_1, addressB_1);
-
-
-
-
     }
 
     @Test
@@ -111,23 +109,35 @@ public class MacAddressTest {
 
     }
 
-/*    @Test
-    public void testToIntArray() throws Exception {
-
-        final IAddress addressh = new MacAddress(0x000001000002L);
-
-        assertArrayEquals(new int[] {0x000001, 0x000002}, addressh.toIntArray());
-    }*/
-
     @Test
     public void testToString() throws Exception {
 
         assertEquals("20:10:00:00:00:00", address.toString());
 
-        assertEquals(smallString, new MacAddress(small).toString());
+        assertEquals("00:00:00:00:00:01", new MacAddress(0x000000000001L).toString());
 
-        assertEquals(middleString, new MacAddress(middle).toString());
+        assertEquals("00:00:ff:00:00:00", new MacAddress(0x0000FF000000L).toString());
 
-        assertEquals(bigString, new MacAddress(big).toString());
+        assertEquals("ff:7f:7f:7f:00:00", new MacAddress(0xFF7f7f7f0000L).toString());
+    }
+
+    @Test
+    public void size_is_48() throws Exception {
+        assertEquals(48, address.size());
+    }
+
+    @Test
+    public void isMulticast_returns_true_if_multicast() throws Exception {
+        assertTrue("01:00:0C:CC:CC:CC should be multicast but is not", new MacAddress(0x01000CCCCCCCL).isMulticast());
+        assertTrue("01:00:0C:CC:CC:CD should be multicast but is not", new MacAddress(0x01000CCCCCCDL).isMulticast());
+        assertTrue("01:80:C2:00:00:01 should be multicast but is not", new MacAddress(0x0180C2000001L).isMulticast());
+        assertTrue("33:33:AA:BB:BA:AB should be multicast but is not", new MacAddress(0x3333AABBBAABL).isMulticast());
+    }
+
+    @Test
+    public void isMulticast_returns_false_if_not_multicast() throws Exception {
+        assertFalse("02:00:0C:CC:CC:CC should not be multicast but is", new MacAddress(0x02000CCCCCCCL).isMulticast());
+        assertFalse("08:00:0C:C5:CC:22 should not be multicast but is", new MacAddress(0x08000CC5CC22L).isMulticast());
+        assertFalse("34:33:AA:BB:BA:AB should not be multicast but is", new MacAddress(0x3433AABBBAABL).isMulticast());
     }
 }

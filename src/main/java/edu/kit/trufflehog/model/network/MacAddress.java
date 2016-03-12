@@ -4,88 +4,49 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by jan on 19.02.16.
+ * <p>
+ *     This class represents a MAC address.
+ * </p>
+ * @author Mark Giraud
+ * @version 1.0
  */
 public class MacAddress implements IAddress {
 
-    private final byte[] addressByteArray;
-
-    private int[] intArray = null;
-
+    private final byte[] bytes;
     private final long address;
-
     private final int hashcode;
+    private final String addressString;
+    private final boolean isMulticast;
 
-    private String addressString = null;
-    private boolean isMulticast;
-
-    public MacAddress(long address, boolean isMulticast) {
-
-        this.isMulticast = isMulticast;
+    public MacAddress(long address) throws InvalidMACAddress {
 
         if (address > 0xFFFFFFFFFFFFL || address < 0) {
-            throw new IllegalArgumentException("the address is too big or in wrong format");
+            throw new InvalidMACAddress("the address is too big or in wrong format");
         }
 
         this.address = address;
-
         hashcode = (new Long(this.address)).hashCode();
 
-        byte[] bytes = ByteBuffer.allocate(8).putLong(0, this.address).array();
+        // transform to byte array
+        byte[] extractedBytes = ByteBuffer.allocate(8).putLong(address).array();
+        bytes = Arrays.copyOfRange(extractedBytes, 2, 8);
 
-        addressByteArray = Arrays.copyOfRange(bytes, 2, 8);
+        // set multicast bit
+        isMulticast = (bytes[0] & 1) == 1;
+
+        // set string representation
+        List<Byte> bytes = Arrays.asList(ArrayUtils.toObject(toByteArray()));
+        addressString = bytes.stream().map(b -> String.format("%02x", b)).collect(Collectors.joining(":"));
     }
-
-    public MacAddress(long address) {
-
-        // TODO maybe check for multicast outside?
-        this(address, address == 0x010ecf000000L);
-
-    }
-
-/*    public MacAddress(byte[] address) {
-
-        if (address.length != 6) {
-            throw new IllegalArgumentException("A mac address has to consist of exactly 6 byte");
-        }
-
-        this.addressByteArray = address;
-
-        int result = 17;
-        for (byte aByte : this.addressByteArray) {
-            result = 31 * result + aByte;
-        }
-        hashcode = result;
-
-        addressString = StringConversion.bytesToHex(addressByteArray, ':');
-    //    addressString = Arrays.asList(ArrayUtils.toObject(addressByteArray)).
-    //            stream().map(b -> StringUtils.leftPad(Integer.toHexString(b).substring(Integer.toHexString(b)), 2, '0')).collect(Collectors.joining(":"));
-    }*/
-
 
     @Override
     public byte[] toByteArray() {
-
-        // TODO change to Arrays.copyof or?
-        return Arrays.copyOf(addressByteArray, 6);
+        return Arrays.copyOf(bytes, 6);
     }
-
-/*    @Override
-    public int[] toIntArray() {
-
-        if (intArray == null) {
-
-            intArray = new int[2];
-
-            intArray[0] = (int) (address >>> 24);
-            intArray[1] = (int) (address & 0x0000000000FFFFFFL);
-
-        }
-        return Arrays.copyOf(intArray, 2);
-    }*/
 
     @Override
     public int size() {
@@ -98,44 +59,17 @@ public class MacAddress implements IAddress {
     }
 
     @Override
-    public boolean equals(Object o) {
-
-        if (!(o instanceof IAddress)) {
-            return false;
-        }
-        final IAddress other = (IAddress) o;
-
-        return Arrays.equals(addressByteArray, other.toByteArray());
-
-        //return Arrays.equals(this.toByteArray(), other.toByteArray());
+    public boolean equals(Object other) {
+        return (other instanceof IAddress) && (address == ((MacAddress)other).address);
     }
 
     @Override
     public boolean isMulticast() {
-
         return isMulticast;
     }
 
     @Override
     public String toString() {
-
-        if (addressString == null) {
-
-/*            String myMacString = Long.toHexString(address);
-
-            myMacString = StringUtils.leftPad(myMacString, 12, '0');
-
-            final StringBuilder macBuilder = new StringBuilder(myMacString);
-
-            for (int i = 2; i < 17; i += 3) {
-                macBuilder.insert(i, ':');
-            }
-            this.addressString = macBuilder.toString();*/
-
-            this.addressString = Arrays.asList(ArrayUtils.toObject(toByteArray())).stream().
-                    map(b -> String.format("%02x", b)).collect(Collectors.joining(":"));
-        }
-
         return addressString;
     }
 }

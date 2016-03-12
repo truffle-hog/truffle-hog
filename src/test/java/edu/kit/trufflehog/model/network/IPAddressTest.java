@@ -37,17 +37,17 @@ public class IPAddressTest {
 
     @Test
     public void address_is_multicast() throws Exception {
-        for (long i = 3758096384L; i <= 4026531839L; i += 100) {
-            assertTrue(new IPAddress(i).isMulticast());
+        for (long i = 3758096384L; i <= 4026531839L; i += 10000) {
+            assertTrue("IP " + new IPAddress(i) + " should be multicast", new IPAddress(i).isMulticast());
         }
     }
 
     @Test
     public void address_is_not_multicast() throws Exception {
-        for (long i = 1; i < 3758096384L; i += 10000) {
+        for (long i = 1; i < 3758096384L; i += 100000) {
             assertFalse(new IPAddress(i).isMulticast());
         }
-        for (long i = 4026531840L; i <= 4294967295L; i += 10000) {
+        for (long i = 4026531840L; i <= 4294967295L; i += 100000) {
             assertFalse(new IPAddress(i).isMulticast());
         }
     }
@@ -57,16 +57,16 @@ public class IPAddressTest {
         long i = 1;
         while (i <= 4294967295L) {
             assertTrue(new IPAddress(i).equals(new IPAddress(i)));
-            i += Math.random() * 10000;
+            i += Math.random() * 100000;
         }
     }
 
     @Test
     public void different_addresses_do_not_equal_each_other() throws Exception {
         long i = 1;
-        while (i <= 4294966294L) {
-            assertFalse(new IPAddress(i).equals(new IPAddress(i + (long)(1 + Math.random() * 1000))));
-            i += Math.random() * 10000;
+        while (i <= 4294967295L) {
+            assertFalse(new IPAddress(i).equals(new IPAddress((i + (long)(Math.random() * 1000)) % 4294967295L + 1)));
+            i += Math.random() * 100000;
         }
     }
 }

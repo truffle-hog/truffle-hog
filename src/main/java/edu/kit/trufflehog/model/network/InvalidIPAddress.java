@@ -7,4 +7,12 @@ package edu.kit.trufflehog.model.network;
  * @author Mark Giraud
  */
 public class InvalidIPAddress extends Exception {
+
+    public InvalidIPAddress() {
+        super();
+    }
+
+    public InvalidIPAddress(String msg) {
+        super(msg);
+    }
 }

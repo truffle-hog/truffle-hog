@@ -1,15 +1,26 @@
 package edu.kit.trufflehog.model.network;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
+ * <p>
+ *     This class represents ip addresses. Each {@link IPAddress} is immutable.
+ * </p>
  * @author Mark Giraud
- * @version 0.1
+ * @version 1.0
  */
 public class IPAddress implements IAddress {
 
     private final long address;
     private final byte[] bytes;
+    private final boolean isMulticast;
+    private final String addressString;
+    private final int hash;
 
     public IPAddress(final long address) throws InvalidIPAddress {
 
@@ -20,10 +31,19 @@ public class IPAddress implements IAddress {
             throw new InvalidIPAddress();
 
         this.address = address;
+        hash = new Long(address).hashCode();
 
-        this.bytes = new byte[4];
-        byte[] bytes = ByteBuffer.allocate(8).putLong(address).array();
-        System.arraycopy(bytes, 4, this.bytes, 0, bytes.length - 4);
+        // transform to byte array
+        bytes = new byte[4];
+        byte[] extractedBytes = ByteBuffer.allocate(8).putLong(address).array();
+        System.arraycopy(extractedBytes, 4, bytes, 0, extractedBytes.length - 4);
+
+        // set multicast bit
+        isMulticast = (bytes[0] & 0xFF) >= 0b11100000 && (bytes[0] & 0xFF) <= 0b11101111;
+
+        // set string representation
+        final List<Byte> bytes = Arrays.asList(ArrayUtils.toObject(this.bytes));
+        addressString = bytes.stream().map(byt -> String.format("%d", byt & 0xFF)).collect(Collectors.joining("."));
     }
 
     @Override
@@ -38,7 +58,12 @@ public class IPAddress implements IAddress {
 
     @Override
     public boolean isMulticast() {
-        return (bytes[0] & 0xFF) >= 0b11100000 && (bytes[0] & 0xFF) <= 0b11101111;
+        return isMulticast;
+    }
+
+    @Override
+    public int hashCode() {
+        return hash;
     }
 
     @Override
@@ -48,14 +73,6 @@ public class IPAddress implements IAddress {
 
     @Override
     public String toString() {
-
-        return "" +
-                (bytes[0] & 0xFF) +
-                "." +
-                (bytes[1] & 0xFF) +
-                "." +
-                (bytes[2] & 0xFF) +
-                "." +
-                (bytes[3] & 0xFF);
+        return addressString;
     }
 }
