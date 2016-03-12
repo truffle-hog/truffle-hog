@@ -30,8 +30,16 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root maxHeight="500.0" maxWidth="600.0" minHeight="500.0" minWidth="600.0" opacity="1.0" prefHeight="500.0" prefWidth="600.0" styleClass="background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="100.0" opacity="1.0" prefHeight="620.0" prefWidth="950.0" styleClass="background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@start_view.css" />
     </stylesheets>
+   <children>
+      <SplitPane dividerPositions="0.5" layoutX="179.0" layoutY="150.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="150.0">
+         <items>
+            <ListView prefHeight="200.0" prefWidth="200.0" styleClass="list-view_left" />
+            <ListView prefHeight="200.0" prefWidth="200.0" styleClass="list-view_right" />
+         </items>
+      </SplitPane>
+   </children>
 </fx:root>

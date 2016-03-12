@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.presenter.viewbuilders;
 
+import edu.kit.trufflehog.view.AnchorPaneViewController;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -15,6 +16,13 @@ class StartViewBuilder implements IViewBuilder {
 
     @Override
     public AnchorPane buildView() {
-        return null;
+        AnchorPane startView = new AnchorPaneViewController("start_view.fxml");
+
+        AnchorPane.setBottomAnchor(startView, 0d);
+        AnchorPane.setTopAnchor(startView, 0d);
+        AnchorPane.setLeftAnchor(startView, 0d);
+        AnchorPane.setRightAnchor(startView, 0d);
+
+        return startView;
     }
 }

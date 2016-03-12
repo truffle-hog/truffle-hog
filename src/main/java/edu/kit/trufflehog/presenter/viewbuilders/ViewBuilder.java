@@ -54,7 +54,8 @@ public class ViewBuilder {
     private ConfigData configData;
 
     // View viewbuilders
-    private final LiveViewBuilder liveViewBuilder;
+    private final IViewBuilder liveViewBuilder;
+    private final IViewBuilder startViewBuilder;
 
     // View layers
     private final Stage primaryStage;
@@ -83,6 +84,7 @@ public class ViewBuilder {
         this.views = new ArrayList<>();
         this.mainViewController = new MainViewController("main_view.fxml");
 
+        this.startViewBuilder = new StartViewBuilder();
         this.liveViewBuilder = new LiveViewBuilder(configData, stackPane, primaryStage, viewPort);
 
         if (this.primaryStage == null || this.configData == null) {
@@ -144,10 +146,12 @@ public class ViewBuilder {
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
 
-        // Now we add the actual view to the split pane, the live view.
-        AnchorPane liveView = liveViewBuilder.buildView();
-        views.add(liveView);
-        splitPane.getItems().addAll(liveView);
+        // Now we add the actual views to the split pane
+        //AnchorPane liveView = liveViewBuilder.buildView();
+        AnchorPane startView = startViewBuilder.buildView();
+        views.add(startView);
+        //views.add(liveView);
+        splitPane.getItems().addAll(startView);
     }
 
     /**
