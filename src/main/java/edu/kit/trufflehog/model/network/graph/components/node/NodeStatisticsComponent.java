@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -11,13 +12,15 @@ import org.apache.logging.log4j.Logger;
 /**
  * Created by jan on 23.02.16.
  */
-public class NodeStatisticsComponent implements IComponent {
+public class NodeStatisticsComponent extends AbstractComponent implements IComponent {
 
     private static final Logger logger = LogManager.getLogger(NodeStatisticsComponent.class);
     
     private final IntegerProperty throughputProperty = new SimpleIntegerProperty(1);
 
     public NodeStatisticsComponent(int initial) {
+
+        super.bind(throughputProperty);
 
         throughputProperty.set(initial);
     }
@@ -48,6 +51,11 @@ public class NodeStatisticsComponent implements IComponent {
         return true;
     }
 
+
+    @Override
+    protected IComponent computeValue() {
+        return this;
+    }
 
     @Override
     public String toString() {

@@ -6,8 +6,11 @@ import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
 import edu.kit.trufflehog.util.DeepCopyable;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
+import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Binding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
+import javafx.beans.value.ChangeListener;
 import org.apache.commons.collections15.Transformer;
 
 import java.util.Collection;
@@ -17,7 +20,7 @@ import java.util.Collection;
  * has to give access
  * to specific Metadata of the Network
  */
-public interface INetworkViewPort extends Layout<INode, IConnection>, DeepCopyable<NetworkViewCopy> {
+public interface INetworkViewPort extends InvalidationListener, Binding<INetworkViewPort>, Layout<INode, IConnection>, DeepCopyable<NetworkViewCopy> {
 
     /**
      * Returns the maximum number of connections that

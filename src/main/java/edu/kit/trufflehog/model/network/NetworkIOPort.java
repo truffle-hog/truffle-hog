@@ -9,6 +9,7 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComp
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
 import edu.uci.ics.jung.graph.Graph;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.commons.collections4.keyvalue.MultiKey;
@@ -26,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by jan on 22.02.16.
  */
-public class NetworkIOPort implements INetworkIOPort {
+public class NetworkIOPort extends ObjectBinding<INetworkIOPort> implements INetworkIOPort {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -93,11 +94,18 @@ public class NetworkIOPort implements INetworkIOPort {
         //copyCache.add(connection);
 
         if (existing != null) {
-            existing.update(connection, liveUpdater);
+            if (existing.update(connection, liveUpdater)) {
+                existing.invalidate();
+                this.invalidate();
+            }
             return;
         }
 
         final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);
+
+        super.bind(connection);
+
+        this.invalidate();
 
         if (edgeStat != null) {
             maxTrafficBinding.bindProperty(edgeStat.getTrafficProperty());
@@ -112,7 +120,9 @@ public class NetworkIOPort implements INetworkIOPort {
         final INode existing = idNodeMap.get(node.getAddress());
 
         if (existing != null) {
-            existing.update(node, liveUpdater);
+            if (existing.update(node, liveUpdater)) {
+                existing.invalidate();
+            }
             return;
         }
 
@@ -121,6 +131,8 @@ public class NetworkIOPort implements INetworkIOPort {
         if (nodeStat != null) {
             maxThroughputBinding.bindProperty(nodeStat.getThroughputProperty());
         }
+
+        super.bind(node);
 
         delegate.addVertex(node);
         idNodeMap.put(node.getAddress(), node);
@@ -168,5 +180,10 @@ public class NetworkIOPort implements INetworkIOPort {
     @Override
     public boolean isMutable() {
         return false;
+    }
+
+    @Override
+    protected INetworkIOPort computeValue() {
+        return this;
     }
 }

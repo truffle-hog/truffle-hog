@@ -113,6 +113,15 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
         // if it is equal than it is an IConnection thus we can safely cast it
         final IConnection updateConnection = (IConnection) instance;
 
-        return updater.update(this, updateConnection);
+        if (updater.update(this, updateConnection)) {
+            this.invalidate();
+            return true;
+        };
+        return false;
+    }
+
+    @Override
+    protected IComponent computeValue() {
+        return this;
     }
 }

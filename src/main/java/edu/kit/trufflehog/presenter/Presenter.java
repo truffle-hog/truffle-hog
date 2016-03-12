@@ -9,9 +9,12 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.*;
+import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.executor.TruffleExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
+import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.bindings.PlatformIntegerBinding;
 import edu.kit.trufflehog.view.*;
 import javafx.animation.KeyFrame;
@@ -54,6 +57,10 @@ public class Presenter {
     private INetwork liveNetwork;
     private INetworkTape tape;
 
+    //private final IListener<IUserCommand> userCommandListener;
+
+    private final CommandExecutor commandExecutor = new CommandExecutor();
+
     /**
      * <p>
      *     Creates a new instance of a Presenter.
@@ -91,7 +98,7 @@ public class Presenter {
     public void present() {
 
         initNetwork();
-        viewBuilder.build(viewPort);
+        viewBuilder.build(viewPort, commandExecutor.asUserCommandListener());
     }
 
     private void initNetwork() {
@@ -143,15 +150,16 @@ public class Presenter {
 
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
         // TODO change this to real filter
-        final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
+        final TruffleReceiver truffleReceiver = new UnixSocketReceiver(writingPortSwitch, node -> System.out.println("Dummy filter"));
+                //new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
         truffleFetchService.execute(truffleReceiver);
 
         truffleReceiver.connect();
 
-        final TruffleExecutor executor = new TruffleExecutor();
-        commandExecutorService.execute(executor);
-        //truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
-        truffleReceiver.addListener(executor);
+        //final TruffleExecutor executor = new TruffleExecutor();
+
+        commandExecutorService.execute(commandExecutor);
+        truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 
         // play that ongoing recording on the given viewportswitch
         //networkDevice.play(tape, viewPortSwitch);

@@ -67,6 +67,8 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 		final INode updateNode = (INode) update;
 
 		return updater.update(this, updateNode);
+
+
 	}
 
 	@Override
@@ -85,7 +87,12 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 		return getAddress().equals(other.getAddress());
 	}
 
-    @Override
+	@Override
+	protected IComponent computeValue() {
+		return this;
+	}
+
+	@Override
     public String toString() {
 
         return getComponent(NodeStatisticsComponent.class).toString();

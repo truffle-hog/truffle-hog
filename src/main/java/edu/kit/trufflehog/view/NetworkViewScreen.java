@@ -27,13 +27,17 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.util.Duration;
 import org.apache.commons.collections15.Transformer;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.RenderingHints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyListener;
@@ -46,7 +50,7 @@ import java.util.Map;
 /**
  * Created by jan on 13.01.16.
  */
-public class NetworkViewScreen extends NetworkGraphViewController implements ItemListener {
+public class NetworkViewScreen extends NetworkGraphViewController implements ItemListener, javafx.beans.value.ChangeListener<INetworkViewPort> {
 
 	private FXVisualizationViewer<INode, IConnection> jungView;
 
@@ -64,16 +68,20 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	public NetworkViewScreen(INetworkViewPort port, long refreshRate) {
 
-		refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
+/*		refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
 			//refresh();
 			//Platform.runLater(() -> repaint());
 			repaint();
 		}));
-		refresher.setCycleCount(Timeline.INDEFINITE);
+		refresher.setCycleCount(Timeline.INDEFINITE);*/
 		//fiveSecondsWonder.playGraphTape();
 		this.viewPort = port;
 		initialize();
-		refresher.play();
+/*		refresher.play();*/
+
+        // Add this view screen as listener to the picked state, so we can send commands, when the picked state
+        // changes.
+		getPickedVertexState().addItemListener(this);
 	}
 
 	public void initialize() {
@@ -267,6 +275,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		jungView.stateChanged(e);
 	}
 
+
 	@Override
 	public void setRenderer(Renderer<INode, IConnection> r) {
 		jungView.setRenderer(r);
@@ -330,17 +339,17 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 	}
 
 	@Override
-	public void addChangeListener(ChangeListener l) {
+	public void addChangeListener(javax.swing.event.ChangeListener l) {
 		jungView.addChangeListener(l);
 	}
 
 	@Override
-	public void removeChangeListener(ChangeListener l) {
+	public void removeChangeListener(javax.swing.event.ChangeListener l) {
 		jungView.removeChangeListener(l);
 	}
 
 	@Override
-	public ChangeListener[] getChangeListeners() {
+	public javax.swing.event.ChangeListener[] getChangeListeners() {
 		return jungView.getChangeListeners();
 	}
 
@@ -425,16 +434,22 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
         // if ItemEvent is Vertex Selection
 
-/*        final IUserCommand<PickedState> command = interactionMap.get(GraphInteraction.VERTEX_SELECTED);
+        final IUserCommand command = interactionMap.get(GraphInteraction.VERTEX_SELECTED);
 
         if (command != null) {
-
             command.setSelection(getPickedVertexState());
-        }*/
-        interactionMap.get(GraphInteraction.VERTEX_SELECTED).setSelection(getPickedVertexState());
+        }
+		notifyListeners(interactionMap.get(GraphInteraction.VERTEX_SELECTED));
 
         // else if ItemEvent is Connection Selection
 
-		throw new UnsupportedOperationException("Operation not implemented yet");
+		//throw new UnsupportedOperationException("Operation not implemented yet");
+	}
+
+	@Override
+	public void changed(ObservableValue<? extends INetworkViewPort> observable, INetworkViewPort oldValue, INetworkViewPort newValue) {
+
+		repaint();
+
 	}
 }

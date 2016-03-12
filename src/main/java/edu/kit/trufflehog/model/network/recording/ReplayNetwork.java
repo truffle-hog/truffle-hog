@@ -9,8 +9,11 @@ import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
+import javafx.beans.Observable;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
+import javafx.beans.value.ObservableValue;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.keyvalue.MultiKey;
 
@@ -26,7 +29,7 @@ import java.util.stream.Collectors;
  * TODO IMPLEMENT having replay network is necessary, because there are several internal functionalities that
  * TODO are handled a bite differently in contrast to a live network
  */
-public class ReplayNetwork implements INetwork {
+public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
 
     private final ReplayWritingPort port;
     private final ReplayViewPort viewPort;
@@ -55,6 +58,7 @@ public class ReplayNetwork implements INetwork {
         port = new ReplayWritingPort();
         viewPort = new ReplayViewPort();
 
+        port.addListener(viewPort);
     }
 
     @Override
@@ -71,6 +75,12 @@ public class ReplayNetwork implements INetwork {
     @Override
     public INetworkViewPort getViewPort() {
         return viewPort;
+    }
+
+    @Override
+    protected INetwork computeValue() {
+
+        return this;
     }
 
     @Override
@@ -91,7 +101,7 @@ public class ReplayNetwork implements INetwork {
 
 
 
-    private class ReplayViewPort implements INetworkViewPort {
+    private class ReplayViewPort extends ObjectBinding<INetworkViewPort> implements INetworkViewPort {
 
         @Override
         public void setMaxConnectionSize(int count) {
@@ -286,6 +296,21 @@ public class ReplayNetwork implements INetwork {
         public boolean isMutable() {
             return false;
         }
+
+        //@Override
+        public void changed(ObservableValue<? extends INetworkIOPort> observable, INetworkIOPort oldValue, INetworkIOPort newValue) {
+            this.invalidate();
+        }
+
+        @Override
+        protected INetworkViewPort computeValue() {
+            return this;
+        }
+
+        @Override
+        public void invalidated(Observable observable) {
+            throw new UnsupportedOperationException("Operation not implemented yet");
+        }
     }
 
     /**
@@ -297,7 +322,7 @@ public class ReplayNetwork implements INetwork {
      * @author Jan Hermes
      * @version 0.0.1
      */
-    private class ReplayWritingPort implements INetworkIOPort {
+    private class ReplayWritingPort extends ObjectBinding<INetworkIOPort> implements INetworkIOPort {
 
 
         @Override
@@ -310,6 +335,8 @@ public class ReplayNetwork implements INetwork {
                 existing.update(connection, replayUpdater);
                 return;
             }
+            this.bind(connection);
+
             delegate.getGraph().addEdge(connection, connection.getSrc(), connection.getDest());
             idConnectionMap.put(connectionKey, connection);
         }
@@ -323,6 +350,8 @@ public class ReplayNetwork implements INetwork {
                 existing.update(node, replayUpdater);
                 return;
             }
+            this.bind(node);
+
             delegate.getGraph().addVertex(node);
             idNodeMap.put(node.getAddress(), node);
         }
@@ -358,6 +387,11 @@ public class ReplayNetwork implements INetwork {
             throw new UnsupportedOperationException("not supported on replay graphs");
         }
 
+
+        @Override
+        protected INetworkIOPort computeValue() {
+            return this;
+        }
 
         @Override
         public String toString() {

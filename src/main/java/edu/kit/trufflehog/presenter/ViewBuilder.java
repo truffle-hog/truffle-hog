@@ -19,12 +19,18 @@
 package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.Main;
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
+import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.*;
 import edu.kit.trufflehog.view.controllers.IWindowController;
+import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
+import javafx.event.EventDispatchChain;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -91,11 +97,17 @@ public class ViewBuilder {
      *     components as well.
      * </p>
      * @param viewPort
+     * @param userCommandIListener
      */
-    public void build(INetworkViewPort viewPort) {
+    public void build(INetworkViewPort viewPort, IListener<IUserCommand> userCommandIListener) {
         loadFonts();
 
-        final Node node = new NetworkViewScreen(viewPort, 10);
+        final IListener<IUserCommand> commandListener = userCommandIListener;
+
+        final NetworkGraphViewController node = new NetworkViewScreen(viewPort, 10);
+        node.addListener(commandListener);
+        node.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+
 
         final MenuBarViewController menuBar = buildMenuBar();
 
@@ -113,6 +125,8 @@ public class ViewBuilder {
         // Set up scene
         final Scene mainScene = new Scene(mainViewController);
         final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
+
+
 
         mainViewController.setCenter(primaryView);
 

@@ -29,7 +29,7 @@ import edu.kit.trufflehog.util.ICopyCreator;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class ViewComponent implements IComponent {
+public class ViewComponent extends AbstractComponent implements IComponent {
 
     private final IRenderer renderer;
 
@@ -73,5 +73,10 @@ public class ViewComponent implements IComponent {
         // TODO check if more equals checking necessary
         return o instanceof ViewComponent && ((ViewComponent) o).getRenderer().equals(this.getRenderer());
 
+    }
+
+    @Override
+    protected IComponent computeValue() {
+        return this;
     }
 }

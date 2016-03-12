@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
@@ -13,13 +14,15 @@ import java.time.Instant;
 /**
  * Created by jan on 23.02.16.
  */
-public class EdgeStatisticsComponent implements IComponent {
+public class EdgeStatisticsComponent extends AbstractComponent implements IComponent {
 
     private final IntegerProperty trafficProperty = new SimpleIntegerProperty(1);
     private final LongProperty lastUpdateTime = new SimpleLongProperty(Instant.now().toEpochMilli());
 
     public EdgeStatisticsComponent(int initial) {
 
+        super.bind(trafficProperty);
+        super.bind(lastUpdateTime);
 
         trafficProperty.set(initial);
     }
@@ -78,5 +81,10 @@ public class EdgeStatisticsComponent implements IComponent {
     @Override
     public boolean equals(Object o) {
         return (o instanceof EdgeStatisticsComponent);
+    }
+
+    @Override
+    protected IComponent computeValue() {
+        return this;
     }
 }

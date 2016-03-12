@@ -50,6 +50,8 @@ public class LiveUpdater implements IUpdater {
             final IComponent existing = node.getComponent(c.getClass());
             existing.update(c, this);
         });
+
+        node.invalidate();
         // TODO check if really some was changed
         return true;
     }

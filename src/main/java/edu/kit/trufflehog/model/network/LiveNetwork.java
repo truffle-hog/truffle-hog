@@ -5,11 +5,12 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.NetworkCopy;
 import edu.kit.trufflehog.util.ICopyCreator;
+import javafx.beans.binding.ObjectBinding;
 
 /**
  * Created by jan on 22.02.16.
  */
-public class LiveNetwork implements INetwork {
+public class LiveNetwork extends ObjectBinding<INetwork> implements INetwork {
 
     private final INetworkIOPort ioPort;
     private final INetworkViewPort viewPort;
@@ -18,6 +19,8 @@ public class LiveNetwork implements INetwork {
 
         ioPort = new NetworkIOPort(graph);
         viewPort = new NetworkViewPort(graph);
+
+        ioPort.addListener(viewPort);
 
         viewPort.getMaxThroughputProperty().bind(ioPort.getMaxThroughputProperty());
         viewPort.getMaxConnectionSizeProperty().bind(ioPort.getMaxConnectionSizeProperty());
@@ -47,5 +50,10 @@ public class LiveNetwork implements INetwork {
     @Override
     public boolean isMutable() {
         return true;
+    }
+
+    @Override
+    protected INetwork computeValue() {
+        return this;
     }
 }
