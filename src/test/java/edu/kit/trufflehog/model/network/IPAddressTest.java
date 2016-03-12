@@ -69,4 +69,33 @@ public class IPAddressTest {
             i += Math.random() * 100000;
         }
     }
+
+    @Test
+    public void size_is_32() throws Exception {
+        assertEquals(32, new IPAddress(123).size());
+    }
+
+    @Test
+    public void hashCode_of_same_addresses_is_the_same() throws Exception {
+        IPAddress a = new IPAddress(123);
+        IPAddress a1 = new IPAddress(123);
+
+        IPAddress b = new IPAddress(234);
+        IPAddress b1 = new IPAddress(234);
+
+        assertEquals(a.hashCode(), a1.hashCode());
+        assertEquals(b.hashCode(), b1.hashCode());
+    }
+
+    @Test
+    public void hashCode_of_different_addresses_is_different() throws Exception {
+        IPAddress a = new IPAddress(123);
+        IPAddress b = new IPAddress(234);
+
+        IPAddress a1 = new IPAddress(654);
+        IPAddress b1 = new IPAddress(987);
+
+        assertNotEquals(a, b);
+        assertNotEquals(a1, b1);
+    }
 }
