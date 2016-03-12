@@ -9,7 +9,6 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComp
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
 import edu.uci.ics.jung.graph.Graph;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.commons.collections4.keyvalue.MultiKey;
@@ -27,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by jan on 22.02.16.
  */
-public class NetworkIOPort extends ObjectBinding<INetworkIOPort> implements INetworkIOPort {
+public class NetworkIOPort implements INetworkIOPort {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -91,27 +90,14 @@ public class NetworkIOPort extends ObjectBinding<INetworkIOPort> implements INet
             copyCache.add(connection);
         }
 
-        //copyCache.add(connection);
+        if (delegate.addEdge(connection, connection.getSrc(), connection.getDest())) {
 
-        if (existing != null) {
-            if (existing.update(connection, liveUpdater)) {
-                existing.invalidate();
-                this.invalidate();
+            final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);
+            if (edgeStat != null) {
+                maxTrafficBinding.bindProperty(edgeStat.getTrafficProperty());
             }
-            return;
+            idConnectionMap.put(connectionKey, connection);
         }
-
-        final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);
-
-        super.bind(connection);
-
-        this.invalidate();
-
-        if (edgeStat != null) {
-            maxTrafficBinding.bindProperty(edgeStat.getTrafficProperty());
-        }
-        delegate.addEdge(connection, connection.getSrc(), connection.getDest());
-        idConnectionMap.put(connectionKey, connection);
     }
 
     @Override
@@ -119,23 +105,14 @@ public class NetworkIOPort extends ObjectBinding<INetworkIOPort> implements INet
 
         final INode existing = idNodeMap.get(node.getAddress());
 
-        if (existing != null) {
-            if (existing.update(node, liveUpdater)) {
-                existing.invalidate();
+        if (delegate.addVertex(node)) {
+
+            final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);
+            if (nodeStat != null) {
+                maxThroughputBinding.bindProperty(nodeStat.getThroughputProperty());
             }
-            return;
+            idNodeMap.put(node.getAddress(), node);
         }
-
-        final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);
-
-        if (nodeStat != null) {
-            maxThroughputBinding.bindProperty(nodeStat.getThroughputProperty());
-        }
-
-        super.bind(node);
-
-        delegate.addVertex(node);
-        idNodeMap.put(node.getAddress(), node);
     }
 
     @Override
@@ -182,8 +159,4 @@ public class NetworkIOPort extends ObjectBinding<INetworkIOPort> implements INet
         return false;
     }
 
-    @Override
-    protected INetworkIOPort computeValue() {
-        return this;
-    }
 }

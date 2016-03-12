@@ -9,12 +9,6 @@
 */
 package edu.uci.ics.jung.visualization;
 
-import java.awt.Dimension;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
-
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.util.Relaxer;
 import edu.uci.ics.jung.algorithms.layout.util.VisRunner;
@@ -22,6 +16,11 @@ import edu.uci.ics.jung.algorithms.util.IterativeContext;
 import edu.uci.ics.jung.visualization.layout.ObservableCachingLayout;
 import edu.uci.ics.jung.visualization.util.ChangeEventSupport;
 import edu.uci.ics.jung.visualization.util.DefaultChangeEventSupport;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
+import java.awt.Dimension;
 
 /**
  * The model containing state values for 
@@ -64,6 +63,7 @@ public class DefaultVisualizationModel<V, E> implements VisualizationModel<V,E>,
 	 * @param d The preferred size of the View that will display this graph
 	 */
 	public DefaultVisualizationModel(Layout<V,E> layout, Dimension d) {
+
         if(changeListener == null) {
             changeListener = new ChangeListener() {
                 public void stateChanged(ChangeEvent e) {
@@ -88,9 +88,8 @@ public class DefaultVisualizationModel<V, E> implements VisualizationModel<V,E>,
 	    if(layout instanceof ChangeEventSupport) {
 	    	this.layout = layout;
 	    } else {
-	    	this.layout = new ObservableCachingLayout<V,E>(layout);
+	    	this.layout = new ObservableCachingLayout<>(layout);
 	    }
-		
 		((ChangeEventSupport)this.layout).addChangeListener(changeListener);
 
         if(viewSize == null) {

@@ -243,6 +243,7 @@ public class BasicVisualizationServer<V, E> extends JPanel
      * @see edu.uci.ics.jung.visualization.VisualizationServer#stateChanged(javax.swing.event.ChangeEvent)
      */
 	public void stateChanged(ChangeEvent e) {
+
 	    repaint();
 	    fireStateChanged();
 	}
@@ -312,12 +313,16 @@ public class BasicVisualizationServer<V, E> extends JPanel
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-		Graphics2D g2d = (Graphics2D)g;
+		final Graphics2D g2d = (Graphics2D)g;
+
 		if(doubleBuffered) {
+
 		    checkOffscreenImage(getSize());
 			renderGraph(offscreenG2d);
 		    g2d.drawImage(offscreen, null, 0, 0);
+
 		} else {
+
 		    renderGraph(g2d);
 		}
 	}

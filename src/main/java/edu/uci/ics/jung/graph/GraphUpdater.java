@@ -14,23 +14,20 @@
  *  You should have received a copy of the GNU General Public License
  *  along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.kit.trufflehog.model.network.graph.components;
-
-import edu.kit.trufflehog.model.network.graph.IComponent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package edu.uci.ics.jung.graph;
 
 /**
  * \brief
  * \details
- * \date 11.03.16
+ * \date 12.03.16
  * \copyright GNU Public License
  *
  * @author Jan Hermes
  * @version 0.0.1
  */
-public abstract class AbstractComponent implements IComponent {
+public interface GraphUpdater<V, E> {
 
-    private static final Logger logger = LogManager.getLogger(AbstractComponent.class);
+    boolean updateVertex(V existingVertex, V newVertex);
 
+    boolean updateEdge(E existingEdge, E newEdge);
 }

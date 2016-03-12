@@ -1,11 +1,13 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
-import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -103,6 +105,16 @@ public class NodeRenderer implements IRenderer {
     @Override
     public void updateState() {
         //TODO implement if needed
+    }
+
+    @Override
+    public void animate() {
+
+    }
+
+    @Override
+    public int animationTime() {
+        return 0;
     }
 
     /**

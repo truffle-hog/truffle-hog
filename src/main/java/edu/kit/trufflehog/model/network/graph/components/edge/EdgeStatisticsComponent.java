@@ -21,9 +21,6 @@ public class EdgeStatisticsComponent extends AbstractComponent implements ICompo
 
     public EdgeStatisticsComponent(int initial) {
 
-        super.bind(trafficProperty);
-        super.bind(lastUpdateTime);
-
         trafficProperty.set(initial);
     }
 
@@ -83,8 +80,4 @@ public class EdgeStatisticsComponent extends AbstractComponent implements ICompo
         return (o instanceof EdgeStatisticsComponent);
     }
 
-    @Override
-    protected IComponent computeValue() {
-        return this;
-    }
 }

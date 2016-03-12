@@ -45,18 +45,22 @@ public class Main extends Application {
      */
 	public static void main(String[] args) {
         // Set docking icon on mac
-        String osName = System.getProperty("os.name");
+        final String osName = System.getProperty("os.name");
+
+		logger.debug(osName);
+
         if (osName.toLowerCase().contains("mac")) {
             try {
-                URL iconURL = Main.class.getResource(File.separator + "edu" + File.separator + "kit" + File.separator
-                        + "trufflehog" + File.separator + "view" + File.separator +"icon.png");
-                Image image = new ImageIcon(iconURL).getImage();
+
+                final URL iconURL = Main.class.getResource(File.separator + "edu" + File.separator + "kit" + File.separator
+                        + "trufflehog" + File.separator + "view" + File.separator + "icon.png");
+                final Image image = new ImageIcon(iconURL).getImage();
                 com.apple.eawt.Application.getApplication().setDockIconImage(image);
+
             } catch (Exception e) {
                 logger.error("Unable to set docking icon, probably not running on a mac", e);
             }
         }
-
 		launch(args);
 	}
 

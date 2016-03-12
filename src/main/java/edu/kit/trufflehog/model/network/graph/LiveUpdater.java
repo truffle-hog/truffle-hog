@@ -17,18 +17,19 @@
 package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
-import edu.kit.trufflehog.model.network.graph.components.edge.*;
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.StaticRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.uci.ics.jung.graph.GraphUpdater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
-import java.util.stream.Collectors;
 
 /**
  * \brief
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class LiveUpdater implements IUpdater {
+public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
 
     private Logger logger = LogManager.getLogger();
 
@@ -50,8 +51,6 @@ public class LiveUpdater implements IUpdater {
             final IComponent existing = node.getComponent(c.getClass());
             existing.update(c, this);
         });
-
-        node.invalidate();
         // TODO check if really some was changed
         return true;
     }
@@ -129,5 +128,27 @@ public class LiveUpdater implements IUpdater {
         }
         final ViewComponent other = (ViewComponent) instance;
         return viewComponent.getRenderer().update(other.getRenderer(), this);
+    }
+
+    @Override
+    public boolean updateVertex(INode existingVertex, INode newVertex) {
+
+        newVertex.stream().filter(IComponent::isMutable).forEach(c -> {
+            final IComponent existing = existingVertex.getComponent(c.getClass());
+            existing.update(c, this);
+        });
+        // TODO check if really some was changed
+        return true;
+    }
+
+    @Override
+    public boolean updateEdge(IConnection existingEdge, IConnection newEdge) {
+
+        newEdge.stream().filter(IComponent::isMutable).forEach(c -> {
+            final IComponent existing = existingEdge.getComponent(c.getClass());
+            existing.update(c, this);
+        });
+        // TODO check if really some was changed
+        return true;
     }
 }

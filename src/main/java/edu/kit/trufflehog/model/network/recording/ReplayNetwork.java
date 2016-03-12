@@ -1,6 +1,11 @@
 package edu.kit.trufflehog.model.network.recording;
 
-import edu.kit.trufflehog.model.network.*;
+import edu.kit.trufflehog.model.network.IAddress;
+import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.INetworkIOPort;
+import edu.kit.trufflehog.model.network.INetworkReadingPort;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -9,15 +14,14 @@ import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
-import javafx.beans.Observable;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
-import javafx.beans.value.ObservableValue;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.keyvalue.MultiKey;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Map;
@@ -57,8 +61,6 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
 
         port = new ReplayWritingPort();
         viewPort = new ReplayViewPort();
-
-        port.addListener(viewPort);
     }
 
     @Override
@@ -101,7 +103,7 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
 
 
 
-    private class ReplayViewPort extends ObjectBinding<INetworkViewPort> implements INetworkViewPort {
+    private class ReplayViewPort implements INetworkViewPort {
 
         @Override
         public void setMaxConnectionSize(int count) {
@@ -287,6 +289,16 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
         }
 
         @Override
+        public void addGraphEventListener(GraphEventListener<INode, IConnection> l) {
+            throw new UnsupportedOperationException("Operation not implemented yet");
+        }
+
+        @Override
+        public void removeGraphEventListener(GraphEventListener<INode, IConnection> l) {
+            throw new UnsupportedOperationException("Operation not implemented yet");
+        }
+
+        @Override
         public NetworkViewCopy createDeepCopy(ICopyCreator copyCreator) {
 
             throw new UnsupportedOperationException("Not supported on replay ports");
@@ -295,21 +307,6 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
         @Override
         public boolean isMutable() {
             return false;
-        }
-
-        //@Override
-        public void changed(ObservableValue<? extends INetworkIOPort> observable, INetworkIOPort oldValue, INetworkIOPort newValue) {
-            this.invalidate();
-        }
-
-        @Override
-        protected INetworkViewPort computeValue() {
-            return this;
-        }
-
-        @Override
-        public void invalidated(Observable observable) {
-            throw new UnsupportedOperationException("Operation not implemented yet");
         }
     }
 
@@ -335,7 +332,6 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
                 existing.update(connection, replayUpdater);
                 return;
             }
-            this.bind(connection);
 
             delegate.getGraph().addEdge(connection, connection.getSrc(), connection.getDest());
             idConnectionMap.put(connectionKey, connection);
@@ -350,8 +346,6 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
                 existing.update(node, replayUpdater);
                 return;
             }
-            this.bind(node);
-
             delegate.getGraph().addVertex(node);
             idNodeMap.put(node.getAddress(), node);
         }

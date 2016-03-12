@@ -2,12 +2,11 @@ package edu.kit.trufflehog.model.network;
 
 import edu.kit.trufflehog.model.network.recording.NetworkCopy;
 import edu.kit.trufflehog.util.DeepCopyable;
-import javafx.beans.binding.Binding;
 
 /**
  * This interface inhabits the functionality that the network representation in Trufflehog uses.
  */
-public interface INetwork extends Binding<INetwork>, DeepCopyable<NetworkCopy> {
+public interface INetwork extends DeepCopyable<NetworkCopy> {
 
     /**
      * Returns the reading port of this network.

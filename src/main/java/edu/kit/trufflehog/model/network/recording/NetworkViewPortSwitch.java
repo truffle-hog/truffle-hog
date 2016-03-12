@@ -1,30 +1,26 @@
 package edu.kit.trufflehog.model.network.recording;
 
-import edu.kit.trufflehog.model.network.INetworkIOPort;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
-import javafx.beans.Observable;
-import javafx.beans.binding.ObjectBinding;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import org.apache.commons.collections15.Transformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 
 /**
  * TODO Implement
  */
-public class NetworkViewPortSwitch extends ObjectBinding<INetworkViewPort> implements ChangeListener<INetworkIOPort>, INetworkViewPortSwitch {
+public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
 
     private static final Logger logger = LogManager.getLogger(NetworkViewPortSwitch.class);
     
@@ -34,8 +30,6 @@ public class NetworkViewPortSwitch extends ObjectBinding<INetworkViewPort> imple
 
 
     public NetworkViewPortSwitch(INetworkViewPort viewPort) {
-
-        this.bind(viewPort);
 
         activeViewport = viewPort;
     }
@@ -117,6 +111,16 @@ public class NetworkViewPortSwitch extends ObjectBinding<INetworkViewPort> imple
     }
 
     @Override
+    public void addGraphEventListener(GraphEventListener<INode, IConnection> l) {
+        getActiveViewPort().addGraphEventListener(l);
+    }
+
+    @Override
+    public void removeGraphEventListener(GraphEventListener<INode, IConnection> l) {
+        getActiveViewPort().removeGraphEventListener(l);
+    }
+
+    @Override
     public void initialize() {
         getActiveViewPort().initialize();
     }
@@ -183,19 +187,4 @@ public class NetworkViewPortSwitch extends ObjectBinding<INetworkViewPort> imple
         return true;
     }
 
-    @Override
-    public void changed(ObservableValue<? extends INetworkIOPort> observable, INetworkIOPort oldValue, INetworkIOPort newValue) {
-
-        this.invalidate();
-    }
-
-    @Override
-    protected INetworkViewPort computeValue() {
-        return getActiveViewPort();
-    }
-
-    @Override
-    public void invalidated(Observable observable) {
-        this.invalidate();
-    }
 }

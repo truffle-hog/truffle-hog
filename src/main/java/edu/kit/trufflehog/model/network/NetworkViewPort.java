@@ -25,18 +25,17 @@ import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
-import javafx.beans.Observable;
-import javafx.beans.binding.ObjectBinding;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.value.ObservableValue;
 import org.apache.commons.collections15.Transformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.time.Instant;
 import java.util.Collection;
@@ -49,11 +48,12 @@ import java.util.Collection;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class NetworkViewPort extends ObjectBinding<INetworkViewPort> implements INetworkViewPort {
+public class NetworkViewPort implements INetworkViewPort {
 
     private static final Logger logger = LogManager.getLogger(NetworkViewPort.class);
 
     private Layout<INode, IConnection> delegate;
+    private final ObservableUpdatableGraph<INode, IConnection> graphDelegate;
     private Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory;
 
     private final IntegerProperty maxThroughputProperty = new SimpleIntegerProperty(0);
@@ -62,9 +62,11 @@ public class NetworkViewPort extends ObjectBinding<INetworkViewPort> implements 
 
     private final LongProperty viewTimeProperty = new SimpleLongProperty(Instant.now().toEpochMilli());
 
-    public NetworkViewPort(final Graph<INode, IConnection> delegate) {
+    public NetworkViewPort(final ObservableUpdatableGraph<INode, IConnection> delegate) {
 
-        this.delegate = new ConcurrentFRLayout<>(delegate);
+        this.graphDelegate = delegate;
+
+        this.delegate = new ConcurrentFRLayout<>(this.graphDelegate);
         this.layoutFactory = new FRLayoutFactory();
 
     }
@@ -198,6 +200,16 @@ public class NetworkViewPort extends ObjectBinding<INetworkViewPort> implements 
     }
 
     @Override
+    public void addGraphEventListener(GraphEventListener<INode, IConnection> l) {
+        this.graphDelegate.addGraphEventListener(l);
+    }
+
+    @Override
+    public void removeGraphEventListener(GraphEventListener<INode, IConnection> l) {
+        this.graphDelegate.removeGraphEventListener(l);
+    }
+
+    @Override
     public NetworkViewCopy createDeepCopy(ICopyCreator copyCreator) {
         return copyCreator.createDeepCopy(this);
     }
@@ -207,22 +219,5 @@ public class NetworkViewPort extends ObjectBinding<INetworkViewPort> implements 
         return false;
     }
 
-    @Override
-    protected INetworkViewPort computeValue() {
-        return this;
-    }
 
-    //@Override
-    public void changed(ObservableValue<? extends INetworkIOPort> observable, INetworkIOPort oldValue, INetworkIOPort newValue) {
-
-        logger.debug("something changed");
-
-        this.invalidate();
-    }
-
-    @Override
-    public void invalidated(Observable observable) {
-
-        logger.debug("something changed");
-    }
 }

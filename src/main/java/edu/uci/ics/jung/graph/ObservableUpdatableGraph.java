@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A decorator class for graphs which generates events 
@@ -16,18 +18,26 @@ import java.util.List;
  * @author Joshua O'Madadhain
  */
 @SuppressWarnings("serial")
-public class ObservableGraph<V,E> extends GraphDecorator<V,E> {
+public class ObservableUpdatableGraph<V,E> extends GraphDecorator<V,E> {
 
-	List<GraphEventListener<V,E>> listenerList = 
+	private final List<GraphEventListener<V,E>> listenerList =
 		Collections.synchronizedList(new LinkedList<GraphEventListener<V,E>>());
+
+
+    private final Map<V,V> existingVertices = new ConcurrentHashMap<>();
+    private final Map<E,E> existingEdges = new ConcurrentHashMap<>();
+
+	private final GraphUpdater<V, E> graphUpdater;
 
     /**
      * Creates a new instance based on the provided {@code delegate}.
      */
-	public ObservableGraph(Graph<V, E> delegate) {
+	public ObservableUpdatableGraph(Graph<V, E> delegate, GraphUpdater<V, E> updater) {
 		super(delegate);
+
+		this.graphUpdater = updater;
 	}
-	
+
 	/**
 	 * Adds {@code l} as a listener to this graph.
 	 */
@@ -43,83 +53,138 @@ public class ObservableGraph<V,E> extends GraphDecorator<V,E> {
 	}
 
 	protected void fireGraphEvent(GraphEvent<V,E> evt) {
+
 		for(GraphEventListener<V,E> listener : listenerList) {
 			listener.handleGraphEvent(evt);
 		 }
 	 }
 
+
+	private boolean updateEdge(E existingEdge, E newEdge) {
+
+		if (graphUpdater.updateEdge(existingEdge, newEdge)) {
+
+			fireGraphEvent(new GraphEvent.Edge<>(delegate, GraphEvent.Type.EDGE_CHANGED, existingEdge));
+		}
+        return false;
+	}
+
+	private boolean updateVertex(V existingVertex, V newVertex) {
+
+		if (graphUpdater.updateVertex(existingVertex, newVertex)) {
+
+			fireGraphEvent(new GraphEvent.Vertex<>(delegate, GraphEvent.Type.VERTEX_CHANGED, existingVertex));
+		}
+        return false;
+	}
+
 	/**
-	 * @see edu.uci.ics.jung.graph.Hypergraph#addEdge(java.lang.Object, java.util.Collection)
+	 * @see Hypergraph#addEdge(Object, Collection)
 	 */
 	@Override
 	public boolean addEdge(E edge, Collection<? extends V> vertices) {
 		boolean state = super.addEdge(edge, vertices);
-		if(state) {
-			GraphEvent<V,E> evt = new GraphEvent.Edge<V,E>(delegate, GraphEvent.Type.EDGE_ADDED, edge);
+
+		if (state) {
+
+            existingEdges.put(edge, edge);
+
+			final GraphEvent<V,E> evt = new GraphEvent.Edge<>(delegate, GraphEvent.Type.EDGE_ADDED, edge);
 			fireGraphEvent(evt);
+            return true;
+
+		} else {
+
+			return updateEdge(existingEdges.get(edge), edge);
 		}
-		return state;
 	}
 
 	/**
-	 * @see edu.uci.ics.jung.graph.Graph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object, edu.uci.ics.jung.graph.util.EdgeType)
+	 * @see Graph#addEdge(Object, Object, Object, EdgeType)
 	 */
 	@Override
   public boolean addEdge(E e, V v1, V v2, EdgeType edgeType) {
 
 		boolean state = super.addEdge(e, v1, v2, edgeType);
-		if(state) {
+		if (state) {
+
+            existingEdges.put(e, e);
 
 			GraphEvent<V,E> evt = new GraphEvent.Edge<V,E>(delegate, GraphEvent.Type.EDGE_ADDED, e);
 			fireGraphEvent(evt);
+
+		} else {
+
+			return updateEdge(existingEdges.get(e), e);
 		}
 		return state;
 	}
 
 	/**
-	 * @see edu.uci.ics.jung.graph.Graph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object)
+	 * @see Graph#addEdge(Object, Object, Object)
 	 */
 	@Override
   public boolean addEdge(E e, V v1, V v2) {
 		boolean state = super.addEdge(e, v1, v2);
+
 		if(state) {
+
+            existingEdges.put(e, e);
+
 			GraphEvent<V,E> evt = new GraphEvent.Edge<V,E>(delegate, GraphEvent.Type.EDGE_ADDED, e);
 			fireGraphEvent(evt);
+			return true;
+
+		}  else {
+
+			return updateEdge(existingEdges.get(e), e);
 		}
-		return state;
 	}
 
 	/**
-	 * @see edu.uci.ics.jung.graph.Hypergraph#addVertex(java.lang.Object)
+	 * @see Hypergraph#addVertex(Object)
 	 */
 	@Override
   public boolean addVertex(V vertex) {
-		boolean state = super.addVertex(vertex);
+		final boolean state = super.addVertex(vertex);
+
 		if(state) {
+
+            existingVertices.put(vertex, vertex);
+
 			GraphEvent<V,E> evt = new GraphEvent.Vertex<V,E>(delegate, GraphEvent.Type.VERTEX_ADDED, vertex);
 			fireGraphEvent(evt);
+			return true;
+
+		}  else {
+
+			return updateVertex(existingVertices.get(vertex), vertex);
 		}
-		return state;
 	}
 
 	/**
-	 * @see edu.uci.ics.jung.graph.Hypergraph#removeEdge(java.lang.Object)
+	 * @see Hypergraph#removeEdge(Object)
 	 */
 	@Override
   public boolean removeEdge(E edge) {
 		boolean state = delegate.removeEdge(edge);
 		if(state) {
+
+            existingEdges.remove(edge);
+
 			GraphEvent<V,E> evt = new GraphEvent.Edge<V,E>(delegate, GraphEvent.Type.EDGE_REMOVED, edge);
 			fireGraphEvent(evt);
+			return true;
 		}
 		return state;
 	}
 
 	/**
-	 * @see edu.uci.ics.jung.graph.Hypergraph#removeVertex(java.lang.Object)
+	 * @see Hypergraph#removeVertex(Object)
 	 */
 	@Override
 	public boolean removeVertex(V vertex) {
+
 		// remove all incident edges first, so that the appropriate events will
 		// be fired (otherwise they'll be removed inside {@code delegate.removeVertex}
 		// and the events will not be fired)
@@ -128,7 +193,9 @@ public class ObservableGraph<V,E> extends GraphDecorator<V,E> {
 			this.removeEdge(e);
 		
 		boolean state = delegate.removeVertex(vertex);
+
 		if(state) {
+            existingVertices.remove(vertex);
 			GraphEvent<V,E> evt = new GraphEvent.Vertex<V,E>(delegate, GraphEvent.Type.VERTEX_REMOVED, vertex);
 			fireGraphEvent(evt);
 		}

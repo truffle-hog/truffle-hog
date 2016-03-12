@@ -1,9 +1,11 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
-import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
+import javafx.animation.Interpolator;
+import javafx.animation.Transition;
+import javafx.util.Duration;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -31,13 +33,42 @@ public class MulticastEdgeRenderer implements IRenderer {
     Color colorUnpicked = new Color(0x7f7784);
     Color colorPicked = new Color(0xf0caa3);
 
+    private final float baseWidth = 90f;
+    private final float baseSize = 80f;
+
     private float strokeWidth = 5f;
     private float multiplier = 1.05f;
     private float opacity = 170;
 
+    private float opac = 0.5f;
+
     private Stroke stroke = new BasicStroke(strokeWidth);
 
+    private final Transition animator;
     public MulticastEdgeRenderer() {
+
+        animator = new Transition() {
+
+            {
+                setCycleDuration(Duration.millis(500));
+            }
+
+            protected void interpolate(double frac) {
+
+                strokeWidth = (float) (frac * baseWidth);
+                opac = frac >= 0.6 ? 0 : (float) (0.6f - frac);
+                multiplier = (float) (baseSize * frac);
+            }
+
+        };
+        animator.setCycleCount(2);
+        animator.setInterpolator(Interpolator.EASE_OUT);
+        animator.setOnFinished(e -> {
+            multiplier = 0;
+            opac = 0;
+            strokeWidth = 0;
+        });
+
 
         // TODO implement
     }
@@ -51,13 +82,16 @@ public class MulticastEdgeRenderer implements IRenderer {
     @Override
     public Color getColorUnpicked() {
 
-        return new Color(colorUnpicked.getRed(), colorUnpicked.getGreen(), colorUnpicked.getBlue(), (int) opacity);
+        return new Color(colorUnpicked.getColorSpace(), colorUnpicked.getColorComponents(null), opac);
+
+        //return new Color(colorUnpicked.getRed(), colorUnpicked.getGreen(), colorUnpicked.getBlue(), (int) opacity);
     }
 
     @Override
     public Color getColorPicked() {
 
-        return new Color(colorPicked.getRed(), colorPicked.getGreen(), colorPicked.getBlue(), (int) opacity);
+        return new Color(colorPicked.getColorSpace(), colorPicked.getColorComponents(null), opac);
+        //return new Color(colorPicked.getRed(), colorPicked.getGreen(), colorPicked.getBlue(), (int) opacity);
     }
 
     @Override
@@ -97,6 +131,17 @@ public class MulticastEdgeRenderer implements IRenderer {
             multiplier = 0;
         }
         multiplier *= 1.3f;
+    }
+
+    @Override
+    public void animate() {
+
+        animator.play();
+    }
+
+    @Override
+    public int animationTime() {
+        return 20 * 40;
     }
 
     @Override

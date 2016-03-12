@@ -1,13 +1,17 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
-import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
+import javafx.animation.Transition;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 
 /**
@@ -38,7 +42,25 @@ public class BasicEdgeRenderer implements IRenderer {
     private float stepSize = 0.01f;
     private float currentBrightness = 0.5f;
 
+    private final Transition animator;
+
+    private int animationtime = 500;
+
     public BasicEdgeRenderer() {
+
+        animator = new Transition() {
+
+            {
+                setCycleDuration(Duration.millis(animationtime));
+            }
+
+            protected void interpolate(double frac) {
+
+                currentBrightness = (float) (frac < 0.5 ? 0.5 + frac : 1.5 - frac);
+            }
+
+        };
+        //animator.setCycleCount(40);
 
         Color.RGBtoHSB(colorUnpicked.getRed(), colorUnpicked.getGreen(), colorUnpicked.getBlue(), hsbValsUnpicked);
         Color.RGBtoHSB(colorPicked.getRed(), colorPicked.getGreen(), colorPicked.getBlue(), hsbValsPicked);
@@ -110,6 +132,34 @@ public class BasicEdgeRenderer implements IRenderer {
             currentBrightness -= stepSize;
         }*/
     }
+
+    @Override
+    public void animate() {
+        animator.play();
+    }
+
+    @Override
+    public int animationTime() {
+        return animationtime;
+    }
+
+
+/*    @Override
+    public int getAnimationCycles() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void animate() {
+
+        if (currentBrightness <= 0.5f) {
+            currentBrightness = 0.5f;
+
+        } else {
+
+            currentBrightness -= stepSize;
+        }
+    }*/
 
     @Override
     public boolean isMutable() {

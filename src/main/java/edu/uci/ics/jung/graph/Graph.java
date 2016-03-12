@@ -11,10 +11,10 @@
  */
 package edu.uci.ics.jung.graph;
 
-import java.util.Collection;
-
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.graph.util.Pair;
+
+import java.util.Collection;
 
 
 /**
@@ -51,7 +51,7 @@ import edu.uci.ics.jung.graph.util.Pair;
  * 
  * @author Joshua O'Madadhain
  */
-public interface Graph<V,E> extends Hypergraph<V,E>
+public interface Graph<V, E> extends Hypergraph<V,E>
 {
     /**
      * Returns a <code>Collection</code> view of the incoming edges incident to <code>vertex</code>
@@ -243,5 +243,6 @@ public interface Graph<V,E> extends Hypergraph<V,E>
      * @param edge the edge to be queried
      * @return the vertex at the other end of <code>edge</code> from <code>vertex</code>
      */
-    V getOpposite(V vertex, E edge); 
+    V getOpposite(V vertex, E edge);
+
 }

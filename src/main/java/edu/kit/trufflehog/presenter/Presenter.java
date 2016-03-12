@@ -1,35 +1,34 @@
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
-import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
-import edu.kit.trufflehog.model.network.recording.*;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.LiveUpdater;
+import edu.kit.trufflehog.model.network.recording.INetworkDevice;
+import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.INetworkTape;
+import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
+import edu.kit.trufflehog.model.network.recording.INetworkWritingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkDevice;
+import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkTape;
+import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.service.executor.TruffleExecutor;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
-import edu.kit.trufflehog.util.IListener;
-import edu.kit.trufflehog.util.bindings.PlatformIntegerBinding;
-import edu.kit.trufflehog.view.*;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
+import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.Instant;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -105,19 +104,25 @@ public class Presenter {
 
         // initialize the live network that will be writte on by the receiver commands
 
+        // create a Graph
+
+        final Graph<INode, IConnection> graph = Graphs.synchronizedDirectedGraph(new DirectedSparseGraph<>());
+
+        final ObservableUpdatableGraph<INode, IConnection> og = new ObservableUpdatableGraph<>(graph, new LiveUpdater());
+
         // TODO Ctor injection with the Ports that are within the networks
-        liveNetwork = new LiveNetwork(new ConcurrentDirectedSparseGraph<>());
+        liveNetwork = new LiveNetwork(og);
 
         liveViewPort = liveNetwork.getViewPort();
 
         // TODO Where to put this???
-        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
+/*        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
             //refresh();
             //Platform.runLater(() -> repaint());
             liveNetwork.getViewPort().setViewTime(Instant.now().toEpochMilli());
         }));
         updateTime.setCycleCount(Timeline.INDEFINITE);
-        updateTime.play();
+        updateTime.play();*/
 
         /*
         // initialize the replay network that will be written on by a networkTape if the device plays a replay

@@ -20,8 +20,6 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
 
     public NodeStatisticsComponent(int initial) {
 
-        super.bind(throughputProperty);
-
         throughputProperty.set(initial);
     }
 
@@ -49,12 +47,6 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
     @Override
     public boolean isMutable() {
         return true;
-    }
-
-
-    @Override
-    protected IComponent computeValue() {
-        return this;
     }
 
     @Override

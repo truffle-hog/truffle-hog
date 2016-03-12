@@ -6,17 +6,19 @@ import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.view.animation.GraphAnimator;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
-import edu.kit.trufflehog.view.graph.decorators.FXEdgeShape;
-import edu.kit.trufflehog.view.graph.renderers.FXRenderer;
 import edu.kit.trufflehog.view.graph.FXVisualizationViewer;
 import edu.kit.trufflehog.view.graph.control.FXDefaultModalGraphMouse;
 import edu.kit.trufflehog.view.graph.control.FXModalGraphMouse;
+import edu.kit.trufflehog.view.graph.decorators.FXEdgeShape;
+import edu.kit.trufflehog.view.graph.renderers.FXRenderer;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationModel;
 import edu.uci.ics.jung.visualization.control.GraphMouseListener;
@@ -27,10 +29,11 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.util.Duration;
 import org.apache.commons.collections15.Transformer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -52,6 +55,8 @@ import java.util.Map;
  */
 public class NetworkViewScreen extends NetworkGraphViewController implements ItemListener, javafx.beans.value.ChangeListener<INetworkViewPort> {
 
+    private static final Logger logger = LogManager.getLogger(NetworkViewScreen.class);
+    
 	private FXVisualizationViewer<INode, IConnection> jungView;
 
 	private INetworkViewPort viewPort;
@@ -60,7 +65,8 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	private FXModalGraphMouse graphMouse;
 
-	private Timeline refresher;
+	private final Timeline refresher;
+    private final GraphAnimator graphAnimator;
 
     /** The commands that are mapped to their interactions. **/
     private final Map<GraphInteraction, IUserCommand> interactionMap =
@@ -68,13 +74,43 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	public NetworkViewScreen(INetworkViewPort port, long refreshRate) {
 
-/*		refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
-			//refresh();
-			//Platform.runLater(() -> repaint());
-			repaint();
-		}));
-		refresher.setCycleCount(Timeline.INDEFINITE);*/
-		//fiveSecondsWonder.playGraphTape();
+        graphAnimator = new GraphAnimator();
+
+        refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
+            //refresh();
+            //Platform.runLater(() -> repaint());
+            repaint();
+        }));
+
+        port.addGraphEventListener(e -> {
+
+            if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
+
+
+                final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
+                //refresher.setCycleCount(node.getComponent(ViewComponent.class).getAnimationCycles());
+                //graphAnimator.animate(node.getComponent(ViewComponent.class));
+                node.getComponent(ViewComponent.class).animate();
+                refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
+                refresher.playFromStart();
+
+            } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
+
+                final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
+                //refresher.setCycleCount(connection.getComponent(ViewComponent.class).getAnimationCycles());
+                //graphAnimator.addView(connection.getComponent(ViewComponent.class));
+                //refresher.playFromStart();
+                connection.getComponent(ViewComponent.class).animate();
+                refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
+                refresher.playFromStart();
+            }
+
+            //refresher.play();
+        });
+
+
+        /*
+		//fiveSecondsWonder.playGraphTape();*/
 		this.viewPort = port;
 		initialize();
 /*		refresher.play();*/
@@ -204,7 +240,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
             final ViewComponent viewComponent = iConnection.getComponent(ViewComponent.class);
 
-			viewComponent.getRenderer().updateState();
+			//viewComponent.getRenderer().updateState();
 
             if (getPickedEdgeState().isPicked(iConnection)) {
                 return viewComponent.getRenderer().getColorPicked();

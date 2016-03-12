@@ -27,11 +27,14 @@ public abstract class GraphEvent<V,E> {
 	/**
 	 * Types of graph events.
 	 */
-	public static enum Type {
+	public enum Type {
 		VERTEX_ADDED,
 		VERTEX_REMOVED,
+		VERTEX_CHANGED,
 		EDGE_ADDED,
-		EDGE_REMOVED
+		EDGE_REMOVED,
+		EDGE_CHANGED,
+        LAYOUT_UPDATED
 	}
 	
     /**

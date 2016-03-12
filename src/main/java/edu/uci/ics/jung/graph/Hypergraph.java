@@ -11,9 +11,9 @@
  */
 package edu.uci.ics.jung.graph;
 
-import java.util.Collection;
-
 import edu.uci.ics.jung.graph.util.EdgeType;
+
+import java.util.Collection;
 
 /**
  * A hypergraph, consisting of a set of vertices of type <code>V</code>
@@ -73,6 +73,14 @@ public interface Hypergraph<V, E>
      * @return true iff this graph contains a vertex <code>vertex</code>
      */
     boolean containsVertex(V vertex);
+
+/*    *//**
+     * Returns true if this graph's vertex collection contains <code>vertex</code>.
+     * Equivalent to <code>getVertices().contains(vertex)</code>.
+     * @param vertex the vertex whose presence is being queried
+     * @return true iff this graph contains a vertex <code>vertex</code>
+     *//*
+    V containsVertexReturn(V vertex);*/
     
     /**
      * Returns true if this graph's edge collection contains <code>edge</code>.
@@ -81,6 +89,14 @@ public interface Hypergraph<V, E>
      * @return true iff this graph contains an edge <code>edge</code>
      */
     boolean containsEdge(E edge);
+
+/*    *//**
+     * Returns the edge if this graph's edge collection contains <code>edge</code>.
+     * Equivalent to <code>getEdges().contains(edge)</code>.
+     * @param edge the edge whose presence is being queried
+     * @return true iff this graph contains an edge <code>edge</code>
+     *//*
+    E containsEdgeReturn(E edge);*/
     
     /**
      * Returns the number of edges in this graph.

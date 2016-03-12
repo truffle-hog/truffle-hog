@@ -60,7 +60,7 @@ public class VisualizationViewer<V,E> extends BasicVisualizationServer<V,E> {
      * @param renderer		The Renderer to draw it with
      */
 	public VisualizationViewer(Layout<V,E> layout) {
-	    this(new DefaultVisualizationModel<V,E>(layout));
+	    this(new DefaultVisualizationModel<>(layout));
 	}
 	
     /**

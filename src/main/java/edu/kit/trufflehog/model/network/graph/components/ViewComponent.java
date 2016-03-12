@@ -43,6 +43,11 @@ public class ViewComponent extends AbstractComponent implements IComponent {
         return renderer;
     }
 
+    public void animate() {
+
+        renderer.animate();
+    }
+
     @Override
     public String name() {
         return "View component";
@@ -73,10 +78,5 @@ public class ViewComponent extends AbstractComponent implements IComponent {
         // TODO check if more equals checking necessary
         return o instanceof ViewComponent && ((ViewComponent) o).getRenderer().equals(this.getRenderer());
 
-    }
-
-    @Override
-    protected IComponent computeValue() {
-        return this;
     }
 }

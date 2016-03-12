@@ -40,9 +40,6 @@ public abstract class AbstractComposition extends ObjectBinding<IComponent> impl
             T castedExisting = (T) existing;
             return castedExisting;
         }
-
-        super.bind(component);
-
         components.put(component.getClass(), component);
 
         //logger.debug(components);
@@ -59,9 +56,6 @@ public abstract class AbstractComposition extends ObjectBinding<IComponent> impl
         final IComponent component = components.remove(type);
 
         if (component != null) {
-
-            super.unbind(component);
-
             // Safe to suppress unchecked as every value in the components
             // map that will be retrieved by the according class type will
             // be a component of that exact type

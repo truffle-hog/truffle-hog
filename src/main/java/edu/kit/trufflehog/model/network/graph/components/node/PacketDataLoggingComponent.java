@@ -1,7 +1,6 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
-import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
@@ -34,13 +33,7 @@ public class PacketDataLoggingComponent extends AbstractComponent implements ICo
 
 
         dataList = FXCollections.observableArrayList();
-        super.bind(dataList);
         dataProperty = new SimpleListProperty<>(dataList);
-    }
-
-    @Override
-    protected IComponent computeValue() {
-        return this;
     }
 
     /**

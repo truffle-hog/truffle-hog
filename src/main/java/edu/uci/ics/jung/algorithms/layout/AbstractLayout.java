@@ -10,6 +10,12 @@
  */
 package edu.uci.ics.jung.algorithms.layout;
 
+import edu.uci.ics.jung.graph.Graph;
+import org.apache.commons.collections15.Transformer;
+import org.apache.commons.collections15.functors.ChainedTransformer;
+import org.apache.commons.collections15.functors.CloneTransformer;
+import org.apache.commons.collections15.map.LazyMap;
+
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.util.ConcurrentModificationException;
@@ -17,13 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.collections15.Transformer;
-import org.apache.commons.collections15.functors.ChainedTransformer;
-import org.apache.commons.collections15.functors.CloneTransformer;
-import org.apache.commons.collections15.map.LazyMap;
-
-import edu.uci.ics.jung.graph.Graph;
 
 /**
  * Abstract class for implementations of {@code Layout}.  It handles some of the
@@ -71,9 +70,11 @@ abstract public class AbstractLayout<V, E> implements Layout<V,E> {
     @SuppressWarnings("unchecked")
     protected AbstractLayout(Graph<V,E> graph, Transformer<V,Point2D> initializer) {
 		this.graph = graph;
-		Transformer<V, ? extends Object> chain = 
+
+		Transformer<V, Point2D> chain =
 			ChainedTransformer.getInstance(initializer, CloneTransformer.getInstance());
-		this.locations = LazyMap.decorate(new HashMap<V,Point2D>(), (Transformer<V,Point2D>)chain);
+		this.locations = LazyMap.decorate(new HashMap<>(), (Transformer<V,Point2D>)chain);
+
 		initialized = true;
 	}
 	
@@ -85,9 +86,11 @@ abstract public class AbstractLayout<V, E> implements Layout<V,E> {
 	@SuppressWarnings("unchecked")
     protected AbstractLayout(Graph<V,E> graph, Transformer<V,Point2D> initializer, Dimension size) {
 		this.graph = graph;
-		Transformer<V, ? extends Object> chain = 
+
+		Transformer<V, ?> chain =
 			ChainedTransformer.getInstance(initializer, CloneTransformer.getInstance());
-		this.locations = LazyMap.decorate(new HashMap<V,Point2D>(), (Transformer<V,Point2D>)chain);
+
+		this.locations = LazyMap.decorate(new HashMap<>(), (Transformer<V,Point2D>)chain);
 		this.size = size;
 	}
     
