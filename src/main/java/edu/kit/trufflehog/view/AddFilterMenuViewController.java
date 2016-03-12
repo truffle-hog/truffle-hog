@@ -31,6 +31,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
+import java.util.Objects;
+
 /**
  * <p>
  *     The AddFilterMenuViewController is an overlay that slides in from the top center, similar to menus that ask you
@@ -124,11 +126,11 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
 
     private FilterInput createFilterInput() {
         String name = nameTextField.getText();
-        if (name == null || name == "" || name.length() > 50) {
+        if (name == null || Objects.equals(name, "") || name.length() > 50) {
             return null;
         }
 
-        return new FilterInput(name, FilterType.BLACKLIST, null, null);
+        return new FilterInput(name, FilterType.BLACKLIST, null, null, -1);
     }
 
     @Override

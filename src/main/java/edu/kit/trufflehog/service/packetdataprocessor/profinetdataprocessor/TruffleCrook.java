@@ -3,6 +3,7 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.graph.INode;
 
 /**
  * Created by Hoehler on 04.03.2016.
@@ -40,7 +41,22 @@ public class TruffleCrook extends TruffleReceiver {
                     final Truffle truffle = getTruffle();
 
                     if (truffle != null) {
-                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, node -> System.out.println("Dummy filter")));
+                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, new IFilter() {
+                            @Override
+                            public void check(INode node) {
+                                System.out.println("Test filter");
+                            }
+
+                            @Override
+                            public int getPriority() {
+                                return -1;
+                            }
+
+                            @Override
+                            public int compareTo(IFilter o) {
+                                return 0;
+                            }
+                        }));
                     }
 
                     Thread.sleep(10);

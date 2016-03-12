@@ -3,8 +3,10 @@ package edu.kit.trufflehog.model.filter;
 import edu.kit.trufflehog.model.network.InvalidMACAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 
+import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -17,23 +19,18 @@ import java.util.List;
  */
 public class MACAddressFilter implements IFilter {
 
-    private final Set<MacAddress> addresses = new HashSet<>();
+    private final Map<MacAddress, Color> addresses = new HashMap<>();
     private final Set<INode> changedNodes = new HashSet<>();
+    private int priority = 0;
 
-    @Override
-    public void check(final INode node) {
+    /**
+     * //TODO document
+     * @param filterInput the filter input to input to this filter.
+     * @throws InvalidFilterRule this exception is thrown if the filterInput contains invalid rules
+     */
+    public MACAddressFilter(final FilterInput filterInput) throws InvalidFilterRule {
 
-        final MacAddress address = node.getComponent(NodeInfoComponent.class).getMacAddress();
-
-        if (addresses.contains(address)) {
-            //TODO add flags to node
-            changedNodes.add(node);
-        }
-    }
-
-    public void addInput(final FilterInput filterInput) throws InvalidFilterRule {
-
-        //TODO add the rest of filter input to local data.
+        priority = filterInput.getPriority();
 
         List<String> rules = filterInput.getRules();
         List<MacAddress> macAddresses = new LinkedList<>();
@@ -59,7 +56,7 @@ public class MACAddressFilter implements IFilter {
             }
         }
 
-        macAddresses.stream().forEach(addresses::add);
+        macAddresses.stream().forEach(address -> addresses.put(address, filterInput.getColor()));
     }
 
     /**
@@ -69,7 +66,30 @@ public class MACAddressFilter implements IFilter {
      */
     public void clear() {
         for (INode node : changedNodes) {
-            //TODO reset flags
+            node.getComponent(FilterPropertiesComponent.class).removeFilterColor(this);
         }
+    }
+
+    @Override
+    public void check(final INode node) {
+        if (node == null)
+            throw new NullPointerException("node must not be null!");
+
+        final MacAddress address = node.getComponent(NodeInfoComponent.class).getMacAddress();
+
+        if (addresses.containsKey(address)) {
+            changedNodes.add(node);
+            node.getComponent(FilterPropertiesComponent.class).addFilterColor(this, addresses.get(address));
+        }
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
+    }
+
+    @Override
+    public int compareTo(IFilter other) {
+        return priority - other.getPriority();
     }
 }

@@ -122,7 +122,7 @@ public class FilterOverlayMenu {
             final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
             checkBoxTableCell.setSelectedStateCallback(index -> {
                 final FilterInput filterInput = (FilterInput) tableView.getItems().get(index);
-                BooleanProperty booleanProperty = filterInput.getBooleanProperty();
+                BooleanProperty booleanProperty = filterInput.getActiveProperty();
 
                 // Make sure the filter is updated in the database when the active status changes
                 booleanProperty.addListener((observable, oldValue, newValue) -> {

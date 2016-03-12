@@ -24,10 +24,7 @@ import edu.kit.trufflehog.model.network.graph.*;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.*;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.*;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
 
@@ -230,5 +227,11 @@ public class TapeCopyCreator implements ICopyCreator {
                 networkViewPort.getMaxThroughput(), networkViewPort.getViewTime());
 
         return viewCopy;
+    }
+
+    @Override
+    public IComponent createDeepCopy(FilterPropertiesComponent filterPropertiesComponent) {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
     }
 }

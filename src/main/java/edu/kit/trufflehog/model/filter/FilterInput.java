@@ -56,8 +56,9 @@ public class FilterInput implements Serializable {
     private final FilterType type;
     private final List<String> rules;
     private final Color color;
+    private final int priority;
     private boolean active;
-    private transient BooleanProperty booleanProperty;
+    private transient BooleanProperty activeProperty;
 
     /**
      * <p>
@@ -91,12 +92,13 @@ public class FilterInput implements Serializable {
      * @param rules The rules that define this filter.
      * @param color The color that a node should become if it matches with the filter.
      */
-    public FilterInput(final String name, final FilterType type, final List<String> rules, final Color color) {
+    public FilterInput(final String name, final FilterType type, final List<String> rules, final Color color, final int priority) {
         this.name = name;
         this.type = type;
         this.rules = rules;
         this.color = color;
         this.active = false;
+        this.priority = priority;
 
         load();
     }
@@ -168,8 +170,20 @@ public class FilterInput implements Serializable {
      *
      * @return the BooleanProperty that is is mapped to the {@link CheckBoxTableCell} in the table view in the filters menu.
      */
-    public BooleanProperty getBooleanProperty() {
-        return booleanProperty;
+    public BooleanProperty getActiveProperty() {
+        return activeProperty;
+    }
+
+    /**
+     * <p>
+     *     Gets the priority of the filter. This priority is used to determine which filter color should
+     *     be rendered when multiple filters collide on the same node.
+     * </p>
+     *
+     * @return the priority of the filter.
+     */
+    public int getPriority() {
+        return priority;
     }
 
     /**
@@ -180,8 +194,8 @@ public class FilterInput implements Serializable {
      * </p>
      */
     public void load() {
-        booleanProperty = new SimpleBooleanProperty(active);
-        booleanProperty.addListener((observable, oldValue, newValue) -> {
+        activeProperty = new SimpleBooleanProperty(active);
+        activeProperty.addListener((observable, oldValue, newValue) -> {
             active = newValue;
 
             if (newValue) {

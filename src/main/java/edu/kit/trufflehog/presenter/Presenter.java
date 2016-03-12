@@ -2,6 +2,8 @@ package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.filter.IFilter;
+import edu.kit.trufflehog.model.filter.MacroFilter;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
@@ -134,8 +136,9 @@ public class Presenter {
 
         // TODO change this to real filter
         // TODO register the truffleReceiver somewhere so we can start or stop it.
+        final IFilter macroFilter = new MacroFilter(); //TODO register this in some view part to make it possible for the user to add/remove filters
         //final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
-        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, node -> System.out.println("dummy filter"));
+        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
         truffleFetchService.execute(truffleReceiver);
 
         truffleReceiver.connect();

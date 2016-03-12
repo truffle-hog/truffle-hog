@@ -67,4 +67,14 @@ public class MacroFilter implements IFilter {
     public void check(final INode node) {
         filters.stream().forEach(filter -> filter.check(node));
     }
+
+    @Override
+    public int getPriority() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public int compareTo(IFilter o) {
+        return 1;
+    }
 }

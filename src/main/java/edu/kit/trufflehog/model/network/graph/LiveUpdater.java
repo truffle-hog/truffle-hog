@@ -21,10 +21,7 @@ import edu.kit.trufflehog.model.network.graph.components.edge.*;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -134,5 +131,11 @@ public class LiveUpdater implements IUpdater {
         }
         final ViewComponent other = (ViewComponent) instance;
         return viewComponent.getRenderer().update(other.getRenderer(), this);
+    }
+
+    @Override
+    public boolean update(FilterPropertiesComponent filterPropertiesComponent, IComponent instance) {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
     }
 }

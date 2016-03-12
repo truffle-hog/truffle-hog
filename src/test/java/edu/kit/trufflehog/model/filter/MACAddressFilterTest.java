@@ -1,9 +1,15 @@
 package edu.kit.trufflehog.model.filter;
 
+import edu.kit.trufflehog.model.network.MacAddress;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.NetworkNode;
+import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,16 +26,12 @@ import static org.mockito.Mockito.when;
  */
 public class MACAddressFilterTest {
 
-    private MACAddressFilter filter;
-
     @Before
     public void setUp() throws Exception {
-        filter = new MACAddressFilter();
     }
 
     @After
     public void tearDown() throws Exception {
-        filter = null;
     }
 
     @Test(expected = InvalidFilterRule.class)
@@ -41,6 +43,6 @@ public class MACAddressFilterTest {
         FilterInput filterInput = mock(FilterInput.class);
         when(filterInput.getRules()).thenReturn(ruleList);
 
-        filter.addInput(filterInput);
+        new MACAddressFilter(filterInput);
     }
 }
