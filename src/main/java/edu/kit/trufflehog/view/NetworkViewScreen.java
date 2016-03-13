@@ -9,7 +9,6 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-import edu.kit.trufflehog.view.animation.GraphAnimator;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.graph.FXVisualizationViewer;
 import edu.kit.trufflehog.view.graph.control.FXDefaultModalGraphMouse;
