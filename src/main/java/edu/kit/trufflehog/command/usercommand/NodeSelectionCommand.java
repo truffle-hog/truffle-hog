@@ -49,7 +49,8 @@ public class NodeSelectionCommand implements IUserCommand<PickedState<INode>> {
     @Override
     public void execute() {
 
-        if (lastTimeEmpty)
+        // TODO if last time was empty check
+        //if (lastTimeEmpty)
 
         logger.debug(pickedState.getPicked().toString());
 

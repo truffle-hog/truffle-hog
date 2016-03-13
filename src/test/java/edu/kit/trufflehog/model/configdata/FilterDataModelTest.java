@@ -322,8 +322,10 @@ public class FilterDataModelTest {
         int color_a = (int) (Math.random() * 255);
         Color color = new Color(color_r, color_g, color_b, color_a);
 
+        int priority = (int) (Math.random() * 1000);
+
         // Generate FilterInput object
-        return new FilterInput(name, FilterType.BLACKLIST, FilterOrigin.IP, rules, color);
+        return new FilterInput(name, FilterType.BLACKLIST, FilterOrigin.IP, rules, color, priority);
     }
 
     /**
@@ -352,7 +354,9 @@ public class FilterDataModelTest {
         int color_a = (int) (Math.random() * 255);
         Color color = new Color(color_r, color_g, color_b, color_a);
 
-        return new FilterInput(filterInput.getName(), FilterType.BLACKLIST, FilterOrigin.MAC, rules, color);
+        int priority = (int) (Math.random() * 1000);
+
+        return new FilterInput(filterInput.getName(), FilterType.BLACKLIST, FilterOrigin.MAC, rules, color, priority);
     }
 
     /**

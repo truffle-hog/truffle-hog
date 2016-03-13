@@ -1,6 +1,13 @@
 root {
     display: block;
 }
+
 .background {
-    -fx-background-color: rgba(0, 17, 61, 0.1);
+    -fx-background-color: #21252B;
+    -fx-opacity: 100%;
+    -fx-background-radius: 1000;
+    -fx-border-radius: 0;
+    -fx-border-width: 0;
+    -fx-border-color: #528BFF;
+    -fx-focus-color: transparent;
 }

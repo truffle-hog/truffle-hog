@@ -35,12 +35,30 @@ public class IPFilter implements IFilter {
 
     final List<Range> ipRanges = new LinkedList<>();
 
+    public void addInput(final FilterInput filterInput) {
+
+    }
+
     @Override
     public void check(final INode node) {
 
     }
 
-    public void addIPRule(final String rule) {
+    @Override
+    public int getPriority() {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
+    }
 
+    @Override
+    public void clear() {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
+    }
+
+    @Override
+    public int compareTo(IFilter o) {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
     }
 }

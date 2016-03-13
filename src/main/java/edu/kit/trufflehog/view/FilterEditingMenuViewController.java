@@ -17,14 +17,11 @@
 
 package edu.kit.trufflehog.view;
 
-import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.interaction.OverlayInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterOrigin;
 import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
-import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -44,21 +41,21 @@ import java.util.stream.IntStream;
 
 /**
  * <p>
- *     The AddFilterMenuViewController is an overlay that slides in from the top center, similar to menus that ask you
+ *     The FilterEditingMenuViewController is an overlay that slides in from the top center, similar to menus that ask you
  *     if you are really sure that you want to quit the app. It has a show and a hide method, both of which trigger the
- *     respective animations. It is used to add new filter.
+ *     respective animations. It is used to add new Filters or update existing ones.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public class AddFilterMenuViewController extends AnchorPaneController<OverlayInteraction> {
+public class FilterEditingMenuViewController extends AnchorPaneController {
     private static final Logger logger = LogManager.getLogger();
 
     private final ConfigData configData;
 
-    private final FilterOverlayMenu filterOverlayMenu;
-    private final TranslateTransition transitioShow;
+    private final FilterOverlayViewController filterOverlayViewController;
+    private final TranslateTransition transitionShow;
     private final TranslateTransition transitionHide;
     private final StackPane stackPane;
     private FilterInput updatingFilter; // The filter that is being updated if there is one.
@@ -92,21 +89,21 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
 
     /**
      * <p>
-     *     Creates a new AddFilterMenuViewController. Through the AddFilterMenuViewController you can add or edit
+     *     Creates a new FilterEditingMenuViewController. Through the FilterEditingMenuViewController you can add or edit
      *     filters.
      * </p>
      *
      * @param stackPane The stackPane to put the menu on.
      * @param fxml The fxml to load.
-     * @param filterOverlayMenu The filterOverlayMenu where the {@link TableView} is held that the filter should be
+     * @param filterOverlayViewController The filterOverlayViewController where the {@link TableView} is held that the filter should be
      *                          added to.
      * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      */
-    public AddFilterMenuViewController(StackPane stackPane, String fxml, FilterOverlayMenu filterOverlayMenu,
-                                       ConfigData configData) {
+    public FilterEditingMenuViewController(StackPane stackPane, String fxml, FilterOverlayViewController filterOverlayViewController,
+                                           ConfigData configData) {
         super(fxml);
         this.configData = configData;
-        this.filterOverlayMenu = filterOverlayMenu;
+        this.filterOverlayViewController = filterOverlayViewController;
         this.stackPane = stackPane;
         this.stackPane.getChildren().add(this);
         StackPane.setAlignment(this, Pos.TOP_CENTER);
@@ -117,9 +114,9 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         SELECTION_LABEL = configData.getProperty("SELECTION_LABEL");
 
         // Set up transition animation to show menu
-        transitioShow = new TranslateTransition(Duration.seconds(0.5), this);
-        transitioShow.setFromY(-450);
-        transitioShow.setToY(0);
+        transitionShow = new TranslateTransition(Duration.seconds(0.5), this);
+        transitionShow.setFromY(-450);
+        transitionShow.setToY(0);
 
         // Set up transition animation to hide menu
         transitionHide = new TranslateTransition(Duration.seconds(0.5), this);
@@ -189,7 +186,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         StackPane.setAlignment(this, Pos.TOP_CENTER);
         stackPane.setVisible(true);
         this.setVisible(true);
-        transitioShow.play();
+        transitionShow.play();
     }
 
     /**
@@ -261,7 +258,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
     private void addFilter() {
         FilterInput filterInput = createFilterInput();
         if (filterInput != null) {
-            filterOverlayMenu.addFilter(filterInput);
+            filterOverlayViewController.addFilter(filterInput);
             clearMenu();
             hideMenu();
         }
@@ -307,6 +304,8 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
             logger.debug("Updated rules for FilterInput: " + filterInput.getName() + " to database.");
         }
 
+        // Notify the model that a filter has changed
+        filterOverlayViewController.notifyUpdateCommand();
         clearMenu();
         hideMenu();
     }
@@ -330,33 +329,27 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         Pattern namePattern = Pattern.compile("[A-Za-z0-9. _-]{1,50}");
         Matcher nameMatcher = namePattern.matcher(name);
         if (!nameMatcher.matches()) {
-            errorText.setText("The name you entered is not valid.");
+            errorText.setText(configData.getProperty("NAME_ERROR"));
             return null;
         }
 
         // Check if filter with this name already exists, but only if we are not editing a current filter (there the
         // name can be changed)
-        List<String> currentFilterNames = filterOverlayMenu.getAllFilterNames();
+        List<String> currentFilterNames = filterOverlayViewController.getAllFilterNames();
         if (currentFilterNames.contains(name) && updatingFilter == null) {
-            errorText.setText("The name already exists. Please choose a different name.");
+            errorText.setText(configData.getProperty("NAME_ALREADY_EXISTS"));
             return null;
         }
 
         // Check if type is valid
         if (filterType == null) {
-            errorText.setText("Please choose a filter type.");
-            return null;
-        }
-
-        // Check if origin is valid
-        if (filterOriginString == null) {
-            errorText.setText("Please choose what you would like to filter by.");
+            errorText.setText(configData.getProperty("FILTER_TYPE_ERROR"));
             return null;
         }
 
         // Check if color is not null (should never be)
         if (color == null) {
-            errorText.setText("Please choose a color.");
+            errorText.setText(configData.getProperty("COLOR_ERROR"));
             return null;
         }
 
@@ -373,7 +366,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         }
 
         if (filterOrigin == null) {
-            errorText.setText("Please choose what you would like to filter by.");
+            errorText.setText(configData.getProperty("ORIGIN_ERROR"));
             return null;
         }
 
@@ -387,7 +380,8 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         java.awt.Color colorAwt = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255),
                 (int) (color.getBlue() * 255));
 
-        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt);
+        //FIXME add priority to view and then add it to the filter input accordingly
+        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt, /*ADD PRIORITY HERE*/ 0);
         filterInput.load(configData); // Binds properties to database
 
         return filterInput;
@@ -416,7 +410,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         String[] ruleArray = rules.split(";");
 
         if (ruleArray.length == 0) {
-            errorText.setText("Please enter at least one rule.");
+            errorText.setText(configData.getProperty("MISSING_RULE_ERROR"));
             return null;
         }
 
@@ -447,15 +441,15 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
 
             if (!match1 && !match2) {
                 if (filterOrigin.equals(FilterOrigin.IP)) {
-                    errorText.setText("A rule does not have the valid IP-Address format.");
+                    errorText.setText(configData.getProperty("INVALID_IP_RULE"));
                 } else {
-                    errorText.setText("A rule does not have the valid MAC-Address format.");
+                    errorText.setText(configData.getProperty("INVALID_MAC_RULE"));
                 }
                 return null;
             }
         }
 
-        // If we got to here, everything should have passed
+        // If we got here, everything should have passed
         return Arrays.asList(ruleArray);
     }
 
@@ -466,9 +460,5 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
      */
     private void help() {
 
-    }
-
-    @Override
-    public void addCommand(OverlayInteraction interaction, IUserCommand command) {
     }
 }

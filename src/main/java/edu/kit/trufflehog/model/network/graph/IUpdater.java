@@ -21,9 +21,7 @@ import edu.kit.trufflehog.model.network.graph.components.edge.*;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.StaticRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.*;
 
 /**
  * \brief
@@ -36,23 +34,31 @@ import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingC
  */
 public interface IUpdater {
 
+    //TODO document interface
+    //TODO change interface structure or maybe the whole structure so that we don't have a huge bloated interface
+    //TODO move this out of util?
+
     boolean update(INode iComponents, INode updateNode);
 
-    boolean update(NodeStatisticsComponent nodeStatisticsComponent, IComponent instance);
+    boolean update(IConnection oldValue, IConnection newValue);
 
     boolean update(NodeRenderer nodeRenderer, IRenderer instance);
-
-    boolean update(PacketDataLoggingComponent packetDataLoggingComponent, IComponent instance);
-
-    boolean update(IConnection oldValue, IConnection newValue);
 
     boolean update(MulticastEdgeRenderer multicastEdgeRenderer, IRenderer instance);
 
     boolean update(BasicEdgeRenderer basicEdgeRenderer, IRenderer instance);
 
-    boolean update(EdgeStatisticsComponent edgeStatisticsComponent, IComponent instance);
-
     boolean update(StaticRenderer component, IRenderer instance);
 
+    boolean update(NodeStatisticsComponent nodeStatisticsComponent, IComponent instance);
+
+    boolean update(PacketDataLoggingComponent packetDataLoggingComponent, IComponent instance);
+
+    boolean update(EdgeStatisticsComponent edgeStatisticsComponent, IComponent instance);
+
+    boolean update(NodeInfoComponent nodeInfoComponent, IComponent instance);
+
     boolean update(ViewComponent viewComponent, IComponent instance);
+
+    boolean update(FilterPropertiesComponent filterPropertiesComponent, IComponent instance);
 }

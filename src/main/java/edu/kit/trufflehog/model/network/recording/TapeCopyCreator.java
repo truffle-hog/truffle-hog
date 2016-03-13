@@ -27,6 +27,7 @@ import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.*;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
@@ -115,9 +116,7 @@ public class TapeCopyCreator implements ICopyCreator, GraphCopier<INode, IConnec
     @Override
     public IComponent createDeepCopy(EdgeStatisticsComponent edgeStatisticsComponent) {
 
-        final IComponent copy = new EdgeStatisticsComponent(edgeStatisticsComponent.getTraffic());
-
-        return copy;
+        return new EdgeStatisticsComponent(edgeStatisticsComponent.getTraffic());
     }
 
     @Override
@@ -128,9 +127,7 @@ public class TapeCopyCreator implements ICopyCreator, GraphCopier<INode, IConnec
         Shape shape = staticRendererComponent.getShape();
         Stroke stroke = staticRendererComponent.getStroke();
 
-        final IRenderer copy = new StaticRenderer(shape, picked, unpicked, stroke);
-
-        return copy;
+        return new StaticRenderer(shape, picked, unpicked, stroke);
     }
 
     @Override
@@ -152,9 +149,7 @@ public class TapeCopyCreator implements ICopyCreator, GraphCopier<INode, IConnec
         Color unpicked = nodeRendererComponent.getColorUnpicked();
         Shape shape = nodeRendererComponent.getShape();
 
-        final NodeRenderer copy = new NodeRenderer(shape, picked, unpicked);
-
-        return copy;
+        return new NodeRenderer(shape, picked, unpicked);
     }
 
     @Override
@@ -162,18 +157,28 @@ public class TapeCopyCreator implements ICopyCreator, GraphCopier<INode, IConnec
         if (nodeStatisticsComponent == null) throw new NullPointerException("nodeStatisticsComponent must not be null!");
         IntegerProperty throughput = nodeStatisticsComponent.getThroughputProperty();
 
-        NodeStatisticsComponent copy = new NodeStatisticsComponent(throughput.getValue());
+        return new NodeStatisticsComponent(throughput.getValue());
+    }
 
-        return copy;
+    @Override
+    public IComponent createDeepCopy(NodeInfoComponent nodeInfoComponent) {
+        final NodeInfoComponent nic = new NodeInfoComponent(nodeInfoComponent.getMacAddress());
+
+        if (nodeInfoComponent.getIPAddress() != null) {
+            nic.setIPAddress(nodeInfoComponent.getIPAddress());
+        }
+        if (nodeInfoComponent.getDeviceName() != null) {
+            nic.setDeviceName(nodeInfoComponent.getDeviceName());
+        }
+
+        return nic;
     }
 
     @Override
     public IComponent createDeepCopy(PacketDataLoggingComponent packetDataLoggingComponent) {
         if (packetDataLoggingComponent == null) throw new NullPointerException("packetDataLoggingComponent must not be null!");
 
-        PacketDataLoggingComponent copy = new PacketDataLoggingComponent(packetDataLoggingComponent.getObservablePackets());
-
-        return copy;
+        return new PacketDataLoggingComponent(packetDataLoggingComponent.getObservablePackets());
     }
 
     @Override
@@ -235,5 +240,14 @@ public class TapeCopyCreator implements ICopyCreator, GraphCopier<INode, IConnec
         edges.stream().forEach(e -> copied.add(this.createDeepCopy(e)));
 
         return copied;
+    }
+
+    @Override
+    public IComponent createDeepCopy(FilterPropertiesComponent filterPropertiesComponent) {
+        final FilterPropertiesComponent fpc = new FilterPropertiesComponent();
+
+        fpc.getFilterColors().putAll(filterPropertiesComponent.getFilterColors());
+
+        return fpc;
     }
 }

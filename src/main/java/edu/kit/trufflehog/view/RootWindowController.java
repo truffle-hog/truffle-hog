@@ -1,10 +1,10 @@
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.view.controllers.IWindowController;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -26,7 +26,7 @@ public final class RootWindowController implements IWindowController {
      * @param primaryStage the stage this window is placed on
      * @param monitorScene the scene to be placed into the window
      * @param icon the window icon
-     * @param menuBar
+     * @param menuBar the menu bar
      */
     public RootWindowController(final Stage primaryStage, final Scene monitorScene, String icon, MenuBarViewController menuBar) {
 
@@ -34,7 +34,9 @@ public final class RootWindowController implements IWindowController {
         this.menuBar = menuBar;
         this.stage.setScene(monitorScene);
 
-        ((BorderPane) monitorScene.getRoot()).setTop(this.menuBar);
+        BorderPane borderPane = (BorderPane) monitorScene.getRoot();
+        borderPane.setTop(this.menuBar);
+        borderPane.setPadding(new Insets(0, 0, 0, 0));
 
 
         this.stage.getIcons().add(new Image(this.getClass().getResourceAsStream(icon)));

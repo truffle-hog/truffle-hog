@@ -16,6 +16,7 @@
  */
 package edu.kit.trufflehog.util;
 
+import com.sun.org.apache.xalan.internal.lib.NodeInfo;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.NetworkIOPort;
 import edu.kit.trufflehog.model.network.NetworkViewPort;
@@ -25,9 +26,7 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.*;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.*;
 import edu.kit.trufflehog.model.network.recording.NetworkCopy;
 import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
 
@@ -44,6 +43,10 @@ import java.util.Collection;
  */
 public interface ICopyCreator {
 
+    //TODO document interface
+    //TODO change interface structure or maybe the whole structure so that we don't have a huge bloated interface
+    //TODO move this out of util?
+
     INode createDeepCopy(INode component);
 
     IConnection createDeepCopy(IConnection iComponents);
@@ -52,15 +55,17 @@ public interface ICopyCreator {
 
     IRenderer createDeepCopy(BasicEdgeRenderer basicEdgeRenderer);
 
-    IComponent createDeepCopy(EdgeStatisticsComponent edgeStatisticsComponent);
-
     IRenderer createDeepCopy(StaticRenderer staticRenderer);
-
-    IComponent createDeepCopy(ViewComponent viewComponent);
 
     IRenderer createDeepCopy(NodeRenderer nodeRenderer);
 
+    IComponent createDeepCopy(EdgeStatisticsComponent edgeStatisticsComponent);
+
+    IComponent createDeepCopy(ViewComponent viewComponent);
+
     IComponent createDeepCopy(NodeStatisticsComponent nodeStatisticsComponent);
+
+    IComponent createDeepCopy(NodeInfoComponent nodeInfoComponent);
 
     IComponent createDeepCopy(PacketDataLoggingComponent packetDataLoggingComponent);
 
@@ -70,4 +75,5 @@ public interface ICopyCreator {
 
     NetworkViewCopy createDeepCopy(NetworkViewPort networkViewPort);
 
+    IComponent createDeepCopy(FilterPropertiesComponent filterPropertiesComponent);
 }

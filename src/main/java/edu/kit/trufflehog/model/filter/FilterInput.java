@@ -69,6 +69,7 @@ public class FilterInput implements Serializable {
     private List<String> rules;
     private Color color;
     private boolean active;
+    private int priority;
 
     // Property variables for table view
     private transient StringProperty nameProperty;
@@ -114,14 +115,14 @@ public class FilterInput implements Serializable {
      * @param rules The rules that define this filter.
      * @param color The color that a node should become if it matches with the filter.
      */
-    public FilterInput(final String name, final FilterType type, final FilterOrigin origin, final List<String> rules,
-                       final Color color) {
+    public FilterInput(final String name, final FilterType type, final FilterOrigin origin, final List<String> rules, final Color color, final int priority) {
         this.name = name;
         this.type = type;
         this.origin = origin;
         this.rules = rules;
         this.color = color;
         this.active = false;
+        this.priority = priority;
     }
 
     /**
@@ -275,6 +276,18 @@ public class FilterInput implements Serializable {
      */
     public BooleanProperty getActiveProperty() {
         return activeProperty;
+    }
+
+    /**
+     * <p>
+     *     Gets the priority of the filter. This priority is used to determine which filter color should
+     *     be rendered when multiple filters collide on the same node.
+     * </p>
+     *
+     * @return the priority of the filter.
+     */
+    public int getPriority() {
+        return priority;
     }
 
     /**

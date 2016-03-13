@@ -1,6 +1,8 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import edu.kit.trufflehog.model.network.IPAddress;
+import edu.kit.trufflehog.model.network.InvalidIPAddress;
+import edu.kit.trufflehog.model.network.InvalidMACAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 
@@ -43,22 +45,31 @@ public class Truffle implements IPacketData {
      */
     static Truffle buildTruffle(final long srcMACAddr,
                                 final long dstMACAddr,
-                                final long srcIPAddr,
-                                final long dstIPAddr,
+                                final int srcIPAddr,
+                                final int dstIPAddr,
                                 final String deviceName,
                                 final short etherType) throws InvalidProfinetPacket {
         final Truffle truffle = new Truffle();
 
-        if (srcMACAddr == 0 || dstMACAddr == 0)
-            throw new InvalidProfinetPacket("source/destination MAC address invalid");
-
-        truffle.setAttribute(MacAddress.class, "sourceMacAddress", new MacAddress(srcMACAddr));
-        truffle.setAttribute(MacAddress.class, "destMacAddress", new MacAddress(dstMACAddr));
+        try {
+            truffle.setAttribute(MacAddress.class, "sourceMacAddress", new MacAddress(srcMACAddr));
+            truffle.setAttribute(MacAddress.class, "destMacAddress", new MacAddress(dstMACAddr));
+        } catch (InvalidMACAddress invalidMACAddress) {
+            throw new InvalidProfinetPacket("Error, invalid mac address");
+        }
 
         if (srcIPAddr != 0)
-            truffle.setAttribute(IPAddress.class, "sourceIPAddress", new IPAddress(srcIPAddr));
+            try {
+                truffle.setAttribute(IPAddress.class, "sourceIPAddress", new IPAddress(srcIPAddr));
+            } catch (InvalidIPAddress invalidIPAddress) {
+                throw new InvalidProfinetPacket("Invalid source ip address: " + srcIPAddr);
+            }
         if (dstIPAddr != 0)
-            truffle.setAttribute(IPAddress.class, "destIPAddress", new IPAddress(dstIPAddr));
+            try {
+                truffle.setAttribute(IPAddress.class, "destIPAddress", new IPAddress(dstIPAddr));
+            } catch (InvalidIPAddress invalidIPAddress) {
+                throw new InvalidProfinetPacket("Invalid destination ip address: " + dstIPAddr);
+            }
 
         if (deviceName != null)
             truffle.setAttribute(String.class, "deviceName", deviceName);
