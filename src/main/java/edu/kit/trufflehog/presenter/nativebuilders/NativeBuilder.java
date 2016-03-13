@@ -15,7 +15,7 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package edu.kit.trufflehog.presenter.nativebuild;
+package edu.kit.trufflehog.presenter.nativebuilders;
 
 /**
  * <p>

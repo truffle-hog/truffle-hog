@@ -60,8 +60,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	private INetworkViewPort viewPort;
 
-//	private final javafx.animation.Timeline timeLine;
-
 	private FXModalGraphMouse graphMouse;
 
 	private final Timeline refresher;
@@ -234,7 +232,14 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 			if (fpc != null) {
 
 				if (fpc.getFilterColor() != null) {
-					return fpc.getFilterColor();
+
+                    if (getPickedVertexState().isPicked(node)) {
+
+                       return Color.WHITE;
+
+                    } else {
+                        return fpc.getFilterColor();
+                    }
 				}
 
 			}

@@ -18,8 +18,8 @@
 package edu.kit.trufflehog;
 
 import edu.kit.trufflehog.presenter.Presenter;
-import edu.kit.trufflehog.presenter.nativebuild.NativeBuilder;
-import edu.kit.trufflehog.presenter.nativebuild.osx.OSXBuilder;
+import edu.kit.trufflehog.presenter.nativebuilders.NativeBuilder;
+import edu.kit.trufflehog.presenter.nativebuilders.osx.OSXBuilder;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

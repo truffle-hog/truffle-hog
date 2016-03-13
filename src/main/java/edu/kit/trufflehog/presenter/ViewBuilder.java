@@ -25,41 +25,30 @@ import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkTape;
 import edu.kit.trufflehog.util.IListener;
-import edu.kit.trufflehog.view.MainToolBarController;
-import edu.kit.trufflehog.view.MainViewController;
-import edu.kit.trufflehog.view.MenuBarViewController;
-import edu.kit.trufflehog.view.NetworkViewScreen;
-import edu.kit.trufflehog.view.OverlayViewController;
-import edu.kit.trufflehog.view.RootWindowController;
+import edu.kit.trufflehog.view.*;
 import edu.kit.trufflehog.view.controllers.IWindowController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
-import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
-import edu.kit.trufflehog.view.elements.ImageButton;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToolBar;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
 import java.io.File;
+import java.util.Map;
 
 /**
  * <p>
@@ -80,31 +69,30 @@ public class ViewBuilder {
     private final AnchorPane groundView;
     private final StackPane stackPane;
     private final SplitPane splitPane;
-    private final AnchorPane monitoringView;
-
-    private OverlayViewController recordOverlayViewController;
-    private OverlayViewController filterOverlayViewController;
-    private OverlayViewController settingsOverlayViewController;
-
-    private TableView tableView;
+    private final ViewSwitcher viewSwitcher;
+    private final Map<String, INetworkViewPort> viewPorts;
 
     /**
      * <p>
-     *     Creates the ViewBuilder, which builds the entire view.
+     * Creates the ViewBuilder, which builds the entire view.
      * </p>
      *
-     * @param configData The {@link ConfigData} that is necessary to save and load configurations, like
-     *                        filters or settings.
+     * @param configData   The {@link ConfigData} that is necessary to save and load configurations, like
+     *                     filters or settings.
      * @param primaryStage The primary stage, where everything is drawn upon.
+     * @param viewPorts The viewports that TruffleHog supports with their names.
      */
-    public ViewBuilder(final ConfigData configData, final Stage primaryStage) {
+    public ViewBuilder(final ConfigData configData,
+                       final Stage primaryStage,
+                       final Map<String, INetworkViewPort> viewPorts) {
         this.configData = configData;
         this.primaryStage = primaryStage;
         this.groundView = new AnchorPane();
         this.stackPane = new StackPane();
         this.splitPane = new SplitPane();
-        this.monitoringView = new AnchorPane();
+        this.viewSwitcher = new ViewSwitcher();
         this.mainViewController = new MainViewController("main_view.fxml");
+        this.viewPorts = viewPorts;
 
         if (this.primaryStage == null || this.configData == null) {
             throw new NullPointerException("primaryStage and configData shouldn't be null.");
@@ -162,8 +150,8 @@ public class ViewBuilder {
 
     /**
      * <p>
-     *     Builds the entire view. That means it connects all view components with each other and with other necessary
-     *     components as well.
+     * Builds the entire view. That means it connects all view components with each other and with other necessary
+     * components as well.
      * </p>
      *
      * @param viewPort The viewport of the graph that should be drawn here
@@ -173,14 +161,12 @@ public class ViewBuilder {
     public void build(INetworkViewPortSwitch viewPort, INetwork liveNetwork, INetworkDevice device, IListener<IUserCommand> userCommandIListener) {
         loadFonts();
 
-        final IListener<IUserCommand> commandListener = userCommandIListener;
+        final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
+        networkViewScreen.addListener(userCommandIListener);
+        networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
 
-        final NetworkGraphViewController node = new NetworkViewScreen(viewPort, 10);
-        node.addListener(commandListener);
-        node.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
-
-
-        final MenuBarViewController menuBar = buildMenuBar();
+        // Load menu bar
+        final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml");
 
         // Set up the ground view. This is always the full center of the BorderPane. We add the splitPane to it
         // because it is right on top of it.
@@ -192,14 +178,6 @@ public class ViewBuilder {
         AnchorPane.setTopAnchor(splitPane, 0d);
         AnchorPane.setLeftAnchor(splitPane, 0d);
         AnchorPane.setRightAnchor(splitPane, 0d);
-
-        // Now we add the actual view to the split pane, the monitoring view.
-        splitPane.getItems().addAll(monitoringView);
-        monitoringView.getChildren().add(node);
-        AnchorPane.setBottomAnchor(node, 0d);
-        AnchorPane.setTopAnchor(node, 0d);
-        AnchorPane.setLeftAnchor(node, 0d);
-        AnchorPane.setRightAnchor(node, 0d);
 
         // We add a stackPane here for the PopOverOverlays that are displayed on it
         AnchorPane.setTopAnchor(stackPane, 0d);
@@ -213,10 +191,10 @@ public class ViewBuilder {
         final Scene mainScene = new Scene(mainViewController);
         final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
 
-
-
        // mainViewController.setCenter(primaryView);
         mainViewController.setBottom(buildReplayFunction(device, liveNetwork, viewPort));
+
+        // Add the ground view to the center
         mainViewController.setCenter(groundView);
 
         rootWindow.show();
@@ -234,228 +212,19 @@ public class ViewBuilder {
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
 
-        buildToolbar();
-        buildGeneralStatisticsOverlay();
-        buildNodeStatisticsOverlay();
-        buildSettingsOverlay();
-        buildFilterMenuOverlay();
-        buildRecordOverlay();
-    }
+        // Now we add the actual views to the split pane and to the view switcher
+        ObservableList<String> liveItems = FXCollections.observableArrayList(viewPorts.keySet());
+        ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724"
+                , "capture-457", "capture-167");
 
-    /**
-     * <p>
-     *     Builds the top menu bar which contains file, edit, help etc.
-     * </p>
-     *
-     * @return The menu bar once it is built.
-     */
-    private MenuBarViewController buildMenuBar() {
-        final MenuBarViewController menuBarViewController = new MenuBarViewController("menu_bar.fxml");
-        return menuBarViewController;
-    }
-
-    /**
-     * <p>
-     *     Builds the settings overlay.
-     * </p>
-     */
-    private void buildSettingsOverlay() {
-        settingsOverlayViewController = new OverlayViewController("local_settings_overlay.fxml");
-        monitoringView.getChildren().add(settingsOverlayViewController);
-        AnchorPane.setBottomAnchor(settingsOverlayViewController, 60d);
-        AnchorPane.setLeftAnchor(settingsOverlayViewController, 18d);
-        settingsOverlayViewController.setVisible(false);
-    }
-
-    /**
-     * <p>
-     *     Builds the filter menu overlay.
-     * </p>
-     */
-    private void buildFilterMenuOverlay() {
-        // Build filter menu
-        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configData, stackPane);
-        filterOverlayViewController = filterOverlayMenu.setUpOverlayViewController();
-        tableView = filterOverlayMenu.setUpTableView();
-        BorderPane borderPane = filterOverlayMenu.setUpMenu(tableView);
-
-        // Add menu to overlay
-        filterOverlayViewController.getChildren().add(borderPane);
-
-        // Set up overlay on screen
-        monitoringView.getChildren().add(filterOverlayViewController);
-        AnchorPane.setBottomAnchor(filterOverlayViewController, 60d);
-        AnchorPane.setLeftAnchor(filterOverlayViewController, 18d);
-        filterOverlayViewController.setMaxSize(330d, 210d);
-        filterOverlayViewController.setVisible(false);
-    }
-
-    /**
-     * <p>
-     *     Builds the record menu overlay.
-     * </p>
-     */
-    private void buildRecordOverlay() {
-        recordOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
-        monitoringView.getChildren().add(recordOverlayViewController);
-        AnchorPane.setBottomAnchor(recordOverlayViewController, 60d);
-        AnchorPane.setLeftAnchor(recordOverlayViewController, 18d);
-        recordOverlayViewController.setVisible(false);
-    }
-
-    /**
-     * <p>
-     *     Builds the node statistics overlay.
-     * </p>
-     */
-    private void buildNodeStatisticsOverlay() {
-        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
-        monitoringView.getChildren().add(nodeStatisticsOverlay);
-        AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
-        AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
-        nodeStatisticsOverlay.setVisible(false);
-    }
-
-    /**
-     * <p>
-     *     Builds the general statistics overlay.
-     * </p>
-     */
-    private void buildGeneralStatisticsOverlay() {
-        OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
-        monitoringView.getChildren().add(generalStatisticsOverlay);
-        AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
-        AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
-    }
-
-    /**
-     * <p>
-     *     Builds the toolbar (3 buttons on the bottom left corner).
-     * </p>
-     */
-    private void buildToolbar() {
-        Button settingsButton = buildSettingsButton();
-        Button filterButton = buildFilterButton();
-        Button recordButton = buildRecordButton();
-
-        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml", settingsButton,
-                filterButton, recordButton);
-        monitoringView.getChildren().add(mainToolBarController);
-        AnchorPane.setBottomAnchor(mainToolBarController, 5d);
-        AnchorPane.setLeftAnchor(mainToolBarController, 5d);
-    }
-
-    /**
-     * <p>
-     *     Builds the settings button.
-     * </p>
-     */
-    private Button buildSettingsButton() {
-        Button settingsButton = new ImageButton("gear.png");
-        settingsButton.setOnAction(event -> {
-            settingsOverlayViewController.setVisible(!settingsOverlayViewController.isVisible());
-
-            // Hide the filter menu if it is visible
-            if (filterOverlayViewController.isVisible()) {
-                filterOverlayViewController.setVisible(false);
-            }
-
-            // Hide the record menu if it is visible
-            if (recordOverlayViewController.isVisible()) {
-                recordOverlayViewController.setVisible(false);
-            }
-
-//            Stage settingsStage = new Stage();
-//            SettingsViewController settingsView = new SettingsViewController("settings_view.fxml");
-//            Scene settingsScene = new Scene(settingsView);
-//            settingsStage.setScene(settingsScene);
-//            settingsStage.show();
-//
-//            // CTRL+W for closing
-//            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN)
-//                    , settingsStage::close);
-//
-//            // CTRL+S triggers info about program settings saving
-//            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN),
-//                    () -> {
-//                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                        alert.setTitle("Relax, no need to save anything here");
-//                        alert.setHeaderText(null);
-//                        alert.setContentText("Oops. Seems you wanted to save the configuration by pressing CTRL+S. This" +
-//                                " is not necessary thanks to the awesome always up-to-date saving design of TruffleHog.");
-//                        alert.showAndWait();
-//                    });
-        });
-
-        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN),
-                settingsButton::fire);
-
-        settingsButton.setScaleX(0.8);
-        settingsButton.setScaleY(0.8);
-
-        return settingsButton;
-    }
-
-    /**
-     * <p>
-     *     Builds the filter button.
-     * </p>
-     */
-    private Button buildFilterButton() {
-        Button filterButton = new ImageButton("filter.png");
-        filterButton.setOnAction(event -> {
-            filterOverlayViewController.setVisible(!filterOverlayViewController.isVisible());
-
-            // Deselect anything that was selected
-            if (!filterOverlayViewController.isVisible()) {
-                tableView.getSelectionModel().clearSelection();
-            }
-
-            // Hide the settings menu if it is visible
-            if (settingsOverlayViewController.isVisible()) {
-                settingsOverlayViewController.setVisible(false);
-            }
-
-            // Hide the record menu if it is visible
-            if (recordOverlayViewController.isVisible()) {
-                recordOverlayViewController.setVisible(false);
-            }
-        });
-
-        filterButton.setScaleX(0.8);
-        filterButton.setScaleY(0.8);
-        filterButton.setMaxSize(20, 20);
-        filterButton.setMinSize(20, 20);
-
-        return filterButton;
-    }
-
-    /**
-     * <p>
-     *     Builds the record button.
-     * </p>
-     */
-    private Button buildRecordButton() {
-        ImageButton recordButton = new ImageButton("record.png");
-
-        recordButton.setOnAction(event -> {
-            recordOverlayViewController.setVisible(!recordOverlayViewController.isVisible());
-
-            // Hide the settings menu if it is visible
-            if (settingsOverlayViewController.isVisible()) {
-                settingsOverlayViewController.setVisible(false);
-            }
-
-            // Hide the filter menu if it is visible
-            if (filterOverlayViewController.isVisible()) {
-                filterOverlayViewController.setVisible(false);
-            }
-        });
-
-        recordButton.setScaleX(0.8);
-        recordButton.setScaleY(0.8);
-
-        return recordButton;
+        AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
+        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, stackPane, networkViewScreen, primaryStage.getScene());
+//        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
+//                viewPorts.get("Profinet"));
+        viewSwitcher.putView("start", startView);
+        viewSwitcher.putView("Demo", demoView);
+        //viewSwitcher.putView("Profinet", profinetView);
+        splitPane.getItems().addAll(startView);
     }
 
     /**

@@ -1,43 +1,34 @@
 package edu.kit.trufflehog.view;
 
-import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.interaction.OverlayInteraction;
-import edu.kit.trufflehog.view.controllers.GridPaneController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.GridPane;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.io.IOException;
 
 /**
  * <p>
- *     The OverlayViewController provides GUI functionality for all
- *     interactions that a user performs on an overlay that can be displayed
- *     as a floating (slightly transparent) view on top of the main view.
+ *     The OverlayViewController provides GUI functionality for all interactions that a user performs on an overlay
+ *     that can be displayed as a floating (slightly transparent) view on top of the main view.
  * </p>
  */
-public class OverlayViewController extends GridPaneController<OverlayInteraction> {
-
-	/**
-     * <p>
-     *     The commands that are mapped to their interactions.
-     * </p>
-     */
-    private final Map<OverlayInteraction, IUserCommand> interactionMap = new EnumMap<>(OverlayInteraction.class);
+public class OverlayViewController extends GridPane {
 
     /**
      * <p>
-     *     Creates a new OverlayViewController with the given fxmlFileName.
-     *     The fxml file has to be in the same namespace as the
-     *     OverlayViewController.
+     *     Creates a new OverlayViewController with the given fxmlFileName. The fxml file has to be in the same
+     *     namespace as the OverlayViewController.
      * </p>
      *
-     * @param fxmlFileName the name of the fxml file to be loaded.
-     */
+z    */
     public OverlayViewController(final String fxmlFileName) {
-        super(fxmlFileName);
-    }
+        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFileName));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
 
-    @Override
-    public final void addCommand(final OverlayInteraction interactor, final IUserCommand command) {
-        interactionMap.put(interactor, command);
+        try {
+            fxmlLoader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }

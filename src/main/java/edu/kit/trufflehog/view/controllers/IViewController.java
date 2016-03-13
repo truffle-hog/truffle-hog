@@ -28,8 +28,7 @@ import edu.kit.trufflehog.util.INotifier;
  * @param <I> The type of interactions this view controller can invoke.
  *           Typically implemented by a specific enumeration.
  */
-public interface IViewController<I extends IInteraction> extends
-		INotifier<IUserCommand> {
+public interface IViewController<I extends IInteraction> extends INotifier<IUserCommand> {
 
 	/**
 	 * <p>

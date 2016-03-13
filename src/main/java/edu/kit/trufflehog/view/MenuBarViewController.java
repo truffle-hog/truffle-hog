@@ -34,13 +34,10 @@
 
 package edu.kit.trufflehog.view;
 
-import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.interaction.MainInteraction;
-import edu.kit.trufflehog.view.controllers.AnchorPaneController;
-import edu.kit.trufflehog.view.controllers.MenuBarController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.MenuBar;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.io.IOException;
 
 /**
  * <p>
@@ -50,13 +47,7 @@ import java.util.Map;
  * @author Julian Brendl
  * @version 1.0
  */
-public class MenuBarViewController extends MenuBarController<MainInteraction> {
-    /**
-     * <p>
-     *     The commands that are mapped to their interactions.
-     * </p>
-     */
-    private final Map<MainInteraction, IUserCommand> interactionMap = new EnumMap<>(MainInteraction.class);
+public class MenuBarViewController extends MenuBar {
 
     /**
      * <p>
@@ -67,7 +58,15 @@ public class MenuBarViewController extends MenuBarController<MainInteraction> {
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
     public MenuBarViewController(final String fxmlFileName) {
-        super(fxmlFileName);
+        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFileName));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     /**
@@ -77,10 +76,5 @@ public class MenuBarViewController extends MenuBarController<MainInteraction> {
      */
     public void onExit() {
         throw new UnsupportedOperationException("Not implemented yet!");
-    }
-
-    @Override
-    public final void addCommand(final MainInteraction interactor, final IUserCommand command) {
-        interactionMap.put(interactor, command);
     }
 }

@@ -1,26 +1,18 @@
 package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.model.filter.*;
 import edu.kit.trufflehog.model.configdata.ConfigData;
+import edu.kit.trufflehog.model.filter.*;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
-import edu.kit.trufflehog.model.network.recording.INetworkDevice;
-import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
-import edu.kit.trufflehog.model.network.recording.INetworkWritingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.NetworkDevice;
-import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
-import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
@@ -30,9 +22,11 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
+import java.awt.Color;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -50,12 +44,13 @@ public class Presenter {
     private static Presenter presenter;
     private final ConfigData configData;
     private final FileSystem fileSystem;
-    private final ViewBuilder viewBuilder;
     private final ScheduledExecutorService executorService;
     private final Stage primaryStage;
+    private ViewBuilder viewBuilder;
     private TruffleReceiver truffleReceiver;
-    private INetworkViewPort liveViewPort;
-    private INetworkViewPort viewPort;
+    //private INetworkViewPort liveViewPort;
+    //private INetworkViewPort viewPort;
+    private Map<String, INetworkViewPort> viewPortMap;
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
@@ -71,9 +66,10 @@ public class Presenter {
      */
     public Presenter(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        this.viewPortMap = new HashMap<>();
 
         if (this.primaryStage == null) {
-            throw new NullPointerException("primary stage must not be null");
+            throw new NullPointerException("primary stage should not be null");
         }
 
         this.fileSystem = new FileSystem();
@@ -88,10 +84,9 @@ public class Presenter {
         }
         configData = configDataTemp;
 
-
         primaryStage.setOnCloseRequest(event -> finish());
 
-        this.viewBuilder = new ViewBuilder(configData, primaryStage);
+        this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap);
     }
 
     /**
@@ -119,7 +114,8 @@ public class Presenter {
         // TODO Ctor injection with the Ports that are within the networks
         liveNetwork = new LiveNetwork(og);
 
-        liveViewPort = liveNetwork.getViewPort();
+        // TODO Add real thing too, perhaps I missunderstood the viewport, need to talk to somebody
+        viewPortMap.put("Demo", liveNetwork.getViewPort());
 
         // TODO Where to put this???
 /*        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
@@ -219,8 +215,6 @@ public class Presenter {
 
         // track the live network on the given viewportswitch
         networkDevice.goLive(liveNetwork, viewPortSwitch);
-
-        viewPort = viewPortSwitch;
     }
 
     /**
@@ -313,7 +307,7 @@ public class Presenter {
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
 
         // setting up menubar
-        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml");
+        ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml");
         pane.getChildren().add(mainToolBarController);
 
         // setting up node statistics overlay

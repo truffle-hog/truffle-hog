@@ -83,7 +83,7 @@ class SettingsDataModel extends ConfigDataModel<StringProperty> {
      *     Loads all settings found on the hard drive into memory.
      * </p>
      */
-    private void load() {
+    public void load() {
         settingsMap.clear();
 
         try {
