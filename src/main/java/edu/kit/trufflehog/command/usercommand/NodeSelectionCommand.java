@@ -37,6 +37,8 @@ public class NodeSelectionCommand implements IUserCommand<PickedState<INode>> {
     // TODO put empty pickedState
     private PickedState<INode> pickedState;
 
+    boolean lastTimeEmpty = true;
+
     @Override
     public <S extends PickedState<INode>> void setSelection(S selection) {
 
@@ -47,11 +49,13 @@ public class NodeSelectionCommand implements IUserCommand<PickedState<INode>> {
     @Override
     public void execute() {
 
+        if (lastTimeEmpty)
+
         logger.debug(pickedState.getPicked().toString());
 
-        pickedState.getPicked().stream().forEach(node -> {
+/*        pickedState.getPicked().stream().forEach(node -> {
             //TODO: Do stuff on nodes
-        });
+        });*/
 
         //throw new UnsupportedOperationException("Operation not implemented yet");
     }
