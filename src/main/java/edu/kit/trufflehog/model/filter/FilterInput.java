@@ -406,6 +406,7 @@ public class FilterInput implements Serializable {
             active = newValue;
 
             configData.updateFilterInput(this);
+
             logger.debug("Updated activity state for FilterInput: " + name + " to table view and database.");
         });
     }

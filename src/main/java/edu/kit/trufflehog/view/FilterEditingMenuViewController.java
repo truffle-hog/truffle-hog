@@ -63,12 +63,14 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
     // FXML variables
     @FXML
     private TextField nameTextField;
+
     @FXML
     private ComboBox<FilterType> typeComboBox;
     @FXML
     private ColorPicker colorPicker;
     @FXML
     private ComboBox<String> filterByComboBox;
+
     @FXML
     private TextField priorityTextField;
     @FXML
@@ -79,8 +81,10 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
 
     @FXML
     private Button createButton;
+
     @FXML
     private Button cancelButton;
+
     @FXML
     private Button helpButton;
 
@@ -88,6 +92,18 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
     private final String MAC_LABEL;
     private final String IP_LABEL;
     private final String SELECTION_LABEL;
+
+    public ComboBox<String> getFilterByComboBox() {
+        return filterByComboBox;
+    }
+
+    public TextField getNameTextField() {
+        return nameTextField;
+    }
+
+    public TextArea getRulesTextArea() {
+        return rulesTextArea;
+    }
 
     /**
      * <p>
@@ -275,30 +291,34 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
      * </p>
      */
     private void updateFilter(FilterInput filterInput) {
-        FilterInput filterInputUpated = createFilterInput();
+        FilterInput filterInputUpdated = createFilterInput();
 
-        if (filterInputUpated == null) {
+        if (filterInputUpdated == null) {
             return;
         }
 
+        if (filterInputUpdated.getActiveProperty().get() != filterInput.getActiveProperty().get()) {
+            filterInputUpdated.getActiveProperty().setValue(filterInput.getActiveProperty().get());
+        }
+
         // Update name
-        if (!filterInputUpated.getName().equals(filterInput.getName())) {
-            filterInput.getNameProperty().setValue(filterInputUpated.getName());
+        if (!filterInputUpdated.getName().equals(filterInput.getName())) {
+            filterInput.getNameProperty().setValue(filterInputUpdated.getName());
         }
 
         // Update type
-        if (!filterInputUpated.getType().equals(filterInput.getType())) {
-            filterInput.getTypeProperty().setValue(filterInputUpated.getTypeProperty().getValue());
+        if (!filterInputUpdated.getType().equals(filterInput.getType())) {
+            filterInput.getTypeProperty().setValue(filterInputUpdated.getTypeProperty().getValue());
         }
 
         // Update color
-        if (!filterInputUpated.getColor().equals(filterInput.getColor())) {
-            filterInput.getColorProperty().setValue(filterInputUpated.getColorProperty().getValue());
+        if (!filterInputUpdated.getColor().equals(filterInput.getColor())) {
+            filterInput.getColorProperty().setValue(filterInputUpdated.getColorProperty().getValue());
         }
 
         // Update origin
-        if (!filterInputUpated.getOrigin().equals(filterInput.getOrigin())) {
-            filterInput.getOriginProperty().setValue(filterInputUpated.getOriginProperty().getValue());
+        if (!filterInputUpdated.getOrigin().equals(filterInput.getOrigin())) {
+            filterInput.getOriginProperty().setValue(filterInputUpdated.getOriginProperty().getValue());
         }
 
         // Update priority
@@ -307,15 +327,15 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         }
 
         // Update rules and save to database, since they don't have a listener (since they are not shown in the table)
-        if (!filterInputUpated.getRules().equals(filterInput.getRules())) {
-            filterInput.setRules(filterInputUpated.getRules());
+        if (!filterInputUpdated.getRules().equals(filterInput.getRules())) {
+            filterInput.setRules(filterInputUpdated.getRules());
 
             configData.updateFilterInput(filterInput);
             logger.debug("Updated rules for FilterInput: " + filterInput.getName() + " to database.");
         }
 
         // Notify the model that a filter has changed
-        filterOverlayViewController.notifyUpdateCommand();
+        filterOverlayViewController.notifyUpdateCommand(filterInputUpdated);
         clearMenu();
         hideMenu();
     }

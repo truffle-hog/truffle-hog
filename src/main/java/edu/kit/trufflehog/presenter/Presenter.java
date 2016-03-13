@@ -1,5 +1,7 @@
 package edu.kit.trufflehog.presenter;
 
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.*;
@@ -41,19 +43,18 @@ import java.util.concurrent.ScheduledExecutorService;
 public class Presenter {
     private static final Logger logger = LogManager.getLogger();
 
-    private static Presenter presenter;
     private final ConfigData configData;
     private final FileSystem fileSystem;
     private final ScheduledExecutorService executorService;
     private final Stage primaryStage;
     private ViewBuilder viewBuilder;
     private TruffleReceiver truffleReceiver;
-    //private INetworkViewPort liveViewPort;
-    //private INetworkViewPort viewPort;
     private Map<String, INetworkViewPort> viewPortMap;
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
+    private INetworkWritingPortSwitch writingPortSwitch;
+    private MacroFilter macroFilter;
 
     private final CommandExecutor commandExecutor = new CommandExecutor();
 
@@ -95,8 +96,7 @@ public class Presenter {
      */
     public void present() {
         initNetwork();
-        this.viewBuilder = new ViewBuilder(configData, primaryStage, viewPortMap);
-        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener());
+        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(), new UpdateFilterCommand(writingPortSwitch, macroFilter));
     }
 
     private void initNetwork() {
@@ -130,7 +130,7 @@ public class Presenter {
 */
         // initialize the writing port switch that use the writing port of the live network
         // as their initial default writing port
-        final INetworkWritingPortSwitch writingPortSwitch = new NetworkWritingPortSwitch(liveNetwork.getWritingPort());
+        writingPortSwitch = new NetworkWritingPortSwitch(liveNetwork.getWritingPort());
 
         // initialize the reading port switch that uses the reading port of the live network
         // as its initial default reading port
@@ -204,7 +204,6 @@ public class Presenter {
 
         // Initialize the command executor and register it.
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
-        final CommandExecutor commandExecutor = new CommandExecutor();
         commandExecutorService.execute(commandExecutor);
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 
@@ -305,7 +304,7 @@ public class Presenter {
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
 
         // setting up menubar
-        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml");
+        ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml");
         pane.getChildren().add(mainToolBarController);
 
         // setting up node statistics overlay
