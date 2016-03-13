@@ -25,37 +25,24 @@ import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkTape;
 import edu.kit.trufflehog.util.IListener;
-import edu.kit.trufflehog.view.MainToolBarController;
-import edu.kit.trufflehog.view.MainViewController;
-import edu.kit.trufflehog.view.MenuBarViewController;
-import edu.kit.trufflehog.view.NetworkViewScreen;
-import edu.kit.trufflehog.view.OverlayViewController;
-import edu.kit.trufflehog.view.RootWindowController;
+import edu.kit.trufflehog.view.*;
 import edu.kit.trufflehog.view.controllers.IWindowController;
+import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
-import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
-import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToolBar;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
@@ -169,10 +156,10 @@ public class ViewBuilder {
      * </p>
      *
      * @param viewPort The viewport of the graph that should be drawn here
-     * @param viewPort
      * @param userCommandIListener
      */
-    public void build(INetworkViewPortSwitch viewPort, INetwork liveNetwork, INetworkDevice device, IListener<IUserCommand> userCommandIListener) {
+    public void build(INetworkViewPortSwitch viewPort, INetwork liveNetwork, INetworkDevice device,
+                      IListener<IUserCommand> userCommandIListener) {
         loadFonts();
 
         final IListener<IUserCommand> commandListener = userCommandIListener;
