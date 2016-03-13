@@ -93,9 +93,15 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 	@Override
     public String toString() {
 
-        // TODO just for debugging
+        // FIXME just for debugging check component for null
+        final NodeStatisticsComponent stc = this.getComponent(NodeStatisticsComponent.class);
 
-		return this.getAddress() + " [" + this.getComponent(NodeStatisticsComponent.class).getThroughput() + "]";
+        if (stc != null) {
+
+            return this.getAddress() + " [" + this.getComponent(NodeStatisticsComponent.class).getThroughput() + "]";
+        } else {
+            return this.getAddress().toString();
+        }
 
     }
 

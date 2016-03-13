@@ -102,10 +102,17 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
     @Override
     public String toString() {
 
-        // TODO this is just for debugging.. remove this
-        final EdgeStatisticsComponent stc = getComponent(EdgeStatisticsComponent.class);
+        // FIXME just for debugging check component for null
+        final EdgeStatisticsComponent stc = this.getComponent(EdgeStatisticsComponent.class);
 
-        return "( " + getSrc() + " ) --" + "[" + stc.getTraffic() +"]--> ( " + getDest() + " )";
+        if (stc != null) {
+
+            return "( " + getSrc() + " ) --" + "[" + stc.getTraffic() +"]--> ( " + getDest() + " )";
+        } else {
+            return "( " + getSrc() + " ) ----> ( " + getDest() + " )";
+        }
+
+
 
     }
 
