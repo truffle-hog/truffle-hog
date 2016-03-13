@@ -23,8 +23,8 @@ root {
 .overlaybackground {
     -fx-background-color: #000000;
     -fx-opacity: 95%;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
 }
 
 .text {

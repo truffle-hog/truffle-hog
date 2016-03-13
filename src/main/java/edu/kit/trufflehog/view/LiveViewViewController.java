@@ -1,11 +1,8 @@
-package edu.kit.trufflehog.presenter.viewbuilders;
+package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
-import edu.kit.trufflehog.view.ToolBarViewController;
-import edu.kit.trufflehog.view.NetworkViewScreen;
-import edu.kit.trufflehog.view.OverlayViewController;
-import edu.kit.trufflehog.view.FilterOverlayViewController;
+import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -23,52 +20,42 @@ import javafx.stage.Stage;
  * @author Julian Brendl
  * @version 1.0
  */
-class LiveViewBuilder implements IViewBuilder {
+public class LiveViewViewController extends AnchorPaneController {
     // General variables
     private final ConfigData configData;
-
-    // Graph variables
-    private final INetworkViewPort viewPort;
 
     // View layers
     private final Stage primaryStage;
     private final StackPane stackPane;
-    private final AnchorPane liveView;
 
     private OverlayViewController recordOverlayViewController;
     private FilterOverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
 
-    public LiveViewBuilder(ConfigData configData, StackPane stackPane, Stage primaryStage, INetworkViewPort viewPort) {
+    public LiveViewViewController(String fxml, ConfigData configData, StackPane stackPane, Stage primaryStage, INetworkViewPort viewPort) {
+        super(fxml);
         this.configData = configData;
         this.primaryStage = primaryStage;
         this.stackPane = stackPane;
-        this.viewPort = viewPort;
-        liveView = new AnchorPane();
-    }
 
-    @Override
-    public AnchorPane buildView() {
         final Node node = new NetworkViewScreen(viewPort, 10);
 
-        liveView.getChildren().add(node);
+        this.getChildren().add(node);
 
-        liveView.setMinWidth(200d);
-        liveView.setMinHeight(200d);
+        this.setMinWidth(200d);
+        this.setMinHeight(200d);
 
         AnchorPane.setBottomAnchor(node, 0d);
         AnchorPane.setTopAnchor(node, 0d);
         AnchorPane.setLeftAnchor(node, 0d);
         AnchorPane.setRightAnchor(node, 0d);
 
-        buildToolbar();
-        buildGeneralStatisticsOverlay();
-        buildNodeStatisticsOverlay();
-        buildSettingsOverlay();
-        buildFilterMenuOverlay();
-        buildRecordOverlay();
-
-        return liveView;
+        addToolbar();
+        addGeneralStatisticsOverlay();
+        addNodeStatisticsOverlay();
+        addSettingsOverlay();
+        addFilterMenuOverlay();
+        addRecordOverlay();
     }
 
     /**
@@ -76,9 +63,9 @@ class LiveViewBuilder implements IViewBuilder {
      *     Builds the settings overlay.
      * </p>
      */
-    private void buildSettingsOverlay() {
+    private void addSettingsOverlay() {
         settingsOverlayViewController = new OverlayViewController("local_settings_overlay.fxml");
-        liveView.getChildren().add(settingsOverlayViewController);
+        this.getChildren().add(settingsOverlayViewController);
         AnchorPane.setBottomAnchor(settingsOverlayViewController, 60d);
         AnchorPane.setLeftAnchor(settingsOverlayViewController, 18d);
         settingsOverlayViewController.setVisible(false);
@@ -89,12 +76,12 @@ class LiveViewBuilder implements IViewBuilder {
      *     Builds the filter menu overlay.
      * </p>
      */
-    private void buildFilterMenuOverlay() {
+    private void addFilterMenuOverlay() {
         // Build filter menu
         filterOverlayViewController = new FilterOverlayViewController("filter_menu_overlay.fxml", configData, stackPane);
 
         // Set up overlay on screen
-        liveView.getChildren().add(filterOverlayViewController);
+        this.getChildren().add(filterOverlayViewController);
         AnchorPane.setBottomAnchor(filterOverlayViewController, 60d);
         AnchorPane.setLeftAnchor(filterOverlayViewController, 18d);
         filterOverlayViewController.setMaxSize(330d, 210d);
@@ -106,9 +93,9 @@ class LiveViewBuilder implements IViewBuilder {
      *     Builds the record menu overlay.
      * </p>
      */
-    private void buildRecordOverlay() {
+    private void addRecordOverlay() {
         recordOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
-        liveView.getChildren().add(recordOverlayViewController);
+        this.getChildren().add(recordOverlayViewController);
         AnchorPane.setBottomAnchor(recordOverlayViewController, 60d);
         AnchorPane.setLeftAnchor(recordOverlayViewController, 18d);
         recordOverlayViewController.setVisible(false);
@@ -119,9 +106,9 @@ class LiveViewBuilder implements IViewBuilder {
      *     Builds the node statistics overlay.
      * </p>
      */
-    private void buildNodeStatisticsOverlay() {
+    private void addNodeStatisticsOverlay() {
         OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
-        liveView.getChildren().add(nodeStatisticsOverlay);
+        this.getChildren().add(nodeStatisticsOverlay);
         AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
         nodeStatisticsOverlay.setVisible(false);
@@ -132,9 +119,9 @@ class LiveViewBuilder implements IViewBuilder {
      *     Builds the general statistics overlay.
      * </p>
      */
-    private void buildGeneralStatisticsOverlay() {
+    private void addGeneralStatisticsOverlay() {
         OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
-        liveView.getChildren().add(generalStatisticsOverlay);
+        this.getChildren().add(generalStatisticsOverlay);
         AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
     }
@@ -144,14 +131,14 @@ class LiveViewBuilder implements IViewBuilder {
      *     Builds the toolbar (3 buttons on the bottom left corner).
      * </p>
      */
-    private void buildToolbar() {
+    private void addToolbar() {
         Button settingsButton = buildSettingsButton();
         Button filterButton = buildFilterButton();
         Button recordButton = buildRecordButton();
 
         ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml", settingsButton,
                 filterButton, recordButton);
-        liveView.getChildren().add(mainToolBarController);
+        this.getChildren().add(mainToolBarController);
         AnchorPane.setBottomAnchor(mainToolBarController, 5d);
         AnchorPane.setLeftAnchor(mainToolBarController, 5d);
     }
@@ -163,40 +150,8 @@ class LiveViewBuilder implements IViewBuilder {
      */
     private Button buildSettingsButton() {
         Button settingsButton = new ImageButton("gear.png");
-        settingsButton.setOnAction(event -> {
-            settingsOverlayViewController.setVisible(!settingsOverlayViewController.isVisible());
-
-            // Hide the filter menu if it is visible
-            if (filterOverlayViewController.isVisible()) {
-                filterOverlayViewController.setVisible(false);
-            }
-
-            // Hide the record menu if it is visible
-            if (recordOverlayViewController.isVisible()) {
-                recordOverlayViewController.setVisible(false);
-            }
-
-//            Stage settingsStage = new Stage();
-//            SettingsViewController settingsView = new SettingsViewController("settings_view.fxml");
-//            Scene settingsScene = new Scene(settingsView);
-//            settingsStage.setScene(settingsScene);
-//            settingsStage.show();
-//
-//            // CTRL+W for closing
-//            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN)
-//                    , settingsStage::close);
-//
-//            // CTRL+S triggers info about program settings saving
-//            settingsStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN),
-//                    () -> {
-//                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                        alert.setTitle("Relax, no need to save anything here");
-//                        alert.setHeaderText(null);
-//                        alert.setContentText("Oops. Seems you wanted to save the configuration by pressing CTRL+S. This" +
-//                                " is not necessary thanks to the awesome always up-to-date saving design of TruffleHog.");
-//                        alert.showAndWait();
-//                    });
-        });
+        settingsButton.setOnAction(event -> handleShowMechanism(settingsOverlayViewController, filterOverlayViewController,
+                recordOverlayViewController));
 
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN),
                 settingsButton::fire);
@@ -214,24 +169,8 @@ class LiveViewBuilder implements IViewBuilder {
      */
     private Button buildFilterButton() {
         Button filterButton = new ImageButton("filter.png");
-        filterButton.setOnAction(event -> {
-            filterOverlayViewController.setVisible(!filterOverlayViewController.isVisible());
-
-            // Deselect anything that was selected
-            if (!filterOverlayViewController.isVisible()) {
-                filterOverlayViewController.clearSelection();
-            }
-
-            // Hide the settings menu if it is visible
-            if (settingsOverlayViewController.isVisible()) {
-                settingsOverlayViewController.setVisible(false);
-            }
-
-            // Hide the record menu if it is visible
-            if (recordOverlayViewController.isVisible()) {
-                recordOverlayViewController.setVisible(false);
-            }
-        });
+        filterButton.setOnAction(event -> handleShowMechanism(filterOverlayViewController, recordOverlayViewController,
+                settingsOverlayViewController));
 
         filterButton.setScaleX(0.8);
         filterButton.setScaleY(0.8);
@@ -249,23 +188,35 @@ class LiveViewBuilder implements IViewBuilder {
     private Button buildRecordButton() {
         ImageButton recordButton = new ImageButton("record.png");
 
-        recordButton.setOnAction(event -> {
-            recordOverlayViewController.setVisible(!recordOverlayViewController.isVisible());
-
-            // Hide the settings menu if it is visible
-            if (settingsOverlayViewController.isVisible()) {
-                settingsOverlayViewController.setVisible(false);
-            }
-
-            // Hide the filter menu if it is visible
-            if (filterOverlayViewController.isVisible()) {
-                filterOverlayViewController.setVisible(false);
-            }
-        });
+        recordButton.setOnAction(event -> handleShowMechanism(recordOverlayViewController, filterOverlayViewController,
+                settingsOverlayViewController));
 
         recordButton.setScaleX(0.8);
         recordButton.setScaleY(0.8);
 
         return recordButton;
+    }
+
+    /**
+     * <p>
+     *     Handles the showing mechanism of all overlays from the toolbar. OverlayViewController1 will be shown
+     *     while the other two will be hidden.
+     * </p>
+     */
+    private void handleShowMechanism(final Node overlay1,
+                                    final Node overlay2,
+                                    final Node overlay3) {
+        // Show the first menu
+        overlay1.setVisible(!overlay1.isVisible());
+
+        // Hide the second menu if it is visible
+        if (overlay2.isVisible()) {
+            overlay2.setVisible(false);
+        }
+
+        // Hide the third menu if it is visible
+        if (overlay3.isVisible()) {
+            overlay3.setVisible(false);
+        }
     }
 }

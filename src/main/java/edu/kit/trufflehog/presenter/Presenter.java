@@ -7,7 +7,6 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.model.network.recording.*;
-import edu.kit.trufflehog.presenter.viewbuilders.ViewBuilder;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
@@ -20,6 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,8 +42,9 @@ public class Presenter {
     private final Stage primaryStage;
     private ViewBuilder viewBuilder;
     private TruffleReceiver truffleReceiver;
-    private INetworkViewPort liveViewPort;
-    private INetworkViewPort viewPort;
+    //private INetworkViewPort liveViewPort;
+    //private INetworkViewPort viewPort;
+    private Map<String, INetworkViewPort> viewPortMap;
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
@@ -55,6 +57,7 @@ public class Presenter {
      */
     public Presenter(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        this.viewPortMap = new HashMap<>();
 
         if (this.primaryStage == null) {
             throw new NullPointerException("primary stage should not be null");
@@ -83,7 +86,7 @@ public class Presenter {
      */
     public void present() {
         initNetwork();
-        this.viewBuilder = new ViewBuilder(configData, primaryStage, viewPort);
+        this.viewBuilder = new ViewBuilder(configData, primaryStage, viewPortMap);
         viewBuilder.build();
     }
 
@@ -94,7 +97,8 @@ public class Presenter {
         // TODO Ctor injection with the Ports that are within the networks
         liveNetwork = new LiveNetwork(new ConcurrentDirectedSparseGraph<>());
 
-        liveViewPort = liveNetwork.getViewPort();
+        // TODO Add real thing too, perhaps I missunderstood the viewport, need to talk to somebody
+        viewPortMap.put("Demo", liveNetwork.getViewPort());
 
         // TODO Where to put this???
         final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
@@ -152,8 +156,6 @@ public class Presenter {
 
         // track the live network on the given viewportswitch
         networkDevice.goLive(liveNetwork, viewPortSwitch);
-
-        viewPort = viewPortSwitch;
     }
 
     /**

@@ -16,7 +16,7 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package edu.kit.trufflehog.presenter.viewbuilders;
+package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.model.configdata.ConfigData;
@@ -37,6 +37,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * <p>
@@ -51,9 +52,6 @@ public class ViewBuilder {
     // General variables
     private ConfigData configData;
 
-    // View viewbuilders
-    private final IViewBuilder liveViewBuilder;
-
     // View layers
     private final Stage primaryStage;
     private final MainViewController mainViewController;
@@ -61,6 +59,7 @@ public class ViewBuilder {
     private final StackPane stackPane;
     private final SplitPane splitPane;
     private final ViewSwitcher viewSwitcher;
+    private final Map<String, INetworkViewPort> viewPorts;
 
     /**
      * <p>
@@ -70,9 +69,11 @@ public class ViewBuilder {
      * @param configData   The {@link ConfigData} that is necessary to save and load configurations, like
      *                     filters or settings.
      * @param primaryStage The primary stage, where everything is drawn upon.
-     * @param viewPort The viewport of the graph that should be drawn here
+     * @param viewPorts The viewports that TruffleHog supports with their names.
      */
-    public ViewBuilder(final ConfigData configData, final Stage primaryStage, final INetworkViewPort viewPort) {
+    public ViewBuilder(final ConfigData configData,
+                       final Stage primaryStage,
+                       final Map<String, INetworkViewPort> viewPorts) {
         this.configData = configData;
         this.primaryStage = primaryStage;
         this.groundView = new AnchorPane();
@@ -80,8 +81,7 @@ public class ViewBuilder {
         this.splitPane = new SplitPane();
         this.viewSwitcher = new ViewSwitcher();
         this.mainViewController = new MainViewController("main_view.fxml");
-
-        this.liveViewBuilder = new LiveViewBuilder(configData, stackPane, primaryStage, viewPort);
+        this.viewPorts = viewPorts;
 
         if (this.primaryStage == null || this.configData == null) {
             throw new NullPointerException("primaryStage and configData shouldn't be null.");
@@ -142,16 +142,19 @@ public class ViewBuilder {
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
 
-        // Now we add the actual views to the split pane
-        //AnchorPane liveView = liveViewBuilder.buildView();
-        ObservableList<String> liveItems = FXCollections.observableArrayList("Demo", "Profinet");
+        // Now we add the actual views to the split pane and to the view switcher
+        ObservableList<String> liveItems = FXCollections.observableArrayList(viewPorts.keySet());
         ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724"
                 , "capture-457", "capture-167");
 
         AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
-        AnchorPane liveView = liveViewBuilder.buildView();
+        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
+                viewPorts.get("Demo"));
+//        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
+//                viewPorts.get("Profinet"));
         viewSwitcher.putView("start", startView);
-        viewSwitcher.putView("Demo", liveView);
+        viewSwitcher.putView("Demo", demoView);
+        //viewSwitcher.putView("Profinet", profinetView);
         splitPane.getItems().addAll(startView);
     }
 
