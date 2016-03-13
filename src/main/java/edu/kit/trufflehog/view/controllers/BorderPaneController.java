@@ -25,7 +25,6 @@ public abstract class BorderPaneController extends BorderPane {
      * @param fxmlFile The fxml file to create the AnchorPaneController from.
      */
     public BorderPaneController(String fxmlFile) {
-
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
