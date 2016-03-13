@@ -155,7 +155,7 @@ public class ViewBuilder {
      *     components as well.
      * </p>
      *
-     * @param viewPort The viewport of the graph that should be drawn here
+     * @param viewPort The viewport of the graph that should be drawn here.
      * @param userCommandIListener
      */
     public void build(INetworkViewPortSwitch viewPort, INetwork liveNetwork, INetworkDevice device,
@@ -197,9 +197,6 @@ public class ViewBuilder {
         final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
 
         // Add the ground view to the center
-
-
-       // mainViewController.setCenter(primaryView);
         mainViewController.setBottom(buildReplayFunction(device, liveNetwork, viewPort));
         mainViewController.setCenter(groundView);
 
