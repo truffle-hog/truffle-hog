@@ -1,11 +1,13 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
-import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -16,9 +18,10 @@ import java.awt.geom.Rectangle2D;
  * @version 0.1
  */
 public class NodeRenderer implements IRenderer {
+
     private Shape shape = new Rectangle2D.Double(-50,-50,100,100);
-    private Color colorPicked = new Color(0xf0caa3);
-    private Color colorUnpicked = new Color(0xab7d63);
+    private Color colorPicked = new Color(0xffffff);
+    private Color colorUnpicked = new Color(0x528bff);
     private Stroke stroke = new BasicStroke();
 
     /**
@@ -89,19 +92,24 @@ public class NodeRenderer implements IRenderer {
      * @param shape The shape to be used
      */
     public void setShape(Shape shape) {
-        if (shape == null) throw new NullPointerException("shape must not be null!");
+        if (shape == null) { throw new NullPointerException("shape must not be null!"); }
         this.shape = shape;
     }
 
     @Override
     public void setStroke(Stroke stroke) {
-        if (stroke == null) throw new NullPointerException("stroke must not be null!");
+        if (stroke == null) { throw new NullPointerException("stroke must not be null!"); }
         this.stroke = stroke;
     }
 
     @Override
-    public void updateState() {
-        //TODO implement if needed
+    public void animate() {
+
+    }
+
+    @Override
+    public int animationTime() {
+        return 0;
     }
 
     /**
@@ -111,7 +119,7 @@ public class NodeRenderer implements IRenderer {
      * @param colorPicked
      */
     public void setColorPicked(Color colorPicked) {
-        if (colorPicked == null) throw new NullPointerException("colorPicked must not be null!");
+        if (colorPicked == null) { throw new NullPointerException("colorPicked must not be null!"); }
         this.colorPicked = colorPicked;
     }
 
@@ -122,7 +130,7 @@ public class NodeRenderer implements IRenderer {
      * @param colorUnpicked
      */
     public void setColorUnpicked(Color colorUnpicked) {
-        if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
+        if (colorUnpicked == null) { throw new NullPointerException("colorUnpicked must not be null!"); }
         this.colorUnpicked = colorUnpicked;
     }
 

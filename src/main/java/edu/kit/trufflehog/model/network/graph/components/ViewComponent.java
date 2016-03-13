@@ -29,7 +29,7 @@ import edu.kit.trufflehog.util.ICopyCreator;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class ViewComponent implements IComponent {
+public class ViewComponent extends AbstractComponent implements IComponent {
 
     private final IRenderer renderer;
 
@@ -41,6 +41,11 @@ public class ViewComponent implements IComponent {
     public IRenderer getRenderer() {
 
         return renderer;
+    }
+
+    public void animate() {
+
+        renderer.animate();
     }
 
     @Override

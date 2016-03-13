@@ -6,8 +6,8 @@ import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.graph.FXVisualizationViewer;
@@ -15,25 +15,30 @@ import edu.kit.trufflehog.view.graph.control.FXDefaultModalGraphMouse;
 import edu.kit.trufflehog.view.graph.control.FXModalGraphMouse;
 import edu.kit.trufflehog.view.graph.decorators.FXEdgeShape;
 import edu.kit.trufflehog.view.graph.renderers.FXRenderer;
+import edu.kit.trufflehog.view.graph.renderers.FXVertexLabelRenderer;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationModel;
 import edu.uci.ics.jung.visualization.control.GraphMouseListener;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
-import edu.uci.ics.jung.visualization.decorators.PickableEdgePaintTransformer;
-import edu.uci.ics.jung.visualization.decorators.PickableVertexPaintTransformer;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ObservableValue;
 import javafx.util.Duration;
 import org.apache.commons.collections15.Transformer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.RenderingHints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyListener;
@@ -48,6 +53,8 @@ import java.util.Map;
  */
 public class NetworkViewScreen extends NetworkGraphViewController implements ItemListener {
 
+    private static final Logger logger = LogManager.getLogger(NetworkViewScreen.class);
+
 	private FXVisualizationViewer<INode, IConnection> jungView;
 
 	private INetworkViewPort viewPort;
@@ -56,7 +63,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	private FXModalGraphMouse graphMouse;
 
-	private Timeline refresher;
+	private final Timeline refresher;
 
     /** The commands that are mapped to their interactions. **/
     private final Map<GraphInteraction, IUserCommand> interactionMap =
@@ -64,16 +71,34 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	public NetworkViewScreen(INetworkViewPort port, long refreshRate) {
 
-		refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
-			//refresh();
-			//Platform.runLater(() -> repaint());
-			repaint();
-		}));
-		refresher.setCycleCount(Timeline.INDEFINITE);
-		//fiveSecondsWonder.playGraphTape();
+        refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
+            repaint();
+        }));
+
+        port.addGraphEventListener(e -> {
+
+            if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
+
+                final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
+                node.getComponent(ViewComponent.class).animate();
+                refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
+                repaint();
+                refresher.playFromStart();
+
+            } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
+
+                final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
+                connection.getComponent(ViewComponent.class).animate();
+                refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
+                repaint();
+                refresher.playFromStart();
+            }
+        });
 		this.viewPort = port;
 		initialize();
-		refresher.play();
+        // Add this view screen as listener to the picked state, so we can send commands, when the picked state
+        // changes.
+		getPickedVertexState().addItemListener(this);
 	}
 
 	public void initialize() {
@@ -99,7 +124,8 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 		initRenderers();
 
-		jungView.setBackground(new Color(0xE8EAF6));
+		jungView.setBackground(new Color(0x3e4451));
+		//jungView.setBackground(new Color(0xE8EAF6));
 		//jungView.setBackground(new Color(0x5e6d67));
 		jungView.setPreferredSize(new Dimension(350, 350));
 		// Show vertex and edge labels
@@ -114,21 +140,26 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	private void initRenderers() {
 
-		jungView.getRenderContext().setVertexLabelTransformer(iNode -> iNode.toString() + " max Size: " + viewPort.getMaxThroughput());
+		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getAddress().toString());
 		//jungView.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
+
+		// TODO null check for component
+		jungView.getRenderContext().setEdgeLabelTransformer(edge -> String.valueOf(edge.getComponent(EdgeStatisticsComponent.class).getTraffic()));
 
 /*		jungView.getRenderContext().setVertexFillPaintTransformer(
                 new PickableVertexPaintTransformer<>(
                         getPickedVertexState(), new Color(0xa1928b), new Color(0xccc1bb)));*/
 
-        jungView.getRenderContext().setVertexFillPaintTransformer(
+/*        jungView.getRenderContext().setVertexFillPaintTransformer(
                 new PickableVertexPaintTransformer<>(
-                        getPickedVertexState(), new Color(0xab7d63), new Color(0xf0caa3)));
+                        getPickedVertexState(), new Color(0x528bff), new Color(0x000000)));*/
 
-        jungView.getRenderContext().setEdgeDrawPaintTransformer(
-                new PickableEdgePaintTransformer<>(getPickedEdgeState(), new Color(0x7f7784), new Color(0xf0caa3)));
+/*        jungView.getRenderContext().setEdgeDrawPaintTransformer(
+                new PickableEdgePaintTransformer<>(getPickedEdgeState(), new Color(0x21252b), new Color(0x353b45)));*/
 
         jungView.getRenderContext().setVertexIncludePredicate(iNode -> !iNode.element.getAddress().isMulticast());
+
+        jungView.getRenderContext().setVertexLabelRenderer(new FXVertexLabelRenderer(new Color(0x98c379), new Color(0xffffff)));
 
         jungView.getRenderContext().setEdgeShapeTransformer(new FXEdgeShape.QuadCurve());
 
@@ -161,9 +192,12 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
             //System.out.println(layout.transform(iNode));
 
+
+
             final NodeStatisticsComponent statComp = iNode.getComponent(NodeStatisticsComponent.class);
             int currentSize = statComp.getThroughput();
             long maxSize = viewPort.getMaxThroughput();
+
             double relation = (double) currentSize / (double) maxSize;
             double sizeMulti = (50.0 * relation) + 10;
             return new Ellipse2D.Double(-sizeMulti, -sizeMulti, 2*sizeMulti, 2*sizeMulti);
@@ -192,11 +226,22 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
         });*/
 
+        jungView.getRenderContext().setVertexFillPaintTransformer(node -> {
+
+            final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
+
+            //viewComponent.getRenderer().updateState();
+
+            if (getPickedVertexState().isPicked(node)) {
+                return viewComponent.getRenderer().getColorPicked();
+            } else {
+                return viewComponent.getRenderer().getColorUnpicked();
+            }
+        });
+
 		jungView.getRenderContext().setEdgeDrawPaintTransformer(iConnection -> {
 
             final ViewComponent viewComponent = iConnection.getComponent(ViewComponent.class);
-
-			viewComponent.getRenderer().updateState();
 
             if (getPickedEdgeState().isPicked(iConnection)) {
                 return viewComponent.getRenderer().getColorPicked();
@@ -267,6 +312,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		jungView.stateChanged(e);
 	}
 
+
 	@Override
 	public void setRenderer(Renderer<INode, IConnection> r) {
 		jungView.setRenderer(r);
@@ -330,17 +376,17 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 	}
 
 	@Override
-	public void addChangeListener(ChangeListener l) {
+	public void addChangeListener(javax.swing.event.ChangeListener l) {
 		jungView.addChangeListener(l);
 	}
 
 	@Override
-	public void removeChangeListener(ChangeListener l) {
+	public void removeChangeListener(javax.swing.event.ChangeListener l) {
 		jungView.removeChangeListener(l);
 	}
 
 	@Override
-	public ChangeListener[] getChangeListeners() {
+	public javax.swing.event.ChangeListener[] getChangeListeners() {
 		return jungView.getChangeListeners();
 	}
 
@@ -425,16 +471,15 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
         // if ItemEvent is Vertex Selection
 
-/*        final IUserCommand<PickedState> command = interactionMap.get(GraphInteraction.VERTEX_SELECTED);
+        final IUserCommand command = interactionMap.get(GraphInteraction.VERTEX_SELECTED);
 
         if (command != null) {
-
             command.setSelection(getPickedVertexState());
-        }*/
-        interactionMap.get(GraphInteraction.VERTEX_SELECTED).setSelection(getPickedVertexState());
+        }
+		notifyListeners(interactionMap.get(GraphInteraction.VERTEX_SELECTED));
 
         // else if ItemEvent is Connection Selection
 
-		throw new UnsupportedOperationException("Operation not implemented yet");
+		//throw new UnsupportedOperationException("Operation not implemented yet");
 	}
 }
