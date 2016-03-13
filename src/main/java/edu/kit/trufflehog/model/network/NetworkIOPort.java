@@ -75,9 +75,7 @@ public class NetworkIOPort implements INetworkIOPort {
 
     @Override
     public void applyFilter(IFilter filter) {
-        for (INode node : delegate.getVertices()) {
-            filter.check(node);
-        }
+        delegate.getVertices().forEach(filter::check);
     }
 
     @Override

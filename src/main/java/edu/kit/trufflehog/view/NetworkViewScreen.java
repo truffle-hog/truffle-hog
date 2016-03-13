@@ -8,6 +8,7 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.graph.FXVisualizationViewer;
@@ -225,6 +226,23 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
         });*/
 
         jungView.getRenderContext().setVertexFillPaintTransformer(node -> {
+
+			final FilterPropertiesComponent fpc = node.getComponent(FilterPropertiesComponent.class);
+
+			if (fpc != null) {
+
+				if (fpc.getFilterColor() != null) {
+
+                    if (getPickedVertexState().isPicked(node)) {
+
+                       return Color.WHITE;
+
+                    } else {
+                        return fpc.getFilterColor();
+                    }
+				}
+
+			}
 
             final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
 

@@ -21,6 +21,7 @@ import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.node.*;
 import edu.kit.trufflehog.model.network.graph.components.edge.StaticRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
@@ -115,6 +116,29 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
     }
 
     @Override
+    public boolean update(NodeInfoComponent nodeInfoComponent, IComponent instance) {
+        if (!nodeInfoComponent.equals(instance)) {
+            return false;
+        }
+
+        final NodeInfoComponent other = (NodeInfoComponent) instance;
+
+        boolean changed = false;
+
+        if (other.getDeviceName() != null) {
+            changed = !nodeInfoComponent.getDeviceName().equals(other.getDeviceName()) || changed;
+            nodeInfoComponent.setDeviceName(other.getDeviceName());
+        }
+
+        if (other.getIPAddress() != null) {
+            changed = !nodeInfoComponent.getDeviceName().equals(other.getDeviceName()) || changed;
+            nodeInfoComponent.setIPAddress(other.getIPAddress());
+        }
+
+        return changed;
+    }
+
+    @Override
     public boolean update(StaticRenderer component, IRenderer instance) {
 
         throw new UnsupportedOperationException("this operation should not be performed by the live updater");
@@ -131,6 +155,11 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
     }
 
     @Override
+    public boolean update(FilterPropertiesComponent filterPropertiesComponent, IComponent instance) {
+        filterPropertiesComponent.getFilterColors().putAll(filterPropertiesComponent.getFilterColors());
+        return true;
+    }
+
     public boolean updateVertex(INode existingVertex, INode newVertex) {
 
         newVertex.stream().filter(IComponent::isMutable).forEach(c -> {

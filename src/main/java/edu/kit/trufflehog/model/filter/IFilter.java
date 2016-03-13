@@ -30,10 +30,13 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
  *     to indicate it is part of the blacklist.
  * </p>
  *
- * @author Julian Brendl, Mark Giraud
- * @version 1.0
+ * @author Mark Giraud, Julian Brendl
+ * @version 1.1
  */
-public interface IFilter {
+public interface IFilter extends Comparable<IFilter> {
+
+    IFilter EMPTY = new EmptyFilter();
+
     /**
      * <p>
      *     Checks if an {@link INode} is contained in the filter. If so, the method updates the node's
@@ -44,4 +47,44 @@ public interface IFilter {
      * @param node The {@link INode} to check for a filter matching.
      */
     void check(final INode node);
+
+    /**
+     * <p>
+     *     Gets the priority of the filter. The priority is used to determine which filter color should be rendered
+     *     for example.
+     * </p>
+     * @return the priority of the filter.
+     */
+    int getPriority();
+
+    /**
+     * <p>
+     *     This method clears the filter of all rules and resets all flags set by the filter.
+     *     When deleting a filter this method should always be called to clean up the filter state.
+     * </p>
+     */
+    void clear();
+
+    class EmptyFilter implements IFilter {
+
+        @Override
+        public void check(INode node) {
+            //nothing
+        }
+
+        @Override
+        public int getPriority() {
+            return Integer.MIN_VALUE;
+        }
+
+        @Override
+        public void clear() {
+            //nothing
+        }
+
+        @Override
+        public int compareTo(IFilter o) {
+            return -1;
+        }
+    }
 }

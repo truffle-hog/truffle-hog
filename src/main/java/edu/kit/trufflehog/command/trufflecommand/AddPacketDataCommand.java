@@ -12,6 +12,8 @@ import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
@@ -52,19 +54,26 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final MacAddress destAddress = data.getAttribute(MacAddress.class, "destMacAddress");
 
 
-        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1));
-        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1));
+        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(sourceAddress));
+        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(destAddress));
 
         final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1));
 
         sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
         destNode.addComponent(new ViewComponent(new NodeRenderer()));
 
+        sourceNode.addComponent(new FilterPropertiesComponent());
+        destNode.addComponent(new FilterPropertiesComponent());
+
         if (destAddress.isMulticast()) {
             connection.addComponent(new ViewComponent(new MulticastEdgeRenderer()));
         } else {
             connection.addComponent(new ViewComponent(new BasicEdgeRenderer()));
         }
+
+        filter.check(sourceNode);
+        filter.check(destNode);
+
         writingPort.writeNode(sourceNode);
         writingPort.writeNode(destNode);
         writingPort.writeConnection(connection);

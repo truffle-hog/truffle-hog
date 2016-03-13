@@ -20,8 +20,7 @@ package edu.kit.trufflehog.model.filter;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -39,7 +38,7 @@ import java.util.List;
  * @version 1.0
  */
 public class MacroFilter implements IFilter {
-    private final List<IFilter> filters = new LinkedList<>();
+    private final Set<IFilter> filters = new HashSet<>();
 
     /**
      * <p>
@@ -49,6 +48,8 @@ public class MacroFilter implements IFilter {
      * @param filter The filter to add to the MacroFilter.
      */
     public void addFilter(final IFilter filter) {
+        if (filter == null) { throw new NullPointerException("filter must not be null!"); }
+
         filters.add(filter);
     }
 
@@ -60,11 +61,32 @@ public class MacroFilter implements IFilter {
      * @param filter The filter to remove from the MacroFilter.
      */
     public void removeFilter(final IFilter filter) {
+        if (filter == null) { throw new NullPointerException("filter must not be null!"); }
+
+        filter.clear();
         filters.remove(filter);
     }
 
     @Override
     public void check(final INode node) {
+        if (node == null) { throw new NullPointerException("node must not be null!"); }
+
         filters.stream().forEach(filter -> filter.check(node));
+    }
+
+    @Override
+    public int getPriority() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public void clear() {
+        filters.stream().forEach(IFilter::clear);
+        filters.clear();
+    }
+
+    @Override
+    public int compareTo(IFilter o) {
+        return 1;
     }
 }

@@ -47,7 +47,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.util.Map;
 
@@ -162,7 +161,9 @@ public class ViewBuilder {
                       IListener<IUserCommand> userCommandIListener) {
         loadFonts();
 
-        final IListener<IUserCommand> commandListener = userCommandIListener;
+        final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
+        networkViewScreen.addListener(userCommandIListener);
+        networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
 
         final NetworkGraphViewController node = new NetworkViewScreen(viewPort, 10);
         node.addListener(commandListener);
@@ -170,6 +171,8 @@ public class ViewBuilder {
 
 
 
+        // Load menu bar
+        final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml");
         // Load menu bar
         final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml");
 
@@ -198,6 +201,8 @@ public class ViewBuilder {
 
         // Add the ground view to the center
         mainViewController.setBottom(buildReplayFunction(device, liveNetwork, viewPort));
+
+        // Add the ground view to the center
         mainViewController.setCenter(groundView);
 
         rootWindow.show();

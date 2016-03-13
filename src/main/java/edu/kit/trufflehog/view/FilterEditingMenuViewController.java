@@ -386,7 +386,8 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         java.awt.Color colorAwt = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255),
                 (int) (color.getBlue() * 255));
 
-        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt);
+        //FIXME add priority to view and then add it to the filter input accordingly
+        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt, /*ADD PRIORITY HERE*/ 0);
         filterInput.load(configData); // Binds properties to database
 
         return filterInput;

@@ -3,6 +3,7 @@ package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.InvalidMACAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.NetworkIOPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
@@ -27,12 +28,12 @@ public class AddPacketDataCommandTest {
     private IPacketData data;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         writingPort = mock(NetworkIOPort.class);
         filter = mock(IFilter.class);
         data = mock(Truffle.class);
-        when(data.getAttribute(MacAddress.class, "sourceMacAddress")).thenReturn(new MacAddress(1L, false));
-        when(data.getAttribute(MacAddress.class, "destMacAddress")).thenReturn(new MacAddress(2L, false));
+        when(data.getAttribute(MacAddress.class, "sourceMacAddress")).thenReturn(new MacAddress(1L));
+        when(data.getAttribute(MacAddress.class, "destMacAddress")).thenReturn(new MacAddress(2L));
     }
     @After
     public void teardown() {
@@ -42,7 +43,7 @@ public class AddPacketDataCommandTest {
     }
 
     @Test
-    public void AddPacketDataCommandTest() {
+    public void addPacketDataCommandTest() {
         AddPacketDataCommand apdc = new AddPacketDataCommand(writingPort, data, filter);
         apdc.execute();
         verify(writingPort, times(2)).writeNode(any(INode.class));

@@ -3,6 +3,7 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.graph.INode;
 
 /**
  * Created by Hoehler on 04.03.2016.
@@ -10,13 +11,14 @@ import edu.kit.trufflehog.model.network.INetworkWritingPort;
  */
 public class TruffleCrook extends TruffleReceiver {
     private final INetworkWritingPort networkWritingPort;
-    private long lastCreation = 0;
+    private final IFilter filter;
 
     private long[] addresses;
     private int maxAddresses = 10;
 
     public TruffleCrook(INetworkWritingPort writingPort, IFilter filter) {
         networkWritingPort = writingPort;
+        this.filter = filter;
         init();
     }
 
@@ -40,7 +42,7 @@ public class TruffleCrook extends TruffleReceiver {
                     final Truffle truffle = getTruffle();
 
                     if (truffle != null) {
-                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, node -> System.out.println("Dummy filter")));
+                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filter));
                     }
 
                     Thread.sleep(10);
@@ -67,7 +69,7 @@ public class TruffleCrook extends TruffleReceiver {
     private void init() {
         addresses = new long[maxAddresses];
         for (int i = 0; i < maxAddresses; i++) {
-            addresses[i] = (long)(Math.random()*10000000);
+            addresses[i] = i;
         }
     }
 }

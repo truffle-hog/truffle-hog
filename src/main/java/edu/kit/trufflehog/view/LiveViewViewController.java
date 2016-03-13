@@ -1,10 +1,14 @@
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
+import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
+import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -25,30 +29,30 @@ public class LiveViewViewController extends AnchorPaneController {
     private final ConfigData configData;
 
     // View layers
-    private final Stage primaryStage;
     private final StackPane stackPane;
+
+    private final Scene scene;
 
     private OverlayViewController recordOverlayViewController;
     private FilterOverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
 
-    public LiveViewViewController(String fxml, ConfigData configData, StackPane stackPane, Stage primaryStage, INetworkViewPort viewPort) {
+    public LiveViewViewController(String fxml, ConfigData configData, StackPane stackPane, NetworkGraphViewController networkViewScreen, Scene scene) {
         super(fxml);
         this.configData = configData;
-        this.primaryStage = primaryStage;
+        this.scene = scene;
+
         this.stackPane = stackPane;
 
-        final Node node = new NetworkViewScreen(viewPort, 10);
-
-        this.getChildren().add(node);
+        this.getChildren().add(networkViewScreen);
 
         this.setMinWidth(200d);
         this.setMinHeight(200d);
 
-        AnchorPane.setBottomAnchor(node, 0d);
-        AnchorPane.setTopAnchor(node, 0d);
-        AnchorPane.setLeftAnchor(node, 0d);
-        AnchorPane.setRightAnchor(node, 0d);
+        AnchorPane.setBottomAnchor(networkViewScreen, 0d);
+        AnchorPane.setTopAnchor(networkViewScreen, 0d);
+        AnchorPane.setLeftAnchor(networkViewScreen, 0d);
+        AnchorPane.setRightAnchor(networkViewScreen, 0d);
 
         addToolbar();
         addGeneralStatisticsOverlay();
@@ -153,7 +157,7 @@ public class LiveViewViewController extends AnchorPaneController {
         settingsButton.setOnAction(event -> handleShowMechanism(settingsOverlayViewController, filterOverlayViewController,
                 recordOverlayViewController));
 
-        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN),
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN),
                 settingsButton::fire);
 
         settingsButton.setScaleX(0.8);
