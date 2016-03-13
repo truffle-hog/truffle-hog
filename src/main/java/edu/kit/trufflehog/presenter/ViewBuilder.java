@@ -103,7 +103,7 @@ public class ViewBuilder {
     private FlowPane buildReplayFunction(INetworkDevice networkDevice,
                                      INetwork liveNetwork, INetworkViewPortSwitch viewPortSwitch) {
 
-        final INetworkTape tape = new NetworkTape(10);
+        final INetworkTape tape = new NetworkTape(20);
 
         final Slider slider = new Slider(0, 100, 0);
         slider.setTooltip(new Tooltip("replay"));

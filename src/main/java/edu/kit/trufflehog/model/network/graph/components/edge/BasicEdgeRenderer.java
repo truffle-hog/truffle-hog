@@ -27,11 +27,11 @@ public class BasicEdgeRenderer implements IRenderer {
 
     private static final Logger logger = LogManager.getLogger();
 
-    Color colorUnpicked = new Color(0x7f7784);
+    Color colorUnpicked = new Color(0x21252b);
     float[] hsbValsUnpicked = new float[3];
 
 
-    Color colorPicked = new Color(0xf0caa3);
+    Color colorPicked = new Color(0x353b45);
     float[] hsbValsPicked = new float[3];
 
     private Shape shape = new Ellipse2D.Float(-10, -10, 20, 20);

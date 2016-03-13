@@ -2,7 +2,8 @@ package edu.kit.trufflehog.view.graph.renderers;
 
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.visualization.RenderContext;
-import edu.uci.ics.jung.visualization.renderers.*;
+import edu.uci.ics.jung.visualization.renderers.BasicVertexLabelRenderer;
+import edu.uci.ics.jung.visualization.renderers.Renderer;
 
 import java.util.ConcurrentModificationException;
 
@@ -12,7 +13,7 @@ import java.util.ConcurrentModificationException;
 public class FXRenderer<V, E> implements Renderer<V, E> {
 
     Vertex<V,E> vertexRenderer = new FXVertexRenderer<>();
-    VertexLabel<V,E> vertexLabelRenderer = new FXVertexLabelRenderer<>();
+    VertexLabel<V,E> vertexLabelRenderer = new BasicVertexLabelRenderer<>();
     Edge<V,E> edgeRenderer = new FXEdgeRenderer<>();
     EdgeLabel<V,E> edgeLabelRenderer = new FXEdgeLabelRenderer<>();
 
