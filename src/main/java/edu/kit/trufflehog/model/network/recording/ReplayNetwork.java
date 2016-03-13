@@ -1,20 +1,27 @@
 package edu.kit.trufflehog.model.network.recording;
 
+import edu.kit.trufflehog.model.network.IAddress;
+import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.INetworkIOPort;
+import edu.kit.trufflehog.model.network.INetworkReadingPort;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.*;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.keyvalue.MultiKey;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Map;
@@ -40,9 +47,6 @@ public class ReplayNetwork implements INetwork {
 
     private final AtomicInteger maxTrafficCount = new AtomicInteger(0);
 
-
-    private final IUpdater replayUpdater = new ReplayUpdater();
-
     private long viewTime = 0;
 
     private Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory;
@@ -54,7 +58,6 @@ public class ReplayNetwork implements INetwork {
 
         port = new ReplayWritingPort();
         viewPort = new ReplayViewPort();
-
     }
 
     @Override
@@ -277,6 +280,16 @@ public class ReplayNetwork implements INetwork {
         }
 
         @Override
+        public void addGraphEventListener(GraphEventListener<INode, IConnection> l) {
+            throw new UnsupportedOperationException("Operation not implemented yet");
+        }
+
+        @Override
+        public void removeGraphEventListener(GraphEventListener<INode, IConnection> l) {
+            throw new UnsupportedOperationException("Operation not implemented yet");
+        }
+
+        @Override
         public NetworkViewCopy createDeepCopy(ICopyCreator copyCreator) {
 
             throw new UnsupportedOperationException("Not supported on replay ports");
@@ -306,10 +319,14 @@ public class ReplayNetwork implements INetwork {
             final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
             final IConnection existing = idConnectionMap.get(connectionKey);
 
-            if (existing != null) {
+/*            if (existing != null) {
                 existing.update(connection, replayUpdater);
                 return;
-            }
+            }*/
+
+            delegate.getGraph().addVertex(connection.getSrc());
+            delegate.getGraph().addVertex(connection.getDest());
+
             delegate.getGraph().addEdge(connection, connection.getSrc(), connection.getDest());
             idConnectionMap.put(connectionKey, connection);
         }
@@ -319,12 +336,20 @@ public class ReplayNetwork implements INetwork {
 
             final INode existing = idNodeMap.get(node.getAddress());
 
-            if (existing != null) {
+/*            if (existing != null) {
                 existing.update(node, replayUpdater);
                 return;
-            }
+            }*/
             delegate.getGraph().addVertex(node);
             idNodeMap.put(node.getAddress(), node);
+        }
+
+        @Override
+        public void applyFilter(IFilter filter) {
+            /*for (INode node : delegate.getVertices()) {
+                filter.check(node);
+            }*/
+            //nothing to do here
         }
 
         @Override

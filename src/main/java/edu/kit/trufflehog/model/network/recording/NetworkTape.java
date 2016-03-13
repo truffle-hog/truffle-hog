@@ -36,6 +36,8 @@ public class NetworkTape implements INetworkTape {
         this.frameRate = frameRate;
     }
 
+
+
     @Override
     public void setCurrentReadingFrame(int frame) {
 
@@ -70,6 +72,8 @@ public class NetworkTape implements INetworkTape {
 
     @Override
     public void writeFrame(NetworkCopy networkCopy) {
+
+//        logger.debug(networkCopy.toString());
 
         frames.add(new NetworkFrame(networkCopy));
         currentWritingFrameProperty.set(currentWritingFrameProperty.get() + 1);
@@ -156,6 +160,11 @@ public class NetworkTape implements INetworkTape {
         @Override
         public Point2D transform(INode iNode) {
             return copy.transform(iNode.getAddress());
+        }
+
+        @Override
+        public String toString() {
+            return copy.toString();
         }
 
     }

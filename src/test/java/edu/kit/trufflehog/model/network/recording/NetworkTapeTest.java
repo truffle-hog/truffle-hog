@@ -4,10 +4,14 @@ import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.LiveUpdater;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
-import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.util.ICopyCreator;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
+import edu.uci.ics.jung.graph.util.Graphs;
 import org.junit.Test;
 
 /**
@@ -40,7 +44,12 @@ public class NetworkTapeTest {
 
         final ICopyCreator copyCreator = new TapeCopyCreator();
 
-        final LiveNetwork liveNetwork = new LiveNetwork(new ConcurrentDirectedSparseGraph<>());
+        final Graph<INode, IConnection> graph = Graphs.synchronizedDirectedGraph(new DirectedSparseGraph<>());
+
+        final ObservableUpdatableGraph<INode, IConnection> og = new ObservableUpdatableGraph<>(graph, new LiveUpdater());
+
+
+        final LiveNetwork liveNetwork = new LiveNetwork(og);
 
         for (int i = 0; i < 4; i++) {
 

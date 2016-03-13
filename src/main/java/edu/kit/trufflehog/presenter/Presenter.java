@@ -1,27 +1,36 @@
 package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.filter.MacroFilter;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
-import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
-import edu.kit.trufflehog.model.network.recording.*;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.LiveUpdater;
+import edu.kit.trufflehog.model.network.recording.INetworkDevice;
+import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
+import edu.kit.trufflehog.model.network.recording.INetworkWritingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkDevice;
+import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.service.executor.TruffleExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
+import edu.uci.ics.jung.graph.util.Graphs;
+import javafx.application.Platform;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.Instant;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -37,7 +46,7 @@ public class Presenter {
     private static final Logger logger = LogManager.getLogger();
 
     private static Presenter presenter;
-    private final ConfigDataModel configDataModel;
+    private final ConfigData configData;
     private final FileSystem fileSystem;
     private final ViewBuilder viewBuilder;
     private final ScheduledExecutorService executorService;
@@ -48,7 +57,10 @@ public class Presenter {
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
-    private INetworkTape tape;
+
+    //private final IListener<IUserCommand> userCommandListener;
+
+    private final CommandExecutor commandExecutor = new CommandExecutor();
 
     /**
      * <p>
@@ -65,16 +77,19 @@ public class Presenter {
         this.fileSystem = new FileSystem();
         this.executorService = new LoggedScheduledExecutor(10);
 
-        ConfigDataModel configDataTemp;
+        ConfigData configDataTemp;
         try {
-            configDataTemp = new ConfigDataModel(fileSystem, executorService);
+            configDataTemp = new ConfigData(fileSystem, executorService);
         } catch (NullPointerException e) {
             configDataTemp = null;
             logger.error("Unable to set config data model", e);
         }
-        configDataModel = configDataTemp;
+        configData = configDataTemp;
 
-        this.viewBuilder = new ViewBuilder(configDataModel, primaryStage);
+
+        primaryStage.setOnCloseRequest(event -> finish());
+
+        this.viewBuilder = new ViewBuilder(configData, primaryStage);
     }
 
     /**
@@ -84,27 +99,34 @@ public class Presenter {
      * </p>
      */
     public void present() {
+
         initNetwork();
-        viewBuilder.build(viewPort);
+        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener());
     }
 
     private void initNetwork() {
 
         // initialize the live network that will be writte on by the receiver commands
 
+        // create a Graph
+
+        final Graph<INode, IConnection> graph = Graphs.synchronizedDirectedGraph(new DirectedSparseGraph<>());
+
+        final ObservableUpdatableGraph<INode, IConnection> og = new ObservableUpdatableGraph<>(graph, new LiveUpdater());
+
         // TODO Ctor injection with the Ports that are within the networks
-        liveNetwork = new LiveNetwork(new ConcurrentDirectedSparseGraph<>());
+        liveNetwork = new LiveNetwork(og);
 
         liveViewPort = liveNetwork.getViewPort();
 
         // TODO Where to put this???
-        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
+/*        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
             //refresh();
             //Platform.runLater(() -> repaint());
             liveNetwork.getViewPort().setViewTime(Instant.now().toEpochMilli());
         }));
         updateTime.setCycleCount(Timeline.INDEFINITE);
-        updateTime.play();
+        updateTime.play();*/
 
         /*
         // initialize the replay network that will be written on by a networkTape if the device plays a replay
@@ -127,20 +149,16 @@ public class Presenter {
         networkDevice = new NetworkDevice();
 
         // create a new empty tape to record something on
-        tape = new NetworkTape(24);
         // Tell the network observation device to start recording the
         // given network with 25fps on the created tape
 
-
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
-        // TODO change this to real filter
         // TODO register the truffleReceiver somewhere so we can start or stop it.
         final IFilter macroFilter = new MacroFilter(); //TODO register this in some view part to make it possible for the user to add/remove filters
-        //final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
-        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
+        final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
+        //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
         truffleFetchService.execute(truffleReceiver);
-
         truffleReceiver.connect();
 
         // Initialize the command executor and register it.
@@ -161,14 +179,20 @@ public class Presenter {
     /**
      * This method shuts down any services that are still running properly.
      */
-    public void shutdown() {
+    public void finish() {
+        // Exit the view
+        Platform.exit();
 
-        if (truffleReceiver != null)
+        // Disconnect the truffleReceiver
+        if (truffleReceiver != null) {
             truffleReceiver.disconnect();
+        }
 
+        // Shut down the system
+        System.exit(0);
     }
 
-
+    //TODO remove someday but for now leave as reference
    /* private void initGUI() {
 
         // setting up main window

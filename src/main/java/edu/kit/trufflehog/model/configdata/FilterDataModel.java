@@ -44,7 +44,7 @@ import java.util.concurrent.ExecutorService;
  * @author Julian Brendl
  * @version 1.0
  */
-class FilterDataModel implements IConfigDataModel<FilterInput> {
+class FilterDataModel extends ConfigDataModel<FilterInput> {
     private static final Logger logger = LogManager.getLogger();
 
     private final ExecutorService executorService;
@@ -100,6 +100,8 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
         if (databaseFile.length() == 0) {
             createDatabase();
         }
+
+        loadFilters();
     }
 
     /**
@@ -124,11 +126,6 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
                 String base64String = rs.getString("filter");
                 FilterInput filterInput = fromBase64(base64String);
                 if (filterInput != null) {
-
-                    // VERY IMPORTANT: This makes sure that we can map the filter activity state to a check box in the
-                    // table view in the filters menu
-                    filterInput.load();
-
                     loadedFilters.put(filterInput.getName(), filterInput);
                 } else {
                     logger.error("Found null filter input object while loading from database, skipping");
@@ -148,8 +145,25 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
      * @param filterInput The {@link FilterInput} to update.
      */
     public void updateFilterInDatabase(FilterInput filterInput) {
+        updateFilterInDatabase(filterInput, null);
+    }
+
+    /**
+     * <p>
+     *     Updates a {@link FilterInput} entry in the database by deleting it and adding it again.
+     *     When the name changes, things get more complicated, because the database is index by names. Thus the old
+     *     entry has to be removed before the new one is added. Since this has to be done synchronously, it requires
+     *     an extra method, because the default is asynchronous.
+     * </p>
+     *
+     * @param filterInput The {@link FilterInput} to update.
+     */
+    public void updateFilterInDatabase(final FilterInput filterInput, final String newName) {
         executorService.submit(() -> {
             removeFilterFromDatabaseSynchronous(filterInput);
+            if (newName != null) {
+                filterInput.setName(newName);
+            }
             addFilterToDataBaseSynchronous(filterInput);
         });
     }
@@ -339,25 +353,17 @@ class FilterDataModel implements IConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *     Gets all loaded {@link FilterInput} objects. If none have been loaded yet, the method loads them first.
+     *     Gets all loaded {@link FilterInput} objects. If none have been loaded yet, none are returned.
      * </p>
      *
      * @return The list of loaded {@link FilterInput} objects.
      */
     public Map<String, FilterInput> getAllFilters() {
-        if (loadedFilters.isEmpty()) {
-            loadFilters();
-        }
         return loadedFilters;
     }
 
     @Override
     public FilterInput get(Class classType, String key) {
         return loadedFilters.get(key);
-    }
-
-    @Override
-    public void load() {
-        loadFilters();
     }
 }

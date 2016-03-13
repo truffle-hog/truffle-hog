@@ -1,13 +1,17 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
-import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
+import javafx.animation.Transition;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 
 /**
@@ -23,11 +27,11 @@ public class BasicEdgeRenderer implements IRenderer {
 
     private static final Logger logger = LogManager.getLogger();
 
-    Color colorUnpicked = new Color(0x7f7784);
+    Color colorUnpicked = new Color(0x21252b);
     float[] hsbValsUnpicked = new float[3];
 
 
-    Color colorPicked = new Color(0xf0caa3);
+    Color colorPicked = new Color(0x353b45);
     float[] hsbValsPicked = new float[3];
 
     private Shape shape = new Ellipse2D.Float(-10, -10, 20, 20);
@@ -35,10 +39,27 @@ public class BasicEdgeRenderer implements IRenderer {
     //TODO change this!
     private Stroke stroke = new BasicStroke();
 
-    private float stepSize = 0.01f;
     private float currentBrightness = 0.5f;
 
+    private final Transition animator;
+
+    private int animationTime = 500;
+
     public BasicEdgeRenderer() {
+
+        animator = new Transition() {
+
+            {
+                setCycleDuration(Duration.millis(animationTime));
+            }
+
+            protected void interpolate(double frac) {
+
+                currentBrightness = (float) (frac < 0.5 ? 0.5 + frac : 1.5 - frac);
+            }
+
+        };
+        //animator.setCycleCount(40);
 
         Color.RGBtoHSB(colorUnpicked.getRed(), colorUnpicked.getGreen(), colorUnpicked.getBlue(), hsbValsUnpicked);
         Color.RGBtoHSB(colorPicked.getRed(), colorPicked.getGreen(), colorPicked.getBlue(), hsbValsPicked);
@@ -72,7 +93,7 @@ public class BasicEdgeRenderer implements IRenderer {
     @Override
     public void setColorUnpicked(Color colorUnpicked) {
 
-        if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
+        if (colorUnpicked == null) { throw new NullPointerException("colorUnpicked must not be null!"); }
 
         this.colorUnpicked = colorUnpicked;
         Color.RGBtoHSB(this.colorUnpicked.getRed(), this.colorUnpicked.getGreen(), this.colorUnpicked.getBlue(), hsbValsPicked);
@@ -81,34 +102,25 @@ public class BasicEdgeRenderer implements IRenderer {
     @Override
     public void setShape(Shape shape) {
 
-        if (shape == null) throw new NullPointerException("shape must not be null!");
+        if (shape == null) { throw new NullPointerException("shape must not be null!"); }
 
         this.shape = shape;
     }
 
     @Override
     public void setStroke(Stroke stroke) {
-        if (stroke == null) throw new NullPointerException("stroke must not be null!");
+        if (stroke == null) { throw new NullPointerException("stroke must not be null!"); }
         this.stroke = stroke;
     }
 
     @Override
-    public void updateState() {
+    public void animate() {
+        animator.play();
+    }
 
-
-        if (currentBrightness <= 0.5f) {
-            currentBrightness = 0.5f;
-
-        } else {
-
-            currentBrightness -= stepSize;
-        }
-
-/*        if (currentBrightness <= hsbValsUnpicked[2]) {
-            currentBrightness = hsbValsUnpicked[2];
-        } else {
-            currentBrightness -= stepSize;
-        }*/
+    @Override
+    public int animationTime() {
+        return animationTime;
     }
 
     @Override

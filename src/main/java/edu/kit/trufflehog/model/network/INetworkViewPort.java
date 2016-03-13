@@ -6,6 +6,7 @@ import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
 import edu.kit.trufflehog.util.DeepCopyable;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import org.apache.commons.collections15.Transformer;
@@ -88,4 +89,14 @@ public interface INetworkViewPort extends Layout<INode, IConnection>, DeepCopyab
     void graphIntersection(Graph<INode, IConnection> graph);
 
     void graphIntersection(Collection<INode> vertices, Collection<IConnection> edges);
+
+    /**
+     * Adds {@code l} as a listener to this graph.
+     */
+    void addGraphEventListener(GraphEventListener<INode , IConnection> l);
+
+    /**
+     * Removes {@code l} as a listener to this graph.
+     */
+    void removeGraphEventListener(GraphEventListener<INode, IConnection> l);
 }

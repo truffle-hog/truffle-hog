@@ -21,11 +21,16 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
-import edu.kit.trufflehog.model.network.graph.components.edge.*;
-import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.*;
+import edu.kit.trufflehog.model.network.graph.components.edge.StaticRenderer;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.uci.ics.jung.graph.GraphUpdater;
 
 /**
  * \brief
@@ -36,7 +41,7 @@ import edu.kit.trufflehog.model.network.graph.components.node.*;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class ReplayUpdater implements IUpdater {
+public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
 
     @Override
     public boolean update(INode node, INode update) {
@@ -94,7 +99,7 @@ public class ReplayUpdater implements IUpdater {
         multicastEdgeRendererComponent.setShape(comp.getShape());
         multicastEdgeRendererComponent.setColorUnpicked(comp.getColorUnpicked());
         multicastEdgeRendererComponent.setColorPicked(comp.getColorPicked());
-        multicastEdgeRendererComponent.setLastUpdate(comp.getLastUpdate());
+        //multicastEdgeRendererComponent.setLastUpdate(comp.getLastUpdate());
         return true;
     }
 
@@ -137,15 +142,10 @@ public class ReplayUpdater implements IUpdater {
     @Override
     public boolean update(StaticRenderer component, IRenderer instance) {
 
-        if (!(instance instanceof IRenderer)) {
-            return false;
-        }
-        final IRenderer other = (IRenderer) instance;
-
-        component.setColorPicked(other.getColorPicked());
-        component.setColorUnpicked(other.getColorUnpicked());
-        component.setShape(other.getShape());
-        component.setStroke(other.getStroke());
+        component.setColorPicked(instance.getColorPicked());
+        component.setColorUnpicked(instance.getColorUnpicked());
+        component.setShape(instance.getShape());
+        component.setStroke(instance.getStroke());
         return true;
     }
 
@@ -164,5 +164,26 @@ public class ReplayUpdater implements IUpdater {
     public boolean update(FilterPropertiesComponent filterPropertiesComponent, IComponent instance) {
         //TODO implement this
         throw new UnsupportedOperationException("Method not yet implemented!");
+    }
+
+    public boolean updateVertex(INode existingVertex, INode newVertex) {
+
+        newVertex.stream().filter(IComponent::isMutable).forEach(c -> {
+            final IComponent existing = existingVertex.getComponent(c.getClass());
+            existing.update(c, this);
+        });
+        // TODO check if really some was changed
+        return true;
+    }
+
+    @Override
+    public boolean updateEdge(IConnection existingEdge, IConnection newEdge) {
+
+        newEdge.stream().filter(IComponent::isMutable).forEach(c -> {
+            final IComponent existing = existingEdge.getComponent(c.getClass());
+            existing.update(c, this);
+        });
+        // TODO check if really some was changed
+        return true;
     }
 }

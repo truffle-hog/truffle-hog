@@ -1,18 +1,19 @@
 package edu.kit.trufflehog.model.network.recording;
 
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import org.apache.commons.collections15.Transformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 
@@ -110,6 +111,16 @@ public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
     }
 
     @Override
+    public void addGraphEventListener(GraphEventListener<INode, IConnection> l) {
+        getActiveViewPort().addGraphEventListener(l);
+    }
+
+    @Override
+    public void removeGraphEventListener(GraphEventListener<INode, IConnection> l) {
+        getActiveViewPort().removeGraphEventListener(l);
+    }
+
+    @Override
     public void initialize() {
         getActiveViewPort().initialize();
     }
@@ -175,4 +186,5 @@ public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
     public boolean isMutable() {
         return true;
     }
+
 }

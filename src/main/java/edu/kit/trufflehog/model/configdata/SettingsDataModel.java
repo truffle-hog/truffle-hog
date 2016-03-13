@@ -32,10 +32,6 @@ import org.jdom2.output.XMLOutputter;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,7 +47,7 @@ import java.util.stream.Collectors;
  * @author Julian Brendl
  * @version 1.0
  */
-class SettingsDataModel implements IConfigDataModel<StringProperty> {
+class SettingsDataModel extends ConfigDataModel<StringProperty> {
     private static final Logger logger = LogManager.getLogger(SettingsDataModel.class);
 
     private final FileSystem fileSystem;
@@ -78,6 +74,8 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
         if (settingsFile == null) {
             throw new NullPointerException("Unable to get config file");
         }
+
+        load();
     }
 
     /**
@@ -85,8 +83,7 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
      *     Loads all settings found on the hard drive into memory.
      * </p>
      */
-    @Override
-    public void load() {
+    private void load() {
         settingsMap.clear();
 
         try {
@@ -147,52 +144,11 @@ class SettingsDataModel implements IConfigDataModel<StringProperty> {
         }
 
         // If it is null, copy the config file from resources into the data/config
-        if (!configFile.exists() && !copyConfigFileToDataFolder(configFile)) {
+        if (!configFile.exists() && !copyFromResources(CONFIG_FILE_NAME, configFile)) {
             return null;
         }
 
         return configFile;
-    }
-
-    /**
-     * <p>
-     *     Copies the system_config.xml from the resources folder into the data folder.
-     * </p>
-     *
-     * @param configFile The file object to which to copy the config file
-     * @return True if the copy operation was successful, else false
-     */
-    private boolean copyConfigFileToDataFolder(final File configFile) {
-        // Set file path to the default file in resources
-        ClassLoader classLoader = getClass().getClassLoader();
-        String filePath = "edu" + File.separator + "kit" + File.separator + "trufflehog" + File.separator + "config"
-                 + File.separator + CONFIG_FILE_NAME;
-
-        // Get the file from the resources
-        File resourceFile = null;
-        URL url = classLoader.getResource(filePath);
-        if (url != null) {
-
-            // Decode from URL style to get rid of illegal characters in string like %20 etc.
-            try {
-                resourceFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                logger.error("Unable to decode URL to string", e);
-            }
-        } else {
-            logger.error("Unable to get config file from resources");
-        }
-
-        // Copy the file to data/config
-        try {
-            if (resourceFile != null) {
-                Files.copy(resourceFile.getCanonicalFile().toPath(), configFile.getCanonicalFile().toPath());
-            }
-        } catch (IOException e) {
-            logger.error("Unable to copy " + CONFIG_FILE_NAME + " from resources to data folder", e);
-            return false;
-        }
-        return true;
     }
 
     /**

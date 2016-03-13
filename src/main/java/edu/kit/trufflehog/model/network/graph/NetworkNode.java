@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 public class NetworkNode extends AbstractComposition implements Serializable, INode {
 
+
 	private final IAddress address;
 	private final int hashcode;
 
@@ -42,6 +43,7 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 		components.values().stream().forEach(component -> {
 			if (component.isMutable()) {
 
+
 				node.addComponent(component.createDeepCopy(copyCreator));
 
 			} else {
@@ -57,6 +59,7 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 	 * @return true if the update was successful and values change, false otherwise
 	 */
 	@Override
+
 	public boolean update(IComponent update, IUpdater updater) {
 
 		if (!this.equals(update)) {
@@ -67,6 +70,8 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 		final INode updateNode = (INode) update;
 
 		return updater.update(this, updateNode);
+
+
 	}
 
 	@Override
@@ -85,12 +90,19 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 		return getAddress().equals(other.getAddress());
 	}
 
-    @Override
+	@Override
     public String toString() {
 
-        return getComponent(NodeStatisticsComponent.class).toString();
+        // FIXME just for debugging check component for null
+        final NodeStatisticsComponent stc = this.getComponent(NodeStatisticsComponent.class);
 
-        //return address.toString();
+        if (stc != null) {
+
+            return this.getAddress() + " [" + this.getComponent(NodeStatisticsComponent.class).getThroughput() + "]";
+        } else {
+            return this.getAddress().toString();
+        }
+
     }
 
 

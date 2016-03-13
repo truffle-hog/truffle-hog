@@ -19,23 +19,42 @@
 package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.Main;
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
-import edu.kit.trufflehog.view.*;
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
+import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
+import edu.kit.trufflehog.interaction.GraphInteraction;
+import edu.kit.trufflehog.model.configdata.ConfigData;
+import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.recording.INetworkDevice;
+import edu.kit.trufflehog.model.network.recording.INetworkTape;
+import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkTape;
+import edu.kit.trufflehog.util.IListener;
+import edu.kit.trufflehog.view.MainToolBarController;
+import edu.kit.trufflehog.view.MainViewController;
+import edu.kit.trufflehog.view.MenuBarViewController;
+import edu.kit.trufflehog.view.NetworkViewScreen;
+import edu.kit.trufflehog.view.OverlayViewController;
+import edu.kit.trufflehog.view.RootWindowController;
 import edu.kit.trufflehog.view.controllers.IWindowController;
+import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -53,7 +72,7 @@ import java.io.File;
  */
 public class ViewBuilder {
     // General variables
-    private ConfigDataModel configDataModel;
+    private ConfigData configData;
 
     // View layers
     private final Stage primaryStage;
@@ -74,12 +93,12 @@ public class ViewBuilder {
      *     Creates the ViewBuilder, which builds the entire view.
      * </p>
      *
-     * @param configDataModel The {@link ConfigDataModel} that is necessary to save and load configurations, like
+     * @param configData The {@link ConfigData} that is necessary to save and load configurations, like
      *                        filters or settings.
      * @param primaryStage The primary stage, where everything is drawn upon.
      */
-    public ViewBuilder(final ConfigDataModel configDataModel, final Stage primaryStage) {
-        this.configDataModel = configDataModel;
+    public ViewBuilder(final ConfigData configData, final Stage primaryStage) {
+        this.configData = configData;
         this.primaryStage = primaryStage;
         this.groundView = new AnchorPane();
         this.stackPane = new StackPane();
@@ -87,9 +106,58 @@ public class ViewBuilder {
         this.monitoringView = new AnchorPane();
         this.mainViewController = new MainViewController("main_view.fxml");
 
-        if (this.primaryStage == null || this.configDataModel == null) {
-            throw new NullPointerException("primaryStage and configDataModel shouldn't be null.");
+        if (this.primaryStage == null || this.configData == null) {
+            throw new NullPointerException("primaryStage and configData shouldn't be null.");
         }
+    }
+
+    private FlowPane buildReplayFunction(INetworkDevice networkDevice,
+                                     INetwork liveNetwork, INetworkViewPortSwitch viewPortSwitch) {
+
+        final INetworkTape tape = new NetworkTape(20);
+
+        final Slider slider = new Slider(0, 100, 0);
+        slider.setTooltip(new Tooltip("replay"));
+        tape.getCurrentReadingFrameProperty().bindBidirectional(slider.valueProperty());
+        tape.getFrameCountProperty().bindBidirectional(slider.maxProperty());
+
+        final ToggleButton liveButton = new ToggleButton("Live");
+        liveButton.setDisable(true);
+        final ToggleButton playButton = new ToggleButton("Play");
+        playButton.setDisable(false);
+        final ToggleButton stopButton = new ToggleButton("Stop");
+        stopButton.setDisable(false);
+        final ToggleButton recButton = new ToggleButton("Rec");
+        recButton.setDisable(false);
+
+        liveButton.setOnAction(h -> {
+            networkDevice.goLive(liveNetwork, viewPortSwitch);
+            liveButton.setDisable(true);
+        });
+
+        playButton.setOnAction(handler -> {
+            networkDevice.play(tape, viewPortSwitch);
+            liveButton.setDisable(false);
+        });
+
+        final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);
+        recButton.setOnAction(h -> startRecordCommand.execute());
+
+        slider.setStyle("-fx-background-color: transparent");
+
+        final ToolBar toolBar = new ToolBar();
+        toolBar.getItems().add(stopButton);
+        toolBar.getItems().add(playButton);
+        toolBar.getItems().add(recButton);
+        toolBar.getItems().add(liveButton);
+        toolBar.setStyle("-fx-background-color: transparent");
+        //  toolBar.getItems().add(slider);
+
+        final FlowPane flowPane = new FlowPane();
+
+        flowPane.getChildren().addAll(toolBar, slider);
+
+        return flowPane;
     }
 
     /**
@@ -99,11 +167,18 @@ public class ViewBuilder {
      * </p>
      *
      * @param viewPort The viewport of the graph that should be drawn here
+     * @param viewPort
+     * @param userCommandIListener
      */
-    public void build(INetworkViewPort viewPort) {
+    public void build(INetworkViewPortSwitch viewPort, INetwork liveNetwork, INetworkDevice device, IListener<IUserCommand> userCommandIListener) {
         loadFonts();
 
-        final Node node = new NetworkViewScreen(viewPort, 10);
+        final IListener<IUserCommand> commandListener = userCommandIListener;
+
+        final NetworkGraphViewController node = new NetworkViewScreen(viewPort, 10);
+        node.addListener(commandListener);
+        node.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+
 
         final MenuBarViewController menuBar = buildMenuBar();
 
@@ -138,13 +213,17 @@ public class ViewBuilder {
         final Scene mainScene = new Scene(mainViewController);
         final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
 
+
+
+       // mainViewController.setCenter(primaryView);
+        mainViewController.setBottom(buildReplayFunction(device, liveNetwork, viewPort));
         mainViewController.setCenter(groundView);
 
         rootWindow.show();
 
         // Set min. dimensions
-        primaryStage.setMinWidth(720d);
-        primaryStage.setMinHeight(480d);
+        primaryStage.setMinWidth(950d);
+        primaryStage.setMinHeight(650d);
 
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
@@ -195,7 +274,7 @@ public class ViewBuilder {
      */
     private void buildFilterMenuOverlay() {
         // Build filter menu
-        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configDataModel, stackPane);
+        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configData, stackPane);
         filterOverlayViewController = filterOverlayMenu.setUpOverlayViewController();
         tableView = filterOverlayMenu.setUpTableView();
         BorderPane borderPane = filterOverlayMenu.setUpMenu(tableView);
