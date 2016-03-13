@@ -15,7 +15,7 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package edu.kit.trufflehog;
+package edu.kit.trufflehog.presenter.nativebuild;
 
 /**
  * <p>
@@ -24,8 +24,6 @@ package edu.kit.trufflehog;
  * @author Julian Brendl
  * @version 1.0
  */
-public class Debug {
-    public static void main(String[] args) {
-        System.out.println("sdff");
-    }
+public interface NativeBuilder {
+    void build();
 }

@@ -21,12 +21,12 @@ root {
 
 .overlaybackground {
     -fx-background-color: #21252B;
-    -fx-opacity: 100%;
+    -fx-opacity: 95%;
     -fx-background-radius: 2;
 }
 
 .text {
-    -fx-fill: white;
+    -fx-fill: #9BA2B1;
     -fx-opacity: 100%;
     -fx-font-size: 90%;
     -fx-font-weight: 100;
@@ -35,7 +35,7 @@ root {
 
 .table-view {
     -fx-background-color:#282C34;
-    -fx-opacity: 100%;
+    -fx-opacity: 95%;
     -fx-background-insets: 0, 0, 0;
     -fx-padding: 1;
     -fx-border-radius: 10 10 0 0;

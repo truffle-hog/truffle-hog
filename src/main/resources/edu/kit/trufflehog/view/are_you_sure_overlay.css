@@ -1,4 +1,3 @@
-
 /*
  * This file is part of TruffleHog.
  *
@@ -16,33 +15,15 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.menu-bar {
-    -fx-background-color: #21252B;
-    -fx-opacity: 100;
-}
 
-.menu {
-    -fx-accent: #528BFF;
-    -fx-focus-color: #528BFF;
-}
-
-
-.menu .label {
-    -fx-text-fill: #9BA2B1;
+.background {
+    -fx-background-color: #282C34;
     -fx-opacity: 100%;
-    -fx-font-size: 90%;
-    -fx-font-weight: 100;
-    -fx-font-family: 'Droid Sans';
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
 }
 
-.menu:showing .label {
-    -fx-text-fill: #21252B;
-}
-
-.menu-item .label {
-    -fx-text-fill: #21252B;
-    -fx-opacity: 100%;
-    -fx-font-size: 90%;
-    -fx-font-weight: 100;
-    -fx-font-family: 'Droid Sans';
+.anchor-pane {
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
 }

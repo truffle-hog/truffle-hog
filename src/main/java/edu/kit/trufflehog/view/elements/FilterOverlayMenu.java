@@ -17,28 +17,32 @@
 
 package edu.kit.trufflehog.view.elements;
 
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
-import edu.kit.trufflehog.model.filter.FilterType;
+import edu.kit.trufflehog.view.AddFilterMenuViewController;
 import edu.kit.trufflehog.view.OverlayViewController;
-import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
+import java.awt.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -52,23 +56,27 @@ import java.util.Map;
 public class FilterOverlayMenu {
     private static final Logger logger = LogManager.getLogger();
 
-    private ObservableList<FilterInput> data;
-    private ConfigDataModel configDataModel;
+    private final ObservableList<FilterInput> data;
+    private final ConfigData configData;
+    private final AddFilterMenuViewController addFilterOverlayMenu;
 
     /**
      * <p>
-     *     Creates a new FilterOverlayMenu with a {@link ConfigDataModel} object. This is needed to access the database
+     *     Creates a new FilterOverlayMenu with a {@link ConfigData} object. This is needed to access the database
      *     in order to save/remove/update filters.
      * </p>
      *
-     * @param configDataModel The {@link ConfigDataModel} object used to save/remove/update filters to the database.
+     * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
+     * @param stackPane The groundView of the app on which the add filter menu should be drawn.
      */
-    public FilterOverlayMenu(ConfigDataModel configDataModel) {
-        this.configDataModel = configDataModel;
+    public FilterOverlayMenu(ConfigData configData, StackPane stackPane) {
+        this.configData = configData;
         this.data = FXCollections.observableArrayList();
+        this.addFilterOverlayMenu = new AddFilterMenuViewController(stackPane, "add_filter_menu_overlay.fxml", this,
+                configData);
 
         // Load existing filters from hard drive into filter menu
-        Map<String, FilterInput> filterInputMap = configDataModel.getAllLoadedFilters();
+        Map<String, FilterInput> filterInputMap = configData.getAllLoadedFilters();
         Collection<FilterInput> filterInputList = filterInputMap.values();
         data.addAll(filterInputList);
     }
@@ -93,48 +101,20 @@ public class FilterOverlayMenu {
      */
     public TableView setUpTableView() {
         // Set up table view
-        TableView tableView = new TableView();
+        final TableView tableView = new TableView();
         tableView.setEditable(true);
+        tableView.setMinWidth(452);
+        tableView.setMinHeight(280);
 
-        // Set up filter column
-        final TableColumn nameColumn = new TableColumn("Filter");
-        nameColumn.setMinWidth(158);
-        tableView.getColumns().add(nameColumn);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("name"));
+        // Set up columns
+        setUpFilterColumn(tableView);
+        setUpTypeColumn(tableView);
+        setUpOriginColumn(tableView);
+        setUpColorColumn(tableView);
+        setUpActiveColumn(tableView);
 
-        // Set up type column
-        final TableColumn typeColumn = new TableColumn("Type");
-        typeColumn.setMinWidth(90);
-        tableView.getColumns().add(typeColumn);
-        typeColumn.setCellValueFactory(new PropertyValueFactory<FilterInput, String>("type"));
-
-        // Set up active column
-        TableColumn activeColumn = new TableColumn<>("Active");
-        activeColumn.setMinWidth(80);
-        tableView.getColumns().add(activeColumn);
-        activeColumn.setSortable(false);
-
-        // Set up callback for CheckBoxTableCell
-        activeColumn.setCellFactory(tableColumn -> {
-            final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
-            checkBoxTableCell.setSelectedStateCallback(index -> {
-                final FilterInput filterInput = (FilterInput) tableView.getItems().get(index);
-                BooleanProperty booleanProperty = filterInput.getBooleanProperty();
-
-                // Make sure the filter is updated in the database when the active status changes
-                booleanProperty.addListener((observable, oldValue, newValue) -> {
-                    configDataModel.updateFilterInput(filterInput);
-                    logger.debug("Updated FilterInput: " + filterInput.getName() + " to table view and database.");
-                });
-
-                return booleanProperty;
-            });
-
-            return checkBoxTableCell;
-        });
-
+        // Insert data from database into table
         tableView.setItems(data);
-        tableView.setMinWidth(330);
 
         // Set select/deselect on mouse click
         tableView.setRowFactory(tableViewLambda -> {
@@ -154,6 +134,149 @@ public class FilterOverlayMenu {
 
     /**
      * <p>
+     *     Create the filter column, which holds the name of the filter and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpFilterColumn(TableView tableView) {
+        // Set up filter column
+        final TableColumn filterColumn = new TableColumn("Filter");
+        filterColumn.setMinWidth(150);
+        filterColumn.setPrefWidth(150);
+        tableView.getColumns().add(filterColumn);
+        filterColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, String>,
+                ObservableValue<String>>() {
+
+            // Set up callback for filter property
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
+                return p.getValue().getNameProperty();
+            }
+        });
+    }
+
+    /**
+     * <p>
+     *     Create the type column, which holds the type of the filter and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpTypeColumn(TableView tableView) {
+        // Set up type column
+        final TableColumn typeColumn = new TableColumn("Type");
+        typeColumn.setMinWidth(90);
+        typeColumn.setPrefWidth(90);
+        tableView.getColumns().add(typeColumn);
+        typeColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, String>,
+                ObservableValue<String>>() {
+
+            // Set up callback for type property
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
+                return p.getValue().getTypeProperty();
+            }
+        });
+    }
+
+    /**
+     * <p>
+     *     Create the origin column, which holds the type of the origin and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpOriginColumn(TableView tableView) {
+        // Set up origin column
+        final TableColumn originColumn = new TableColumn("Filtered By");
+        originColumn.setMinWidth(90);
+        originColumn.setPrefWidth(90);
+        tableView.getColumns().add(originColumn);
+        originColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, String>,
+                ObservableValue<String>>() {
+
+            // Set up callback for origin property
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
+                return p.getValue().getOriginProperty();
+            }
+        });
+    }
+
+    /**
+     * <p>
+     *     Create the color column, which holds the color and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpColorColumn(TableView tableView) {
+        final TableColumn colorColumn = new TableColumn("Color");
+        colorColumn.setMinWidth(50);
+        colorColumn.setPrefWidth(50);
+        colorColumn.setSortable(false);
+        tableView.getColumns().add(colorColumn);
+
+        // Set the cell value factory for the color
+        colorColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, Color>,
+                ObservableValue<Color>>() {
+
+            // Set up callback for origin property
+            public ObservableValue<Color> call(TableColumn.CellDataFeatures<FilterInput, Color> p) {
+                return p.getValue().getColorProperty();
+            }
+        });
+
+        // Set the cell factory for the color
+        colorColumn.setCellFactory(param -> new TableCell<FilterInput, Color>() {
+            Rectangle rectangle = new Rectangle();
+
+            @Override
+            public void updateItem(Color item, boolean empty) {
+                // Add the color to the row
+                if (item != null) {
+                    HBox hBox = new HBox();
+                    hBox.getChildren().add(rectangle);
+                    rectangle.setHeight(20);
+                    rectangle.setWidth(30);
+                    hBox.setAlignment(Pos.CENTER);
+
+                    // Copy to JavaFX color
+                    javafx.scene.paint.Color color = javafx.scene.paint.Color.rgb(item.getRed(), item.getGreen(),
+                            item.getBlue(), 1);
+                    rectangle.setFill(color);
+
+                    setGraphic(hBox);
+                }
+
+                // Remove the color if the row has been removed
+                if (empty) {
+                    setGraphic(null);
+                }
+            }
+        });
+    }
+
+    /**
+     * <p>
+     *     Create the active column, which holds the activity state and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpActiveColumn(TableView tableView) {
+        // Set up active column
+        TableColumn activeColumn = new TableColumn<>("Active");
+        activeColumn.setMinWidth(70);
+        activeColumn.setPrefWidth(70);
+        tableView.getColumns().add(activeColumn);
+        activeColumn.setSortable(false);
+
+        // Set up callback for CheckBoxTableCell
+        activeColumn.setCellFactory(tableColumn -> {
+            final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
+            checkBoxTableCell.setSelectedStateCallback(index -> ((FilterInput) tableView.getItems().get(index))
+                    .getActiveProperty());
+
+            return checkBoxTableCell;
+        });
+    }
+
+    /**
+     * <p>
      *     Sets up the OverlayMenu with all buttons from the existing table view.
      * </p>
      *
@@ -162,44 +285,66 @@ public class FilterOverlayMenu {
      */
     public BorderPane setUpMenu(TableView tableView) {
         // Set up add button
-        Button addButton = new ImageButton("add.png");
-        addButton.setOnAction(actionEvent -> {
-            FilterInput filterInput = new FilterInput("Filter A", FilterType.BLACKLIST, null, null);
-            addFilter(filterInput);
-            filterInput = new FilterInput("Filter B", FilterType.BLACKLIST, null, null);
-            addFilter(filterInput);
-        });
+        final Button addButton = new ImageButton("add.png");
+        addButton.setOnAction(actionEvent -> addFilterOverlayMenu.showMenu());
         addButton.setScaleX(0.5);
         addButton.setScaleY(0.5);
 
         // Set up remove button
-        Button removeButton = new ImageButton("remove.png");
+        final Button removeButton = new ImageButton("remove.png");
         removeButton.setOnAction(actionEvent -> {
-            FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
+            final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             if (!data.isEmpty() && filterInput != null) {
                 data.remove(filterInput);
-                configDataModel.removeFilterInput(filterInput);
+                configData.removeFilterInput(filterInput);
                 logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
             }
         });
         removeButton.setScaleX(0.5);
         removeButton.setScaleY(0.5);
 
+
+        // Set up edit button
+        final Button editButton = new ImageButton("edit.png");
+        editButton.setOnAction(actionEvent -> {
+            final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
+            if (!data.isEmpty() && filterInput != null) {
+                addFilterOverlayMenu.showMenu(filterInput);
+            }
+        });
+        editButton.setScaleX(0.45);
+        editButton.setScaleY(0.45);
+
         // Set up components on overlay
-        BorderPane borderPane = new BorderPane();
+        final BorderPane borderPane = new BorderPane();
         borderPane.setCenter(tableView);
         tableView.setMinHeight(300);
 
         AnchorPane anchorPane = new AnchorPane();
-        anchorPane.getChildren().addAll(addButton, removeButton);
+        anchorPane.getChildren().addAll(addButton, removeButton, editButton);
         borderPane.setBottom(anchorPane);
 
         AnchorPane.setBottomAnchor(addButton, 0d);
         AnchorPane.setRightAnchor(addButton, 0d);
         AnchorPane.setBottomAnchor(removeButton, 0d);
         AnchorPane.setRightAnchor(removeButton, 30d);
+        AnchorPane.setBottomAnchor(editButton, 0d);
+        AnchorPane.setRightAnchor(editButton, 60d);
 
         return borderPane;
+    }
+
+    /**
+     * <p>
+     *     Gets a list with all names of all filters currently loaded.
+     * </p>
+     *
+     * @return A list with all names of all filters currently loaded.
+     */
+    public List<String> getAllFilterNames() {
+        return data.stream()
+                .map(FilterInput::getName)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -212,7 +357,7 @@ public class FilterOverlayMenu {
     public void addFilter(FilterInput filterInput) {
         if (filterInput != null) {
             data.add(filterInput);
-            configDataModel.addFilterInput(filterInput);
+            configData.addFilterInput(filterInput);
 
             logger.debug("Added FilterInput: " + filterInput.getName() + " to table view and database.");
         }

@@ -17,117 +17,101 @@
 
 package edu.kit.trufflehog.model.configdata;
 
-import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.model.filter.FilterInput;
-import javafx.beans.property.Property;
-import javafx.beans.property.StringProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.file.Files;
 
 /**
  * <p>
- *     The ConfigDataModel saves all configurations of TruffleHog into an xml file and continuously updates it.
- *     This is done through the JavaFX {@link Property} object using its bindings. Further more, filter options are
- *     stored separately from the xml file. At the start of the program, everything is loaded from the hard drive into
- *     memory.
+ *     The ConfigDataModel is an abstraction to any "settings fetch service". In other words, any class that
+ *     loads settings from the hard drive should extend this class. Optionally you can pass a specific class to
+ *     the get method to clarify of what type you want your result to be, so that you can then safely convert to that
+ *     type.
+ * </p>
+ * <p>
+ *     When extendin this class and there is no need for the class type, still implement the
+ *     {@link ConfigDataModel#get(Class classType, String key)} method and ignore the additional parameter. Others
+ *     can call on the {@link ConfigDataModel#get(String key)} method and your method will still be executed.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public class ConfigDataModel implements IConfigData {
-    private final IConfigDataModel<StringProperty> settingsDataModel;
-    private final FilterDataModel filterDataModel;
-    private final ExecutorService executorService;
+abstract class ConfigDataModel<T> {
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * <p>
-     *     Creates a new ConfigDataModel object.
+     *     Gets the value mapped to the given key in the currently loaded configuration, or null if the key
+     *     does not exist. The classType parameter ensures that the returned object has a type of that class. That way
+     *     it is safe to convert the object to that type if need be.
      * </p>
      *
-     * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
-     * @param executorService The executor service used by TruffleHog to manage the multi-threading.
-     * @throws NullPointerException Thrown when it was impossible to get config data for some reason.
+     * @param classType The type of the object. For example, "007" could be of type java.lang.Integer, that way
+     *                  one knows that "007" can be parsed into a real integer value of 007.
+     * @param key The key of the value that should be retrieved.
+     * @return The value mapped to the key, if it exists, else null.
      */
-    public ConfigDataModel(final FileSystem fileSystem, final ExecutorService executorService) throws NullPointerException{
-        this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
-        this.filterDataModel = new FilterDataModel(fileSystem);
-        this.executorService = executorService;
+    abstract T get(Class classType, String key);
+
+    /**
+     * <p>
+     *     Gets the value mapped to the given key in the currently loaded configuration, or null if the key
+     *     does not exist.
+     * </p>
+     *
+     * @param key The key of the value that should be retrieved.
+     * @return The value mapped to the key, if it exists, else null.
+     */
+    T get(String key) {
+        return get(null, key);
     }
 
     /**
      * <p>
-     *     Updates a {@link FilterInput} entry in the database by deleting it and adding it again.
+     *     Copies the a file from the resources folder to the target file.
      * </p>
      *
-     * @param filterInput The {@link FilterInput} to update.
+     * @param fileName The name of the file to copy
+     * @param targetFile The file object to which to copy the file
+     * @return True if the copy operation was successful, else false
      */
-    public void updateFilterInput(final FilterInput filterInput) {
-        executorService.submit(() -> filterDataModel.updateFilterInDatabase(filterInput));
-    }
+    boolean copyFromResources(final String fileName, final File targetFile) {
+        // Set file path to the default file in resources
+        ClassLoader classLoader = getClass().getClassLoader();
+        String filePath = "edu" + File.separator + "kit" + File.separator + "trufflehog" + File.separator + "config"
+                + File.separator + fileName;
 
-    /**
-     * <p>
-     *     Adds a {@link FilterInput} to the database.
-     * </p>
-     *
-     * @param filterInput The {@link FilterInput} to add to the database.
-     */
-    public void addFilterInput(final FilterInput filterInput) {
-        executorService.submit(() -> filterDataModel.addFilterToDatabase(filterInput));
-    }
+        // Get the file from the resources
+        File resourceFile = null;
+        URL url = classLoader.getResource(filePath);
+        if (url != null) {
 
-    /**
-     * <p>
-     *     Removes a {@link FilterInput} from the database.
-     * </p>
-     *
-     * @param filterInput The {@link FilterInput} to remove from the database.
-     */
-    public void removeFilterInput(final FilterInput filterInput) {
-        executorService.submit(() -> filterDataModel.removeFilterFromDatabase(filterInput));
-    }
+            // Decode from URL style to get rid of illegal characters in string like %20 etc.
+            try {
+                resourceFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                logger.error("Unable to decode URL to string", e);
+            }
+        } else {
+            logger.error("Unable to get file from resources");
+        }
 
-    /**
-     * <p>
-     *     Gets all loaded {@link FilterInput} objects. If none have been loaded yet, the method loads them first.
-     * </p>
-     *
-     * @return The list of loaded {@link FilterInput} objects.
-     */
-    public Map<String, FilterInput> getAllLoadedFilters() {
-        return filterDataModel.getAllFilters();
-    }
-
-    /**
-     * <p>
-     *     Loads all settings that are stored on the hard drive into the program.
-     * </p>
-     */
-    public void load() {
-        settingsDataModel.load();
-        filterDataModel.load();
-    }
-
-    @Override
-    public StringProperty getSetting(final Class typeClass, final String key) {
-        return settingsDataModel.get(typeClass, key);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     *     The given name must be the same name as the name that is stored inside the name parameter of the
-     *     {@link FilterInput} object.
-     * </p>
-     *
-     * @param name The name that belongs to the FilterInput object that should be retrieved.
-     * @return The FilterInput object that has the matching name.
-     */
-    @Override
-    public FilterInput getFilter(final String name) {
-        return filterDataModel.get(name);
+        // Copy the file to data/config
+        try {
+            if (resourceFile != null) {
+                Files.copy(resourceFile.getCanonicalFile().toPath(), targetFile.getCanonicalFile().toPath());
+            }
+        } catch (IOException e) {
+            logger.error("Unable to copy " + fileName + " from resources to target file: " + targetFile.getName(), e);
+            return false;
+        }
+        return true;
     }
 }

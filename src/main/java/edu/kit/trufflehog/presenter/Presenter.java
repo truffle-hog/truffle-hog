@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.model.configdata.ConfigDataModel;
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
@@ -17,7 +17,14 @@ import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
+import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
+import edu.kit.trufflehog.model.network.recording.*;
+import edu.kit.trufflehog.service.executor.CommandExecutor;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
@@ -42,11 +49,12 @@ public class Presenter {
     private static final Logger logger = LogManager.getLogger();
 
     private static Presenter presenter;
-    private final ConfigDataModel configDataModel;
+    private final ConfigData configData;
     private final FileSystem fileSystem;
     private final ViewBuilder viewBuilder;
     private final ScheduledExecutorService executorService;
     private final Stage primaryStage;
+    private TruffleReceiver truffleReceiver;
     private INetworkViewPort liveViewPort;
     private INetworkViewPort viewPort;
     private INetworkViewPortSwitch viewPortSwitch;
@@ -63,7 +71,6 @@ public class Presenter {
      * </p>
      */
     public Presenter(Stage primaryStage) {
-
         this.primaryStage = primaryStage;
 
         if (this.primaryStage == null) {
@@ -73,16 +80,19 @@ public class Presenter {
         this.fileSystem = new FileSystem();
         this.executorService = new LoggedScheduledExecutor(10);
 
-        ConfigDataModel configDataTemp;
+        ConfigData configDataTemp;
         try {
-            configDataTemp = new ConfigDataModel(fileSystem, executorService);
+            configDataTemp = new ConfigData(fileSystem, executorService);
         } catch (NullPointerException e) {
             configDataTemp = null;
             logger.error("Unable to set config data model", e);
         }
-        configDataModel = configDataTemp;
+        configData = configDataTemp;
 
-        this.viewBuilder = new ViewBuilder(configDataModel, primaryStage);
+
+        primaryStage.setOnCloseRequest(event -> finish());
+
+        this.viewBuilder = new ViewBuilder(configData, primaryStage);
     }
 
     /**
@@ -145,34 +155,44 @@ public class Presenter {
         // Tell the network observation device to start recording the
         // given network with 25fps on the created tape
 
-        final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
-        //final CommandExecutor commandExecutor = new CommandExecutor();
-        //commandExecutorService.execute(commandExecutor);
-
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
+
         // TODO change this to real filter
+        // TODO register the truffleReceiver somewhere so we can start or stop it.
         final TruffleReceiver truffleReceiver = new UnixSocketReceiver(writingPortSwitch, node -> System.out.println("Dummy filter"));
                 //new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
         truffleFetchService.execute(truffleReceiver);
-
         truffleReceiver.connect();
 
-        //final TruffleExecutor executor = new TruffleExecutor();
-
+        // Initialize the command executor and register it.
+        final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
+        final CommandExecutor commandExecutor = new CommandExecutor();
         commandExecutorService.execute(commandExecutor);
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 
-        //networkDevice.record(liveNetwork, tape, 20);
-
         // play that ongoing recording on the given viewportswitch
         //networkDevice.play(tape, viewPortSwitch);
-
-
 
         // track the live network on the given viewportswitch
         networkDevice.goLive(liveNetwork, viewPortSwitch);
 
         viewPort = viewPortSwitch;
+    }
+
+    /**
+     * This method shuts down any services that are still running properly.
+     */
+    public void finish() {
+        // Exit the view
+        Platform.exit();
+
+        // Disconnect the truffleReceiver
+        if (truffleReceiver != null) {
+            truffleReceiver.disconnect();
+        }
+
+        // Shut down the system
+        System.exit(0);
     }
 
 

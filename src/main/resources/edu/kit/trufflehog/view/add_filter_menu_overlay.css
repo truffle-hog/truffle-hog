@@ -1,4 +1,3 @@
-
 /*
  * This file is part of TruffleHog.
  *
@@ -16,33 +15,58 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.menu-bar {
-    -fx-background-color: #21252B;
-    -fx-opacity: 100;
-}
-
-.menu {
-    -fx-accent: #528BFF;
+.background {
+    -fx-background-color: #282C34;
+    -fx-opacity: 100%;
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
     -fx-focus-color: #528BFF;
 }
 
+.title_text {
+    -fx-fill: #9BA2B1;
+    -fx-opacity: 100%;
+    -fx-font-size: 130%;
+    -fx-font-weight: 200;
+    -fx-font-family: 'Droid Sans';
+}
 
-.menu .label {
+.body_text {
+    -fx-fill: #9BA2B1;
+    -fx-opacity: 100%;
+    -fx-font-size: 110%;
+    -fx-font-weight: 200;
+    -fx-font-family: 'Droid Sans';
+}
+
+.error_text {
+    -fx-fill: red;
+    -fx-opacity: 100%;
+    -fx-font-size: 110%;
+    -fx-font-weight: 200;
+    -fx-font-family: 'Droid Sans';
+}
+
+.text {
+    -fx-opacity: 100%;
+    -fx-font-size: 100%;
+    -fx-font-weight: 200;
+    -fx-font-family: 'Droid Sans';
+}
+
+.line_underline {
+    -fx-stroke: #9BA2B1;
+}
+
+
+.action_button {
+    -fx-background-color: #9BA2B1;
+    -fx-text-fill: #282C34;
+}
+
+.help_button {
+    -fx-background-color: #282C34;
+    -fx-border-color: #9BA2B1;
+    -fx-border-radius: 5;
     -fx-text-fill: #9BA2B1;
-    -fx-opacity: 100%;
-    -fx-font-size: 90%;
-    -fx-font-weight: 100;
-    -fx-font-family: 'Droid Sans';
-}
-
-.menu:showing .label {
-    -fx-text-fill: #21252B;
-}
-
-.menu-item .label {
-    -fx-text-fill: #21252B;
-    -fx-opacity: 100%;
-    -fx-font-size: 90%;
-    -fx-font-weight: 100;
-    -fx-font-family: 'Droid Sans';
 }

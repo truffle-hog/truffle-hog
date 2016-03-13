@@ -1,5 +1,7 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
+import edu.kit.trufflehog.model.network.IPAddress;
+import edu.kit.trufflehog.model.network.MacAddress;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +20,7 @@ public class TruffleTest {
 
     @Before
     public void setUp() throws Exception {
-        truffle = new Truffle(0x00, 0x01);
+        truffle = new Truffle();
     }
 
     @After
@@ -28,12 +30,31 @@ public class TruffleTest {
 
     /**
      * <p>
+     *     This tests the buildTruffle method and checks if the values are properly stored.
+     *     Unfortunately this relies on the MacAddress and IPAddress classes.
+     * </p>
+     * @throws Exception
+     */
+    @Test
+    public void buildTruffle_stores_values_correctly() throws Exception {
+        final Truffle truffle = Truffle.buildTruffle(1, 2, 3, 4, "test", (short) 5);
+
+        assertEquals(new MacAddress(1), truffle.getAttribute(MacAddress.class, "sourceMacAddress"));
+        assertEquals(new MacAddress(2), truffle.getAttribute(MacAddress.class, "destMacAddress"));
+        assertEquals(new IPAddress(3), truffle.getAttribute(IPAddress.class, "sourceIPAddress"));
+        assertEquals(new IPAddress(4), truffle.getAttribute(IPAddress.class, "destIPAddress"));
+        assertEquals("test", truffle.getAttribute(String.class, "deviceName"));
+        assertEquals(new Short((short) 5), truffle.getAttribute(Short.class, "etherType"));
+    }
+
+    /**
+     * <p>
      *     Tests if the Truffle stores different values correctly.
      * </p>
      * @throws Exception
      */
     @Test
-    public void testSetAndGetAttribute() throws Exception {
+    public void getAttribute_returns_same_value_set_by_setAttribute() throws Exception {
         truffle.setAttribute(Integer.class, "myInt", 5);
         truffle.setAttribute(Integer.class, "mySecondInt", 42);
         truffle.setAttribute(String.class, "myInt", "Drölf");
@@ -52,12 +73,12 @@ public class TruffleTest {
      * @throws Exception
      */
     @Test
-    public void testGetAttribute_ReturnsNullIfNoElementFound() throws Exception {
+    public void getAttribute_returns_null_if_no_element_found() throws Exception {
         assertNull(truffle.getAttribute(Integer.class, "thisShouldNotExist"));
     }
 
     @Test
-    public void testSetAttribute_setSameValueTwice() throws Exception {
+    public void setAttribute_returns_old_value_and_overwrites_with_new_value() throws Exception {
         truffle.setAttribute(Integer.class, "myInt", 42);
         assertEquals(new Integer(42), truffle.setAttribute(Integer.class, "myInt", 21));
 

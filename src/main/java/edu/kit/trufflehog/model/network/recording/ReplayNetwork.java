@@ -6,6 +6,8 @@ import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.INetworkReadingPort;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.filter.IFilter;
+import edu.kit.trufflehog.model.network.*;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -340,6 +342,14 @@ public class ReplayNetwork implements INetwork {
             }*/
             delegate.getGraph().addVertex(node);
             idNodeMap.put(node.getAddress(), node);
+        }
+
+        @Override
+        public void applyFilter(IFilter filter) {
+            /*for (INode node : delegate.getVertices()) {
+                filter.check(node);
+            }*/
+            //nothing to do here
         }
 
         @Override

@@ -51,10 +51,10 @@ import java.util.Map;
 /**
  * Created by jan on 13.01.16.
  */
-public class NetworkViewScreen extends NetworkGraphViewController implements ItemListener, javafx.beans.value.ChangeListener<INetworkViewPort> {
+public class NetworkViewScreen extends NetworkGraphViewController implements ItemListener {
 
     private static final Logger logger = LogManager.getLogger(NetworkViewScreen.class);
-    
+
 	private FXVisualizationViewer<INode, IConnection> jungView;
 
 	private INetworkViewPort viewPort;
@@ -72,8 +72,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 	public NetworkViewScreen(INetworkViewPort port, long refreshRate) {
 
         refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
-            //refresh();
-            //Platform.runLater(() -> repaint());
             repaint();
         }));
 
@@ -127,6 +125,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		initRenderers();
 
 		jungView.setBackground(new Color(0x3e4451));
+		//jungView.setBackground(new Color(0xE8EAF6));
 		//jungView.setBackground(new Color(0x5e6d67));
 		jungView.setPreferredSize(new Dimension(350, 350));
 		// Show vertex and edge labels
@@ -143,7 +142,9 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getAddress().toString());
 		//jungView.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
-        jungView.getRenderContext().setEdgeLabelTransformer(edge -> String.valueOf(edge.getComponent(EdgeStatisticsComponent.class).getTraffic()));
+
+		// TODO null check for component
+		jungView.getRenderContext().setEdgeLabelTransformer(edge -> String.valueOf(edge.getComponent(EdgeStatisticsComponent.class).getTraffic()));
 
 /*		jungView.getRenderContext().setVertexFillPaintTransformer(
                 new PickableVertexPaintTransformer<>(
@@ -197,8 +198,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             int currentSize = statComp.getThroughput();
             long maxSize = viewPort.getMaxThroughput();
 
-			//logger.debug("current size: " + currentSize + " - max size: " + maxSize);
-
             double relation = (double) currentSize / (double) maxSize;
             double sizeMulti = (50.0 * relation) + 10;
             return new Ellipse2D.Double(-sizeMulti, -sizeMulti, 2*sizeMulti, 2*sizeMulti);
@@ -243,8 +242,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		jungView.getRenderContext().setEdgeDrawPaintTransformer(iConnection -> {
 
             final ViewComponent viewComponent = iConnection.getComponent(ViewComponent.class);
-
-			//viewComponent.getRenderer().updateState();
 
             if (getPickedEdgeState().isPicked(iConnection)) {
                 return viewComponent.getRenderer().getColorPicked();
@@ -484,12 +481,5 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
         // else if ItemEvent is Connection Selection
 
 		//throw new UnsupportedOperationException("Operation not implemented yet");
-	}
-
-	@Override
-	public void changed(ObservableValue<? extends INetworkViewPort> observable, INetworkViewPort oldValue, INetworkViewPort newValue) {
-
-		repaint();
-
 	}
 }

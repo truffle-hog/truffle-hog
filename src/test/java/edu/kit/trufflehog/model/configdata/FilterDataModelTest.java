@@ -19,7 +19,9 @@ package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.FilterOrigin;
 import edu.kit.trufflehog.model.filter.FilterType;
+import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -47,6 +50,7 @@ import static org.mockito.Mockito.when;
  */
 public class FilterDataModelTest {
     private FileSystem fileSystem;
+    private ExecutorService executorService;
     private FilterDataModel filterDataModel;
     private File databaseFile;
 
@@ -60,11 +64,11 @@ public class FilterDataModelTest {
     @Before
     public void setUp() throws Exception {
         this.databaseFile = new File("./src/test/resources/data/config/filters.sql");
-
+        this.executorService = new LoggedScheduledExecutor(10);
         this.fileSystem = mock(FileSystem.class);
         when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
         when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config"));
-        this.filterDataModel = new FilterDataModel(fileSystem);
+        this.filterDataModel = new FilterDataModel(fileSystem, executorService);
     }
 
     /**
@@ -76,6 +80,7 @@ public class FilterDataModelTest {
      */
     @After
     public void tearDown() throws Exception {
+        executorService.shutdownNow();
         if (databaseFile.exists()) {
             FileUtils.forceDelete(databaseFile);
         }
@@ -98,11 +103,13 @@ public class FilterDataModelTest {
         for (int i = 0; i < size; i++) {
             FilterInput filterInput = generateRandomFilterInput();
             filterInputs.add(filterInput);
-            filterDataModel.addFilterToDatabase(filterInput);
+            filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
         }
 
+        // Wait for all threads to finish
+        Thread.sleep(1000);
+
         // Retrieve them
-        filterDataModel.load();
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -117,8 +124,11 @@ public class FilterDataModelTest {
             filterDataModel.updateFilterInDatabase(filterInput);
         }
 
+        // Wait for all threads to finish
+        Thread.sleep(5000);
+
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -144,11 +154,14 @@ public class FilterDataModelTest {
         for (int i = 0; i < size; i++) {
             FilterInput filterInput = generateRandomFilterInput();
             filterInputs.add(filterInput);
-            filterDataModel.addFilterToDatabase(filterInput);
+            filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
         }
 
+        // Wait for all threads to finish
+        Thread.sleep(1000);
+
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -174,11 +187,14 @@ public class FilterDataModelTest {
         for (int i = 0; i < size; i++) {
             FilterInput filterInput = generateRandomFilterInput();
             filterInputs.add(filterInput);
-            filterDataModel.addFilterToDatabase(filterInput);
+            filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
         }
 
+        // Wait for all threads to finish
+        Thread.sleep(1000);
+
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -187,10 +203,13 @@ public class FilterDataModelTest {
         }
 
         // Delete them
-        filterInputFromDB.forEach((name, value) -> filterDataModel.removeFilterFromDatabase(value));
+        filterInputFromDB.forEach((name, value) -> filterDataModel.removeFilterFromDatabaseAsynchronous(value));
+
+        // Wait for all threads to finish
+        Thread.sleep(5000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure none were found
@@ -208,12 +227,14 @@ public class FilterDataModelTest {
     @Test
     public void testForDuplicateEntry() throws Exception {
         FilterInput filterInput = generateRandomFilterInput();
-        filterDataModel.addFilterToDatabase(filterInput);
-        filterDataModel.addFilterToDatabase(filterInput);
+        filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
+        filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
 
+        // Wait for all threads to finish
+        Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         assertEquals(1, filterInputFromDB.size());
@@ -230,39 +251,16 @@ public class FilterDataModelTest {
      */
     @Test
     public void testForNullEntry() throws Exception {
-        filterDataModel.addFilterToDatabase(null);
+        filterDataModel.addFilterToDatabaseAsynchronous(null);
+
+        // Wait for all threads to finish
+        Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         assertEquals(0, filterInputFromDB.size());
-    }
-
-    /**
-     * <p>
-     *     Makes sure that when two FileInputs with the same name but different rules and color are added, the later one
-     *     overwrites the previous one.
-     * </p>
-     *
-     * @throws Exception Passes any errors that occurred during the test on
-     */
-    @Test
-    public void testForEntryWithSameName() throws Exception {
-        FilterInput filterInput1 = generateRandomFilterInput();
-        FilterInput filterInput2 = updateFilterInput(filterInput1);
-        filterDataModel.addFilterToDatabase(filterInput1);
-        filterDataModel.addFilterToDatabase(filterInput2);
-
-        // Retrieve them
-        filterDataModel.load();
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
-        assertEquals(1, filterInputFromDB.size());
-
-        // Make sure the updated version was retrieved
-        assertEquals(filterInput2.getName(), filterDataModel.get(null, filterInput1.getName()).getName());
-        assertEquals(filterInput2.getRules(), filterDataModel.get(null, filterInput1.getName()).getRules());
-        assertEquals(filterInput2.getColor(), filterDataModel.get(null, filterInput1.getName()).getColor());
     }
 
     /**
@@ -276,10 +274,13 @@ public class FilterDataModelTest {
     @Test
     public void testGet() throws Exception {
         FilterInput filterInput = generateRandomFilterInput();
-        filterDataModel.addFilterToDatabase(filterInput);
+        filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
+
+        // Wait for all threads to finish
+        Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel.load();
+        filterDataModel = new FilterDataModel(fileSystem, executorService);
 
         // Make sure they are equal
         assertEquals(filterInput.getName(), filterDataModel.get(null, filterInput.getName()).getName());
@@ -315,7 +316,7 @@ public class FilterDataModelTest {
         Color color = new Color(color_r, color_g, color_b, color_a);
 
         // Generate FilterInput object
-        return new FilterInput(name, FilterType.BLACKLIST, rules, color);
+        return new FilterInput(name, FilterType.BLACKLIST, FilterOrigin.IP, rules, color);
     }
 
     /**
@@ -344,7 +345,7 @@ public class FilterDataModelTest {
         int color_a = (int) (Math.random() * 255);
         Color color = new Color(color_r, color_g, color_b, color_a);
 
-        return new FilterInput(filterInput.getName(), FilterType.BLACKLIST, rules, color);
+        return new FilterInput(filterInput.getName(), FilterType.BLACKLIST, FilterOrigin.MAC, rules, color);
     }
 
     /**

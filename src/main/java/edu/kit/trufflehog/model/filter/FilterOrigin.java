@@ -1,4 +1,3 @@
-
 /*
  * This file is part of TruffleHog.
  *
@@ -16,33 +15,17 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.menu-bar {
-    -fx-background-color: #21252B;
-    -fx-opacity: 100;
-}
+package edu.kit.trufflehog.model.filter;
 
-.menu {
-    -fx-accent: #528BFF;
-    -fx-focus-color: #528BFF;
-}
-
-
-.menu .label {
-    -fx-text-fill: #9BA2B1;
-    -fx-opacity: 100%;
-    -fx-font-size: 90%;
-    -fx-font-weight: 100;
-    -fx-font-family: 'Droid Sans';
-}
-
-.menu:showing .label {
-    -fx-text-fill: #21252B;
-}
-
-.menu-item .label {
-    -fx-text-fill: #21252B;
-    -fx-opacity: 100%;
-    -fx-font-size: 90%;
-    -fx-font-weight: 100;
-    -fx-font-family: 'Droid Sans';
+/**
+ * <p>
+ *     The FilterOrigin enum defines the criteria on which a filter can be based on. For example, IP means the filter
+ *     filters by the IP address.
+ * </p>
+ *
+ * @author Julian Brendl
+ * @version 1.0
+ */
+public enum FilterOrigin {
+    IP,MAC,SELECTION
 }
