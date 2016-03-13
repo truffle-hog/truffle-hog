@@ -16,7 +16,6 @@
  */
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
-import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
@@ -98,8 +97,13 @@ public class StaticRenderer implements IRenderer {
     }
 
     @Override
-    public void updateState() {
-        //TODO implement if needed
+    public void animate() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public int animationTime() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override

@@ -56,6 +56,7 @@ public interface INetworkTape {
      */
     int getFrameRate();
 
+
     INetworkFrame getFrame(int index);
 
     /**

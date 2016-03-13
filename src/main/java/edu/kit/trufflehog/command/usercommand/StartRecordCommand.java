@@ -46,7 +46,7 @@ public class StartRecordCommand implements IUserCommand {
     @Override
     public void execute() {
 
-        networkDevice.record(network, networkTape, 20);
+        networkDevice.record(network, networkTape, networkTape.getFrameRate());
     }
 
     @Override

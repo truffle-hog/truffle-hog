@@ -19,7 +19,7 @@ public class FrameHandler implements EventHandler<ActionEvent> {
 
     private final INetworkTape playTape;
     private final INetwork replayNetwork;
-    private final BooleanProperty movableNodesProperty = new SimpleBooleanProperty(true);
+    private final BooleanProperty movableNodesProperty = new SimpleBooleanProperty(false);
 
     public FrameHandler(INetworkTape playTape, INetwork replayNetwork) {
 
@@ -62,18 +62,13 @@ public class FrameHandler implements EventHandler<ActionEvent> {
             toBeDeleted.stream().forEach(v -> replayNetwork.getViewPort().getGraph().removeVertex(v));
         }
 
-/*        playFrame.getVertices().stream().forEach(node -> {
-
-            replayNetwork.getWritingPort().writeNode(node);
-            if (getMovableNodes()) {
-                replayNetwork.getViewPort().setLocation(node, playFrame.transform(node));
-            }
-        });*/
-
         playFrame.getEdges().stream().forEach(edge -> {
             replayNetwork.getWritingPort().writeConnection(edge);
-        });
 
-        //logger.debug(replayNetwork.toString());
+            if (!getMovableNodes()) {
+                replayNetwork.getViewPort().setLocation(edge.getDest(), playFrame.transform(edge.getDest()));
+                replayNetwork.getViewPort().setLocation(edge.getSrc(), playFrame.transform(edge.getSrc()));
+            }
+        });
     }
 }

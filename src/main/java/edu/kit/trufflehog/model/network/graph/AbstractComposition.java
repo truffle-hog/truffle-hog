@@ -34,7 +34,6 @@ public abstract class AbstractComposition implements IComposition {
             T castedExisting = (T) existing;
             return castedExisting;
         }
-
         components.put(component.getClass(), component);
 
         //logger.debug(components);
@@ -51,7 +50,6 @@ public abstract class AbstractComposition implements IComposition {
         final IComponent component = components.remove(type);
 
         if (component != null) {
-
             // Safe to suppress unchecked as every value in the components
             // map that will be retrieved by the according class type will
             // be a component of that exact type

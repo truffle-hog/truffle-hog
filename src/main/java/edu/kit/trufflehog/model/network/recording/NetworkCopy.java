@@ -50,4 +50,13 @@ public class NetworkCopy {
         return connections;
     }
 
+    public String toString() {
+
+        return "\nconnections: " + connections.size() + "\n"
+                + "max throughput: " + maxThroughput + "\n"
+                + "max connectionsize: " + maxConnectionSize + "\n"
+                + connections.toString();
+
+    }
+
 }
