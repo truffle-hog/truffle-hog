@@ -91,7 +91,7 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
         multicastEdgeRenderer.setMultiplier(1.05f);
         multicastEdgeRenderer.setOpacity(170);
 
-        multicastEdgeRenderer.setLastUpdate(Instant.now().toEpochMilli());
+        //multicastEdgeRenderer.setLastUpdate(Instant.now().toEpochMilli());
         return true;
     }
 

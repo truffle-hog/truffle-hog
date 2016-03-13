@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.model.network.graph;
 
-import javafx.beans.binding.ObjectBinding;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,16 +15,11 @@ import java.util.Iterator;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public abstract class AbstractComposition extends ObjectBinding<IComponent> implements IComposition {
+public abstract class AbstractComposition implements IComposition {
 
     private static final Logger logger = LogManager.getLogger(AbstractComposition.class);
     
     final HashMap<Class<? extends IComponent>, IComponent> components = new HashMap<>();
-
-    @Override
-    protected void onInvalidating() {
-        logger.debug("invalidated: " + name());
-    }
 
     @Override
     public <T extends IComponent> T addComponent(T component) {

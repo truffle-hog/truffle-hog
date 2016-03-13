@@ -20,22 +20,33 @@ import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.NetworkIOPort;
 import edu.kit.trufflehog.model.network.NetworkViewPort;
-import edu.kit.trufflehog.model.network.graph.*;
+import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.NetworkConnection;
+import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.*;
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.StaticRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
+import edu.uci.ics.jung.graph.GraphCopier;
 import javafx.beans.property.IntegerProperty;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * \brief
@@ -46,7 +57,7 @@ import java.util.Map;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class TapeCopyCreator implements ICopyCreator {
+public class TapeCopyCreator implements ICopyCreator, GraphCopier<INode, IConnection> {
 
     private Collection<IConnection> lastConnectionsCopied = new ArrayList<>();
 
@@ -88,21 +99,17 @@ public class TapeCopyCreator implements ICopyCreator {
     @Override
     public IRenderer createDeepCopy(MulticastEdgeRenderer multicastEdgeRendererComponent) {
 
-        final StaticRenderer edgeRenderer = new StaticRenderer(multicastEdgeRendererComponent.getShape(),
-                multicastEdgeRendererComponent.getColorPicked(), multicastEdgeRendererComponent.getColorUnpicked(), multicastEdgeRendererComponent.getStroke());
-
         //edgeRenderer.setOpacity(multicastEdgeRendererComponent.getOpacity());
         //edgeRenderer.setLastUpdate(multicastEdgeRendererComponent.getLastUpdate());
-        return edgeRenderer;
+        return new StaticRenderer(multicastEdgeRendererComponent.getShape(),
+                multicastEdgeRendererComponent.getColorPicked(), multicastEdgeRendererComponent.getColorUnpicked(), multicastEdgeRendererComponent.getStroke());
     }
 
     @Override
     public IRenderer createDeepCopy(BasicEdgeRenderer basicEdgeRendererComponent) {
 
-        final StaticRenderer edgeRenderer = new StaticRenderer(basicEdgeRendererComponent.getShape(),
+        return new StaticRenderer(basicEdgeRendererComponent.getShape(),
                 basicEdgeRendererComponent.getColorPicked(), basicEdgeRendererComponent.getColorUnpicked(), basicEdgeRendererComponent.getStroke());
-
-        return edgeRenderer;
     }
 
     @Override
@@ -172,9 +179,10 @@ public class TapeCopyCreator implements ICopyCreator {
     @Override
     public NetworkCopy createDeepCopy(LiveNetwork liveNetwork) {
 
+        this.lastConnectionsCopied = liveNetwork.getObservableGraph().copyEdges(this);
         final NetworkViewCopy viewCopy = liveNetwork.getViewPort().createDeepCopy(this);
 
-        return new NetworkCopy(liveNetwork.getWritingPort().createDeepCopy(this), viewCopy.getLocationMap(),
+        return new NetworkCopy(lastConnectionsCopied, viewCopy.getLocationMap(),
                 viewCopy.getMaxThroughput(), viewCopy.getMaxConnectionSize(),
                 viewCopy.getViewTime());
     }
@@ -182,22 +190,7 @@ public class TapeCopyCreator implements ICopyCreator {
     @Override
     public Collection<IConnection> createDeepCopy(NetworkIOPort networkIOPort) {
 
-        networkIOPort.setCopying(true);
-
         final Collection<IConnection> copiedCollection = new ArrayList<>();
-
-        networkIOPort.getCopyCache().stream().forEach(connection -> {
-            copiedCollection.add(connection.createDeepCopy(this));
-        });
-
-        // TODO maybe to this in background
-
-        networkIOPort.setCopying(false);
-
-        while (!networkIOPort.getCopyBuffer().isEmpty()) {
-
-            networkIOPort.getCopyCache().add(networkIOPort.getCopyBuffer().remove());
-        }
 
         this.lastConnectionsCopied = copiedCollection;
         return copiedCollection;
@@ -219,9 +212,28 @@ public class TapeCopyCreator implements ICopyCreator {
             locationMap.put(src, new Point2D.Double(srcLoc.getX(), srcLoc.getY()));
             locationMap.put(dest, new Point2D.Double(destLoc.getX(), destLoc.getY()));
         });
-        final NetworkViewCopy viewCopy = new NetworkViewCopy(locationMap, networkViewPort.getMaxConnectionSize(),
-                networkViewPort.getMaxThroughput(), networkViewPort.getViewTime());
 
-        return viewCopy;
+        return new NetworkViewCopy(locationMap, networkViewPort.getMaxConnectionSize(),
+                networkViewPort.getMaxThroughput(), networkViewPort.getViewTime());
+    }
+
+    @Override
+    public Collection<INode> copyVertices(Collection<INode> vertices) {
+
+        final Collection<INode> copied = new ConcurrentLinkedDeque<>();
+
+        vertices.stream().forEach(v -> copied.add(this.createDeepCopy(v)));
+
+        return copied;
+    }
+
+    @Override
+    public Collection<IConnection> copyEdges(Collection<IConnection> edges) {
+
+        final Collection<IConnection> copied = new ConcurrentLinkedDeque<>();
+
+        edges.stream().forEach(e -> copied.add(this.createDeepCopy(e)));
+
+        return copied;
     }
 }

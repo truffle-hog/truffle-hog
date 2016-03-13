@@ -28,8 +28,6 @@ public interface IRenderer extends DeepCopyable<IRenderer>, Updatable<IRenderer>
 
     void setStroke(Stroke stroke);
 
-    void updateState();
-
     void animate();
 
     int animationTime();

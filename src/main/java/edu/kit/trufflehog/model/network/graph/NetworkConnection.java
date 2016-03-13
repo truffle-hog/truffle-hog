@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.network.graph;
 
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 /**
@@ -70,27 +71,6 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
     }
 
 
-    public IConnection createDeepCopy() {
-
-        //TODO externalise
-
-/*        final IConnection copy = new NetworkConnection(getSrc().createDeepCopy(), getDest().createDeepCopy());
-
-        this.stream().forEach(component -> {
-            if (component.isMutable()) {
-
-                copy.addComponent(component.createDeepCopy());
-
-            } else {
-                copy.addComponent(component);
-            }
-        });
-
-        return copy;*/
-        return null;
-    }
-
-
     @Override
     public IConnection createDeepCopy(ICopyCreator copyCreator) {
 
@@ -99,29 +79,34 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
 
     /**
      * Updates this connection with the given connection
-     * @param update the connection that updates this connection
+     * @param newConnection the connection that updates this connection
      * @return true if this connection was updated, false if there was no success in updating
      *              or no values changes
      */
     @Override
-    public boolean update(IComponent instance, IUpdater updater) {
+    public boolean update(IComponent newConnection, IUpdater updater) {
 
-        if (!this.equals(instance)) {
+        if (!this.equals(newConnection)) {
             // also implicit NULL check -> no check for null needed
             return false;
         }
         // if it is equal than it is an IConnection thus we can safely cast it
-        final IConnection updateConnection = (IConnection) instance;
+        final IConnection updateConnection = (IConnection) newConnection;
 
         if (updater.update(this, updateConnection)) {
-            this.invalidate();
             return true;
         };
         return false;
     }
 
     @Override
-    protected IComponent computeValue() {
-        return this;
+    public String toString() {
+
+        // TODO this is just for debugging.. remove this
+        final EdgeStatisticsComponent stc = getComponent(EdgeStatisticsComponent.class);
+
+        return "( " + getSrc() + " ) --" + "[" + stc.getTraffic() +"]--> ( " + getDest() + " )";
+
     }
+
 }

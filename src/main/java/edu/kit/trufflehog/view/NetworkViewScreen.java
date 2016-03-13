@@ -86,35 +86,23 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
             if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
 
-
                 final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
-                //refresher.setCycleCount(node.getComponent(ViewComponent.class).getAnimationCycles());
-                //graphAnimator.animate(node.getComponent(ViewComponent.class));
                 node.getComponent(ViewComponent.class).animate();
                 refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
+                repaint();
                 refresher.playFromStart();
 
             } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
 
                 final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
-                //refresher.setCycleCount(connection.getComponent(ViewComponent.class).getAnimationCycles());
-                //graphAnimator.addView(connection.getComponent(ViewComponent.class));
-                //refresher.playFromStart();
                 connection.getComponent(ViewComponent.class).animate();
                 refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
+                repaint();
                 refresher.playFromStart();
             }
-
-            //refresher.play();
         });
-
-
-        /*
-		//fiveSecondsWonder.playGraphTape();*/
 		this.viewPort = port;
 		initialize();
-/*		refresher.play();*/
-
         // Add this view screen as listener to the picked state, so we can send commands, when the picked state
         // changes.
 		getPickedVertexState().addItemListener(this);
@@ -205,9 +193,14 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
             //System.out.println(layout.transform(iNode));
 
+
+
             final NodeStatisticsComponent statComp = iNode.getComponent(NodeStatisticsComponent.class);
             int currentSize = statComp.getThroughput();
             long maxSize = viewPort.getMaxThroughput();
+
+			//logger.debug("current size: " + currentSize + " - max size: " + maxSize);
+
             double relation = (double) currentSize / (double) maxSize;
             double sizeMulti = (50.0 * relation) + 10;
             return new Ellipse2D.Double(-sizeMulti, -sizeMulti, 2*sizeMulti, 2*sizeMulti);

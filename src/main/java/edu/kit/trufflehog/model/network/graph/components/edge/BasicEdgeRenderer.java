@@ -39,19 +39,18 @@ public class BasicEdgeRenderer implements IRenderer {
     //TODO change this!
     private Stroke stroke = new BasicStroke();
 
-    private float stepSize = 0.01f;
     private float currentBrightness = 0.5f;
 
     private final Transition animator;
 
-    private int animationtime = 500;
+    private int animationTime = 500;
 
     public BasicEdgeRenderer() {
 
         animator = new Transition() {
 
             {
-                setCycleDuration(Duration.millis(animationtime));
+                setCycleDuration(Duration.millis(animationTime));
             }
 
             protected void interpolate(double frac) {
@@ -115,51 +114,14 @@ public class BasicEdgeRenderer implements IRenderer {
     }
 
     @Override
-    public void updateState() {
-
-
-        if (currentBrightness <= 0.5f) {
-            currentBrightness = 0.5f;
-
-        } else {
-
-            currentBrightness -= stepSize;
-        }
-
-/*        if (currentBrightness <= hsbValsUnpicked[2]) {
-            currentBrightness = hsbValsUnpicked[2];
-        } else {
-            currentBrightness -= stepSize;
-        }*/
-    }
-
-    @Override
     public void animate() {
         animator.play();
     }
 
     @Override
     public int animationTime() {
-        return animationtime;
+        return animationTime;
     }
-
-
-/*    @Override
-    public int getAnimationCycles() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void animate() {
-
-        if (currentBrightness <= 0.5f) {
-            currentBrightness = 0.5f;
-
-        } else {
-
-            currentBrightness -= stepSize;
-        }
-    }*/
 
     @Override
     public boolean isMutable() {

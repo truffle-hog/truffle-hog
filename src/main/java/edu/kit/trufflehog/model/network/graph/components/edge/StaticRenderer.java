@@ -97,11 +97,6 @@ public class StaticRenderer implements IRenderer {
     }
 
     @Override
-    public void updateState() {
-        //TODO implement if needed
-    }
-
-    @Override
     public void animate() {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }

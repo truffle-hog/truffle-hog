@@ -10,12 +10,10 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.INetworkWritingPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkDevice;
 import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.NetworkTape;
 import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
@@ -54,7 +52,6 @@ public class Presenter {
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
-    private INetworkTape tape;
 
     //private final IListener<IUserCommand> userCommandListener;
 
@@ -97,7 +94,7 @@ public class Presenter {
     public void present() {
 
         initNetwork();
-        viewBuilder.build(viewPort, commandExecutor.asUserCommandListener());
+        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener());
     }
 
     private void initNetwork() {
@@ -145,7 +142,6 @@ public class Presenter {
         networkDevice = new NetworkDevice();
 
         // create a new empty tape to record something on
-        tape = new NetworkTape(24);
         // Tell the network observation device to start recording the
         // given network with 25fps on the created tape
 
@@ -165,6 +161,8 @@ public class Presenter {
 
         commandExecutorService.execute(commandExecutor);
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
+
+        //networkDevice.record(liveNetwork, tape, 20);
 
         // play that ongoing recording on the given viewportswitch
         //networkDevice.play(tape, viewPortSwitch);

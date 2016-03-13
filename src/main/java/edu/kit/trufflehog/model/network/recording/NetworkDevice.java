@@ -3,9 +3,11 @@ package edu.kit.trufflehog.model.network.recording;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import edu.kit.trufflehog.util.ICopyCreator;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
+import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.BooleanProperty;
@@ -42,6 +44,7 @@ public class NetworkDevice implements INetworkDevice {
             return false;
         }*/
 
+
         // TODO set the isRecording value on the tape to true
         isRecording = true;
         long frameLength = 1000 / framerate;
@@ -53,6 +56,9 @@ public class NetworkDevice implements INetworkDevice {
             final NetworkCopy copiedNetwork = network.createDeepCopy(copyCreator);
 
             tape.writeFrame(copiedNetwork);
+
+//            logger.debug(tape.getFrame(tape.getCurrentWritingFrame() - 1));
+
             playbackFrameCountProperty.set(tape.getFrameCount() - 1);
         }));
         frameWriter.setCycleCount(Timeline.INDEFINITE);
@@ -72,14 +78,14 @@ public class NetworkDevice implements INetworkDevice {
 
         if (tape.getFrameCount() == 0) {
 
-            logger.debug("Framecount of the given tape to be played is zero");
+            logger.warn("Framecount of the given tape to be played is zero");
             return;
         }
 
         playbackFrameCountProperty.set(tape.getFrameCount() - 1);
 
-        final Graph<INode, IConnection> replayViewGraph = new ConcurrentDirectedSparseGraph<>();
-        final INetwork replayNetwork = new ReplayNetwork(replayViewGraph);
+        final Graph<INode, IConnection> replayViewGraph = Graphs.synchronizedDirectedGraph(new DirectedSparseGraph<>());
+        final INetwork replayNetwork = new ReplayNetwork(new ObservableUpdatableGraph<>(replayViewGraph, new ReplayUpdater()));
 
         viewPortSwitch.setActiveViewPort(replayNetwork.getViewPort());
 
@@ -90,8 +96,7 @@ public class NetworkDevice implements INetworkDevice {
         // TODO Take the real framel ength!!! instead of 100 - --- the   -1    PROBLEM
         final long frameLength = 1000 / tape.getFrameRate();
 
-
-        final Timeline frameReader = new Timeline(new KeyFrame(Duration.millis(42), new FrameHandler(tape, replayNetwork)));
+        final Timeline frameReader = new Timeline(new KeyFrame(Duration.millis(frameLength), new FrameHandler(tape, replayNetwork)));
         // frameReader.setCycleCount(playTape.frameCount() - 1);Timeline.INDEFINITE
         frameReader.setCycleCount(Timeline.INDEFINITE);
         frameReader.play();

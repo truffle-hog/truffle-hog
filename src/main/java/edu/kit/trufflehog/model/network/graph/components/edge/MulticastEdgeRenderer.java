@@ -125,16 +125,6 @@ public class MulticastEdgeRenderer implements IRenderer {
     }
 
     @Override
-    public void updateState() {
-        strokeWidth *= 1.4f;
-        opacity = opacity <= 10 ? 0 : opacity * 0.8f;
-        if (multiplier >= 70.0f) {
-            multiplier = 0;
-        }
-        multiplier *= 1.3f;
-    }
-
-    @Override
     public void animate() {
 
         animator.play();
@@ -156,15 +146,6 @@ public class MulticastEdgeRenderer implements IRenderer {
 
     public void setOpacity(float opacity) {
         this.opacity = opacity;
-    }
-
-    public long getLastUpdate() {
-
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(long lastUpdate) {
-        this.lastUpdate = lastUpdate;
     }
 
     @Override

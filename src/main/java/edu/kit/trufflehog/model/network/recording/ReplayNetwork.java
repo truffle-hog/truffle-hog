@@ -9,13 +9,11 @@ import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import org.apache.commons.collections15.Transformer;
@@ -33,7 +31,7 @@ import java.util.stream.Collectors;
  * TODO IMPLEMENT having replay network is necessary, because there are several internal functionalities that
  * TODO are handled a bite differently in contrast to a live network
  */
-public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
+public class ReplayNetwork implements INetwork {
 
     private final ReplayWritingPort port;
     private final ReplayViewPort viewPort;
@@ -46,9 +44,6 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
     private final AtomicInteger maxConnectionSize = new AtomicInteger(0);
 
     private final AtomicInteger maxTrafficCount = new AtomicInteger(0);
-
-
-    private final IUpdater replayUpdater = new ReplayUpdater();
 
     private long viewTime = 0;
 
@@ -77,12 +72,6 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
     @Override
     public INetworkViewPort getViewPort() {
         return viewPort;
-    }
-
-    @Override
-    protected INetwork computeValue() {
-
-        return this;
     }
 
     @Override
@@ -319,7 +308,7 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
      * @author Jan Hermes
      * @version 0.0.1
      */
-    private class ReplayWritingPort extends ObjectBinding<INetworkIOPort> implements INetworkIOPort {
+    private class ReplayWritingPort implements INetworkIOPort {
 
 
         @Override
@@ -328,10 +317,13 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
             final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
             final IConnection existing = idConnectionMap.get(connectionKey);
 
-            if (existing != null) {
+/*            if (existing != null) {
                 existing.update(connection, replayUpdater);
                 return;
-            }
+            }*/
+
+            delegate.getGraph().addVertex(connection.getSrc());
+            delegate.getGraph().addVertex(connection.getDest());
 
             delegate.getGraph().addEdge(connection, connection.getSrc(), connection.getDest());
             idConnectionMap.put(connectionKey, connection);
@@ -342,10 +334,10 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
 
             final INode existing = idNodeMap.get(node.getAddress());
 
-            if (existing != null) {
+/*            if (existing != null) {
                 existing.update(node, replayUpdater);
                 return;
-            }
+            }*/
             delegate.getGraph().addVertex(node);
             idNodeMap.put(node.getAddress(), node);
         }
@@ -381,11 +373,6 @@ public class ReplayNetwork extends ObjectBinding<INetwork> implements INetwork {
             throw new UnsupportedOperationException("not supported on replay graphs");
         }
 
-
-        @Override
-        protected INetworkIOPort computeValue() {
-            return this;
-        }
 
         @Override
         public String toString() {

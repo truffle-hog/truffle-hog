@@ -21,31 +21,40 @@ package edu.kit.trufflehog.presenter;
 import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
+import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigDataModel;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.recording.INetworkDevice;
+import edu.kit.trufflehog.model.network.recording.INetworkTape;
+import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkTape;
 import edu.kit.trufflehog.util.IListener;
-import edu.kit.trufflehog.view.*;
+import edu.kit.trufflehog.view.MainToolBarController;
+import edu.kit.trufflehog.view.MainViewController;
+import edu.kit.trufflehog.view.MenuBarViewController;
+import edu.kit.trufflehog.view.NetworkViewScreen;
+import edu.kit.trufflehog.view.OverlayViewController;
+import edu.kit.trufflehog.view.RootWindowController;
 import edu.kit.trufflehog.view.controllers.IWindowController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import edu.kit.trufflehog.view.elements.ImageButton;
-import javafx.event.EventDispatchChain;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.File;
 
@@ -91,6 +100,55 @@ public class ViewBuilder {
         }
     }
 
+    private FlowPane buildReplayFunction(INetworkDevice networkDevice,
+                                     INetwork liveNetwork, INetworkViewPortSwitch viewPortSwitch) {
+
+        final INetworkTape tape = new NetworkTape(10);
+
+        final Slider slider = new Slider(0, 100, 0);
+        slider.setTooltip(new Tooltip("replay"));
+        tape.getCurrentReadingFrameProperty().bindBidirectional(slider.valueProperty());
+        tape.getFrameCountProperty().bindBidirectional(slider.maxProperty());
+
+        final ToggleButton liveButton = new ToggleButton("Live");
+        liveButton.setDisable(true);
+        final ToggleButton playButton = new ToggleButton("Play");
+        playButton.setDisable(false);
+        final ToggleButton stopButton = new ToggleButton("Stop");
+        stopButton.setDisable(false);
+        final ToggleButton recButton = new ToggleButton("Rec");
+        recButton.setDisable(false);
+
+        liveButton.setOnAction(h -> {
+            networkDevice.goLive(liveNetwork, viewPortSwitch);
+            liveButton.setDisable(true);
+        });
+
+        playButton.setOnAction(handler -> {
+            networkDevice.play(tape, viewPortSwitch);
+            liveButton.setDisable(false);
+        });
+
+        final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);
+        recButton.setOnAction(h -> startRecordCommand.execute());
+
+        slider.setStyle("-fx-background-color: transparent");
+
+        final ToolBar toolBar = new ToolBar();
+        toolBar.getItems().add(stopButton);
+        toolBar.getItems().add(playButton);
+        toolBar.getItems().add(recButton);
+        toolBar.getItems().add(liveButton);
+        toolBar.setStyle("-fx-background-color: transparent");
+        //  toolBar.getItems().add(slider);
+
+        final FlowPane flowPane = new FlowPane();
+
+        flowPane.getChildren().addAll(toolBar, slider);
+
+        return flowPane;
+    }
+
     /**
      * <p>
      *     Builds the entire view. That means it connects all view components with each other and with other necessary
@@ -99,7 +157,7 @@ public class ViewBuilder {
      * @param viewPort
      * @param userCommandIListener
      */
-    public void build(INetworkViewPort viewPort, IListener<IUserCommand> userCommandIListener) {
+    public void build(INetworkViewPortSwitch viewPort, INetwork liveNetwork, INetworkDevice device, IListener<IUserCommand> userCommandIListener) {
         loadFonts();
 
         final IListener<IUserCommand> commandListener = userCommandIListener;
@@ -129,6 +187,7 @@ public class ViewBuilder {
 
 
         mainViewController.setCenter(primaryView);
+        mainViewController.setBottom(buildReplayFunction(device, liveNetwork, viewPort));
 
         rootWindow.show();
 

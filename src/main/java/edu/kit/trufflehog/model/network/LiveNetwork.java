@@ -14,13 +14,21 @@ public class LiveNetwork implements INetwork {
     private final INetworkIOPort ioPort;
     private final INetworkViewPort viewPort;
 
+    private final ObservableUpdatableGraph<INode, IConnection> observableGraph;
+
     public LiveNetwork(ObservableUpdatableGraph<INode, IConnection> graph) {
+
+        this.observableGraph = graph;
 
         ioPort = new NetworkIOPort(graph);
         viewPort = new NetworkViewPort(graph);
 
         viewPort.getMaxThroughputProperty().bind(ioPort.getMaxThroughputProperty());
         viewPort.getMaxConnectionSizeProperty().bind(ioPort.getMaxConnectionSizeProperty());
+    }
+
+    public ObservableUpdatableGraph<INode, IConnection> getObservableGraph() {
+        return observableGraph;
     }
 
     @Override

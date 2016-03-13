@@ -88,16 +88,12 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 	}
 
 	@Override
-	protected IComponent computeValue() {
-		return this;
-	}
-
-	@Override
     public String toString() {
 
-        return getComponent(NodeStatisticsComponent.class).toString();
+        // TODO just for debugging
 
-        //return address.toString();
+		return this.getAddress() + " [" + this.getComponent(NodeStatisticsComponent.class).getThroughput() + "]";
+
     }
 
 

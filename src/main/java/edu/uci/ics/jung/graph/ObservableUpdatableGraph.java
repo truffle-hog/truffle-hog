@@ -7,6 +7,7 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,6 @@ public class ObservableUpdatableGraph<V,E> extends GraphDecorator<V,E> {
 
 	private final List<GraphEventListener<V,E>> listenerList =
 		Collections.synchronizedList(new LinkedList<GraphEventListener<V,E>>());
-
 
     private final Map<V,V> existingVertices = new ConcurrentHashMap<>();
     private final Map<E,E> existingEdges = new ConcurrentHashMap<>();
@@ -51,6 +51,16 @@ public class ObservableUpdatableGraph<V,E> extends GraphDecorator<V,E> {
 	public void removeGraphEventListener(GraphEventListener<V,E> l) {
 		listenerList.remove(l);
 	}
+
+	public Collection<V> copyVertices(GraphCopier<V,E> graphCopier) {
+
+        throw new UnsupportedOperationException("not supported yet");
+	}
+
+    public Collection<E> copyEdges(GraphCopier<V,E> graphCopier) {
+
+        return graphCopier.copyEdges(new HashSet<>(existingEdges.keySet()));
+    }
 
 	protected void fireGraphEvent(GraphEvent<V,E> evt) {
 

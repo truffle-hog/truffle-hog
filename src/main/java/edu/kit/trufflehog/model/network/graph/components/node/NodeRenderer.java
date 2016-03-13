@@ -92,19 +92,14 @@ public class NodeRenderer implements IRenderer {
      * @param shape The shape to be used
      */
     public void setShape(Shape shape) {
-        if (shape == null) throw new NullPointerException("shape must not be null!");
+        if (shape == null) { throw new NullPointerException("shape must not be null!"); }
         this.shape = shape;
     }
 
     @Override
     public void setStroke(Stroke stroke) {
-        if (stroke == null) throw new NullPointerException("stroke must not be null!");
+        if (stroke == null) { throw new NullPointerException("stroke must not be null!"); }
         this.stroke = stroke;
-    }
-
-    @Override
-    public void updateState() {
-        //TODO implement if needed
     }
 
     @Override
@@ -124,7 +119,7 @@ public class NodeRenderer implements IRenderer {
      * @param colorPicked
      */
     public void setColorPicked(Color colorPicked) {
-        if (colorPicked == null) throw new NullPointerException("colorPicked must not be null!");
+        if (colorPicked == null) { throw new NullPointerException("colorPicked must not be null!"); }
         this.colorPicked = colorPicked;
     }
 
@@ -135,7 +130,7 @@ public class NodeRenderer implements IRenderer {
      * @param colorUnpicked
      */
     public void setColorUnpicked(Color colorUnpicked) {
-        if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
+        if (colorUnpicked == null) { throw new NullPointerException("colorUnpicked must not be null!"); }
         this.colorUnpicked = colorUnpicked;
     }
 
