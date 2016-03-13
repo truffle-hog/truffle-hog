@@ -24,12 +24,14 @@ import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
 import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
+import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkTape;
+import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.*;
 import edu.kit.trufflehog.view.controllers.IWindowController;
@@ -153,12 +155,10 @@ public class ViewBuilder {
      * Builds the entire view. That means it connects all view components with each other and with other necessary
      * components as well.
      * </p>
-     *
-     * @param viewPort The viewport of the graph that should be drawn here
-     * @param viewPort
+     *  @param viewPort The viewport of the graph that should be drawn here
      * @param userCommandIListener
      */
-    public void build(INetworkViewPortSwitch viewPort, INetwork liveNetwork, INetworkDevice device, IListener<IUserCommand> userCommandIListener) {
+    public void build(INetworkViewPortSwitch viewPort, INetwork liveNetwork, INetworkDevice device, IListener<IUserCommand> userCommandIListener, IUserCommand<FilterInput> updateFilterCommand) {
         loadFonts();
 
         final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
@@ -218,7 +218,7 @@ public class ViewBuilder {
                 , "capture-457", "capture-167");
 
         AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
-        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, stackPane, networkViewScreen, primaryStage.getScene());
+        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, stackPane, networkViewScreen, primaryStage.getScene(), updateFilterCommand, userCommandIListener);
 //        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
 //                viewPorts.get("Profinet"));
         viewSwitcher.putView("start", startView);

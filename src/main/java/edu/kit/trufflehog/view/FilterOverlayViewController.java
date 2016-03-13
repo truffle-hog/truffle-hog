@@ -272,8 +272,20 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         // Set up callback for CheckBoxTableCell
         activeColumn.setCellFactory(tableColumn -> {
             final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
-            checkBoxTableCell.setSelectedStateCallback(index -> ((FilterInput) tableView.getItems().get(index))
-                    .getActiveProperty());
+
+            //checkBoxTableCell.setSelectedStateCallback(index -> ((FilterInput) tableView.getItems().get(index)).getActiveProperty());
+            checkBoxTableCell.setSelectedStateCallback(index -> {
+
+                FilterInput input = (FilterInput) tableView.getItems().get(index);
+
+                input.getActiveProperty().addListener(l -> {
+                    notifyUpdateCommand(input);
+                });
+
+                return input.getActiveProperty();
+
+                //((FilterInput) tableView.getItems().get(index)).getActiveProperty()
+            });
 
             return checkBoxTableCell;
         });
@@ -303,6 +315,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
 
                 // Update model
                 if (interactionMap.get(FilterInteraction.REMOVE) != null) {
+                    filterInput.getActiveProperty().setValue(false);
                     notifyListeners(interactionMap.get(FilterInteraction.REMOVE));
                 }
                 configData.removeFilterInput(filterInput);
@@ -370,7 +383,9 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
 
             // Update model
             if (interactionMap.get(FilterInteraction.ADD) != null) {
-                notifyListeners(interactionMap.get(FilterInteraction.ADD));
+                IUserCommand userCommand = interactionMap.get(FilterInteraction.ADD);
+                userCommand.setSelection(filterInput);
+                notifyListeners(userCommand);
             }
             configData.addFilterInput(filterInput);
 
@@ -387,14 +402,21 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         tableView.getSelectionModel().clearSelection();
     }
 
-    public void notifyUpdateCommand() {
+    public void notifyUpdateCommand(FilterInput filterInput) {
         if (interactionMap.get(FilterInteraction.UPDATE) != null) {
+            IUserCommand command = interactionMap.get(FilterInteraction.UPDATE);
+            command.setSelection(filterInput);
             notifyListeners(interactionMap.get(FilterInteraction.UPDATE));
         }
     }
 
     @Override
     public void addCommand(FilterInteraction interaction, IUserCommand command) {
-        interactionMap.put(interaction, command);
+        if (interaction == FilterInteraction.UPDATE) {
+            interactionMap.put(interaction, command);
+            data.stream().forEach(this::notifyUpdateCommand);
+        } else {
+            interactionMap.put(interaction, command);
+        }
     }
 }

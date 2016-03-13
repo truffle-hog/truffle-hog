@@ -21,6 +21,9 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * \brief
  * \details
@@ -35,29 +38,23 @@ public class NodeSelectionCommand implements IUserCommand<PickedState<INode>> {
     private static final Logger logger = LogManager.getLogger();
 
     // TODO put empty pickedState
-    private PickedState<INode> pickedState;
+    private Set<INode> picked;
 
     boolean lastTimeEmpty = true;
 
     @Override
     public <S extends PickedState<INode>> void setSelection(S selection) {
 
-        pickedState = selection;
-        //throw new UnsupportedOperationException("Operation not implemented yet");
+        picked = new HashSet<>(selection.getPicked());
     }
 
     @Override
     public void execute() {
 
         // TODO if last time was empty check
-        //if (lastTimeEmpty)
 
-        logger.debug(pickedState.getPicked().toString());
 
-/*        pickedState.getPicked().stream().forEach(node -> {
-            //TODO: Do stuff on nodes
-        });*/
+        logger.debug(picked.toString());
 
-        //throw new UnsupportedOperationException("Operation not implemented yet");
     }
 }

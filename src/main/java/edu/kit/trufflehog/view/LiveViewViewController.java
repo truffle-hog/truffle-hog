@@ -1,9 +1,14 @@
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
+import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
+import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.service.executor.CommandExecutor;
+import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
@@ -36,9 +41,15 @@ public class LiveViewViewController extends AnchorPaneController {
     private OverlayViewController recordOverlayViewController;
     private FilterOverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
+    private final IUserCommand<FilterInput> updateFilterCommand;
+    private final IListener<IUserCommand> userCommandListener;
 
-    public LiveViewViewController(String fxml, ConfigData configData, StackPane stackPane, NetworkGraphViewController networkViewScreen, Scene scene) {
+    public LiveViewViewController(String fxml, ConfigData configData, StackPane stackPane, NetworkGraphViewController networkViewScreen, Scene scene, IUserCommand<FilterInput> updateFilterCommand, IListener<IUserCommand> userCommandIListener) {
         super(fxml);
+
+        this.updateFilterCommand = updateFilterCommand;
+        this.userCommandListener = userCommandIListener;
+
         this.configData = configData;
         this.scene = scene;
 
@@ -90,6 +101,11 @@ public class LiveViewViewController extends AnchorPaneController {
         AnchorPane.setLeftAnchor(filterOverlayViewController, 18d);
         filterOverlayViewController.setMaxSize(330d, 210d);
         filterOverlayViewController.setVisible(false);
+
+        filterOverlayViewController.addListener(userCommandListener);
+        filterOverlayViewController.addCommand(FilterInteraction.UPDATE, updateFilterCommand);
+        filterOverlayViewController.addCommand(FilterInteraction.ADD, updateFilterCommand);
+        filterOverlayViewController.addCommand(FilterInteraction.REMOVE, updateFilterCommand);
     }
 
     /**
