@@ -354,6 +354,11 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         }
 
         // Map the string to the actual FilterOrigin object. This is done so that
+        if (filterOriginString == null) {
+            errorText.setText(configData.getProperty("ORIGIN_ERROR"));
+            return null;
+        }
+
         FilterOrigin filterOrigin;
         if (filterOriginString.equals(IP_LABEL)) {
             filterOrigin = FilterOrigin.IP;
@@ -365,6 +370,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             filterOrigin = null;
         }
 
+        // We should never get here but just for good measure
         if (filterOrigin == null) {
             errorText.setText(configData.getProperty("ORIGIN_ERROR"));
             return null;
@@ -397,6 +403,11 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
      * @return A list of parsed and valid rules, or null if a rule was not valid.
      */
     private List<String> processRules(String rules, FilterOrigin filterOrigin) {
+        if (rules.equals("")) {
+            errorText.setText(configData.getProperty("MISSING_RULE_ERROR"));
+            return null;
+        }
+
         // If the last character of the string is a semicolon, remove it
         String lastChar = rules.substring(rules.length() - 1);
         if (lastChar.equals(";")) {
@@ -407,11 +418,6 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         rules = rules.replaceAll("\\s+","").replaceAll("\n","").replaceAll("\r", "");
 
         String[] ruleArray = rules.split(";");
-
-        if (ruleArray.length == 0) {
-            errorText.setText(configData.getProperty("MISSING_RULE_ERROR"));
-            return null;
-        }
 
         // Define MAC and IP regex
         String macRegex = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
