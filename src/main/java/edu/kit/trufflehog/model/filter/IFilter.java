@@ -53,4 +53,12 @@ public interface IFilter extends Comparable<IFilter> {
      * @return the priority of the filter.
      */
     int getPriority();
+
+    /**
+     * <p>
+     *     This method clears the filter of all rules and resets all flags set by the filter.
+     *     When deleting a filter this method should always be called to clean up the filter state.
+     * </p>
+     */
+    void clear();
 }

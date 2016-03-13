@@ -53,6 +53,11 @@ public class TruffleCrook extends TruffleReceiver {
                             }
 
                             @Override
+                            public void clear() {
+                                System.out.println("Test clear");
+                            }
+
+                            @Override
                             public int compareTo(IFilter o) {
                                 return 0;
                             }

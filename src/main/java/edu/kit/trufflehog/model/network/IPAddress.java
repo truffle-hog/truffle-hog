@@ -48,7 +48,7 @@ public class IPAddress implements IAddress {
 
     @Override
     public byte[] toByteArray() {
-        return bytes;
+        return Arrays.copyOf(bytes, 4);
     }
 
     @Override

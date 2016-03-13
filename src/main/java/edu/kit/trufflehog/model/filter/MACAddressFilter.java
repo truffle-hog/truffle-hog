@@ -30,9 +30,16 @@ public class MACAddressFilter implements IFilter {
      */
     public MACAddressFilter(final FilterInput filterInput) throws InvalidFilterRule {
 
-        priority = filterInput.getPriority();
+        if (filterInput == null)
+            throw new NullPointerException("filterInput must not be null!");
 
         List<String> rules = filterInput.getRules();
+
+        if (rules == null)
+            throw new NullPointerException("the rules list in filterInput must not be null!");
+
+        priority = filterInput.getPriority();
+
         List<MacAddress> macAddresses = new LinkedList<>();
 
         for (String rule : rules) {
@@ -59,15 +66,13 @@ public class MACAddressFilter implements IFilter {
         macAddresses.stream().forEach(address -> addresses.put(address, filterInput.getColor()));
     }
 
-    /**
-     * <p>
-     *     This method clears the filter of all rules and resets all flags set by the filter.
-     * </p>
-     */
+    @Override
     public void clear() {
         for (INode node : changedNodes) {
             node.getComponent(FilterPropertiesComponent.class).removeFilterColor(this);
         }
+
+        changedNodes.clear();
     }
 
     @Override

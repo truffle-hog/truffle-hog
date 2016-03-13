@@ -51,6 +51,12 @@ public class IPFilter implements IFilter {
     }
 
     @Override
+    public void clear() {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
+    }
+
+    @Override
     public int compareTo(IFilter o) {
         //TODO implement this
         throw new UnsupportedOperationException("Method not yet implemented!");

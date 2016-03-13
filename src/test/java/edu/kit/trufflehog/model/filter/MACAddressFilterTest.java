@@ -45,4 +45,13 @@ public class MACAddressFilterTest {
 
         new MACAddressFilter(filterInput);
     }
+
+    @Test
+    public void compareTo_low_priority_filter_is_less_than_high_priority_filter() throws Exception {
+        IFilter lowPrio = new MACAddressFilter(new FilterInput("lowPrio", FilterType.BLACKLIST, new LinkedList<>(), null, 0));
+        IFilter highPrio = new MACAddressFilter(new FilterInput("highPrio", FilterType.BLACKLIST, new LinkedList<>(), null, 10));
+
+        assertTrue("lowPrio should be less than highPrio", lowPrio.compareTo(highPrio) < 0);
+        assertTrue("highPrio should be greater than lowPrio", highPrio.compareTo(lowPrio) > 0);
+    }
 }

@@ -60,6 +60,7 @@ public class MacroFilter implements IFilter {
      * @param filter The filter to remove from the MacroFilter.
      */
     public void removeFilter(final IFilter filter) {
+        filter.clear();
         filters.remove(filter);
     }
 
@@ -71,6 +72,12 @@ public class MacroFilter implements IFilter {
     @Override
     public int getPriority() {
         return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public void clear() {
+        filters.stream().forEach(IFilter::clear);
+        filters.clear();
     }
 
     @Override
