@@ -40,10 +40,7 @@ public class NetworkWritingPortSwitch implements INetworkWritingPortSwitch {
 
     @Override
     public void applyFilter(IFilter filter) {
-        /*for (INode node : delegate.getVertices()) {
-                filter.check(node);
-            }*/
-        //nothing to do here
+        activePort.applyFilter(filter);
     }
 
     @Override

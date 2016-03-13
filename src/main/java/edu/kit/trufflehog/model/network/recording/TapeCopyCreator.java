@@ -162,8 +162,16 @@ public class TapeCopyCreator implements ICopyCreator, GraphCopier<INode, IConnec
 
     @Override
     public IComponent createDeepCopy(NodeInfoComponent nodeInfoComponent) {
-        //TODO implement this
-        throw new UnsupportedOperationException("Method not yet implemented!");
+        final NodeInfoComponent nic = new NodeInfoComponent(nodeInfoComponent.getMacAddress());
+
+        if (nodeInfoComponent.getIPAddress() != null) {
+            nic.setIPAddress(nodeInfoComponent.getIPAddress());
+        }
+        if (nodeInfoComponent.getDeviceName() != null) {
+            nic.setDeviceName(nodeInfoComponent.getDeviceName());
+        }
+
+        return nic;
     }
 
     @Override
@@ -236,7 +244,10 @@ public class TapeCopyCreator implements ICopyCreator, GraphCopier<INode, IConnec
 
     @Override
     public IComponent createDeepCopy(FilterPropertiesComponent filterPropertiesComponent) {
-        //TODO implement this
-        throw new UnsupportedOperationException("Method not yet implemented!");
+        final FilterPropertiesComponent fpc = new FilterPropertiesComponent();
+
+        fpc.getFilterColors().putAll(filterPropertiesComponent.getFilterColors());
+
+        return fpc;
     }
 }

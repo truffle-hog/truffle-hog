@@ -135,8 +135,25 @@ public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection>
 
     @Override
     public boolean update(NodeInfoComponent nodeInfoComponent, IComponent instance) {
-        //TODO implement this
-        throw new UnsupportedOperationException("Method not yet implemented!");
+        if (!nodeInfoComponent.equals(instance)) {
+            return false;
+        }
+
+        final NodeInfoComponent other = (NodeInfoComponent) instance;
+
+        boolean changed = false;
+
+        if (other.getDeviceName() != null) {
+            changed = !nodeInfoComponent.getDeviceName().equals(other.getDeviceName()) || changed;
+            nodeInfoComponent.setDeviceName(other.getDeviceName());
+        }
+
+        if (other.getIPAddress() != null) {
+            changed = !nodeInfoComponent.getDeviceName().equals(other.getDeviceName()) || changed;
+            nodeInfoComponent.setIPAddress(other.getIPAddress());
+        }
+
+        return changed;
     }
 
     @Override
@@ -162,8 +179,8 @@ public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection>
 
     @Override
     public boolean update(FilterPropertiesComponent filterPropertiesComponent, IComponent instance) {
-        //TODO implement this
-        throw new UnsupportedOperationException("Method not yet implemented!");
+        filterPropertiesComponent.getFilterColors().putAll(filterPropertiesComponent.getFilterColors());
+        return true;
     }
 
     public boolean updateVertex(INode existingVertex, INode newVertex) {

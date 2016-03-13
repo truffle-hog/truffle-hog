@@ -6,6 +6,7 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.awt.*;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -31,7 +32,15 @@ public class FilterPropertiesComponent implements IComponent {
      * </p>
      */
     public Color getFilterColor() {
+        if (filterColors.isEmpty()) {
+            return null;
+        }
+
         return filterColors.lastEntry().getValue();
+    }
+
+    public Map<IFilter, Color> getFilterColors() {
+        return filterColors;
     }
 
     @Override
@@ -60,5 +69,10 @@ public class FilterPropertiesComponent implements IComponent {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof FilterPropertiesComponent;
+    }
+
+    @Override
+    public String toString() {
+        return filterColors.toString();
     }
 }

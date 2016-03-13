@@ -11,13 +11,14 @@ import edu.kit.trufflehog.model.network.graph.INode;
  */
 public class TruffleCrook extends TruffleReceiver {
     private final INetworkWritingPort networkWritingPort;
-    private long lastCreation = 0;
+    private final IFilter filter;
 
     private long[] addresses;
     private int maxAddresses = 10;
 
     public TruffleCrook(INetworkWritingPort writingPort, IFilter filter) {
         networkWritingPort = writingPort;
+        this.filter = filter;
         init();
     }
 
@@ -41,27 +42,7 @@ public class TruffleCrook extends TruffleReceiver {
                     final Truffle truffle = getTruffle();
 
                     if (truffle != null) {
-                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, new IFilter() {
-                            @Override
-                            public void check(INode node) {
-                                System.out.println("Test filter");
-                            }
-
-                            @Override
-                            public int getPriority() {
-                                return -1;
-                            }
-
-                            @Override
-                            public void clear() {
-                                System.out.println("Test clear");
-                            }
-
-                            @Override
-                            public int compareTo(IFilter o) {
-                                return 0;
-                            }
-                        }));
+                        notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filter));
                     }
 
                     Thread.sleep(10);
@@ -88,7 +69,7 @@ public class TruffleCrook extends TruffleReceiver {
     private void init() {
         addresses = new long[maxAddresses];
         for (int i = 0; i < maxAddresses; i++) {
-            addresses[i] = (long)(Math.random()*10000000);
+            addresses[i] = i;
         }
     }
 }

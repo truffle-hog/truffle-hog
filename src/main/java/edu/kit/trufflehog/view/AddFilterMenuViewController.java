@@ -42,8 +42,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-import java.util.Objects;
-
 /**
  * <p>
  *     The AddFilterMenuViewController is an overlay that slides in from the top center, similar to menus that ask you
@@ -60,7 +58,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
     private final ConfigData configData;
 
     private final FilterOverlayMenu filterOverlayMenu;
-    private final TranslateTransition transitioShow;
+    private final TranslateTransition transitionShow;
     private final TranslateTransition transitionHide;
     private final StackPane stackPane;
     private FilterInput updatingFilter; // The filter that is being updated if there is one.
@@ -119,9 +117,9 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         SELECTION_LABEL = configData.getProperty("SELECTION_LABEL");
 
         // Set up transition animation to show menu
-        transitioShow = new TranslateTransition(Duration.seconds(0.5), this);
-        transitioShow.setFromY(-450);
-        transitioShow.setToY(0);
+        transitionShow = new TranslateTransition(Duration.seconds(0.5), this);
+        transitionShow.setFromY(-450);
+        transitionShow.setToY(0);
 
         // Set up transition animation to hide menu
         transitionHide = new TranslateTransition(Duration.seconds(0.5), this);
@@ -191,7 +189,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
         StackPane.setAlignment(this, Pos.TOP_CENTER);
         stackPane.setVisible(true);
         this.setVisible(true);
-        transitioShow.play();
+        transitionShow.play();
     }
 
     /**

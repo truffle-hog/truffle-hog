@@ -34,6 +34,9 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
  * @version 1.1
  */
 public interface IFilter extends Comparable<IFilter> {
+
+    IFilter EMPTY = new EmptyFilter();
+
     /**
      * <p>
      *     Checks if an {@link INode} is contained in the filter. If so, the method updates the node's
@@ -61,4 +64,27 @@ public interface IFilter extends Comparable<IFilter> {
      * </p>
      */
     void clear();
+
+    class EmptyFilter implements IFilter {
+
+        @Override
+        public void check(INode node) {
+            //nothing
+        }
+
+        @Override
+        public int getPriority() {
+            return Integer.MIN_VALUE;
+        }
+
+        @Override
+        public void clear() {
+            //nothing
+        }
+
+        @Override
+        public int compareTo(IFilter o) {
+            return -1;
+        }
+    }
 }

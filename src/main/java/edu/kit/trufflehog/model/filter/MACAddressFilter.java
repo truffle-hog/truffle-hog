@@ -33,14 +33,14 @@ public class MACAddressFilter implements IFilter {
         if (filterInput == null)
             throw new NullPointerException("filterInput must not be null!");
 
-        List<String> rules = filterInput.getRules();
+        final List<String> rules = filterInput.getRules();
 
         if (rules == null)
             throw new NullPointerException("the rules list in filterInput must not be null!");
 
         priority = filterInput.getPriority();
 
-        List<MacAddress> macAddresses = new LinkedList<>();
+        final List<MacAddress> macAddresses = new LinkedList<>();
 
         for (String rule : rules) {
             if (!rule.matches("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"))
@@ -80,6 +80,7 @@ public class MACAddressFilter implements IFilter {
         if (node == null)
             throw new NullPointerException("node must not be null!");
 
+        //TODO maybe null check?
         final MacAddress address = node.getComponent(NodeInfoComponent.class).getMacAddress();
 
         if (addresses.containsKey(address)) {
