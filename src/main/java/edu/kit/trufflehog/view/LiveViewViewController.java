@@ -1,9 +1,11 @@
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
@@ -15,7 +17,6 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
 /**
  * <p>
@@ -37,10 +38,33 @@ public class LiveViewViewController extends AnchorPaneController {
     private FilterOverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
 
-    public LiveViewViewController(String fxml, ConfigData configData, StackPane stackPane, NetworkGraphViewController networkViewScreen, Scene scene) {
+    /**
+     *
+     * @param fxml
+     * @param configData
+     * @param stackPane
+     * @param viewPort
+     * @param userCommandIListener
+     * @param scene
+     */
+    public LiveViewViewController(final String fxml,
+                                  final ConfigData configData,
+                                  final StackPane stackPane,
+                                  final INetworkViewPort viewPort,
+                                  final IListener<IUserCommand> userCommandIListener,
+                                  final Scene scene) {
         super(fxml);
         this.configData = configData;
         this.scene = scene;
+
+        final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
+        networkViewScreen.addListener(userCommandIListener);
+        networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+
+        AnchorPane.setBottomAnchor(networkViewScreen, 0d);
+        AnchorPane.setTopAnchor(networkViewScreen, 0d);
+        AnchorPane.setLeftAnchor(networkViewScreen, 0d);
+        AnchorPane.setRightAnchor(networkViewScreen, 0d);
 
         this.stackPane = stackPane;
 
@@ -49,11 +73,6 @@ public class LiveViewViewController extends AnchorPaneController {
         this.setMinWidth(200d);
         this.setMinHeight(200d);
 
-        AnchorPane.setBottomAnchor(networkViewScreen, 0d);
-        AnchorPane.setTopAnchor(networkViewScreen, 0d);
-        AnchorPane.setLeftAnchor(networkViewScreen, 0d);
-        AnchorPane.setRightAnchor(networkViewScreen, 0d);
-
         addToolbar();
         addGeneralStatisticsOverlay();
         addNodeStatisticsOverlay();
@@ -61,6 +80,7 @@ public class LiveViewViewController extends AnchorPaneController {
         addFilterMenuOverlay();
         addRecordOverlay();
     }
+
 
     /**
      * <p>
@@ -136,9 +156,9 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private void addToolbar() {
-        Button settingsButton = buildSettingsButton();
-        Button filterButton = buildFilterButton();
-        Button recordButton = buildRecordButton();
+        Button settingsButton = addSettingsButton();
+        Button filterButton = addFilterButton();
+        Button recordButton = addRecordButton();
 
         ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml", settingsButton,
                 filterButton, recordButton);
@@ -152,7 +172,7 @@ public class LiveViewViewController extends AnchorPaneController {
      *     Builds the settings button.
      * </p>
      */
-    private Button buildSettingsButton() {
+    private Button addSettingsButton() {
         Button settingsButton = new ImageButton("gear.png");
         settingsButton.setOnAction(event -> handleShowMechanism(settingsOverlayViewController, filterOverlayViewController,
                 recordOverlayViewController));
@@ -171,7 +191,7 @@ public class LiveViewViewController extends AnchorPaneController {
      *     Builds the filter button.
      * </p>
      */
-    private Button buildFilterButton() {
+    private Button addFilterButton() {
         Button filterButton = new ImageButton("filter.png");
         filterButton.setOnAction(event -> handleShowMechanism(filterOverlayViewController, recordOverlayViewController,
                 settingsOverlayViewController));
@@ -189,7 +209,7 @@ public class LiveViewViewController extends AnchorPaneController {
      *     Builds the record button.
      * </p>
      */
-    private Button buildRecordButton() {
+    private Button addRecordButton() {
         ImageButton recordButton = new ImageButton("record.png");
 
         recordButton.setOnAction(event -> handleShowMechanism(recordOverlayViewController, filterOverlayViewController,
