@@ -115,6 +115,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         setUpTypeColumn(tableView);
         setUpOriginColumn(tableView);
         setUpColorColumn(tableView);
+        setUpPriorityColumn(tableView);
         setUpActiveColumn(tableView);
 
         // Insert data from database into table
@@ -145,8 +146,8 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
     private void setUpFilterColumn(TableView tableView) {
         // Set up filter column
         final TableColumn filterColumn = new TableColumn("Filter");
-        filterColumn.setMinWidth(150);
-        filterColumn.setPrefWidth(150);
+        filterColumn.setMinWidth(120);
+        filterColumn.setPrefWidth(120);
         tableView.getColumns().add(filterColumn);
         filterColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, String>,
                 ObservableValue<String>>() {
@@ -264,8 +265,8 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
     private void setUpActiveColumn(TableView tableView) {
         // Set up active column
         TableColumn activeColumn = new TableColumn<>("Active");
-        activeColumn.setMinWidth(70);
-        activeColumn.setPrefWidth(70);
+        activeColumn.setMinWidth(50);
+        activeColumn.setPrefWidth(50);
         tableView.getColumns().add(activeColumn);
         activeColumn.setSortable(false);
 
@@ -276,6 +277,28 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
                     .getActiveProperty());
 
             return checkBoxTableCell;
+        });
+    }
+
+    /**
+     * <p>
+     *     Create the active column, which holds the activity state and also creates a callback to the string property
+     *     behind it.
+     * </p>
+     */
+    private void setUpPriorityColumn(TableView tableView) {
+        // Set up priority column
+        final TableColumn priorityColumn = new TableColumn("Priority");
+        priorityColumn.setMinWidth(50);
+        priorityColumn.setPrefWidth(50);
+        tableView.getColumns().add(priorityColumn);
+        priorityColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, Integer>,
+                ObservableValue<Integer>>() {
+
+            // Set up callback for priority property
+            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<FilterInput, Integer> p) {
+                return p.getValue().getPriorityProperty().asObject();
+            }
         });
     }
 

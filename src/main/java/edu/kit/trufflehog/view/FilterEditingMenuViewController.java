@@ -70,6 +70,8 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
     @FXML
     private ComboBox<String> filterByComboBox;
     @FXML
+    private TextField priorityTextField;
+    @FXML
     private TextArea rulesTextArea;
 
     @FXML
@@ -178,6 +180,8 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
                 filterByComboBox.setValue(SELECTION_LABEL);
             }
 
+            priorityTextField.setText(filterInput.getPriority() + "");
+
             rulesTextArea.setText(concatRules(filterInput.getRules()));
         } else {
             updatingFilter = null;
@@ -199,6 +203,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         typeComboBox.setValue(null);
         colorPicker.setValue(Color.WHITE);
         filterByComboBox.setValue(null);
+        priorityTextField.setText("");
         rulesTextArea.setText("");
         errorText.setText("");
         updatingFilter = null;
@@ -296,6 +301,11 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             filterInput.getOriginProperty().setValue(filterInputUpated.getOriginProperty().getValue());
         }
 
+        // Update priority
+        if (filterInputUpated.getPriority() != filterInput.getPriority()) {
+            filterInput.getPriorityProperty().setValue(filterInputUpated.getPriorityProperty().getValue());
+        }
+
         // Update rules and save to database, since they don't have a listener (since they are not shown in the table)
         if (!filterInputUpated.getRules().equals(filterInput.getRules())) {
             filterInput.setRules(filterInputUpated.getRules());
@@ -323,6 +333,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         final FilterType filterType = typeComboBox.getValue();
         final String filterOriginString = filterByComboBox.getValue();
         final Color color = colorPicker.getValue();
+        final String priorityText = priorityTextField.getText();
         final String rules = rulesTextArea.getText();
 
         // Check if name is valid
@@ -359,6 +370,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             return null;
         }
 
+        // Find the right filter origin
         FilterOrigin filterOrigin;
         if (filterOriginString.equals(IP_LABEL)) {
             filterOrigin = FilterOrigin.IP;
@@ -376,6 +388,20 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             return null;
         }
 
+        // Check that priority is valid
+        Pattern priorityPattern = Pattern.compile("[0-9]{1,3}");
+        Matcher priorityMatcher = priorityPattern.matcher(priorityText);
+        if (!priorityMatcher.matches()) {
+            errorText.setText(configData.getProperty("PRIORITY_ERROR"));
+            return null;
+        }
+        final int priority = Integer.parseInt(priorityText);
+
+        if (priority < 0) {
+            errorText.setText(configData.getProperty("PRIORITY_NOT_NEGATIVE"));
+            return null;
+        }
+
         // Check if rules are valid
         List<String> ruleList = processRules(rules, filterOrigin);
         if (ruleList == null) {
@@ -386,8 +412,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         java.awt.Color colorAwt = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255),
                 (int) (color.getBlue() * 255));
 
-        //FIXME add priority to view and then add it to the filter input accordingly
-        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt, /*ADD PRIORITY HERE*/ 0);
+        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt, priority);
         filterInput.load(configData); // Binds properties to database
 
         return filterInput;
