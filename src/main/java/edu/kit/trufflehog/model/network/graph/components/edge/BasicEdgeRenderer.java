@@ -94,7 +94,7 @@ public class BasicEdgeRenderer implements IRenderer {
     @Override
     public void setColorUnpicked(Color colorUnpicked) {
 
-        if (colorUnpicked == null) throw new NullPointerException("colorUnpicked must not be null!");
+        if (colorUnpicked == null) { throw new NullPointerException("colorUnpicked must not be null!"); }
 
         this.colorUnpicked = colorUnpicked;
         Color.RGBtoHSB(this.colorUnpicked.getRed(), this.colorUnpicked.getGreen(), this.colorUnpicked.getBlue(), hsbValsPicked);
@@ -103,14 +103,14 @@ public class BasicEdgeRenderer implements IRenderer {
     @Override
     public void setShape(Shape shape) {
 
-        if (shape == null) throw new NullPointerException("shape must not be null!");
+        if (shape == null) { throw new NullPointerException("shape must not be null!"); }
 
         this.shape = shape;
     }
 
     @Override
     public void setStroke(Stroke stroke) {
-        if (stroke == null) throw new NullPointerException("stroke must not be null!");
+        if (stroke == null) { throw new NullPointerException("stroke must not be null!"); }
         this.stroke = stroke;
     }
 

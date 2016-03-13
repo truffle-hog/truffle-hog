@@ -36,9 +36,9 @@ public class MulticastEdgeRenderer implements IRenderer {
     private final float baseWidth = 90f;
     private final float baseSize = 80f;
 
-    private float strokeWidth = 5f;
-    private float multiplier = 1.05f;
-    private float opacity = 170;
+    private float strokeWidth = 0;
+    private float multiplier = 0;
+    private float opacity = 0;
 
     private float opac = 0.5f;
 
@@ -96,6 +96,7 @@ public class MulticastEdgeRenderer implements IRenderer {
 
     @Override
     public Stroke getStroke() {
+
         return new BasicStroke(strokeWidth);
     }
 
