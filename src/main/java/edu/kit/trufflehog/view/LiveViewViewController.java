@@ -43,10 +43,12 @@ public class LiveViewViewController extends AnchorPaneController {
     private OverlayViewController settingsOverlayViewController;
     private final IUserCommand<FilterInput> updateFilterCommand;
     private final IListener<IUserCommand> userCommandListener;
+    private final NetworkGraphViewController networkViewScreen;
 
     public LiveViewViewController(String fxml, ConfigData configData, StackPane stackPane, NetworkGraphViewController networkViewScreen, Scene scene, IUserCommand<FilterInput> updateFilterCommand, IListener<IUserCommand> userCommandIListener) {
         super(fxml);
 
+        this.networkViewScreen = networkViewScreen;
         this.updateFilterCommand = updateFilterCommand;
         this.userCommandListener = userCommandIListener;
 
@@ -93,7 +95,7 @@ public class LiveViewViewController extends AnchorPaneController {
      */
     private void addFilterMenuOverlay() {
         // Build filter menu
-        filterOverlayViewController = new FilterOverlayViewController("filter_menu_overlay.fxml", configData, stackPane);
+        filterOverlayViewController = new FilterOverlayViewController("filter_menu_overlay.fxml", configData, stackPane, networkViewScreen.getPickedVertexState());
 
         // Set up overlay on screen
         this.getChildren().add(filterOverlayViewController);

@@ -63,12 +63,14 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
     // FXML variables
     @FXML
     private TextField nameTextField;
+
     @FXML
     private ComboBox<FilterType> typeComboBox;
     @FXML
     private ColorPicker colorPicker;
     @FXML
     private ComboBox<String> filterByComboBox;
+
     @FXML
     private TextArea rulesTextArea;
 
@@ -77,15 +79,29 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
 
     @FXML
     private Button createButton;
+
     @FXML
     private Button cancelButton;
+
     @FXML
     private Button helpButton;
 
     // Labels
-    private final String MAC_LABEL;
+    public final String MAC_LABEL;
     private final String IP_LABEL;
     private final String SELECTION_LABEL;
+
+    public ComboBox<String> getFilterByComboBox() {
+        return filterByComboBox;
+    }
+
+    public TextField getNameTextField() {
+        return nameTextField;
+    }
+
+    public TextArea getRulesTextArea() {
+        return rulesTextArea;
+    }
 
     /**
      * <p>
@@ -385,7 +401,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
                 (int) (color.getBlue() * 255));
 
         //FIXME add priority to view and then add it to the filter input accordingly
-        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt, /*ADD PRIORITY HERE*/ 0);
+        final FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt, /*ADD PRIORITY HERE*/ 0);
         filterInput.load(configData); // Binds properties to database
 
         return filterInput;

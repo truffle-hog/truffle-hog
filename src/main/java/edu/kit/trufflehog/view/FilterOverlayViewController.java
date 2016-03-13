@@ -21,8 +21,10 @@ import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
 import edu.kit.trufflehog.view.elements.ImageButton;
+import edu.uci.ics.jung.visualization.picking.PickedState;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,10 +43,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
-import java.util.Collection;
-import java.util.EnumMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -63,23 +63,25 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
 
     private final ObservableList<FilterInput> data;
     private final ConfigData configData;
-    private final FilterEditingMenuViewController addFilterOverlayMenu;
+    private final FilterEditingMenuViewController filterEditingMenuViewController;
     private final TableView tableView;
+    private final PickedState<INode> pickedState;
 
     /**
      * <p>
      *     Creates a new FilterOverlayViewController with a {@link ConfigData} object. This is needed to access the database
      *     in order to save/remove/update filters.
      * </p>
-     *
-     * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
+     *  @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      * @param stackPane The groundView of the app on which the add filter menu should be drawn.
+     * @param pickedVertexState
      */
-    public FilterOverlayViewController(String fxml, ConfigData configData, StackPane stackPane) {
+    public FilterOverlayViewController(String fxml, ConfigData configData, StackPane stackPane, PickedState<INode> pickedVertexState) {
         super(fxml);
+        this.pickedState = pickedVertexState;
         this.configData = configData;
         this.data = FXCollections.observableArrayList();
-        this.addFilterOverlayMenu = new FilterEditingMenuViewController(stackPane, "filter_edit_menu_overlay.fxml", this,
+        this.filterEditingMenuViewController = new FilterEditingMenuViewController(stackPane, "filter_edit_menu_overlay.fxml", this,
                 configData);
 
         // Load existing filters from hard drive into filter menu
@@ -302,7 +304,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
     private BorderPane setUpMenu(TableView tableView) {
         // Set up add button
         final Button addButton = new ImageButton("add.png");
-        addButton.setOnAction(actionEvent -> addFilterOverlayMenu.showMenu());
+        addButton.setOnAction(actionEvent -> filterEditingMenuViewController.showMenu());
         addButton.setScaleX(0.5);
         addButton.setScaleY(0.5);
 
@@ -326,13 +328,28 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         removeButton.setScaleX(0.5);
         removeButton.setScaleY(0.5);
 
+        final Button selectionButton = new ImageButton("select.png");
+        selectionButton.setScaleX(0.5);
+        selectionButton.setScaleY(0.5);
+        selectionButton.setOnAction(actionEvent -> {
+
+            final Set<INode> selected = new HashSet<>(pickedState.getPicked());
+
+            final String filterString = selected.stream().map(node -> node.getAddress().toString()).collect(Collectors.joining(";\n"));
+            filterEditingMenuViewController.getNameTextField().setText("Selection " + selected.size());
+            filterEditingMenuViewController.getRulesTextArea().setText(filterString);
+            filterEditingMenuViewController.getFilterByComboBox().setValue(filterEditingMenuViewController.MAC_LABEL);
+            filterEditingMenuViewController.showMenu();
+
+        });
+
 
         // Set up edit button
         final Button editButton = new ImageButton("edit.png");
         editButton.setOnAction(actionEvent -> {
             final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             if (!data.isEmpty() && filterInput != null) {
-                addFilterOverlayMenu.showMenu(filterInput);
+                filterEditingMenuViewController.showMenu(filterInput);
             }
         });
         editButton.setScaleX(0.45);
@@ -344,9 +361,11 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         tableView.setMinHeight(300);
 
         AnchorPane anchorPane = new AnchorPane();
-        anchorPane.getChildren().addAll(addButton, removeButton, editButton);
+        anchorPane.getChildren().addAll(selectionButton, addButton, removeButton, editButton);
         borderPane.setBottom(anchorPane);
 
+        AnchorPane.setBottomAnchor(selectionButton, 0d);
+        AnchorPane.setRightAnchor(selectionButton, 90d);
         AnchorPane.setBottomAnchor(addButton, 0d);
         AnchorPane.setRightAnchor(addButton, 0d);
         AnchorPane.setBottomAnchor(removeButton, 0d);
