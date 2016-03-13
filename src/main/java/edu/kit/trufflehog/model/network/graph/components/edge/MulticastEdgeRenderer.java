@@ -30,8 +30,8 @@ public class MulticastEdgeRenderer implements IRenderer {
 
     private Shape shape = new Ellipse2D.Float(-10, -10, 20, 20);
 
-    Color colorUnpicked = new Color(0x7f7784);
-    Color colorPicked = new Color(0xf0caa3);
+    Color colorUnpicked = new Color(0xffffff);
+    Color colorPicked = new Color(0xffffff);
 
     private final float baseWidth = 90f;
     private final float baseSize = 80f;

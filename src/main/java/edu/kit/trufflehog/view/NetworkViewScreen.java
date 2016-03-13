@@ -16,6 +16,7 @@ import edu.kit.trufflehog.view.graph.control.FXDefaultModalGraphMouse;
 import edu.kit.trufflehog.view.graph.control.FXModalGraphMouse;
 import edu.kit.trufflehog.view.graph.decorators.FXEdgeShape;
 import edu.kit.trufflehog.view.graph.renderers.FXRenderer;
+import edu.kit.trufflehog.view.graph.renderers.FXVertexLabelRenderer;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.event.GraphEvent;
@@ -23,8 +24,6 @@ import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationModel;
 import edu.uci.ics.jung.visualization.control.GraphMouseListener;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
-import edu.uci.ics.jung.visualization.decorators.PickableEdgePaintTransformer;
-import edu.uci.ics.jung.visualization.decorators.PickableVertexPaintTransformer;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.animation.KeyFrame;
@@ -131,7 +130,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 		initRenderers();
 
-		jungView.setBackground(new Color(0x9dc4bf));
+		jungView.setBackground(new Color(0x3e4451));
 		//jungView.setBackground(new Color(0x5e6d67));
 		jungView.setPreferredSize(new Dimension(350, 350));
 		// Show vertex and edge labels
@@ -146,21 +145,24 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	private void initRenderers() {
 
-		jungView.getRenderContext().setVertexLabelTransformer(iNode -> iNode.toString() + " max Size: " + viewPort.getMaxThroughput());
+		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getAddress().toString());
 		//jungView.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
+        jungView.getRenderContext().setEdgeLabelTransformer(edge -> String.valueOf(edge.getComponent(EdgeStatisticsComponent.class).getTraffic()));
 
 /*		jungView.getRenderContext().setVertexFillPaintTransformer(
                 new PickableVertexPaintTransformer<>(
                         getPickedVertexState(), new Color(0xa1928b), new Color(0xccc1bb)));*/
 
-        jungView.getRenderContext().setVertexFillPaintTransformer(
+/*        jungView.getRenderContext().setVertexFillPaintTransformer(
                 new PickableVertexPaintTransformer<>(
-                        getPickedVertexState(), new Color(0xab7d63), new Color(0xf0caa3)));
+                        getPickedVertexState(), new Color(0x528bff), new Color(0x000000)));*/
 
-        jungView.getRenderContext().setEdgeDrawPaintTransformer(
-                new PickableEdgePaintTransformer<>(getPickedEdgeState(), new Color(0x7f7784), new Color(0xf0caa3)));
+/*        jungView.getRenderContext().setEdgeDrawPaintTransformer(
+                new PickableEdgePaintTransformer<>(getPickedEdgeState(), new Color(0x21252b), new Color(0x353b45)));*/
 
         jungView.getRenderContext().setVertexIncludePredicate(iNode -> !iNode.element.getAddress().isMulticast());
+
+        jungView.getRenderContext().setVertexLabelRenderer(new FXVertexLabelRenderer(new Color(0x98c379), new Color(0xffffff)));
 
         jungView.getRenderContext().setEdgeShapeTransformer(new FXEdgeShape.QuadCurve());
 
@@ -228,6 +230,19 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             };
 
         });*/
+
+        jungView.getRenderContext().setVertexFillPaintTransformer(node -> {
+
+            final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
+
+            //viewComponent.getRenderer().updateState();
+
+            if (getPickedVertexState().isPicked(node)) {
+                return viewComponent.getRenderer().getColorPicked();
+            } else {
+                return viewComponent.getRenderer().getColorUnpicked();
+            }
+        });
 
 		jungView.getRenderContext().setEdgeDrawPaintTransformer(iConnection -> {
 
