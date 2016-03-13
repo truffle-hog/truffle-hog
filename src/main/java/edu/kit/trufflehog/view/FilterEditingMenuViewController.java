@@ -17,14 +17,11 @@
 
 package edu.kit.trufflehog.view;
 
-import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.interaction.OverlayInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterOrigin;
 import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
-import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -44,20 +41,20 @@ import java.util.stream.IntStream;
 
 /**
  * <p>
- *     The AddFilterMenuViewController is an overlay that slides in from the top center, similar to menus that ask you
+ *     The FilterEditingMenuViewController is an overlay that slides in from the top center, similar to menus that ask you
  *     if you are really sure that you want to quit the app. It has a show and a hide method, both of which trigger the
- *     respective animations. It is used to add new filter.
+ *     respective animations. It is used to add new Filters or update existing ones.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public class AddFilterMenuViewController extends AnchorPaneController<OverlayInteraction> {
+public class FilterEditingMenuViewController extends AnchorPaneController {
     private static final Logger logger = LogManager.getLogger();
 
     private final ConfigData configData;
 
-    private final FilterOverlayMenu filterOverlayMenu;
+    private final FilterOverlayViewController filterOverlayViewController;
     private final TranslateTransition transitionShow;
     private final TranslateTransition transitionHide;
     private final StackPane stackPane;
@@ -92,21 +89,21 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
 
     /**
      * <p>
-     *     Creates a new AddFilterMenuViewController. Through the AddFilterMenuViewController you can add or edit
+     *     Creates a new FilterEditingMenuViewController. Through the FilterEditingMenuViewController you can add or edit
      *     filters.
      * </p>
      *
      * @param stackPane The stackPane to put the menu on.
      * @param fxml The fxml to load.
-     * @param filterOverlayMenu The filterOverlayMenu where the {@link TableView} is held that the filter should be
+     * @param filterOverlayViewController The filterOverlayViewController where the {@link TableView} is held that the filter should be
      *                          added to.
      * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      */
-    public AddFilterMenuViewController(StackPane stackPane, String fxml, FilterOverlayMenu filterOverlayMenu,
-                                       ConfigData configData) {
+    public FilterEditingMenuViewController(StackPane stackPane, String fxml, FilterOverlayViewController filterOverlayViewController,
+                                           ConfigData configData) {
         super(fxml);
         this.configData = configData;
-        this.filterOverlayMenu = filterOverlayMenu;
+        this.filterOverlayViewController = filterOverlayViewController;
         this.stackPane = stackPane;
         this.stackPane.getChildren().add(this);
         StackPane.setAlignment(this, Pos.TOP_CENTER);
@@ -261,7 +258,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
     private void addFilter() {
         FilterInput filterInput = createFilterInput();
         if (filterInput != null) {
-            filterOverlayMenu.addFilter(filterInput);
+            filterOverlayViewController.addFilter(filterInput);
             clearMenu();
             hideMenu();
         }
@@ -307,6 +304,8 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
             logger.debug("Updated rules for FilterInput: " + filterInput.getName() + " to database.");
         }
 
+        // Notify the model that a filter has changed
+        filterOverlayViewController.notifyUpdateCommand();
         clearMenu();
         hideMenu();
     }
@@ -336,7 +335,7 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
 
         // Check if filter with this name already exists, but only if we are not editing a current filter (there the
         // name can be changed)
-        List<String> currentFilterNames = filterOverlayMenu.getAllFilterNames();
+        List<String> currentFilterNames = filterOverlayViewController.getAllFilterNames();
         if (currentFilterNames.contains(name) && updatingFilter == null) {
             errorText.setText(configData.getProperty("NAME_ALREADY_EXISTS"));
             return null;
@@ -460,9 +459,5 @@ public class AddFilterMenuViewController extends AnchorPaneController<OverlayInt
      */
     private void help() {
 
-    }
-
-    @Override
-    public void addCommand(OverlayInteraction interaction, IUserCommand command) {
     }
 }

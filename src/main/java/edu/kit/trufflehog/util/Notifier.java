@@ -1,7 +1,6 @@
 package edu.kit.trufflehog.util;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -32,7 +31,7 @@ public abstract class Notifier<M> implements INotifier<M> {
     @Override
     public boolean addListener(final IListener<M> listener) {
         if (listener == null)
-            throw new NullPointerException("Listener to add must not be null!");
+            throw new NullPointerException("Listener to add should not be null!");
 
         return listeners.add(listener);
     }
@@ -40,7 +39,7 @@ public abstract class Notifier<M> implements INotifier<M> {
     @Override
     public boolean removeListener(final IListener listener) {
         if (listener == null)
-            throw new NullPointerException("Listener to remove must not be null!");
+            throw new NullPointerException("Listener to should must not be null!");
 
         return listeners.remove(listener);
     }
@@ -48,7 +47,7 @@ public abstract class Notifier<M> implements INotifier<M> {
     @Override
     public void notifyListeners(final M message) {
         if (message == null)
-            throw new NullPointerException("Message to be sent must not be null!");
+            throw new NullPointerException("Message to be sent should not be null!");
 
         listeners.forEach(listener -> listener.receive(message));
     }

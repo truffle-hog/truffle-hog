@@ -7,5 +7,6 @@ package edu.kit.trufflehog.interaction;
  * @author Julian Brendl
  * @version 1.0
  */
-public enum AnchorPaneInteraction implements IInteraction {
+public enum FilterInteraction implements IInteraction {
+    ADD, REMOVE, UPDATE
 }

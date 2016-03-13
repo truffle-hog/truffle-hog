@@ -15,12 +15,14 @@
  * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package edu.kit.trufflehog.view.elements;
+package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
-import edu.kit.trufflehog.view.AddFilterMenuViewController;
-import edu.kit.trufflehog.view.OverlayViewController;
+import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
+import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,56 +42,58 @@ import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * <p>
- *     The FilterOverlayMenu contains all loaded filters. Through it the user can add and remove filters. Further more,
+ *     The FilterOverlayViewController contains all loaded filters. Through it the user can add and remove filters. Further more,
  *     the added/removed/updated filters are automatically updated accordingly in the database.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public class FilterOverlayMenu {
+public class FilterOverlayViewController extends AnchorPaneInteractionController<FilterInteraction> {
     private static final Logger logger = LogManager.getLogger();
+
+    private final Map<FilterInteraction, IUserCommand> interactionMap = new EnumMap<>(FilterInteraction.class);
 
     private final ObservableList<FilterInput> data;
     private final ConfigData configData;
-    private final AddFilterMenuViewController addFilterOverlayMenu;
+    private final FilterEditingMenuViewController addFilterOverlayMenu;
+    private final TableView tableView;
 
     /**
      * <p>
-     *     Creates a new FilterOverlayMenu with a {@link ConfigData} object. This is needed to access the database
+     *     Creates a new FilterOverlayViewController with a {@link ConfigData} object. This is needed to access the database
      *     in order to save/remove/update filters.
      * </p>
      *
      * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      * @param stackPane The groundView of the app on which the add filter menu should be drawn.
      */
-    public FilterOverlayMenu(ConfigData configData, StackPane stackPane) {
+    public FilterOverlayViewController(String fxml, ConfigData configData, StackPane stackPane) {
+        super(fxml);
         this.configData = configData;
         this.data = FXCollections.observableArrayList();
-        this.addFilterOverlayMenu = new AddFilterMenuViewController(stackPane, "add_filter_menu_overlay.fxml", this,
+        this.addFilterOverlayMenu = new FilterEditingMenuViewController(stackPane, "filter_edit_menu_overlay.fxml", this,
                 configData);
 
         // Load existing filters from hard drive into filter menu
         Map<String, FilterInput> filterInputMap = configData.getAllLoadedFilters();
         Collection<FilterInput> filterInputList = filterInputMap.values();
         data.addAll(filterInputList);
-    }
 
-    /**
-     * <p>
-     *     Creates a new OverlayViewController.
-     * </p>
-     *
-     * @return The new OverlayViewController.
-     */
-    public OverlayViewController setUpOverlayViewController() {
-        return new OverlayViewController("filter_menu_overlay.fxml");
+
+        // Build filter menu
+        tableView = setUpTableView();
+        BorderPane borderPane = setUpMenu(tableView);
+
+        // Add menu to overlay
+        this.getChildren().add(borderPane);
     }
 
     /**
@@ -99,7 +103,7 @@ public class FilterOverlayMenu {
      *
      * @return The created TableView.
      */
-    public TableView setUpTableView() {
+    private TableView setUpTableView() {
         // Set up table view
         final TableView tableView = new TableView();
         tableView.setEditable(true);
@@ -283,7 +287,7 @@ public class FilterOverlayMenu {
      * @param tableView The table view to put on the overlay menu.
      * @return A {@link BorderPane} containing the full menu.
      */
-    public BorderPane setUpMenu(TableView tableView) {
+    private BorderPane setUpMenu(TableView tableView) {
         // Set up add button
         final Button addButton = new ImageButton("add.png");
         addButton.setOnAction(actionEvent -> addFilterOverlayMenu.showMenu());
@@ -296,7 +300,13 @@ public class FilterOverlayMenu {
             final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             if (!data.isEmpty() && filterInput != null) {
                 data.remove(filterInput);
+
+                // Update model
+                if (interactionMap.get(FilterInteraction.REMOVE) != null) {
+                    notifyListeners(interactionMap.get(FilterInteraction.REMOVE));
+                }
                 configData.removeFilterInput(filterInput);
+
                 logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
             }
         });
@@ -357,9 +367,34 @@ public class FilterOverlayMenu {
     public void addFilter(FilterInput filterInput) {
         if (filterInput != null) {
             data.add(filterInput);
+
+            // Update model
+            if (interactionMap.get(FilterInteraction.ADD) != null) {
+                notifyListeners(interactionMap.get(FilterInteraction.ADD));
+            }
             configData.addFilterInput(filterInput);
 
             logger.debug("Added FilterInput: " + filterInput.getName() + " to table view and database.");
         }
+    }
+
+    /**
+     * <p>
+     *     Clears all selections from the table view
+     * </p>
+     */
+    public void clearSelection() {
+        tableView.getSelectionModel().clearSelection();
+    }
+
+    public void notifyUpdateCommand() {
+        if (interactionMap.get(FilterInteraction.UPDATE) != null) {
+            notifyListeners(interactionMap.get(FilterInteraction.UPDATE));
+        }
+    }
+
+    @Override
+    public void addCommand(FilterInteraction interaction, IUserCommand command) {
+        interactionMap.put(interaction, command);
     }
 }

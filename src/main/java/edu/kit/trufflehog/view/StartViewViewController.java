@@ -1,9 +1,8 @@
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.interaction.AnchorPaneInteraction;
-import edu.kit.trufflehog.interaction.OverlayInteraction;
-import edu.kit.trufflehog.view.controllers.AnchorPaneController;
+import edu.kit.trufflehog.interaction.StartViewInteraction;
+import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,14 +18,16 @@ import java.util.Map;
 
 /**
  * <p>
+ *     The StartViewViewController is the first view the user sees. It cannot be clicked away like the other views, and
+ *     it gives users an option of what to start. Once the user has selected a view port, the view is switched
+ *     accordingly.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public class StartViewViewController extends AnchorPaneController<AnchorPaneInteraction> {
-
-    private final Map<OverlayInteraction, IUserCommand> interactionMap = new EnumMap<>(OverlayInteraction.class);
+public class StartViewViewController extends AnchorPaneInteractionController<StartViewInteraction> {
+    private final Map<StartViewInteraction, IUserCommand> interactionMap = new EnumMap<>(StartViewInteraction.class);
     private final ViewSwitcher viewSwitcher;
 
     @FXML
@@ -174,6 +175,11 @@ public class StartViewViewController extends AnchorPaneController<AnchorPaneInte
         });
     }
 
+    /**
+     * <p>
+     *     Starts the actual graph by switching views and sending out the start signal (if something was selected).
+     * </p>
+     */
     private void playPress() {
         String selected = getSelectedItem();
 
@@ -183,7 +189,27 @@ public class StartViewViewController extends AnchorPaneController<AnchorPaneInte
         }
 
         // Switch views according to selected item
-        viewSwitcher.replace(this, selected);
+        boolean switched = viewSwitcher.replace(this, selected);
+
+        // Start the requested service
+        if (switched) {
+            switch (selected) {
+                case "Demo":
+                    if (interactionMap.get(StartViewInteraction.START_DEMO) != null) {
+                        notifyListeners(interactionMap.get(StartViewInteraction.START_DEMO));
+                    }
+                    break;
+                case "Profinet":
+                    if (interactionMap.get(StartViewInteraction.START_PROFINET) != null) {
+                        notifyListeners(interactionMap.get(StartViewInteraction.START_PROFINET));
+                    }
+                    break;
+                default:
+                    if (interactionMap.get(StartViewInteraction.START_CAPTURE) != null) {
+                        notifyListeners(interactionMap.get(StartViewInteraction.START_CAPTURE));
+                    }
+            }
+        }
     }
 
     /**
@@ -212,7 +238,7 @@ public class StartViewViewController extends AnchorPaneController<AnchorPaneInte
     }
 
     @Override
-    public void addCommand(AnchorPaneInteraction interaction, IUserCommand command) {
-
+    public void addCommand(StartViewInteraction interaction, IUserCommand command) {
+        interactionMap.put(interaction, command);
     }
 }

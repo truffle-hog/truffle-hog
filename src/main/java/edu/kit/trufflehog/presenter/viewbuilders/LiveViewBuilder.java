@@ -5,16 +5,14 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.view.MainToolBarController;
 import edu.kit.trufflehog.view.NetworkViewScreen;
 import edu.kit.trufflehog.view.OverlayViewController;
-import edu.kit.trufflehog.view.elements.FilterOverlayMenu;
+import edu.kit.trufflehog.view.FilterOverlayViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -38,10 +36,8 @@ class LiveViewBuilder implements IViewBuilder {
     private final AnchorPane liveView;
 
     private OverlayViewController recordOverlayViewController;
-    private OverlayViewController filterOverlayViewController;
+    private FilterOverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
-
-    private TableView tableView;
 
     public LiveViewBuilder(ConfigData configData, StackPane stackPane, Stage primaryStage, INetworkViewPort viewPort) {
         this.configData = configData;
@@ -95,13 +91,7 @@ class LiveViewBuilder implements IViewBuilder {
      */
     private void buildFilterMenuOverlay() {
         // Build filter menu
-        FilterOverlayMenu filterOverlayMenu = new FilterOverlayMenu(configData, stackPane);
-        filterOverlayViewController = filterOverlayMenu.setUpOverlayViewController();
-        tableView = filterOverlayMenu.setUpTableView();
-        BorderPane borderPane = filterOverlayMenu.setUpMenu(tableView);
-
-        // Add menu to overlay
-        filterOverlayViewController.getChildren().add(borderPane);
+        filterOverlayViewController = new FilterOverlayViewController("filter_menu_overlay.fxml", configData, stackPane);
 
         // Set up overlay on screen
         liveView.getChildren().add(filterOverlayViewController);
@@ -229,7 +219,7 @@ class LiveViewBuilder implements IViewBuilder {
 
             // Deselect anything that was selected
             if (!filterOverlayViewController.isVisible()) {
-                tableView.getSelectionModel().clearSelection();
+                filterOverlayViewController.clearSelection();
             }
 
             // Hide the settings menu if it is visible
