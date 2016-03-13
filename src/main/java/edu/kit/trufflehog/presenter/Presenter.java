@@ -17,19 +17,13 @@ import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
-import edu.kit.trufflehog.model.network.recording.*;
-import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 import edu.uci.ics.jung.graph.util.Graphs;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -160,7 +154,7 @@ public class Presenter {
         // TODO change this to real filter
         // TODO register the truffleReceiver somewhere so we can start or stop it.
         final TruffleReceiver truffleReceiver = new UnixSocketReceiver(writingPortSwitch, node -> System.out.println("Dummy filter"));
-                //new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
+        //final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, node -> System.out.println("dummy filter"));
         truffleFetchService.execute(truffleReceiver);
         truffleReceiver.connect();
 
