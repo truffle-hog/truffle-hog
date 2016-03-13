@@ -52,8 +52,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	private INetworkViewPort viewPort;
 
-//	private final javafx.animation.Timeline timeLine;
-
 	private FXModalGraphMouse graphMouse;
 
 	private Timeline refresher;

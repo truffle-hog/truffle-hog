@@ -5,7 +5,7 @@ package edu.kit.trufflehog.interaction;
  *     Interactions that can be performed on the main toolbar.
  * </p>
  */
-public enum ToolBarInteraction implements IInteraction {
+public enum SnortControlInteraction implements IInteraction {
 
 	/** Try to connect to a running Snort process. **/
 	CONNECT_SNORT,

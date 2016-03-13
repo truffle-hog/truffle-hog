@@ -10,9 +10,9 @@ import java.io.IOException;
 
 /**
  * <p>
- *      The Basic abstraction for all AnchorPane controllers. This is the super class of the
- *      {@link AnchorPaneInteractionController} and it does not have an {@link IInteraction} because there are classes
- *      that have no need for it.
+ *      The basic abstraction for AnchorPane controllers. This is the super class of the
+ *      {@link AnchorPaneInteractionController} and it does not have an {@link IInteraction} because it does not
+ *      interact with the model.
  * </p>
  */
 public abstract class AnchorPaneController extends AnchorPane {

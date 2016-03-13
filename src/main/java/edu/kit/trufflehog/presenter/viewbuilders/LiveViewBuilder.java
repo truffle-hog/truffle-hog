@@ -2,7 +2,7 @@ package edu.kit.trufflehog.presenter.viewbuilders;
 
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
-import edu.kit.trufflehog.view.MainToolBarController;
+import edu.kit.trufflehog.view.ToolBarViewController;
 import edu.kit.trufflehog.view.NetworkViewScreen;
 import edu.kit.trufflehog.view.OverlayViewController;
 import edu.kit.trufflehog.view.FilterOverlayViewController;
@@ -149,7 +149,7 @@ class LiveViewBuilder implements IViewBuilder {
         Button filterButton = buildFilterButton();
         Button recordButton = buildRecordButton();
 
-        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml", settingsButton,
+        ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml", settingsButton,
                 filterButton, recordButton);
         liveView.getChildren().add(mainToolBarController);
         AnchorPane.setBottomAnchor(mainToolBarController, 5d);

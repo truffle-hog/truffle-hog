@@ -246,7 +246,7 @@ public class Presenter {
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
 
         // setting up menubar
-        MainToolBarController mainToolBarController = new MainToolBarController("main_toolbar.fxml");
+        ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml");
         pane.getChildren().add(mainToolBarController);
 
         // setting up node statistics overlay
