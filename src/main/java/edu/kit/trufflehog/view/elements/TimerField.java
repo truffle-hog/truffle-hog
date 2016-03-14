@@ -19,6 +19,7 @@ public class TimerField extends Text {
     private static DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     private Timeline timeline;
     private Instant startTime;
+    private Instant endTime;
 
     /**
      * <p>
@@ -42,6 +43,7 @@ public class TimerField extends Text {
      */
     public void startTimer() {
         startTime = Instant.now();
+        endTime = null;
         timeline.play();
     }
 
@@ -51,6 +53,24 @@ public class TimerField extends Text {
      * </p>
      */
     public void stopTimer() {
+        endTime = Instant.now();
         timeline.stop();
+    }
+
+    /**
+     * <p>
+     *     Gets the duration of the last recording in milliseconds. If a recording is currently in action, or if none
+     *     has happened yet, -1 is returned instead.
+     * </p>
+     *
+     * @return The duration of the last recording in milliseconds, or -1 if a recording is currently in action or has
+     *         not occurred yet.
+     */
+    public long getRecordDuration() {
+        if (endTime != null) {
+            return endTime.toEpochMilli() - startTime.toEpochMilli();
+        }
+
+        return  -1;
     }
 }

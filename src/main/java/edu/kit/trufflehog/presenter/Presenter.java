@@ -173,6 +173,9 @@ public class Presenter {
         // Exit the view
         Platform.exit();
 
+        // Close all databases and other resources accessing the hard drive that need to be closed.
+        configData.close();
+
         // Disconnect the truffleReceiver
         if (truffleReceiver != null) {
             truffleReceiver.disconnect();

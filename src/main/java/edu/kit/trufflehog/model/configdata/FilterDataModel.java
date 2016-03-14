@@ -90,7 +90,7 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
         // Make sure auto commit is on, so that queries will automatically updated the database
         if (connection != null) {
             try {
-                connection.setAutoCommit(true);
+                connection.setAutoCommit(false);
             } catch (SQLException e) {
                 logger.error("Unable to activate auto commits for database", e);
             }
@@ -119,21 +119,41 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
             return;
         }
 
+        // This should not have be to synchronized, because this method never should have to be called more than once,
+        // but because in can in theory be called more than once we do synchronize here just to be safe.
+        synchronized (this) {
+            // We use the try-with-resource statements here from Java 7
+            try (Statement statement = connection.createStatement()) {
+                try (ResultSet rs = statement.executeQuery("SELECT * FROM FILTERS;")) {
+                    connection.commit();
 
-        // Iterate through all found entries in the database and add them to the map
-        try {
-            ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM FILTERS;");
-            while (rs.next()) {
-                String base64String = rs.getString("filter");
-                FilterInput filterInput = fromBase64(base64String);
-                if (filterInput != null) {
-                    loadedFilters.put(filterInput.getName(), filterInput);
-                } else {
-                    logger.error("Found null filter input object while loading from database, skipping");
+                    // Iterate through all found entries in the database and add them to the map
+                    while (rs.next()) {
+                        String base64String = rs.getString("filter");
+                        FilterInput filterInput = fromBase64(base64String);
+                        if (filterInput != null) {
+                            loadedFilters.put(filterInput.getName(), filterInput);
+                        } else {
+                            logger.error("Found null filter input object while loading from database, skipping");
+                        }
+                    }
                 }
+            } catch (SQLException e) {
+                logger.error("Error while loading filter input objects from database into list", e);
             }
+        }
+    }
+
+    /**
+     * <p>
+     *     Closes the connection to the data base on force. For more information see
+     * </p>
+     */
+    public void close() {
+        try {
+            connection.close();
         } catch (SQLException e) {
-            logger.error("Error while loading filter input objects from database into list", e);
+            logger.error("Unable to close filter database correctly. Data might be lost.", e);
         }
     }
 
@@ -220,18 +240,20 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
         }
 
         // Add the base64 string into the database
-        try {
-            String sql = "INSERT INTO FILTERS(ID,FILTER) " +
-                    "VALUES('" + filterInput.getName() + "','" + filterBase64 + "');";
+        synchronized (this) {
+            // We use the try-with-resource statements here from Java 7
+            try (Statement statement = connection.createStatement()) {
+                String sql = "INSERT INTO FILTERS(ID,FILTER) " + "VALUES('" + filterInput.getName() + "','"
+                        + filterBase64 + "');";
 
-            synchronized (this) {
-                connection.createStatement().executeUpdate(sql);
+                statement.executeUpdate(sql);
+                connection.commit();
+
+                // Only update the map if the database query was successful
+                loadedFilters.put(filterInput.getName(), filterInput);
+            } catch (SQLException e) {
+                logger.error("Unable to add a filter to the database", e);
             }
-
-            // Only update the map if the database query was successful
-            loadedFilters.put(filterInput.getName(), filterInput);
-        } catch (SQLException e) {
-            logger.error("Unable to add a filter to the database", e);
         }
     }
 
@@ -260,8 +282,6 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      * @param filterInput The {@link FilterInput} to remove from the database.
      */
     private void removeFilterFromDatabaseSynchronous(FilterInput filterInput) {
-        // Synchronized because it runs in its own thread
-
         // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to remove filter from database, connection is null");
@@ -275,16 +295,18 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
         }
 
         // Remove the filterInput from the database
-        try {
-            synchronized (this) {
-                connection.createStatement().executeUpdate("DELETE from FILTERS where ID='" + filterInput.getName()
+        synchronized (this) {
+            // We use the try-with-resource statements here from Java 7
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate("DELETE from FILTERS where ID='" + filterInput.getName()
                         + "';");
-            }
+                connection.commit();
 
-            // Only update the map if the database query was successful
-            loadedFilters.remove(filterInput.getName());
-        } catch (SQLException e) {
-            logger.error("Unable to remove filter input " + filterInput.getName() + " from database", e);
+                // Only update the map if the database query was successful
+                loadedFilters.remove(filterInput.getName());
+            } catch (SQLException e) {
+                logger.error("Unable to remove filter input " + filterInput.getName() + " from database", e);
+            }
         }
     }
 
@@ -337,14 +359,16 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      * </p>
      */
     private void createDatabase() {
-        try {
+        // This is not synchronized because it should only be called one single time by the thread that creates this
+        // database
+        try (Statement statement = connection.createStatement()) {
             logger.debug("Creating new database..");
-            Statement statement = connection.createStatement();
 
             String sql = "CREATE TABLE FILTERS" +
                     "(ID        TEXT    NOT NULL," +
                     " FILTER    TEXT    NOT NULL)";
             statement.executeUpdate(sql);
+            connection.commit();
 
             logger.debug("Created new database successfully.");
         } catch (SQLException e) {

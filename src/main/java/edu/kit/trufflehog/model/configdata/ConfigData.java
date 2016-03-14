@@ -167,4 +167,13 @@ public class ConfigData {
     public String getProperty(final String key) {
         return propertiesDataModel.get(key);
     }
+
+    /**
+     * <p>
+     *     Closes all connections to all databases and other connections that should be closed before the program exits.
+     * </p>
+     */
+    public void close() {
+        filterDataModel.close();
+    }
 }
