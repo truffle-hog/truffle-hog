@@ -3,6 +3,7 @@ package edu.kit.trufflehog.view.elements;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.scene.text.Text;
 
 import java.time.Duration;
@@ -29,8 +30,13 @@ public class TimerField extends Text {
     public TimerField() {
         startTime = Instant.now(); // Just to initialize a value
         timeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(0),
-                event -> setText(LocalTime.now().minus(Duration.ofMillis(startTime.toEpochMilli())).minus(Duration.ofHours(1)).format(SHORT_TIME_FORMATTER))),
+
+                // Make a call to Platform.runLater() because otherwise null pointer exceptions get thrown as calling
+                // setText() from the JavaFX Application thread causes this issues apparently.
+                event -> Platform.runLater(() -> setText(LocalTime.now().minus(Duration.ofMillis(startTime.toEpochMilli()))
+                        .minus(Duration.ofHours(1)).format(SHORT_TIME_FORMATTER)))), // Subtract 1 hour so that it makes sense
                 new KeyFrame(javafx.util.Duration.seconds(1)));
+
         setText("00:00:00");
 
         timeline.setCycleCount(Animation.INDEFINITE);
