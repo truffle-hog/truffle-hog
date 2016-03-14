@@ -6,7 +6,9 @@ import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
@@ -48,7 +50,9 @@ public class LiveViewViewController extends AnchorPaneController {
                                   final INetworkViewPort viewPort,
                                   final Scene scene,
                                   final IUserCommand<FilterInput> updateFilterCommand,
-                                  final IListener<IUserCommand> userCommandIListener) {
+                                  final IListener<IUserCommand> userCommandIListener,
+                                  final INetworkDevice networkDevice,
+                                  final INetwork liveNetwork) {
         super(fxml);
 
         this.updateFilterCommand = updateFilterCommand;
@@ -78,7 +82,7 @@ public class LiveViewViewController extends AnchorPaneController {
         addNodeStatisticsOverlay();
         addSettingsOverlay();
         addFilterMenuOverlay(networkViewScreen);
-        addRecordOverlay();
+        addRecordOverlay(networkDevice, liveNetwork);
     }
 
     /**
@@ -122,8 +126,8 @@ public class LiveViewViewController extends AnchorPaneController {
      *     Builds the record menu overlay.
      * </p>
      */
-    private void addRecordOverlay() {
-        recordOverlayViewController = new RecordMenuViewController("record_overlay_menu.fxml");
+    private void addRecordOverlay(INetworkDevice networkDevice, INetwork liveNetwork) {
+        recordOverlayViewController = new RecordMenuViewController("record_overlay_menu.fxml", networkDevice, liveNetwork);
         this.getChildren().add(recordOverlayViewController);
         AnchorPane.setBottomAnchor(recordOverlayViewController, 60d);
         AnchorPane.setLeftAnchor(recordOverlayViewController, 18d);

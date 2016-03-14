@@ -18,7 +18,6 @@
 package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
-import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.apache.commons.io.FileUtils;
@@ -28,7 +27,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -48,7 +46,6 @@ import static org.mockito.Mockito.when;
  */
 public class SettingsDataModelTest {
     private FileSystem fileSystem;
-    private ExecutorService executorService;
     private SettingsDataModel settingsDataModel;
 
     /**
@@ -60,11 +57,10 @@ public class SettingsDataModelTest {
      */
     @Before
     public void setUp() throws Exception {
-        this.executorService = new LoggedScheduledExecutor(1);
         this.fileSystem = mock(FileSystem.class);
         when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
         when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config"));
-        this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
+        this.settingsDataModel = new SettingsDataModel(fileSystem);
     }
 
     /**
@@ -76,7 +72,6 @@ public class SettingsDataModelTest {
      */
     @After
     public void tearDown() throws Exception {
-        executorService = null;
         fileSystem = null;
         settingsDataModel = null;
     }
@@ -101,7 +96,7 @@ public class SettingsDataModelTest {
             fileSystem.getConfigFolder().mkdir();
         }
 
-        this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
+        this.settingsDataModel = new SettingsDataModel(fileSystem);
         boolean exists = new File(fileSystem.getConfigFolder()  + File.separator + "system_config.xml").exists();
 
         if (fileSystem.getConfigFolder().exists()) {
@@ -175,7 +170,7 @@ public class SettingsDataModelTest {
      * @throws Exception Passes any errors that occurred during the test on
      */
     private void testGetEntrySuccess(Class classType, String key, String oldValue, String newValue) throws Exception {
-        settingsDataModel = new SettingsDataModel(fileSystem, executorService);
+        settingsDataModel = new SettingsDataModel(fileSystem);
         StringProperty property1 = settingsDataModel.get(classType, key);
         assertEquals(true, property1.getValue().equals(oldValue));
 
@@ -186,7 +181,7 @@ public class SettingsDataModelTest {
 
         Thread.sleep(1000); // sleep because the saving to file happens in another thread
 
-        settingsDataModel = new SettingsDataModel(fileSystem, executorService);
+        settingsDataModel = new SettingsDataModel(fileSystem);
         property1 = settingsDataModel.get(classType, key);
         assertEquals(true, property1.getValue().equals(newValue));
 
@@ -194,7 +189,7 @@ public class SettingsDataModelTest {
 
         Thread.sleep(1000); // sleep because the saving to file happens in another thread
 
-        settingsDataModel = new SettingsDataModel(fileSystem, executorService);
+        settingsDataModel = new SettingsDataModel(fileSystem);
         property1 = settingsDataModel.get(classType, key);
         assertEquals(true, property1.getValue().equals(oldValue));
     }

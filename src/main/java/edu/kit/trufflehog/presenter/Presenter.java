@@ -3,7 +3,7 @@ package edu.kit.trufflehog.presenter;
 import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
-import edu.kit.trufflehog.model.filter.*;
+import edu.kit.trufflehog.model.filter.MacroFilter;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
@@ -23,10 +23,7 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,11 +68,11 @@ public class Presenter {
         }
 
         this.fileSystem = new FileSystem();
-        this.executorService = new LoggedScheduledExecutor(10);
+        this.executorService = LoggedScheduledExecutor.getInstance();
 
         ConfigData configDataTemp;
         try {
-            configDataTemp = new ConfigData(fileSystem, executorService);
+            configDataTemp = new ConfigData(fileSystem);
         } catch (NullPointerException e) {
             configDataTemp = null;
             logger.error("Unable to set config data model", e);
@@ -95,7 +92,8 @@ public class Presenter {
      */
     public void present() {
         initNetwork();
-        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(), new UpdateFilterCommand(writingPortSwitch, macroFilter));
+        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
+                new UpdateFilterCommand(writingPortSwitch, macroFilter));
     }
 
     private void initNetwork() {

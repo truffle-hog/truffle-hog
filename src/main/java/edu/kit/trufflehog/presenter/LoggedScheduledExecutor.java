@@ -7,7 +7,7 @@ import java.util.concurrent.*;
 
 /**
  * <p>
- *     A ScheduledThreadPoolExecutor that logs exceptions and does not just drop them.
+ *     A ScheduledThreadPoolExecutor that logs exceptions and does not just drop them. This is a singelton.
  * </p>
  *
  * @author Julian Brendl
@@ -15,16 +15,35 @@ import java.util.concurrent.*;
  */
 public class LoggedScheduledExecutor extends ScheduledThreadPoolExecutor {
     private static final Logger logger = LogManager.getLogger(LoggedScheduledExecutor.class);
+    private static LoggedScheduledExecutor loggedScheduledExecutor = null;
 
     /**
      * <p>
-     *     Creates a new LoggedScheduledExecutor object.
+     *     Returns a new LoggedScheduledExecutor if none has been created yet and otherwise returns the already
+     *     existing instance.
+     * </p>
+     *
+     * @return a new LoggedScheduledExecutor if none has been created yet and otherwise returns the already existing
+     *     instance.
+     */
+    public static LoggedScheduledExecutor getInstance() {
+        if (loggedScheduledExecutor == null) {
+            loggedScheduledExecutor = new LoggedScheduledExecutor(10);
+        }
+
+        return loggedScheduledExecutor;
+    }
+
+    /**
+     * <p>
+     *     Creates a new LoggedScheduledExecutor object. This method is private since the thread pool is a singelton
+     *     and controls all threads in TruffleHog.
      * </p>
      *
      * @param corePoolSize The core pool size of the executor, for more info see the oracle documentation for
      *                     ScheduledThreadPoolExecutor
      */
-    public LoggedScheduledExecutor(int corePoolSize) {
+    private LoggedScheduledExecutor(int corePoolSize) {
         super(corePoolSize);
     }
 

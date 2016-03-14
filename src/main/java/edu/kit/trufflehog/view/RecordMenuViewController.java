@@ -1,5 +1,11 @@
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
+import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.recording.INetworkDevice;
+import edu.kit.trufflehog.model.network.recording.INetworkTape;
+import edu.kit.trufflehog.model.network.recording.NetworkTape;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.elements.GlowImageButton;
@@ -25,11 +31,11 @@ public class RecordMenuViewController extends AnchorPaneController {
      *
      * @param fxmlFile The fxml file to create the AnchorPaneController from.
      */
-    public RecordMenuViewController(String fxmlFile) {
+    public RecordMenuViewController(String fxmlFile, INetworkDevice networkDevice, INetwork liveNetwork) {
         super(fxmlFile);
 
         final GlowImageButton button = new GlowImageButton("record-circle.png");
-        final TimerField timerField = new TimerField(new LoggedScheduledExecutor(1));
+        final TimerField timerField = new TimerField(LoggedScheduledExecutor.getInstance());
         timerField.setId("timer");
 
         getChildren().addAll(timerField, button);
@@ -47,11 +53,37 @@ public class RecordMenuViewController extends AnchorPaneController {
                 pressed = true;
                 button.startGlow();
                 timerField.startTimer();
+
+                startRecord(networkDevice, liveNetwork);
             } else {
                 pressed = false;
                 button.stopGlow();
                 timerField.stopTimer();
             }
         });
+    }
+
+    /**
+     * <p>
+     *     Starts recording the current graph.
+     * </p>
+     *
+     * @param networkDevice
+     * @param liveNetwork
+     */
+    private void startRecord(INetworkDevice networkDevice, INetwork liveNetwork) {
+        final INetworkTape tape = new NetworkTape(20);
+
+        final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);
+        startRecordCommand.execute();
+    }
+
+    /**
+     * <p>
+     *     Stops recording the current graph, and opens a window to save the recorded graph properly.
+     * </p>
+     */
+    private void stopRecord() {
+
     }
 }

@@ -20,6 +20,7 @@ package edu.kit.trufflehog.model.configdata;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.IFilter;
+import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,8 +61,8 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      *
      * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
      */
-    public FilterDataModel(FileSystem fileSystem, ExecutorService executorService) {
-        this.executorService = executorService;
+    public FilterDataModel(FileSystem fileSystem) {
+        this.executorService = LoggedScheduledExecutor.getInstance();
 
         // Not sure why this map has to be concurrent, but in the unit tests I got concurrent hash map exceptions when
         // it was not. Perhaps the database library is asynchronous, though I am not sure how that would affect this map.
