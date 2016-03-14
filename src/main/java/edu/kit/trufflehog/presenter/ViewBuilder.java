@@ -76,13 +76,13 @@ public class ViewBuilder {
 
     /**
      * <p>
-     * Creates the ViewBuilder, which builds the entire view.
+     *     Creates the ViewBuilder, which builds the entire view.
      * </p>
      *
      * @param configData   The {@link ConfigData} that is necessary to save and load configurations, like
      *                     filters or settings.
      * @param primaryStage The primary stage, where everything is drawn upon.
-     * @param viewPorts The viewports that TruffleHog supports with their names.
+     * @param viewPorts The viewports that TruffleHog supports mapped to their names.
      */
     public ViewBuilder(final ConfigData configData,
                        final Stage primaryStage,
@@ -102,13 +102,16 @@ public class ViewBuilder {
     }
 
     /**
-     * <p>
+     *  <p>
      *     Builds the entire view. That means it connects all view components with each other and with other necessary
      *     components as well.
      * </p>
      *
-     * @param viewPort The viewport of the graph that should be drawn here.
+     * @param viewPort
+     * @param liveNetwork
+     * @param device
      * @param userCommandIListener
+     * @param updateFilterCommand
      */
     public void build(final INetworkViewPortSwitch viewPort,
                       final INetwork liveNetwork,
