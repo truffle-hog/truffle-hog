@@ -63,12 +63,16 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
     // FXML variables
     @FXML
     private TextField nameTextField;
+
     @FXML
     private ComboBox<FilterType> typeComboBox;
     @FXML
     private ColorPicker colorPicker;
     @FXML
     private ComboBox<String> filterByComboBox;
+
+    @FXML
+    private TextField priorityTextField;
     @FXML
     private TextArea rulesTextArea;
 
@@ -77,8 +81,10 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
 
     @FXML
     private Button createButton;
+
     @FXML
     private Button cancelButton;
+
     @FXML
     private Button helpButton;
 
@@ -86,6 +92,18 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
     private final String MAC_LABEL;
     private final String IP_LABEL;
     private final String SELECTION_LABEL;
+
+    public ComboBox<String> getFilterByComboBox() {
+        return filterByComboBox;
+    }
+
+    public TextField getNameTextField() {
+        return nameTextField;
+    }
+
+    public TextArea getRulesTextArea() {
+        return rulesTextArea;
+    }
 
     /**
      * <p>
@@ -178,6 +196,8 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
                 filterByComboBox.setValue(SELECTION_LABEL);
             }
 
+            priorityTextField.setText(filterInput.getPriority() + "");
+
             rulesTextArea.setText(concatRules(filterInput.getRules()));
         } else {
             updatingFilter = null;
@@ -199,6 +219,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         typeComboBox.setValue(null);
         colorPicker.setValue(Color.WHITE);
         filterByComboBox.setValue(null);
+        priorityTextField.setText("");
         rulesTextArea.setText("");
         errorText.setText("");
         updatingFilter = null;
@@ -270,42 +291,53 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
      * </p>
      */
     private void updateFilter(FilterInput filterInput) {
-        FilterInput filterInputUpated = createFilterInput();
+        FilterInput filterInputUpdated = createFilterInput();
 
-        if (filterInputUpated == null) {
+        if (filterInputUpdated == null) {
             return;
         }
 
+        if (filterInput.getActiveProperty().get()) {
+            filterInput.getActiveProperty().set(false);
+            filterOverlayViewController.notifyUpdateCommand(filterInput);
+            filterInput.getActiveProperty().setValue(true);
+        }
+
         // Update name
-        if (!filterInputUpated.getName().equals(filterInput.getName())) {
-            filterInput.getNameProperty().setValue(filterInputUpated.getName());
+        if (!filterInputUpdated.getName().equals(filterInput.getName())) {
+            filterInput.getNameProperty().setValue(filterInputUpdated.getName());
         }
 
         // Update type
-        if (!filterInputUpated.getType().equals(filterInput.getType())) {
-            filterInput.getTypeProperty().setValue(filterInputUpated.getTypeProperty().getValue());
+        if (!filterInputUpdated.getType().equals(filterInput.getType())) {
+            filterInput.getTypeProperty().setValue(filterInputUpdated.getTypeProperty().getValue());
         }
 
         // Update color
-        if (!filterInputUpated.getColor().equals(filterInput.getColor())) {
-            filterInput.getColorProperty().setValue(filterInputUpated.getColorProperty().getValue());
+        if (!filterInputUpdated.getColor().equals(filterInput.getColor())) {
+            filterInput.getColorProperty().setValue(filterInputUpdated.getColorProperty().getValue());
         }
 
         // Update origin
-        if (!filterInputUpated.getOrigin().equals(filterInput.getOrigin())) {
-            filterInput.getOriginProperty().setValue(filterInputUpated.getOriginProperty().getValue());
+        if (!filterInputUpdated.getOrigin().equals(filterInput.getOrigin())) {
+            filterInput.getOriginProperty().setValue(filterInputUpdated.getOriginProperty().getValue());
+        }
+
+        // Update priority
+        if (filterInputUpdated.getPriority() != filterInput.getPriority()) {
+            filterInput.getPriorityProperty().setValue(filterInputUpdated.getPriorityProperty().getValue());
         }
 
         // Update rules and save to database, since they don't have a listener (since they are not shown in the table)
-        if (!filterInputUpated.getRules().equals(filterInput.getRules())) {
-            filterInput.setRules(filterInputUpated.getRules());
+        if (!filterInputUpdated.getRules().equals(filterInput.getRules())) {
+            filterInput.setRules(filterInputUpdated.getRules());
 
             configData.updateFilterInput(filterInput);
             logger.debug("Updated rules for FilterInput: " + filterInput.getName() + " to database.");
         }
 
         // Notify the model that a filter has changed
-        filterOverlayViewController.notifyUpdateCommand();
+        filterOverlayViewController.notifyUpdateCommand(filterInput);
         clearMenu();
         hideMenu();
     }
@@ -323,6 +355,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         final FilterType filterType = typeComboBox.getValue();
         final String filterOriginString = filterByComboBox.getValue();
         final Color color = colorPicker.getValue();
+        final String priorityText = priorityTextField.getText();
         final String rules = rulesTextArea.getText();
 
         // Check if name is valid
@@ -354,6 +387,12 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         }
 
         // Map the string to the actual FilterOrigin object. This is done so that
+        if (filterOriginString == null) {
+            errorText.setText(configData.getProperty("ORIGIN_ERROR"));
+            return null;
+        }
+
+        // Find the right filter origin
         FilterOrigin filterOrigin;
         if (filterOriginString.equals(IP_LABEL)) {
             filterOrigin = FilterOrigin.IP;
@@ -365,8 +404,23 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             filterOrigin = null;
         }
 
+        // We should never get here but just for good measure
         if (filterOrigin == null) {
             errorText.setText(configData.getProperty("ORIGIN_ERROR"));
+            return null;
+        }
+
+        // Check that priority is valid
+        Pattern priorityPattern = Pattern.compile("[0-9]{1,3}");
+        Matcher priorityMatcher = priorityPattern.matcher(priorityText);
+        if (!priorityMatcher.matches()) {
+            errorText.setText(configData.getProperty("PRIORITY_ERROR"));
+            return null;
+        }
+        final int priority = Integer.parseInt(priorityText);
+
+        if (priority < 0) {
+            errorText.setText(configData.getProperty("PRIORITY_NOT_NEGATIVE"));
             return null;
         }
 
@@ -380,8 +434,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         java.awt.Color colorAwt = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255),
                 (int) (color.getBlue() * 255));
 
-        //FIXME add priority to view and then add it to the filter input accordingly
-        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt, /*ADD PRIORITY HERE*/ 0);
+        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt, priority);
         filterInput.load(configData); // Binds properties to database
 
         return filterInput;
@@ -398,6 +451,11 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
      * @return A list of parsed and valid rules, or null if a rule was not valid.
      */
     private List<String> processRules(String rules, FilterOrigin filterOrigin) {
+        if (rules.equals("")) {
+            errorText.setText(configData.getProperty("MISSING_RULE_ERROR"));
+            return null;
+        }
+
         // If the last character of the string is a semicolon, remove it
         String lastChar = rules.substring(rules.length() - 1);
         if (lastChar.equals(";")) {
@@ -408,11 +466,6 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         rules = rules.replaceAll("\\s+","").replaceAll("\n","").replaceAll("\r", "");
 
         String[] ruleArray = rules.split(";");
-
-        if (ruleArray.length == 0) {
-            errorText.setText(configData.getProperty("MISSING_RULE_ERROR"));
-            return null;
-        }
 
         // Define MAC and IP regex
         String macRegex = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";

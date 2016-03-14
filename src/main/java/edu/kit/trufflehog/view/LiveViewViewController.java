@@ -1,9 +1,13 @@
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
+import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
+import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
@@ -15,7 +19,6 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
 /**
  * <p>
@@ -36,13 +39,29 @@ public class LiveViewViewController extends AnchorPaneController {
     private OverlayViewController recordOverlayViewController;
     private FilterOverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
+    private final IUserCommand<FilterInput> updateFilterCommand;
+    private final IListener<IUserCommand> userCommandListener;
 
-    public LiveViewViewController(String fxml, ConfigData configData, StackPane stackPane, NetworkGraphViewController networkViewScreen, Scene scene) {
+    public LiveViewViewController(String fxml,
+                                  ConfigData configData,
+                                  StackPane stackPane,
+                                  INetworkViewPort viewPort,
+                                  Scene scene,
+                                  IUserCommand<FilterInput> updateFilterCommand,
+                                  IListener<IUserCommand> userCommandIListener) {
         super(fxml);
+
+        this.updateFilterCommand = updateFilterCommand;
+        this.userCommandListener = userCommandIListener;
+
         this.configData = configData;
         this.scene = scene;
 
         this.stackPane = stackPane;
+
+        final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
+        networkViewScreen.addListener(userCommandIListener);
+        networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
 
         this.getChildren().add(networkViewScreen);
 
@@ -58,7 +77,7 @@ public class LiveViewViewController extends AnchorPaneController {
         addGeneralStatisticsOverlay();
         addNodeStatisticsOverlay();
         addSettingsOverlay();
-        addFilterMenuOverlay();
+        addFilterMenuOverlay(networkViewScreen);
         addRecordOverlay();
     }
 
@@ -80,9 +99,10 @@ public class LiveViewViewController extends AnchorPaneController {
      *     Builds the filter menu overlay.
      * </p>
      */
-    private void addFilterMenuOverlay() {
+    private void addFilterMenuOverlay(NetworkGraphViewController networkViewScreen) {
         // Build filter menu
-        filterOverlayViewController = new FilterOverlayViewController("filter_menu_overlay.fxml", configData, stackPane);
+        filterOverlayViewController = new FilterOverlayViewController("filter_menu_overlay.fxml", configData, stackPane,
+                networkViewScreen.getPickedVertexState());
 
         // Set up overlay on screen
         this.getChildren().add(filterOverlayViewController);
@@ -90,6 +110,11 @@ public class LiveViewViewController extends AnchorPaneController {
         AnchorPane.setLeftAnchor(filterOverlayViewController, 18d);
         filterOverlayViewController.setMaxSize(330d, 210d);
         filterOverlayViewController.setVisible(false);
+
+        filterOverlayViewController.addListener(userCommandListener);
+        filterOverlayViewController.addCommand(FilterInteraction.UPDATE, updateFilterCommand);
+        filterOverlayViewController.addCommand(FilterInteraction.ADD, updateFilterCommand);
+        filterOverlayViewController.addCommand(FilterInteraction.REMOVE, updateFilterCommand);
     }
 
     /**
@@ -136,9 +161,9 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private void addToolbar() {
-        Button settingsButton = buildSettingsButton();
-        Button filterButton = buildFilterButton();
-        Button recordButton = buildRecordButton();
+        Button settingsButton = addSettingsButton();
+        Button filterButton = addFilterButton();
+        Button recordButton = addRecordButton();
 
         ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml", settingsButton,
                 filterButton, recordButton);
@@ -152,7 +177,7 @@ public class LiveViewViewController extends AnchorPaneController {
      *     Builds the settings button.
      * </p>
      */
-    private Button buildSettingsButton() {
+    private Button addSettingsButton() {
         Button settingsButton = new ImageButton("gear.png");
         settingsButton.setOnAction(event -> handleShowMechanism(settingsOverlayViewController, filterOverlayViewController,
                 recordOverlayViewController));
@@ -171,7 +196,7 @@ public class LiveViewViewController extends AnchorPaneController {
      *     Builds the filter button.
      * </p>
      */
-    private Button buildFilterButton() {
+    private Button addFilterButton() {
         Button filterButton = new ImageButton("filter.png");
         filterButton.setOnAction(event -> handleShowMechanism(filterOverlayViewController, recordOverlayViewController,
                 settingsOverlayViewController));
@@ -189,7 +214,7 @@ public class LiveViewViewController extends AnchorPaneController {
      *     Builds the record button.
      * </p>
      */
-    private Button buildRecordButton() {
+    private Button addRecordButton() {
         ImageButton recordButton = new ImageButton("record.png");
 
         recordButton.setOnAction(event -> handleShowMechanism(recordOverlayViewController, filterOverlayViewController,

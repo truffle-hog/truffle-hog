@@ -4,11 +4,25 @@ import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.INetworkReadingPort;
 import javafx.beans.property.IntegerProperty;
 
+import java.util.Collection;
+
 /**
  * Created by jan on 22.02.16.
  */
 public class NetworkReadingPort implements INetworkReadingPort {
 
+
+    @Override
+    public Collection<INode> getNetworkNodes() {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
+    }
+
+    @Override
+    public Collection<IConnection> getNetworkConnections() {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
+    }
 
     @Override
     public INode getNetworkNodeByAddress(IAddress address) {

@@ -1,52 +1,79 @@
 package edu.kit.trufflehog.command.usercommand;
 
-import edu.kit.trufflehog.model.filter.IFilter;
-import edu.kit.trufflehog.model.filter.MacroFilter;
+import edu.kit.trufflehog.model.filter.*;
+import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import javafx.scene.control.SelectionModel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
  *     Command to update the graph after a newly added filter is enbaled
  * </p>
  */
-public class UpdateFilterCommand implements IUserCommand<Void> {
-    private final IFilter newFilter;
-    private final IFilter oldFilter;
+public class UpdateFilterCommand implements IUserCommand<FilterInput> {
     private final MacroFilter macroFilter;
-    private final INetworkWritingPort nwp;
+    private final INetworkIOPort nwp;
+    private FilterInput filterInput;
+
+    private final Map<FilterInput, IFilter> filterMap = new HashMap<>();
 
     /**
      * //TODO document
      * @param nwp
-     * @param newFilter
-     * @param oldFilter
      * @param macroFilter
      */
-    UpdateFilterCommand(final INetworkWritingPort nwp, final IFilter newFilter, final IFilter oldFilter, final MacroFilter macroFilter) {
-        if (newFilter == null)
-            throw new NullPointerException("newFilter must not be null!");
-
-        if (oldFilter == null)
-            throw new NullPointerException("oldFilter must not be null!");
-
+    public UpdateFilterCommand(final INetworkIOPort nwp, final MacroFilter macroFilter) {
         if(macroFilter == null)
             throw new NullPointerException("macroFilter must not be null!");
 
-        this.newFilter = newFilter;
-        this.oldFilter = oldFilter;
         this.macroFilter = macroFilter;
         this.nwp = nwp;
+        this.filterInput = null;
     }
 
     @Override
     public void execute() {
-        macroFilter.removeFilter(oldFilter);
-        macroFilter.addFilter(newFilter);
-        nwp.applyFilter(newFilter);
+
+        if (filterInput != null) {
+
+            if (filterMap.get(filterInput) != null) {
+                macroFilter.removeFilter(filterMap.get(filterInput));
+                filterMap.remove(filterInput);
+            }
+
+            if (!filterInput.isActive()) {
+                return;
+            }
+
+            IFilter filter = null;
+
+            try {
+                switch (filterInput.getOrigin()) {
+                    case MAC:
+                        filter = new MACAddressFilter(nwp, filterInput);
+                        break;
+                    case IP:
+                        filter = new IPFilter();
+                        break;
+                    default:
+                        filter = IFilter.EMPTY;
+                        break;
+                }
+            } catch (InvalidFilterRule invalidFilterRule) {
+                //TODO do some error handling and notify user maybe?
+            }
+
+            filterMap.put(filterInput, filter);
+            macroFilter.addFilter(filter);
+            nwp.applyFilter(filter);
+        }
     }
 
     @Override
-    public <S extends Void> void setSelection(S selection) {
-        throw new UnsupportedOperationException("Please stop!");
+    public <S extends FilterInput> void setSelection(S filterInput) {
+        this.filterInput = filterInput;
     }
 }

@@ -15,8 +15,7 @@ import java.util.Collection;
 
 /**
  * A Networkview port provides all functionality that has to be accessed by the network view. Meaning it also
- * has to give access
- * to specific Metadata of the Network
+ * has to give access to specific Metadata of the Network
  */
 public interface INetworkViewPort extends Layout<INode, IConnection>, DeepCopyable<NetworkViewCopy> {
 

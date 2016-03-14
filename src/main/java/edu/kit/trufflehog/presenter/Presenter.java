@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.presenter;
 
+import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.*;
@@ -22,7 +23,7 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,21 +42,18 @@ import java.util.concurrent.ScheduledExecutorService;
 public class Presenter {
     private static final Logger logger = LogManager.getLogger();
 
-    private static Presenter presenter;
     private final ConfigData configData;
     private final FileSystem fileSystem;
     private final ScheduledExecutorService executorService;
     private final Stage primaryStage;
     private ViewBuilder viewBuilder;
     private TruffleReceiver truffleReceiver;
-    //private INetworkViewPort liveViewPort;
-    //private INetworkViewPort viewPort;
     private Map<String, INetworkViewPort> viewPortMap;
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
-
-    //private final IListener<IUserCommand> userCommandListener;
+    private INetworkWritingPortSwitch writingPortSwitch;
+    private final MacroFilter macroFilter = new MacroFilter();
 
     private final CommandExecutor commandExecutor = new CommandExecutor();
 
@@ -96,9 +94,8 @@ public class Presenter {
      * </p>
      */
     public void present() {
-
         initNetwork();
-        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener());
+        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(), new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
     }
 
     private void initNetwork() {
@@ -114,7 +111,7 @@ public class Presenter {
         // TODO Ctor injection with the Ports that are within the networks
         liveNetwork = new LiveNetwork(og);
 
-        // TODO Add real thing too, perhaps I missunderstood the viewport, need to talk to somebody
+        // TODO Add real thing too, perhaps I misunderstood the viewport, need to talk to somebody in person ( - Julian)
         viewPortMap.put("Demo", liveNetwork.getViewPort());
 
         // TODO Where to put this???
@@ -132,7 +129,7 @@ public class Presenter {
 */
         // initialize the writing port switch that use the writing port of the live network
         // as their initial default writing port
-        final INetworkWritingPortSwitch writingPortSwitch = new NetworkWritingPortSwitch(liveNetwork.getWritingPort());
+        writingPortSwitch = new NetworkWritingPortSwitch(liveNetwork.getWritingPort());
 
         // initialize the reading port switch that uses the reading port of the live network
         // as its initial default reading port
@@ -153,51 +150,6 @@ public class Presenter {
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-        final MacroFilter macroFilter = new MacroFilter(); //TODO register this in some view part to make it possible for the user to add/remove filters
-
-        //////////////////
-        // EXPERIMENTAL //
-        //////////////////
-
-        List<String> rules = new LinkedList<>();
-        rules.add("00:00:00:00:00:01");
-        rules.add("00:00:00:00:00:02");
-        rules.add("00:00:00:00:00:03");
-
-        FilterInput fip = new FilterInput("Test filter", FilterType.BLACKLIST, FilterOrigin.MAC, rules, new Color(0xFF001E), 3);
-        try {
-            macroFilter.addFilter(new MACAddressFilter(fip));
-        } catch (InvalidFilterRule invalidFilterRule) {
-            invalidFilterRule.printStackTrace();
-        }
-
-        List<String> rules2 = new LinkedList<>();
-        rules2.add("00:00:00:00:00:03");
-        rules2.add("00:00:00:00:00:04");
-        rules2.add("00:00:00:00:00:05");
-
-        FilterInput fip2 = new FilterInput("Test filter", FilterType.BLACKLIST, FilterOrigin.MAC, rules2, new Color(0x00EEFF), 0);
-        try {
-            macroFilter.addFilter(new MACAddressFilter(fip2));
-        } catch (InvalidFilterRule invalidFilterRule) {
-            invalidFilterRule.printStackTrace();
-        }
-
-        List<String> rules3 = new LinkedList<>();
-        rules3.add("00:00:00:00:00:00");
-        rules3.add("00:00:00:00:00:01");
-        rules3.add("00:00:00:00:00:06");
-
-        FilterInput fip3 = new FilterInput("Test filter", FilterType.BLACKLIST, FilterOrigin.MAC, rules3, new Color(0x23FF00), 6);
-        try {
-            macroFilter.addFilter(new MACAddressFilter(fip3));
-        } catch (InvalidFilterRule invalidFilterRule) {
-            invalidFilterRule.printStackTrace();
-        }
-
-        //////////////////////
-        // EXPERIMENTAL END //
-        //////////////////////
 
         final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
         //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
@@ -206,7 +158,6 @@ public class Presenter {
 
         // Initialize the command executor and register it.
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
-        final CommandExecutor commandExecutor = new CommandExecutor();
         commandExecutorService.execute(commandExecutor);
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 

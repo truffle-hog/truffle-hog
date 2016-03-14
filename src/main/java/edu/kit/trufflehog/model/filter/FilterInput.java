@@ -48,6 +48,10 @@ import java.util.List;
  *             IP addresses, MAC addresses and more.
  *         </li>
  *         <li>
+ *             Priority: This priority is used to determine which filter color should be rendered when multiple
+ *             filters collide on the same node.
+ *         </li>
+ *         <li>
  *             Color: The color of the filter determines what color a matched node should become.
  *         </li>
  *         <li>
@@ -77,6 +81,8 @@ public class FilterInput implements Serializable {
     private transient StringProperty originProperty;
     private transient ObjectProperty<Color> colorProperty;
     private transient BooleanProperty activeProperty;
+    private transient IntegerProperty priorityProperty;
+
 
     /**
      * <p>
@@ -101,6 +107,10 @@ public class FilterInput implements Serializable {
      *             IP addresses, MAC addresses and more.
      *         </li>
      *         <li>
+     *             Priority: This priority is used to determine which filter color should be rendered when multiple
+     *             filters collide on the same node.
+     *         </li>
+     *         <li>
      *             Color: The color of the filter determines what color a matched node should become.
      *         </li>
      *         <li>
@@ -115,7 +125,12 @@ public class FilterInput implements Serializable {
      * @param rules The rules that define this filter.
      * @param color The color that a node should become if it matches with the filter.
      */
-    public FilterInput(final String name, final FilterType type, final FilterOrigin origin, final List<String> rules, final Color color, final int priority) {
+    public FilterInput(final String name,
+                       final FilterType type,
+                       final FilterOrigin origin,
+                       final List<String> rules,
+                       final Color color,
+                       final int priority) {
         this.name = name;
         this.type = type;
         this.origin = origin;
@@ -251,7 +266,7 @@ public class FilterInput implements Serializable {
      * @return True if the filter is currently being applied o the network, else false.
      */
     public boolean isActive() {
-        return active;
+        return activeProperty.getValue();
     }
 
     /**
@@ -292,6 +307,18 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
+     *     Gets the priority property of the filter. This priority is used to determine which filter color should
+     *     be rendered when multiple filters collide on the same node.
+     * </p>
+     *
+     * @return the priority property of the filter.
+     */
+    public IntegerProperty getPriorityProperty() {
+        return priorityProperty;
+    }
+
+    /**
+     * <p>
      *     Since {@link Property} objects cannot be serialized, THIS METHOD HAS TO BE CALLED AFTER EACH
      *     DESERIALIZATION OF A FILTERINPUT OBJECT to recreate the connection between the Properties and the
      *     normal values that were serialized.
@@ -304,6 +331,7 @@ public class FilterInput implements Serializable {
         nameProperty = new SimpleStringProperty(name);
         typeProperty = new SimpleStringProperty(type.name());
         colorProperty = new SimpleObjectProperty<>(color);
+        priorityProperty = new SimpleIntegerProperty(priority);
         activeProperty = new SimpleBooleanProperty(active);
 
         // Make the origin look nicer on screen
@@ -365,11 +393,20 @@ public class FilterInput implements Serializable {
             logger.debug("Updated color for FilterInput: " + name + " to table view and database.");
         });
 
+        // Bind color to database update function
+        priorityProperty.addListener((observable, oldValue, newValue) -> {
+            priority = newValue.intValue();
+
+            configData.updateFilterInput(this);
+            logger.debug("Updated priority for FilterInput: " + name + " to table view and database.");
+        });
+
         // Bind activity state to database update function
         activeProperty.addListener((observable, oldValue, newValue) -> {
             active = newValue;
 
             configData.updateFilterInput(this);
+
             logger.debug("Updated activity state for FilterInput: " + name + " to table view and database.");
         });
     }

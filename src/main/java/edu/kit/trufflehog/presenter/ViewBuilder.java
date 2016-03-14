@@ -24,6 +24,7 @@ import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
 import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
+import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
@@ -47,6 +48,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
 import java.io.File;
 import java.util.Map;
 
@@ -99,8 +101,73 @@ public class ViewBuilder {
         }
     }
 
+    /**
+     * <p>
+     *     Builds the entire view. That means it connects all view components with each other and with other necessary
+     *     components as well.
+     * </p>
+     *
+     * @param viewPort The viewport of the graph that should be drawn here.
+     * @param userCommandIListener
+     */
+    public void build(final INetworkViewPortSwitch viewPort,
+                      final INetwork liveNetwork,
+                      final INetworkDevice device,
+                      final IListener<IUserCommand> userCommandIListener,
+                      final IUserCommand<FilterInput> updateFilterCommand) {
+        loadFonts();
+
+        final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
+        networkViewScreen.addListener(userCommandIListener);
+        networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+
+        // Load menu bar
+        final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml");
+
+        // Set up the ground view. This is always the full center of the BorderPane. We add the splitPane to it
+        // because it is right on top of it.
+        groundView.getChildren().add(splitPane);
+        splitPane.setOrientation(Orientation.HORIZONTAL);
+
+        // Now we fix the splitPane to the edges of the groundView so that it can display the various graph views
+        AnchorPane.setBottomAnchor(splitPane, 0d);
+        AnchorPane.setTopAnchor(splitPane, 0d);
+        AnchorPane.setLeftAnchor(splitPane, 0d);
+        AnchorPane.setRightAnchor(splitPane, 0d);
+
+        // We add a stackPane here for the PopOverOverlays that are displayed on it
+        AnchorPane.setTopAnchor(stackPane, 0d);
+        AnchorPane.setLeftAnchor(stackPane, 0d);
+        AnchorPane.setRightAnchor(stackPane, 0d);
+        AnchorPane.setBottomAnchor(stackPane, 0d);
+        groundView.getChildren().add(stackPane);
+        stackPane.setVisible(false);
+
+        // Set up the scene
+        final Scene mainScene = new Scene(mainViewController);
+        final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
+
+        mainViewController.setBottom(buildReplayFunction(device, liveNetwork, viewPort));
+
+        // Add the ground view to the center
+        mainViewController.setCenter(groundView);
+
+        rootWindow.show();
+
+        // Set min. dimensions
+        primaryStage.setMinWidth(950d);
+        primaryStage.setMinHeight(650d);
+
+        // Add some keyboard shortcuts
+        setKeyboardShortcuts(menuBar);
+
+        // Now we add the actual views to the split pane and to the view switcher
+        buildViews(userCommandIListener, updateFilterCommand);
+    }
+
     private FlowPane buildReplayFunction(INetworkDevice networkDevice,
-                                     INetwork liveNetwork, INetworkViewPortSwitch viewPortSwitch) {
+                                         INetwork liveNetwork,
+                                         INetworkViewPortSwitch viewPortSwitch) {
 
         final INetworkTape tape = new NetworkTape(20);
 
@@ -139,7 +206,7 @@ public class ViewBuilder {
         toolBar.getItems().add(recButton);
         toolBar.getItems().add(liveButton);
         toolBar.setStyle("-fx-background-color: transparent");
-        //  toolBar.getItems().add(slider);
+        //toolBar.getItems().add(slider);
 
         final FlowPane flowPane = new FlowPane();
 
@@ -148,61 +215,26 @@ public class ViewBuilder {
         return flowPane;
     }
 
-    /**
-     * <p>
-     * Builds the entire view. That means it connects all view components with each other and with other necessary
-     * components as well.
-     * </p>
-     *
-     * @param viewPort The viewport of the graph that should be drawn here
-     * @param viewPort
-     * @param userCommandIListener
-     */
-    public void build(INetworkViewPortSwitch viewPort, INetwork liveNetwork, INetworkDevice device, IListener<IUserCommand> userCommandIListener) {
-        loadFonts();
 
-        final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
-        networkViewScreen.addListener(userCommandIListener);
-        networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+    private void buildViews(final IListener<IUserCommand> userCommandIListener, IUserCommand<FilterInput> updateFilterCommand) {
+        ObservableList<String> liveItems = FXCollections.observableArrayList(viewPorts.keySet());
+        ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724",
+                "capture-457", "capture-167");
 
-        // Load menu bar
-        final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml");
+        AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
+        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, stackPane, viewPorts.get("Demo")
+                , primaryStage.getScene(), updateFilterCommand, userCommandIListener);
 
-        // Set up the ground view. This is always the full center of the BorderPane. We add the splitPane to it
-        // because it is right on top of it.
-        groundView.getChildren().add(splitPane);
-        splitPane.setOrientation(Orientation.HORIZONTAL);
+//        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
+//                viewPorts.get("Profinet"));
+        viewSwitcher.putView("start", startView);
+        viewSwitcher.putView("Demo", demoView);
 
-        // Now we fix the splitPane to the edges of the groundView
-        AnchorPane.setBottomAnchor(splitPane, 0d);
-        AnchorPane.setTopAnchor(splitPane, 0d);
-        AnchorPane.setLeftAnchor(splitPane, 0d);
-        AnchorPane.setRightAnchor(splitPane, 0d);
+        //viewSwitcher.putView("Profinet", profinetView);
+        splitPane.getItems().addAll(startView);
+    }
 
-        // We add a stackPane here for the PopOverOverlays that are displayed on it
-        AnchorPane.setTopAnchor(stackPane, 0d);
-        AnchorPane.setLeftAnchor(stackPane, 0d);
-        AnchorPane.setRightAnchor(stackPane, 0d);
-        AnchorPane.setBottomAnchor(stackPane, 0d);
-        groundView.getChildren().add(stackPane);
-        stackPane.setVisible(false);
-
-        // Set up scene
-        final Scene mainScene = new Scene(mainViewController);
-        final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
-
-       // mainViewController.setCenter(primaryView);
-        mainViewController.setBottom(buildReplayFunction(device, liveNetwork, viewPort));
-
-        // Add the ground view to the center
-        mainViewController.setCenter(groundView);
-
-        rootWindow.show();
-
-        // Set min. dimensions
-        primaryStage.setMinWidth(950d);
-        primaryStage.setMinHeight(650d);
-
+    private void setKeyboardShortcuts(MenuBar menuBar) {
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11), () -> {
@@ -211,20 +243,6 @@ public class ViewBuilder {
         });
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
-
-        // Now we add the actual views to the split pane and to the view switcher
-        ObservableList<String> liveItems = FXCollections.observableArrayList(viewPorts.keySet());
-        ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724"
-                , "capture-457", "capture-167");
-
-        AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
-        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, stackPane, networkViewScreen, primaryStage.getScene());
-//        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
-//                viewPorts.get("Profinet"));
-        viewSwitcher.putView("start", startView);
-        viewSwitcher.putView("Demo", demoView);
-        //viewSwitcher.putView("Profinet", profinetView);
-        splitPane.getItems().addAll(startView);
     }
 
     /**
