@@ -52,8 +52,8 @@ public class RecordMenuViewController extends AnchorPaneController {
             if (!pressed) {
                 pressed = true;
                 Platform.runLater(() -> {
-                    button.startGlow();
-                    //timerField.startTimer();
+                    //button.startGlow();
+                    timerField.startTimer();
                 });
 
                 startRecord(networkDevice, liveNetwork);
