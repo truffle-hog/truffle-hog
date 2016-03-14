@@ -1,15 +1,10 @@
 package edu.kit.trufflehog.model.filter;
 
-import edu.kit.trufflehog.model.network.MacAddress;
-import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.NetworkNode;
-import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
+import edu.kit.trufflehog.model.network.NetworkIOPort;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,8 +21,11 @@ import static org.mockito.Mockito.when;
  */
 public class MACAddressFilterTest {
 
+    NetworkIOPort networkIOPortMock;
+
     @Before
     public void setUp() throws Exception {
+        networkIOPortMock = mock(NetworkIOPort.class);
     }
 
     @After
@@ -43,13 +41,13 @@ public class MACAddressFilterTest {
         FilterInput filterInput = mock(FilterInput.class);
         when(filterInput.getRules()).thenReturn(ruleList);
 
-        new MACAddressFilter(filterInput);
+        new MACAddressFilter(networkIOPortMock, filterInput);
     }
 
     @Test
     public void compareTo_low_priority_filter_is_less_than_high_priority_filter() throws Exception {
-        IFilter lowPrio = new MACAddressFilter(new FilterInput("lowPrio", FilterType.BLACKLIST, FilterOrigin.MAC, new LinkedList<>(), null, 0));
-        IFilter highPrio = new MACAddressFilter(new FilterInput("highPrio", FilterType.BLACKLIST, FilterOrigin.MAC, new LinkedList<>(), null, 10));
+        IFilter lowPrio = new MACAddressFilter(networkIOPortMock, new FilterInput("lowPrio", FilterType.BLACKLIST, FilterOrigin.MAC, new LinkedList<>(), null, 0));
+        IFilter highPrio = new MACAddressFilter(networkIOPortMock, new FilterInput("highPrio", FilterType.BLACKLIST, FilterOrigin.MAC, new LinkedList<>(), null, 10));
 
         assertTrue("lowPrio should be less than highPrio", lowPrio.compareTo(highPrio) < 0);
         assertTrue("highPrio should be greater than lowPrio", highPrio.compareTo(lowPrio) > 0);

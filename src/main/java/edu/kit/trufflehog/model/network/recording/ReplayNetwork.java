@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 /**
  * TODO IMPLEMENT having replay network is necessary, because there are several internal functionalities that
- * TODO are handled a bite differently in contrast to a live network
+ * TODO are handled a bit differently in contrast to a live network
  */
 public class ReplayNetwork implements INetwork {
 
@@ -68,6 +68,11 @@ public class ReplayNetwork implements INetwork {
 
     @Override
     public INetworkWritingPort getWritingPort() {
+        return port;
+    }
+
+    @Override
+    public INetworkIOPort getRWPort() {
         return port;
     }
 
@@ -350,6 +355,18 @@ public class ReplayNetwork implements INetwork {
                 filter.check(node);
             }*/
             //nothing to do here
+        }
+
+        @Override
+        public Collection<INode> getNetworkNodes() {
+            //TODO implement this
+            throw new UnsupportedOperationException("Method not yet implemented!");
+        }
+
+        @Override
+        public Collection<IConnection> getNetworkConnections() {
+            //TODO implement this
+            throw new UnsupportedOperationException("Method not yet implemented!");
         }
 
         @Override

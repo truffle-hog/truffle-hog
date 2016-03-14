@@ -6,6 +6,8 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import javafx.beans.property.IntegerProperty;
 
+import java.util.Collection;
+
 public class NetworkReadingPortSwitch implements INetworkReadingPortSwitch {
 
     private INetworkReadingPort activePort;
@@ -23,6 +25,16 @@ public class NetworkReadingPortSwitch implements INetworkReadingPortSwitch {
     @Override
     public void setActiveReadingPort(INetworkReadingPort port) {
         activePort = port;
+    }
+
+    @Override
+    public Collection<INode> getNetworkNodes() {
+        return activePort.getNetworkNodes();
+    }
+
+    @Override
+    public Collection<IConnection> getNetworkConnections() {
+        return activePort.getNetworkConnections();
     }
 
     @Override

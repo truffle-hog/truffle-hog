@@ -20,6 +20,7 @@ package edu.kit.trufflehog.model.filter;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 
+import java.awt.*;
 import java.util.*;
 
 /**
@@ -83,6 +84,12 @@ public class MacroFilter implements IFilter {
     public void clear() {
         filters.stream().forEach(IFilter::clear);
         filters.clear();
+    }
+
+    @Override
+    public Color getFilterColor(INode node) {
+        // this class never modifies any colors directly. thus null is sufficient.
+        return null;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class TruffleCrook extends TruffleReceiver {
         while(!Thread.interrupted()) {
             synchronized (this) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
 
                     final Truffle truffle = getTruffle();
 

@@ -42,6 +42,11 @@ public class LiveNetwork implements INetwork {
     }
 
     @Override
+    public INetworkIOPort getRWPort() {
+        return ioPort;
+    }
+
+    @Override
     public INetworkViewPort getViewPort() {
         return viewPort;
     }

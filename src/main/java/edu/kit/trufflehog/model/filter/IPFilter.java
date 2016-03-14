@@ -20,6 +20,7 @@ package edu.kit.trufflehog.model.filter;
 import com.google.common.collect.Range;
 import edu.kit.trufflehog.model.network.graph.INode;
 
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,6 +53,12 @@ public class IPFilter implements IFilter {
 
     @Override
     public void clear() {
+        //TODO implement this
+        throw new UnsupportedOperationException("Method not yet implemented!");
+    }
+
+    @Override
+    public Color getFilterColor(INode node) {
         //TODO implement this
         throw new UnsupportedOperationException("Method not yet implemented!");
     }
