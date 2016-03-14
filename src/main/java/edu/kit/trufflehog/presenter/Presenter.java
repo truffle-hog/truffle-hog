@@ -53,7 +53,7 @@ public class Presenter {
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
     private INetworkWritingPortSwitch writingPortSwitch;
-    private MacroFilter macroFilter;
+    private final MacroFilter macroFilter = new MacroFilter();
 
     private final CommandExecutor commandExecutor = new CommandExecutor();
 
@@ -150,51 +150,6 @@ public class Presenter {
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-        macroFilter = new MacroFilter(); //TODO register this in some view part to make it possible for the user to add/remove filters
-
-        //////////////////
-        // EXPERIMENTAL //
-        //////////////////
-
-        List<String> rules = new LinkedList<>();
-        rules.add("00:00:00:00:00:01");
-        rules.add("00:00:00:00:00:02");
-        rules.add("00:00:00:00:00:03");
-
-        FilterInput fip = new FilterInput("Test filter", FilterType.BLACKLIST, FilterOrigin.MAC, rules, new Color(0xFF001E), 3);
-        try {
-            macroFilter.addFilter(new MACAddressFilter(fip));
-        } catch (InvalidFilterRule invalidFilterRule) {
-            invalidFilterRule.printStackTrace();
-        }
-
-        List<String> rules2 = new LinkedList<>();
-        rules2.add("00:00:00:00:00:03");
-        rules2.add("00:00:00:00:00:04");
-        rules2.add("00:00:00:00:00:05");
-
-        FilterInput fip2 = new FilterInput("Test filter", FilterType.BLACKLIST, FilterOrigin.MAC, rules2, new Color(0x00EEFF), 0);
-        try {
-            macroFilter.addFilter(new MACAddressFilter(fip2));
-        } catch (InvalidFilterRule invalidFilterRule) {
-            invalidFilterRule.printStackTrace();
-        }
-
-        List<String> rules3 = new LinkedList<>();
-        rules3.add("00:00:00:00:00:00");
-        rules3.add("00:00:00:00:00:01");
-        rules3.add("00:00:00:00:00:06");
-
-        FilterInput fip3 = new FilterInput("Test filter", FilterType.BLACKLIST, FilterOrigin.MAC, rules3, new Color(0x23FF00), 6);
-        try {
-            macroFilter.addFilter(new MACAddressFilter(fip3));
-        } catch (InvalidFilterRule invalidFilterRule) {
-            invalidFilterRule.printStackTrace();
-        }
-
-        //////////////////////
-        // EXPERIMENTAL END //
-        //////////////////////
 
         final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
         //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
