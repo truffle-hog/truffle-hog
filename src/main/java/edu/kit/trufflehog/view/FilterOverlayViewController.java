@@ -366,7 +366,6 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
 
         });
 
-
         // Set up edit button
         final Button editButton = new ImageButton("edit.png");
         editButton.setOnAction(actionEvent -> {
@@ -384,17 +383,17 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         tableView.setMinHeight(300);
 
         AnchorPane anchorPane = new AnchorPane();
-        anchorPane.getChildren().addAll(selectionButton, addButton, removeButton, editButton);
+        anchorPane.getChildren().addAll(addButton, removeButton, editButton, selectionButton);
         borderPane.setBottom(anchorPane);
 
-        AnchorPane.setBottomAnchor(selectionButton, 0d);
-        AnchorPane.setRightAnchor(selectionButton, 90d);
         AnchorPane.setBottomAnchor(addButton, 0d);
         AnchorPane.setRightAnchor(addButton, 0d);
         AnchorPane.setBottomAnchor(removeButton, 0d);
         AnchorPane.setRightAnchor(removeButton, 30d);
         AnchorPane.setBottomAnchor(editButton, 0d);
         AnchorPane.setRightAnchor(editButton, 60d);
+        AnchorPane.setBottomAnchor(selectionButton, 0d);
+        AnchorPane.setRightAnchor(selectionButton, 95d);
 
         return borderPane;
     }
