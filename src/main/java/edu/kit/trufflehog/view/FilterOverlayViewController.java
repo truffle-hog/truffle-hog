@@ -361,7 +361,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
             final String filterString = selected.stream().map(node -> node.getAddress().toString()).collect(Collectors.joining(";\n"));
             filterEditingMenuViewController.getNameTextField().setText("Selection " + selected.size());
             filterEditingMenuViewController.getRulesTextArea().setText(filterString);
-            filterEditingMenuViewController.getFilterByComboBox().setValue(filterEditingMenuViewController.MAC_LABEL);
+            filterEditingMenuViewController.getFilterByComboBox().setValue(configData.getProperty("MAC_LABEL"));
             filterEditingMenuViewController.showMenu();
 
         });

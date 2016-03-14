@@ -322,8 +322,8 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         }
 
         // Update priority
-        if (filterInputUpated.getPriority() != filterInput.getPriority()) {
-            filterInput.getPriorityProperty().setValue(filterInputUpated.getPriorityProperty().getValue());
+        if (filterInputUpdated.getPriority() != filterInput.getPriority()) {
+            filterInput.getPriorityProperty().setValue(filterInputUpdated.getPriorityProperty().getValue());
         }
 
         // Update rules and save to database, since they don't have a listener (since they are not shown in the table)

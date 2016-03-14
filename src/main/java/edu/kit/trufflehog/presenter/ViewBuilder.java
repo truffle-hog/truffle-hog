@@ -31,7 +31,6 @@ import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkTape;
-import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.*;
 import edu.kit.trufflehog.view.controllers.IWindowController;
@@ -49,6 +48,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
 import java.io.File;
 import java.util.Map;
 
@@ -99,55 +99,6 @@ public class ViewBuilder {
         if (this.primaryStage == null || this.configData == null) {
             throw new NullPointerException("primaryStage and configData shouldn't be null.");
         }
-    }
-
-    private FlowPane buildReplayFunction(INetworkDevice networkDevice,
-                                     INetwork liveNetwork, INetworkViewPortSwitch viewPortSwitch) {
-
-        final INetworkTape tape = new NetworkTape(20);
-
-        final Slider slider = new Slider(0, 100, 0);
-        slider.setTooltip(new Tooltip("replay"));
-        tape.getCurrentReadingFrameProperty().bindBidirectional(slider.valueProperty());
-        tape.getFrameCountProperty().bindBidirectional(slider.maxProperty());
-
-        final ToggleButton liveButton = new ToggleButton("Live");
-        liveButton.setDisable(true);
-        final ToggleButton playButton = new ToggleButton("Play");
-        playButton.setDisable(false);
-        final ToggleButton stopButton = new ToggleButton("Stop");
-        stopButton.setDisable(false);
-        final ToggleButton recButton = new ToggleButton("Rec");
-        recButton.setDisable(false);
-
-        liveButton.setOnAction(h -> {
-            networkDevice.goLive(liveNetwork, viewPortSwitch);
-            liveButton.setDisable(true);
-        });
-
-        playButton.setOnAction(handler -> {
-            networkDevice.play(tape, viewPortSwitch);
-            liveButton.setDisable(false);
-        });
-
-        final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);
-        recButton.setOnAction(h -> startRecordCommand.execute());
-
-        slider.setStyle("-fx-background-color: transparent");
-
-        final ToolBar toolBar = new ToolBar();
-        toolBar.getItems().add(stopButton);
-        toolBar.getItems().add(playButton);
-        toolBar.getItems().add(recButton);
-        toolBar.getItems().add(liveButton);
-        toolBar.setStyle("-fx-background-color: transparent");
-        //  toolBar.getItems().add(slider);
-
-        final FlowPane flowPane = new FlowPane();
-
-        flowPane.getChildren().addAll(toolBar, slider);
-
-        return flowPane;
     }
 
     /**
@@ -211,7 +162,7 @@ public class ViewBuilder {
         setKeyboardShortcuts(menuBar);
 
         // Now we add the actual views to the split pane and to the view switcher
-        buildViews(userCommandIListener);
+        buildViews(userCommandIListener, updateFilterCommand);
     }
 
     private FlowPane buildReplayFunction(INetworkDevice networkDevice,
@@ -265,16 +216,15 @@ public class ViewBuilder {
     }
 
 
-    private void buildViews(final IListener<IUserCommand> userCommandIListener) {
+    private void buildViews(final IListener<IUserCommand> userCommandIListener, IUserCommand<FilterInput> updateFilterCommand) {
         ObservableList<String> liveItems = FXCollections.observableArrayList(viewPorts.keySet());
         ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724",
                 "capture-457", "capture-167");
 
         AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
-        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, stackPane, viewPorts.get("Demo"),
-                userCommandIListener, primaryStage.getScene());
+        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, stackPane, viewPorts.get("Demo")
+                , primaryStage.getScene(), updateFilterCommand, userCommandIListener);
 
-        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, stackPane, networkViewScreen, primaryStage.getScene(), updateFilterCommand, userCommandIListener);
 //        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
 //                viewPorts.get("Profinet"));
         viewSwitcher.putView("start", startView);

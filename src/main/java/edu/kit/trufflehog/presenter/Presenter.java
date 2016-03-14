@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
@@ -24,7 +23,7 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -112,7 +111,7 @@ public class Presenter {
         // TODO Ctor injection with the Ports that are within the networks
         liveNetwork = new LiveNetwork(og);
 
-        // TODO Add real thing too, perhaps I missunderstood the viewport, need to talk to somebody
+        // TODO Add real thing too, perhaps I misunderstood the viewport, need to talk to somebody in person ( - Julian)
         viewPortMap.put("Demo", liveNetwork.getViewPort());
 
         // TODO Where to put this???
@@ -151,7 +150,7 @@ public class Presenter {
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-        final MacroFilter macroFilter = new MacroFilter(); //TODO register this in some view part to make it possible for the user to add/remove filters
+        macroFilter = new MacroFilter(); //TODO register this in some view part to make it possible for the user to add/remove filters
 
         //////////////////
         // EXPERIMENTAL //

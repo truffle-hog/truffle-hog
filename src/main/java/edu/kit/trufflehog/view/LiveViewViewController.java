@@ -7,8 +7,6 @@ import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
-import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
@@ -43,12 +41,16 @@ public class LiveViewViewController extends AnchorPaneController {
     private OverlayViewController settingsOverlayViewController;
     private final IUserCommand<FilterInput> updateFilterCommand;
     private final IListener<IUserCommand> userCommandListener;
-    private final NetworkGraphViewController networkViewScreen;
 
-    public LiveViewViewController(String fxml, ConfigData configData, StackPane stackPane, NetworkGraphViewController networkViewScreen, Scene scene, IUserCommand<FilterInput> updateFilterCommand, IListener<IUserCommand> userCommandIListener) {
+    public LiveViewViewController(String fxml,
+                                  ConfigData configData,
+                                  StackPane stackPane,
+                                  INetworkViewPort viewPort,
+                                  Scene scene,
+                                  IUserCommand<FilterInput> updateFilterCommand,
+                                  IListener<IUserCommand> userCommandIListener) {
         super(fxml);
 
-        this.networkViewScreen = networkViewScreen;
         this.updateFilterCommand = updateFilterCommand;
         this.userCommandListener = userCommandIListener;
 
@@ -57,11 +59,11 @@ public class LiveViewViewController extends AnchorPaneController {
 
         this.stackPane = stackPane;
 
-        this.getChildren().add(networkViewScreen);
-
         final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
         networkViewScreen.addListener(userCommandIListener);
         networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+
+        this.getChildren().add(networkViewScreen);
 
         this.setMinWidth(200d);
         this.setMinHeight(200d);
@@ -71,18 +73,11 @@ public class LiveViewViewController extends AnchorPaneController {
         AnchorPane.setLeftAnchor(networkViewScreen, 0d);
         AnchorPane.setRightAnchor(networkViewScreen, 0d);
 
-        this.stackPane = stackPane;
-
-        this.getChildren().add(networkViewScreen);
-
-        this.setMinWidth(200d);
-        this.setMinHeight(200d);
-
         addToolbar();
         addGeneralStatisticsOverlay();
         addNodeStatisticsOverlay();
         addSettingsOverlay();
-        addFilterMenuOverlay();
+        addFilterMenuOverlay(networkViewScreen);
         addRecordOverlay();
     }
 
@@ -104,9 +99,10 @@ public class LiveViewViewController extends AnchorPaneController {
      *     Builds the filter menu overlay.
      * </p>
      */
-    private void addFilterMenuOverlay() {
+    private void addFilterMenuOverlay(NetworkGraphViewController networkViewScreen) {
         // Build filter menu
-        filterOverlayViewController = new FilterOverlayViewController("filter_menu_overlay.fxml", configData, stackPane, networkViewScreen.getPickedVertexState());
+        filterOverlayViewController = new FilterOverlayViewController("filter_menu_overlay.fxml", configData, stackPane,
+                networkViewScreen.getPickedVertexState());
 
         // Set up overlay on screen
         this.getChildren().add(filterOverlayViewController);
