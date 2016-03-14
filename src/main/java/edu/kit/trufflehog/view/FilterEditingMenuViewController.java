@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.IntStream;
 
 /**
@@ -91,7 +92,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
     // Labels
     private final String MAC_LABEL;
     private final String IP_LABEL;
-    private final String SELECTION_LABEL;
+    private final String NAME_LABEL;
 
     public ComboBox<String> getFilterByComboBox() {
         return filterByComboBox;
@@ -117,7 +118,9 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
      *                          added to.
      * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      */
-    public FilterEditingMenuViewController(StackPane stackPane, String fxml, FilterOverlayViewController filterOverlayViewController,
+    public FilterEditingMenuViewController(StackPane stackPane,
+                                           String fxml,
+                                           FilterOverlayViewController filterOverlayViewController,
                                            ConfigData configData) {
         super(fxml);
         this.configData = configData;
@@ -129,7 +132,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         // Load the labels
         MAC_LABEL = configData.getProperty("MAC_LABEL");
         IP_LABEL = configData.getProperty("IP_LABEL");
-        SELECTION_LABEL = configData.getProperty("SELECTION_LABEL");
+        NAME_LABEL = configData.getProperty("NAME_LABEL");
 
         // Set up transition animation to show menu
         transitionShow = new TranslateTransition(Duration.seconds(0.5), this);
@@ -147,7 +150,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
 
         // Fill comboboxes
         typeComboBox.getItems().setAll(FilterType.BLACKLIST, FilterType.WHITELIST);
-        filterByComboBox.getItems().setAll(IP_LABEL, MAC_LABEL, SELECTION_LABEL);
+        filterByComboBox.getItems().setAll(IP_LABEL, MAC_LABEL, NAME_LABEL);
 
         // Set the buttons
         createButton.setOnAction(eventHandler ->  {
@@ -193,7 +196,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             } else if (filterInput.getOrigin().equals(FilterOrigin.MAC)) {
                 filterByComboBox.setValue(MAC_LABEL);
             } else {
-                filterByComboBox.setValue(SELECTION_LABEL);
+                filterByComboBox.setValue(NAME_LABEL);
             }
 
             priorityTextField.setText(filterInput.getPriority() + "");
@@ -398,8 +401,8 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             filterOrigin = FilterOrigin.IP;
         } else if (filterOriginString.equals(MAC_LABEL)) {
             filterOrigin = FilterOrigin.MAC;
-        } else if (filterOriginString.equals(SELECTION_LABEL)) {
-            filterOrigin = FilterOrigin.SELECTION;
+        } else if (filterOriginString.equals(NAME_LABEL)) {
+            filterOrigin = FilterOrigin.NAME;
         } else {
             filterOrigin = null;
         }
@@ -492,13 +495,22 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
                 match2 = pattern2.matcher(rule.toLowerCase()).matches();
             }
 
-            if (!match1 && !match2) {
-                if (filterOrigin.equals(FilterOrigin.IP)) {
-                    errorText.setText(configData.getProperty("INVALID_IP_RULE"));
-                } else {
-                    errorText.setText(configData.getProperty("INVALID_MAC_RULE"));
+            if (filterOrigin.equals(FilterOrigin.IP) || filterOrigin.equals(FilterOrigin.MAC)) {
+                if (!match1 && !match2) {
+                    if (filterOrigin.equals(FilterOrigin.IP)) {
+                        errorText.setText(configData.getProperty("INVALID_IP_RULE"));
+                    } else {
+                        errorText.setText(configData.getProperty("INVALID_MAC_RULE"));
+                    }
+                    return null;
                 }
-                return null;
+            } else {
+                try {
+                    Pattern.compile(rule);
+                } catch (PatternSyntaxException exception) {
+                    errorText.setText(configData.getProperty("INVALID_NAME_REGEX"));
+                    return null;
+                }
             }
         }
 

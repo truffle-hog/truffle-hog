@@ -9,6 +9,7 @@ import edu.kit.trufflehog.model.network.recording.NetworkTape;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.elements.GlowImageButton;
 import edu.kit.trufflehog.view.elements.TimerField;
+import javafx.application.Platform;
 import javafx.scene.layout.AnchorPane;
 
 
@@ -50,8 +51,10 @@ public class RecordMenuViewController extends AnchorPaneController {
         button.setOnAction(event -> {
             if (!pressed) {
                 pressed = true;
-                button.startGlow();
-                timerField.startTimer();
+                Platform.runLater(() -> {
+                    button.startGlow();
+                    //timerField.startTimer();
+                });
 
                 startRecord(networkDevice, liveNetwork);
             } else {
@@ -83,6 +86,5 @@ public class RecordMenuViewController extends AnchorPaneController {
      * </p>
      */
     private void stopRecord() {
-
     }
 }

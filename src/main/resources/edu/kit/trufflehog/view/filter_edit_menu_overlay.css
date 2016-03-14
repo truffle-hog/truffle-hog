@@ -70,3 +70,9 @@
     -fx-border-radius: 5;
     -fx-text-fill: #9BA2B1;
 }
+
+.combo-box-popup .list-view .list-cell:filled:hover
+{
+    -fx-background-color: #528BFF;
+    -fx-text-fill: white;
+}
