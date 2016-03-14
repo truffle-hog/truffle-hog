@@ -6,7 +6,6 @@ import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import edu.kit.trufflehog.model.network.recording.NetworkTape;
-import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.elements.GlowImageButton;
 import edu.kit.trufflehog.view.elements.TimerField;
@@ -35,14 +34,14 @@ public class RecordMenuViewController extends AnchorPaneController {
         super(fxmlFile);
 
         final GlowImageButton button = new GlowImageButton("record-circle.png");
-        final TimerField timerField = new TimerField(LoggedScheduledExecutor.getInstance());
+        final TimerField timerField = new TimerField();
         timerField.setId("timer");
 
         getChildren().addAll(timerField, button);
 
         AnchorPane.setTopAnchor(timerField, 10d);
         AnchorPane.setRightAnchor(timerField, 0d);
-        AnchorPane.setLeftAnchor(timerField, 45d);
+        AnchorPane.setLeftAnchor(timerField, 51d);
 
         AnchorPane.setTopAnchor(button, 20d);
         AnchorPane.setRightAnchor(button, 0d);

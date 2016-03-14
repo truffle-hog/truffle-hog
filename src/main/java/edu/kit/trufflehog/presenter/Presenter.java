@@ -178,6 +178,9 @@ public class Presenter {
             truffleReceiver.disconnect();
         }
 
+        // Kill all threads and the thread pool with it
+        LoggedScheduledExecutor.getInstance().shutdownNow();
+
         // Shut down the system
         System.exit(0);
     }

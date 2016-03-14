@@ -1,59 +1,38 @@
 package edu.kit.trufflehog.view.elements;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.text.Text;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * <p>
- *     The TimerField is a stoo watch counting upwards wrapped in a text field that automatically updates itself.
+ *     The TimerField is a stop watch counting upwards wrapped in a text field that automatically updates itself.
  * </p>
  */
 public class TimerField extends Text {
-    private Instant start;
-    private ScheduledExecutorService executorService;
-    private Future<?> future;
+    private static DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private Timeline timeline;
+    private Instant startTime;
 
     /**
      * <p>
-     *     Creates a new TimerField
+     *     Creates a new TimerField.
      * </p>
-     *
-     * @param executorService The executorService used to launch the time calculation thread.
      */
-    public TimerField(ScheduledExecutorService executorService) {
-        this.executorService = executorService;
-        setText("00:00:00.00");
-    }
+    public TimerField() {
+        startTime = Instant.now(); // Just to initialize a value
+        timeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(0),
+                event -> setText(LocalTime.now().minus(Duration.ofMillis(startTime.toEpochMilli())).minus(Duration.ofHours(1)).format(SHORT_TIME_FORMATTER))),
+                new KeyFrame(javafx.util.Duration.seconds(1)));
+        setText("00:00:00");
 
-    /**
-     * <p>
-     *     Sets the label to the HH:mm:ss.SS format based on the milliseconds that it was passed.
-     * </p>
-     *
-     * @param millis The milliseconds as a long that should be displayed as HH:mm:ss.SS in the text field.
-     */
-    private void update(long millis) {
-        // We always want the second and third digits from the right (tenth and hundredth of a second) thus we parse
-        // the string here accordingly
-        String millisString  = TimeUnit.MILLISECONDS.toMillis(millis) + "";
-        if (millisString.length() >= 3) {
-            millisString = millisString.substring(millisString.length() - 3, millisString.length() - 1);
-        }
-        long millisShort = Long.parseLong(millisString);
-
-        // Actually do the conversion here
-        String value = String.format("%02d:%02d:%02d.%02d",
-                TimeUnit.MILLISECONDS.toHours(millis),
-                TimeUnit.MILLISECONDS.toMinutes(millis) -
-                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
-                TimeUnit.MILLISECONDS.toSeconds(millis) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)),
-                TimeUnit.MILLISECONDS.toMillis(millisShort));
-        setText(value);
+        timeline.setCycleCount(Animation.INDEFINITE);
     }
 
     /**
@@ -62,10 +41,8 @@ public class TimerField extends Text {
      * </p>
      */
     public void startTimer() {
-        start = Instant.now();
-        future = executorService.scheduleAtFixedRate(() -> {
-            update(Instant.now().toEpochMilli() - start.toEpochMilli());
-        }, 0, 50, TimeUnit.MILLISECONDS);
+        startTime = Instant.now();
+        timeline.play();
     }
 
     /**
@@ -74,6 +51,6 @@ public class TimerField extends Text {
      * </p>
      */
     public void stopTimer() {
-        future.cancel(true);
+        timeline.stop();
     }
 }
