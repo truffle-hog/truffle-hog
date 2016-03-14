@@ -74,28 +74,28 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             repaint();
         }));
 
-        port.addGraphEventListener(e -> {
-
-            if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
-
-                final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
-                node.getComponent(ViewComponent.class).animate();
-                refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
-                repaint();
-                refresher.playFromStart();
-
-            } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
-
-                final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
-                connection.getComponent(ViewComponent.class).animate();
-                refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
-                repaint();
-                refresher.playFromStart();
-            }
-        });
 		this.viewPort = port;
 		initialize();
-        // Add this view screen as listener to the picked state, so we can send commands, when the picked state
+		port.addGraphEventListener(e -> {
+
+			if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
+
+				final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
+				node.getComponent(ViewComponent.class).animate();
+				refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
+				repaint();
+				refresher.playFromStart();
+
+			} else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
+
+				final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
+				connection.getComponent(ViewComponent.class).animate();
+				refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
+				repaint();
+				refresher.playFromStart();
+			}
+		});
+		// Add this view screen as listener to the picked state, so we can send commands, when the picked state
         // changes.
 		getPickedVertexState().addItemListener(this);
 	}

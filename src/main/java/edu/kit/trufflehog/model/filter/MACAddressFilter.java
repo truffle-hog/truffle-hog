@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.filter;
 
+import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.InvalidMACAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -20,18 +21,25 @@ import java.util.List;
 public class MACAddressFilter implements IFilter {
 
     private final Map<MacAddress, Color> addresses = new HashMap<>();
-    private final Set<INode> changedNodes = new HashSet<>();
     private int priority = 0;
+    private final INetworkIOPort networkIOPort;
 
     /**
      * //TODO document
+     *
+     * @param networkIOPort the network IO port. This is needed to enable this filter to revert the chaanges it made to the nodes.
      * @param filterInput the filter input to input to this filter.
      * @throws InvalidFilterRule this exception is thrown if the filterInput contains invalid rules
      */
-    public MACAddressFilter(final FilterInput filterInput) throws InvalidFilterRule {
+    public MACAddressFilter(INetworkIOPort networkIOPort, final FilterInput filterInput) throws InvalidFilterRule {
+
+        if (networkIOPort == null)
+            throw new NullPointerException("networkIOPort must not be null!");
 
         if (filterInput == null)
             throw new NullPointerException("filterInput must not be null!");
+
+        this.networkIOPort = networkIOPort;
 
         final List<String> rules = filterInput.getRules();
 
@@ -68,11 +76,15 @@ public class MACAddressFilter implements IFilter {
 
     @Override
     public void clear() {
-        for (INode node : changedNodes) {
-            node.getComponent(FilterPropertiesComponent.class).removeFilterColor(this);
-        }
 
-        changedNodes.clear();
+        networkIOPort.getNetworkNodes().stream().forEach(node -> {
+            node.getComponent(FilterPropertiesComponent.class).removeFilterColor(this, node);
+        });
+    }
+
+    @Override
+    public Color getFilterColor(INode node) {
+        return addresses.get(node.getComponent(NodeInfoComponent.class).getMacAddress());
     }
 
     @Override
@@ -84,7 +96,6 @@ public class MACAddressFilter implements IFilter {
         final MacAddress address = node.getComponent(NodeInfoComponent.class).getMacAddress();
 
         if (addresses.containsKey(address)) {
-            changedNodes.add(node);
             node.getComponent(FilterPropertiesComponent.class).addFilterColor(this, addresses.get(address));
         }
     }

@@ -20,6 +20,8 @@ package edu.kit.trufflehog.model.filter;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 
+import java.awt.*;
+
 /**
  * <p>
  *     The IFilter interface defines the basic functionality of a filter. A filter is something that checks whether an
@@ -65,6 +67,15 @@ public interface IFilter extends Comparable<IFilter> {
      */
     void clear();
 
+    /**
+     * <p>
+     *     This method gets the color of the node if it was changed by this filter.
+     * </p>
+     * @param node the node to check
+     * @return the color that was set beforehand
+     */
+    Color getFilterColor(INode node);
+
     class EmptyFilter implements IFilter {
 
         @Override
@@ -80,6 +91,11 @@ public interface IFilter extends Comparable<IFilter> {
         @Override
         public void clear() {
             //nothing
+        }
+
+        @Override
+        public Color getFilterColor(INode node) {
+            return null;
         }
 
         @Override

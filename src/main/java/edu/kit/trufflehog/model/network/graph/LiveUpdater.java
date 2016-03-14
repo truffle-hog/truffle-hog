@@ -156,7 +156,10 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
 
     @Override
     public boolean update(FilterPropertiesComponent filterPropertiesComponent, IComponent instance) {
-        filterPropertiesComponent.getFilterColors().putAll(filterPropertiesComponent.getFilterColors());
+        if (!filterPropertiesComponent.equals(instance))
+            return false;
+
+        filterPropertiesComponent.getFilterColors().putAll(((FilterPropertiesComponent)instance).getFilterColors());
         return true;
     }
 

@@ -4,6 +4,8 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import javafx.beans.property.IntegerProperty;
 
+import java.util.Collection;
+
 /**
  * This Interface provides the functionality needed to access network specific data.
  *
@@ -11,6 +13,18 @@ import javafx.beans.property.IntegerProperty;
  * // TODO Just write an issue and create those functions and why we need them
  */
 public interface INetworkReadingPort {
+
+    /**
+     *
+     * @return a collection of all nodes in this graph
+     */
+    Collection<INode> getNetworkNodes();
+
+    /**
+     *
+     * @return a collection of all connections in this graph
+     */
+    Collection<IConnection> getNetworkConnections();
 
     /**
      * Returns a Network Node by providing an Address object. This can either be IPv4, IPv6, MAC...

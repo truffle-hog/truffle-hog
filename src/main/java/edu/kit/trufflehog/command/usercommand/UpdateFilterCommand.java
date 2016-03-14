@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.filter.*;
+import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import javafx.scene.control.SelectionModel;
 
@@ -14,7 +15,7 @@ import java.util.Map;
  */
 public class UpdateFilterCommand implements IUserCommand<FilterInput> {
     private final MacroFilter macroFilter;
-    private final INetworkWritingPort nwp;
+    private final INetworkIOPort nwp;
     private FilterInput filterInput;
 
     private final Map<FilterInput, IFilter> filterMap = new HashMap<>();
@@ -24,7 +25,7 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
      * @param nwp
      * @param macroFilter
      */
-    public UpdateFilterCommand(final INetworkWritingPort nwp, final MacroFilter macroFilter) {
+    public UpdateFilterCommand(final INetworkIOPort nwp, final MacroFilter macroFilter) {
         if(macroFilter == null)
             throw new NullPointerException("macroFilter must not be null!");
 
@@ -40,6 +41,7 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
 
             if (filterMap.get(filterInput) != null) {
                 macroFilter.removeFilter(filterMap.get(filterInput));
+                filterMap.remove(filterInput);
             }
 
             if (!filterInput.isActive()) {
@@ -51,7 +53,7 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
             try {
                 switch (filterInput.getOrigin()) {
                     case MAC:
-                        filter = new MACAddressFilter(filterInput);
+                        filter = new MACAddressFilter(nwp, filterInput);
                         break;
                     case IP:
                         filter = new IPFilter();

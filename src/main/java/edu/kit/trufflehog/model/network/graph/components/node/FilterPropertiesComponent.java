@@ -1,14 +1,12 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
+import com.google.common.collect.*;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.util.ICopyCreator;
-
 import java.awt.*;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 
 /**
  * //TODO document
@@ -16,14 +14,20 @@ import java.util.TreeMap;
  */
 public class FilterPropertiesComponent implements IComponent {
 
-    private final NavigableMap<IFilter, Color> filterColors = new TreeMap<>();
+    private final TreeMultimap<IFilter, Color> filterColors = TreeMultimap.create(Ordering.natural(), Ordering.arbitrary());
 
     public void addFilterColor(IFilter filter, Color color) {
         filterColors.put(filter, color);
     }
 
-    public void removeFilterColor(IFilter filter) {
-        filterColors.remove(filter);
+    /**
+     * <p>
+     *     This method removes the color set by the supplied filter at some time.
+     * </p>
+     * @param filter
+     */
+    public void removeFilterColor(final IFilter filter, final INode node) {
+        filterColors.remove(filter, filter.getFilterColor(node));
     }
 
     /**
@@ -32,14 +36,17 @@ public class FilterPropertiesComponent implements IComponent {
      * </p>
      */
     public Color getFilterColor() {
+
+        //FIXME make this thread safe so we don't get null pointer exceptions
+
         if (filterColors.isEmpty()) {
             return null;
         }
 
-        return filterColors.lastEntry().getValue();
+        return filterColors.get(filterColors.keySet().last()).first();
     }
 
-    public Map<IFilter, Color> getFilterColors() {
+    public Multimap<IFilter, Color> getFilterColors() {
         return filterColors;
     }
 

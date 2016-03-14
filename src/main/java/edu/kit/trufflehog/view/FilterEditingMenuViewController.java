@@ -297,8 +297,10 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             return;
         }
 
-        if (filterInputUpdated.getActiveProperty().get() != filterInput.getActiveProperty().get()) {
-            filterInputUpdated.getActiveProperty().setValue(filterInput.getActiveProperty().get());
+        if (filterInput.getActiveProperty().get()) {
+            filterInput.getActiveProperty().set(false);
+            filterOverlayViewController.notifyUpdateCommand(filterInput);
+            filterInput.getActiveProperty().setValue(true);
         }
 
         // Update name
@@ -335,7 +337,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         }
 
         // Notify the model that a filter has changed
-        filterOverlayViewController.notifyUpdateCommand(filterInputUpdated);
+        filterOverlayViewController.notifyUpdateCommand(filterInput);
         clearMenu();
         hideMenu();
     }

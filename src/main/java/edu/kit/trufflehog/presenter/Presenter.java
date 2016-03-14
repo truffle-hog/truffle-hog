@@ -95,7 +95,7 @@ public class Presenter {
      */
     public void present() {
         initNetwork();
-        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(), new UpdateFilterCommand(writingPortSwitch, macroFilter));
+        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(), new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
     }
 
     private void initNetwork() {

@@ -266,7 +266,7 @@ public class FilterInput implements Serializable {
      * @return True if the filter is currently being applied o the network, else false.
      */
     public boolean isActive() {
-        return active;
+        return activeProperty.getValue();
     }
 
     /**

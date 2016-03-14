@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.model.network;
 
-import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -76,6 +75,16 @@ public class NetworkIOPort implements INetworkIOPort {
     @Override
     public void applyFilter(IFilter filter) {
         delegate.getVertices().forEach(filter::check);
+    }
+
+    @Override
+    public Collection<INode> getNetworkNodes() {
+        return delegate.getVertices();
+    }
+
+    @Override
+    public Collection<IConnection> getNetworkConnections() {
+        return delegate.getEdges();
     }
 
     @Override
