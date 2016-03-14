@@ -24,7 +24,6 @@ import edu.kit.trufflehog.model.filter.FilterType;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.awt.*;
@@ -77,6 +76,7 @@ public class FilterDataModelTest {
      */
     @After
     public void tearDown() throws Exception {
+        filterDataModel.close();
         if (databaseFile.exists()) {
             FileUtils.forceDelete(databaseFile);
         }
@@ -91,7 +91,6 @@ public class FilterDataModelTest {
      * @throws Exception Passes any errors that occurred during the test on
      */
     // FIXME fix this test, it randomly fails (Database file locked)
-    @Ignore
     @Test
     public void testUpdateAndLoadFilterInDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
@@ -144,7 +143,6 @@ public class FilterDataModelTest {
      * @throws Exception Passes any errors that occurred during the test on
      */
     // FIXME fix this test, it randomly fails (Database file locked)
-    @Ignore
     @Test
     public void testAddAndLoadFilterToDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
@@ -179,7 +177,6 @@ public class FilterDataModelTest {
      * @throws Exception Passes any errors that occurred during the test on
      */
     // FIXME fix this test, it randomly fails (Database file locked)
-    @Ignore
     @Test
     public void testRemoveFilterFromDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
