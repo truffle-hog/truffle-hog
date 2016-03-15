@@ -27,7 +27,7 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root prefHeight="50.0" prefWidth="150.0" styleClass="background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="50.0" prefWidth="75.0" styleClass="background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@record_overlay_menu.css" />
     </stylesheets>

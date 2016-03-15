@@ -42,7 +42,7 @@ public class RecordMenuViewController extends AnchorPaneController {
 
         AnchorPane.setTopAnchor(timerField, 10d);
         AnchorPane.setRightAnchor(timerField, 0d);
-        AnchorPane.setLeftAnchor(timerField, 51d);
+        AnchorPane.setLeftAnchor(timerField, 15d);
 
         AnchorPane.setTopAnchor(button, 20d);
         AnchorPane.setRightAnchor(button, 0d);
@@ -55,6 +55,7 @@ public class RecordMenuViewController extends AnchorPaneController {
                     //button.startGlow();
                     timerField.startTimer();
                 });
+
 
                 startRecord(networkDevice, liveNetwork);
             } else {

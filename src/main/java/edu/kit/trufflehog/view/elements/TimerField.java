@@ -3,6 +3,8 @@ package edu.kit.trufflehog.view.elements;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.text.Text;
 
 import java.time.Duration;
@@ -20,6 +22,7 @@ public class TimerField extends Text {
     private Timeline timeline;
     private Instant startTime;
     private Instant endTime;
+    private StringProperty timeString;
 
     /**
      * <p>
@@ -27,7 +30,14 @@ public class TimerField extends Text {
      * </p>
      */
     public TimerField() {
-        setText("00:00:00");
+        timeString = new SimpleStringProperty("00:00:00");
+        textProperty().bind(timeString);
+        startTime = Instant.now(); // Just to initialize a value
+        timeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(1),
+                event -> timeString.setValue(LocalTime.now().minus(Duration.ofMillis(startTime.toEpochMilli()))
+                        .minus(Duration.ofHours(1)).format(SHORT_TIME_FORMATTER))),
+                new KeyFrame(javafx.util.Duration.seconds(1)));
+        timeline.setCycleCount(Animation.INDEFINITE);
     }
 
     /**
@@ -36,14 +46,8 @@ public class TimerField extends Text {
      * </p>
      */
     public void startTimer() {
-        startTime = Instant.now(); // Just to initialize a value
-        timeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(0),
-                event -> setText(LocalTime.now().minus(Duration.ofMillis(startTime.toEpochMilli()))
-                        .minus(Duration.ofHours(1)).format(SHORT_TIME_FORMATTER))),
-                new KeyFrame(javafx.util.Duration.seconds(1)));
+        startTime = Instant.now();
         endTime = null;
-        timeline.setCycleCount(Animation.INDEFINITE);
-
         timeline.play();
     }
 

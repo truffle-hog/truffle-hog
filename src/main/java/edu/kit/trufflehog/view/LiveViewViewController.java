@@ -130,7 +130,7 @@ public class LiveViewViewController extends AnchorPaneController {
         recordOverlayViewController = new RecordMenuViewController("record_overlay_menu.fxml", networkDevice, liveNetwork);
         this.getChildren().add(recordOverlayViewController);
         AnchorPane.setBottomAnchor(recordOverlayViewController, 60d);
-        AnchorPane.setLeftAnchor(recordOverlayViewController, 18d);
+        AnchorPane.setLeftAnchor(recordOverlayViewController, 100d);
         recordOverlayViewController.setVisible(false);
     }
 
