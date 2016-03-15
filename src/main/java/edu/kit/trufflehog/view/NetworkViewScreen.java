@@ -114,10 +114,10 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 		initRenderers();
 
-		jungView.setBackground(new Color(0x3e4451));
+		jungView.setBackground(new Color(0xffffff));
 		//jungView.setBackground(new Color(0xE8EAF6));
-		//jungView.setBackground(new Color(0x5e6d67));
-		jungView.setPreferredSize(new Dimension(350, 350));
+        //jungView.setBackground(new Color(0x282C34));
+        jungView.setPreferredSize(new Dimension(350, 350));
 		// Show vertex and edge labels
 
 		// Create a graph mouse and add it to the visualization component

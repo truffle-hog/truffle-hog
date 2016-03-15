@@ -1,8 +1,6 @@
 package edu.kit.trufflehog.view.elements;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.text.Text;
@@ -11,6 +9,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -19,10 +20,11 @@ import java.time.format.DateTimeFormatter;
  */
 public class TimerField extends Text {
     private static DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
-    private Timeline timeline;
     private Instant startTime;
     private Instant endTime;
     private StringProperty timeString;
+    private ScheduledExecutorService executorService;
+    private Future<?> future;
 
     /**
      * <p>
@@ -32,12 +34,7 @@ public class TimerField extends Text {
     public TimerField() {
         timeString = new SimpleStringProperty("00:00:00");
         textProperty().bind(timeString);
-        startTime = Instant.now(); // Just to initialize a value
-        timeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(1),
-                event -> timeString.setValue(LocalTime.now().minus(Duration.ofMillis(startTime.toEpochMilli()))
-                        .minus(Duration.ofHours(1)).format(SHORT_TIME_FORMATTER))),
-                new KeyFrame(javafx.util.Duration.seconds(1)));
-        timeline.setCycleCount(Animation.INDEFINITE);
+        executorService = LoggedScheduledExecutor.getInstance();
     }
 
     /**
@@ -48,7 +45,10 @@ public class TimerField extends Text {
     public void startTimer() {
         startTime = Instant.now();
         endTime = null;
-        timeline.play();
+
+        future = executorService.scheduleAtFixedRate(() -> timeString.setValue(LocalTime.now()
+                .minus(Duration.ofMillis(startTime.toEpochMilli())).minus(Duration.ofHours(1))
+                .format(SHORT_TIME_FORMATTER)), 0, 1, TimeUnit.SECONDS);
     }
 
     /**
@@ -58,7 +58,7 @@ public class TimerField extends Text {
      */
     public void stopTimer() {
         endTime = Instant.now();
-        timeline.stop();
+        future.cancel(true);
     }
 
     /**

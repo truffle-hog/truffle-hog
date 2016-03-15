@@ -20,8 +20,8 @@ import java.awt.geom.Rectangle2D;
 public class NodeRenderer implements IRenderer {
 
     private Shape shape = new Rectangle2D.Double(-50,-50,100,100);
-    private Color colorPicked = new Color(0xffffff);
-    private Color colorUnpicked = new Color(0x528bff);
+    private Color colorPicked = new Color(0x528BFF);
+    private Color colorUnpicked = new Color(0x9BA2B1);
     private Stroke stroke = new BasicStroke();
 
     /**
