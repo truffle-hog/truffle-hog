@@ -492,7 +492,10 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
         if (command != null) {
             command.setSelection(getPickedVertexState());
         }
-		notifyListeners(interactionMap.get(GraphInteraction.VERTEX_SELECTED));
+
+        if (interactionMap.containsKey(GraphInteraction.VERTEX_SELECTED)) {
+            notifyListeners(interactionMap.get(GraphInteraction.VERTEX_SELECTED));
+        }
 
         // else if ItemEvent is Connection Selection
 

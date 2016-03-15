@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -234,18 +235,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
      * @return The rules when they are completely concatenated.
      */
     private String concatRules(List<String> rules) {
-        final String[] ruleArray = rules.toArray(new String[rules.size()]);
-        return IntStream.range(0, ruleArray.length)
-                .mapToObj(i -> {
-                    // Add a new line to every third element in the stream
-                    if (i % 3 == 2) {
-                        return ruleArray[i] + ";\n";
-                    } else {
-                        return ruleArray[i] + ";    ";
-                    }
-                })
-                .reduce((currentRule, rule) -> currentRule += rule)
-                .orElse("");
+        return rules.stream().collect(Collectors.joining(";\n"));
     }
 
     /**
