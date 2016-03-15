@@ -24,7 +24,7 @@ public class IPAddress implements IAddress {
 
     public IPAddress(final long address) throws InvalidIPAddress {
 
-        if (address == 0)
+        if (address <= 0)
             throw new InvalidIPAddress();
 
         if (address > 4294967295L)

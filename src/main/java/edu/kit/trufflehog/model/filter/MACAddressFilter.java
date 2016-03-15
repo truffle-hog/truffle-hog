@@ -13,16 +13,17 @@ import java.util.List;
 
 /**
  * <p>
- *
+ *     //TODO document
  * </p>
  * @author Mark Giraud
- * @version 0.1
+ * @version 1.0
  */
 public class MACAddressFilter implements IFilter {
 
-    private final Map<MacAddress, Color> addresses = new HashMap<>();
-    private int priority = 0;
+    private final Set<MacAddress> addresses = new HashSet<>();
     private final INetworkIOPort networkIOPort;
+    private final Color filterColor;
+    private int priority = 0;
 
     /**
      * //TODO document
@@ -41,18 +42,22 @@ public class MACAddressFilter implements IFilter {
 
         this.networkIOPort = networkIOPort;
 
+        filterColor = filterInput.getColor();
+
         final List<String> rules = filterInput.getRules();
 
-        if (rules == null)
+        if (rules == null) {
             throw new NullPointerException("the rules list in filterInput must not be null!");
+        }
 
         priority = filterInput.getPriority();
 
         final List<MacAddress> macAddresses = new LinkedList<>();
 
         for (String rule : rules) {
-            if (!rule.matches("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"))
+            if (!rule.matches("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$")) {
                 throw new InvalidFilterRule("Mac address doesn't have the correct format");
+            }
 
             final String[] macAddressParts = rule.split(":");
 
@@ -71,20 +76,21 @@ public class MACAddressFilter implements IFilter {
             }
         }
 
-        macAddresses.stream().forEach(address -> addresses.put(address, filterInput.getColor()));
+        macAddresses.stream().forEach(addresses::add);
+
     }
 
     @Override
     public void clear() {
 
         networkIOPort.getNetworkNodes().stream().forEach(node -> {
-            node.getComponent(FilterPropertiesComponent.class).removeFilterColor(this, node);
+            node.getComponent(FilterPropertiesComponent.class).removeFilterColor(this);
         });
     }
 
     @Override
-    public Color getFilterColor(INode node) {
-        return addresses.get(node.getComponent(NodeInfoComponent.class).getMacAddress());
+    public Color getFilterColor() {
+        return filterColor;
     }
 
     @Override
@@ -95,8 +101,8 @@ public class MACAddressFilter implements IFilter {
         //TODO maybe null check?
         final MacAddress address = node.getComponent(NodeInfoComponent.class).getMacAddress();
 
-        if (addresses.containsKey(address)) {
-            node.getComponent(FilterPropertiesComponent.class).addFilterColor(this, addresses.get(address));
+        if (addresses.contains(address)) {
+            node.getComponent(FilterPropertiesComponent.class).addFilterColor(this, filterColor);
         }
     }
 

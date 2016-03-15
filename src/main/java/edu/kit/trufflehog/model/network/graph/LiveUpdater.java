@@ -159,7 +159,7 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
         if (!filterPropertiesComponent.equals(instance))
             return false;
 
-        filterPropertiesComponent.getFilterColors().putAll(((FilterPropertiesComponent)instance).getFilterColors());
+        filterPropertiesComponent.addFilterColors(((FilterPropertiesComponent)instance).getFilterColors());
         return true;
     }
 

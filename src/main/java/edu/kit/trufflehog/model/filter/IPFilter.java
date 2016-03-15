@@ -58,7 +58,7 @@ public class IPFilter implements IFilter {
     }
 
     @Override
-    public Color getFilterColor(INode node) {
+    public Color getFilterColor() {
         //TODO implement this
         throw new UnsupportedOperationException("Method not yet implemented!");
     }

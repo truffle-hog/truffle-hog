@@ -45,8 +45,8 @@ public class Truffle implements IPacketData {
      */
     static Truffle buildTruffle(final long srcMACAddr,
                                 final long dstMACAddr,
-                                final int srcIPAddr,
-                                final int dstIPAddr,
+                                final long srcIPAddr,
+                                final long dstIPAddr,
                                 final String deviceName,
                                 final short etherType) throws InvalidProfinetPacket {
         final Truffle truffle = new Truffle();
