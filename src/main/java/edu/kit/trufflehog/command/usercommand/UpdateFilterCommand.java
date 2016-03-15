@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * <p>
- *     Command to update the graph after a newly added filter is enbaled
+ *     Command to update the graph when a filter is added, changes, or is deleted.
  * </p>
  */
 public class UpdateFilterCommand implements IUserCommand<FilterInput> {
@@ -21,9 +21,12 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
     private final Map<FilterInput, IFilter> filterMap = new HashMap<>();
 
     /**
-     * //TODO document
-     * @param nwp
-     * @param macroFilter
+     * <p>
+     *     Constructs the update filter command. This command always needs a network io port to apply the newly added
+     *     filters and pass the port to the constructed filter, which needs the port to clean up, when it is removed.
+     * </p>
+     * @param nwp the network port that is used to access the network
+     * @param macroFilter the macro filter to add all sub filters to.
      */
     public UpdateFilterCommand(final INetworkIOPort nwp, final MacroFilter macroFilter) {
         if(macroFilter == null)

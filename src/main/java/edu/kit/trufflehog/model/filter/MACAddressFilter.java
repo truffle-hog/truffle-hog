@@ -83,6 +83,7 @@ public class MACAddressFilter implements IFilter {
     @Override
     public void clear() {
 
+        //TODO maybe optimize so that we only iterate over changed nodes?
         networkIOPort.getNetworkNodes().stream().forEach(node -> {
             node.getComponent(FilterPropertiesComponent.class).removeFilterColor(this);
         });
