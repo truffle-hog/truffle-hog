@@ -1,9 +1,7 @@
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
-import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
@@ -61,7 +59,8 @@ public class LiveViewViewController extends AnchorPaneController {
 
         final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
         networkViewScreen.addListener(userCommandIListener);
-        networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+        //FIXME map new command?
+        //networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
 
         this.getChildren().add(networkViewScreen);
 

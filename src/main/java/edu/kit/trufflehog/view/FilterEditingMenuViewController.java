@@ -297,12 +297,6 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             return;
         }
 
-        if (filterInput.getActiveProperty().get()) {
-            filterInput.getActiveProperty().set(false);
-            filterOverlayViewController.notifyUpdateCommand(filterInput);
-            filterInput.getActiveProperty().setValue(true);
-        }
-
         // Update name
         if (!filterInputUpdated.getName().equals(filterInput.getName())) {
             filterInput.getNameProperty().setValue(filterInputUpdated.getName());

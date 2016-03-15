@@ -20,9 +20,7 @@ package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
 import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
-import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
@@ -119,7 +117,8 @@ public class ViewBuilder {
 
         final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
         networkViewScreen.addListener(userCommandIListener);
-        networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+        //FIXME map new command?
+        //networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
 
         // Load menu bar
         final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml");
