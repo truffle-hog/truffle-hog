@@ -2,6 +2,7 @@ package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.IPAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -52,10 +53,17 @@ public class AddPacketDataCommand implements ITruffleCommand {
 
         final MacAddress sourceAddress = data.getAttribute(MacAddress.class, "sourceMacAddress");
         final MacAddress destAddress = data.getAttribute(MacAddress.class, "destMacAddress");
+        final IPAddress sourceIP = data.getAttribute(IPAddress.class, "sourceIPAddress");
+        final IPAddress destIP = data.getAttribute(IPAddress.class, "destIPAddress");
 
+        NodeInfoComponent sourceNIC = new NodeInfoComponent(sourceAddress);
+        sourceNIC.setIPAddress(sourceIP);
 
-        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(sourceAddress));
-        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(destAddress));
+        NodeInfoComponent destNIC = new NodeInfoComponent(destAddress);
+        destNIC.setIPAddress(destIP);
+
+        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), sourceNIC);
+        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), destNIC);
 
         final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1));
 

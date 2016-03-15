@@ -246,7 +246,7 @@ public class TapeCopyCreator implements ICopyCreator, GraphCopier<INode, IConnec
     public IComponent createDeepCopy(FilterPropertiesComponent filterPropertiesComponent) {
         final FilterPropertiesComponent fpc = new FilterPropertiesComponent();
 
-        fpc.getFilterColors().putAll(filterPropertiesComponent.getFilterColors());
+        fpc.addFilterColors(filterPropertiesComponent.getFilterColors());
 
         return fpc;
     }

@@ -68,8 +68,8 @@ public class TruffleCrook extends TruffleReceiver {
 
     private void init() {
         addresses = new long[maxAddresses];
-        for (int i = 1; i < maxAddresses; i++) {
-            addresses[i] = i;
+        for (int i = 0; i < maxAddresses; i++) {
+            addresses[i] = i + 1;
         }
     }
 }

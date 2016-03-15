@@ -2,8 +2,10 @@ package edu.kit.trufflehog.model.filter;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.awt.*;
+import java.util.*;
 
 /**
  * <p>
@@ -22,5 +24,13 @@ public class IPAddressFilterTest {
     @After
     public void tearDown() throws Exception {
 
+    }
+
+    @Test
+    public void bla() throws Exception {
+        java.util.List<String> rules = new LinkedList<>();
+
+
+        FilterInput filterInput = new FilterInput("test", FilterType.BLACKLIST, FilterOrigin.IP, rules, new Color(0x0), 1);
     }
 }

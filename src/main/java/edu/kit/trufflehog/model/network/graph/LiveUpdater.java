@@ -131,7 +131,7 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
         }
 
         if (other.getIPAddress() != null) {
-            changed = !nodeInfoComponent.getDeviceName().equals(other.getDeviceName()) || changed;
+            changed = !nodeInfoComponent.getIPAddress().equals(other.getIPAddress()) || changed;
             nodeInfoComponent.setIPAddress(other.getIPAddress());
         }
 

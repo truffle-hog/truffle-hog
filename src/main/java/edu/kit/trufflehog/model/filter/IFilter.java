@@ -75,6 +75,14 @@ public interface IFilter extends Comparable<IFilter> {
      */
     Color getFilterColor();
 
+    /**
+     * <p>
+     *     Gets the name of this filter.
+     * </p>
+     * @return the name of this filter
+     */
+    String getName();
+
     class EmptyFilter implements IFilter {
 
         @Override
@@ -95,6 +103,11 @@ public interface IFilter extends Comparable<IFilter> {
         @Override
         public Color getFilterColor() {
             return null;
+        }
+
+        @Override
+        public String getName() {
+            return "Empty filter";
         }
 
         @Override

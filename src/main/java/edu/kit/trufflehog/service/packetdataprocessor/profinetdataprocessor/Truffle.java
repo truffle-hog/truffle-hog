@@ -6,14 +6,13 @@ import edu.kit.trufflehog.model.network.InvalidMACAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 
-import javax.crypto.Mac;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * <p>
- *     This class is used to store packet data which is received from the spp_profinet snort plugin using
- *     the {@link TruffleReceiver}.
+ * This class is used to store packet data which is received from the spp_profinet snort plugin using
+ * the {@link TruffleReceiver}.
  * </p>
  *
  * @author Mark Giraud
@@ -29,16 +28,16 @@ public class Truffle implements IPacketData {
 
     /**
      * <p>
-     *     This method builds a {@link Truffle} with the specified arguments as data.
-     *     The source and destination mac addresses must always be valid.
-     *     If any of the other arguments is null or invalid it is omitted from the
-     *     data and an exception might be thrown.
+     * This method builds a {@link Truffle} with the specified arguments as data.
+     * The source and destination mac addresses must always be valid.
+     * If any of the other arguments is null or invalid it is omitted from the
+     * data and an exception might be thrown.
      * </p>
      *
      * @param srcMACAddr the source MAC address. MUST be valid
      * @param dstMACAddr the destination MAC address. MUST be valid
-     * @param srcIPAddr the source IP address. Can be omitted by passing 0
-     * @param dstIPAddr the destination IP address. Can be omitted by passing 0
+     * @param srcIPAddr  the source IP address. Can be omitted by passing 0
+     * @param dstIPAddr  the destination IP address. Can be omitted by passing 0
      * @param deviceName the device name. Can be omitted by passing null
      * @return the built {@link Truffle}
      * @throws InvalidProfinetPacket
@@ -58,21 +57,21 @@ public class Truffle implements IPacketData {
             throw new InvalidProfinetPacket("Error, invalid mac address");
         }
 
-        if (srcIPAddr != 0)
-            try {
-                truffle.setAttribute(IPAddress.class, "sourceIPAddress", new IPAddress(srcIPAddr));
-            } catch (InvalidIPAddress invalidIPAddress) {
-                throw new InvalidProfinetPacket("Invalid source ip address: " + srcIPAddr);
-            }
-        if (dstIPAddr != 0)
-            try {
-                truffle.setAttribute(IPAddress.class, "destIPAddress", new IPAddress(dstIPAddr));
-            } catch (InvalidIPAddress invalidIPAddress) {
-                throw new InvalidProfinetPacket("Invalid destination ip address: " + dstIPAddr);
-            }
+        try {
+            truffle.setAttribute(IPAddress.class, "sourceIPAddress", new IPAddress(srcIPAddr));
+        } catch (InvalidIPAddress invalidIPAddress) {
+            throw new InvalidProfinetPacket("Invalid source ip address: " + srcIPAddr);
+        }
 
-        if (deviceName != null)
+        try {
+            truffle.setAttribute(IPAddress.class, "destIPAddress", new IPAddress(dstIPAddr));
+        } catch (InvalidIPAddress invalidIPAddress) {
+            throw new InvalidProfinetPacket("Invalid destination ip address: " + dstIPAddr);
+        }
+
+        if (deviceName != null) {
             truffle.setAttribute(String.class, "deviceName", deviceName);
+        }
 
         truffle.setAttribute(Short.class, "etherType", etherType);
 
@@ -81,12 +80,13 @@ public class Truffle implements IPacketData {
 
     /**
      * <p>
-     *     This method adds a new element under the specified type and name to the Truffle.
+     * This method adds a new element under the specified type and name to the Truffle.
      * </p>
-     * @param attributeType The type of the element to add.
+     *
+     * @param attributeType       The type of the element to add.
      * @param attributeIdentifier The string identifier of the object.
-     * @param value The value to add under the identifier.
-     * @param <T> The Type of the element to add.
+     * @param value               The value to add under the identifier.
+     * @param <T>                 The Type of the element to add.
      * @return The value of the previous mapping. If no element was mapped under the identifier then null is returned.
      */
     @SuppressWarnings("unchecked")
@@ -105,9 +105,9 @@ public class Truffle implements IPacketData {
     /**
      * {@inheritDoc}
      *
-     * @param attributeType The type of attribute that is supposed to be retrieved, for example Integer.class
+     * @param attributeType       The type of attribute that is supposed to be retrieved, for example Integer.class
      * @param attributeIdentifier The string identifier of the attribute that should be retrieved.
-     * @param <T> The type of the attribute that is retrieved.
+     * @param <T>                 The type of the attribute that is retrieved.
      * @return The value of the attribute or null if nothing was found under the specified identifier
      */
     @SuppressWarnings("unchecked")

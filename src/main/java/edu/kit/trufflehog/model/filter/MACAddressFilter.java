@@ -23,6 +23,7 @@ public class MACAddressFilter implements IFilter {
     private final Set<MacAddress> addresses = new HashSet<>();
     private final INetworkIOPort networkIOPort;
     private final Color filterColor;
+    private final String name;
     private int priority = 0;
 
     /**
@@ -41,8 +42,9 @@ public class MACAddressFilter implements IFilter {
             throw new NullPointerException("filterInput must not be null!");
 
         this.networkIOPort = networkIOPort;
-
         filterColor = filterInput.getColor();
+        priority = filterInput.getPriority();
+        name = filterInput.getName();
 
         final List<String> rules = filterInput.getRules();
 
@@ -50,7 +52,6 @@ public class MACAddressFilter implements IFilter {
             throw new NullPointerException("the rules list in filterInput must not be null!");
         }
 
-        priority = filterInput.getPriority();
 
         final List<MacAddress> macAddresses = new LinkedList<>();
 
@@ -92,6 +93,11 @@ public class MACAddressFilter implements IFilter {
     @Override
     public Color getFilterColor() {
         return filterColor;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

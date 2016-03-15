@@ -93,6 +93,11 @@ public class MacroFilter implements IFilter {
     }
 
     @Override
+    public String getName() {
+        return "Macro filter";
+    }
+
+    @Override
     public int compareTo(IFilter o) {
         return 1;
     }
