@@ -27,5 +27,5 @@ package edu.kit.trufflehog.model.filter;
  * @version 1.0
  */
 public enum FilterOrigin {
-    IP,MAC,SELECTION
+    IP,MAC,NAME
 }

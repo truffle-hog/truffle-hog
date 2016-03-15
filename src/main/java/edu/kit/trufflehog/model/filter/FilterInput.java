@@ -335,8 +335,8 @@ public class FilterInput implements Serializable {
         activeProperty = new SimpleBooleanProperty(active);
 
         // Make the origin look nicer on screen
-        if (origin.equals(FilterOrigin.SELECTION)) {
-            originProperty = new SimpleStringProperty("Selection");
+        if (origin.equals(FilterOrigin.NAME)) {
+            originProperty = new SimpleStringProperty("Name Regex");
         } else {
             originProperty = new SimpleStringProperty(origin.name());
         }
@@ -378,7 +378,7 @@ public class FilterInput implements Serializable {
             } else if (newValue.equals(FilterOrigin.MAC.name())) {
                 origin = FilterOrigin.MAC;
             } else {
-                origin = FilterOrigin.SELECTION;
+                origin = FilterOrigin.NAME;
             }
 
             configData.updateFilterInput(this);

@@ -72,17 +72,21 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
      *     Creates a new FilterOverlayViewController with a {@link ConfigData} object. This is needed to access the database
      *     in order to save/remove/update filters.
      * </p>
+     *
      *  @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      * @param stackPane The groundView of the app on which the add filter menu should be drawn.
      * @param pickedVertexState
      */
-    public FilterOverlayViewController(String fxml, ConfigData configData, StackPane stackPane, PickedState<INode> pickedVertexState) {
+    public FilterOverlayViewController(final String fxml,
+                                       final ConfigData configData,
+                                       final StackPane stackPane,
+                                       final PickedState<INode> pickedVertexState) {
         super(fxml);
         this.pickedState = pickedVertexState;
         this.configData = configData;
         this.data = FXCollections.observableArrayList();
-        this.filterEditingMenuViewController = new FilterEditingMenuViewController(stackPane, "filter_edit_menu_overlay.fxml", this,
-                configData);
+        this.filterEditingMenuViewController = new FilterEditingMenuViewController(stackPane,
+                "filter_edit_menu_overlay.fxml", this, configData);
 
         // Load existing filters from hard drive into filter menu
         Map<String, FilterInput> filterInputMap = configData.getAllLoadedFilters();

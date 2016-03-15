@@ -4,7 +4,9 @@ import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
@@ -34,19 +36,21 @@ public class LiveViewViewController extends AnchorPaneController {
 
     private final Scene scene;
 
-    private OverlayViewController recordOverlayViewController;
+    private RecordMenuViewController recordOverlayViewController;
     private FilterOverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
     private final IUserCommand<FilterInput> updateFilterCommand;
     private final IListener<IUserCommand> userCommandListener;
 
-    public LiveViewViewController(String fxml,
-                                  ConfigData configData,
-                                  StackPane stackPane,
-                                  INetworkViewPort viewPort,
-                                  Scene scene,
-                                  IUserCommand<FilterInput> updateFilterCommand,
-                                  IListener<IUserCommand> userCommandIListener) {
+    public LiveViewViewController(final String fxml,
+                                  final ConfigData configData,
+                                  final StackPane stackPane,
+                                  final INetworkViewPort viewPort,
+                                  final Scene scene,
+                                  final IUserCommand<FilterInput> updateFilterCommand,
+                                  final IListener<IUserCommand> userCommandIListener,
+                                  final INetworkDevice networkDevice,
+                                  final INetwork liveNetwork) {
         super(fxml);
 
         this.updateFilterCommand = updateFilterCommand;
@@ -77,7 +81,7 @@ public class LiveViewViewController extends AnchorPaneController {
         addNodeStatisticsOverlay();
         addSettingsOverlay();
         addFilterMenuOverlay(networkViewScreen);
-        addRecordOverlay();
+        addRecordOverlay(networkDevice, liveNetwork);
     }
 
     /**
@@ -121,11 +125,11 @@ public class LiveViewViewController extends AnchorPaneController {
      *     Builds the record menu overlay.
      * </p>
      */
-    private void addRecordOverlay() {
-        recordOverlayViewController = new OverlayViewController("node_statistics_overlay.fxml");
+    private void addRecordOverlay(INetworkDevice networkDevice, INetwork liveNetwork) {
+        recordOverlayViewController = new RecordMenuViewController("record_overlay_menu.fxml", networkDevice, liveNetwork);
         this.getChildren().add(recordOverlayViewController);
         AnchorPane.setBottomAnchor(recordOverlayViewController, 60d);
-        AnchorPane.setLeftAnchor(recordOverlayViewController, 18d);
+        AnchorPane.setLeftAnchor(recordOverlayViewController, 100d);
         recordOverlayViewController.setVisible(false);
     }
 
@@ -135,7 +139,7 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private void addNodeStatisticsOverlay() {
-        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
+        final OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
         this.getChildren().add(nodeStatisticsOverlay);
         AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
@@ -148,7 +152,7 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private void addGeneralStatisticsOverlay() {
-        OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
+        final OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
         this.getChildren().add(generalStatisticsOverlay);
         AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
@@ -160,11 +164,11 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private void addToolbar() {
-        Button settingsButton = addSettingsButton();
-        Button filterButton = addFilterButton();
-        Button recordButton = addRecordButton();
+        final Button settingsButton = addSettingsButton();
+        final Button filterButton = addFilterButton();
+        final Button recordButton = addRecordButton();
 
-        ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml", settingsButton,
+        final ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml", settingsButton,
                 filterButton, recordButton);
         this.getChildren().add(mainToolBarController);
         AnchorPane.setBottomAnchor(mainToolBarController, 5d);
@@ -177,7 +181,7 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private Button addSettingsButton() {
-        Button settingsButton = new ImageButton("gear.png");
+        final Button settingsButton = new ImageButton("gear.png");
         settingsButton.setOnAction(event -> handleShowMechanism(settingsOverlayViewController, filterOverlayViewController,
                 recordOverlayViewController));
 
@@ -196,7 +200,7 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private Button addFilterButton() {
-        Button filterButton = new ImageButton("filter.png");
+        final Button filterButton = new ImageButton("filter.png");
         filterButton.setOnAction(event -> handleShowMechanism(filterOverlayViewController, recordOverlayViewController,
                 settingsOverlayViewController));
 
@@ -214,7 +218,7 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private Button addRecordButton() {
-        ImageButton recordButton = new ImageButton("record.png");
+        final ImageButton recordButton = new ImageButton("record.png");
 
         recordButton.setOnAction(event -> handleShowMechanism(recordOverlayViewController, filterOverlayViewController,
                 settingsOverlayViewController));

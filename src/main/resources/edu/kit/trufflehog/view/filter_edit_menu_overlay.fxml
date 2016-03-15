@@ -32,7 +32,8 @@
 
 <fx:root maxHeight="500.0" maxWidth="600.0" minHeight="500.0" minWidth="600.0" opacity="1.0" prefHeight="500.0" prefWidth="600.0" styleClass="background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <stylesheets>
-      <URL value="@filter_edit_menu_overlay.css" />
+       <URL value="@filter_edit_menu_overlay.css" />
+       <URL value="@scrollbar.css"/>
    </stylesheets>
     <children>
        <Text layoutX="30.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title_text" text="Filter" />
