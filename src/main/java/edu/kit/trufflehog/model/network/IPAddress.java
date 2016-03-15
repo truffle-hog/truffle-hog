@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * @author Mark Giraud
  * @version 1.0
  */
-public class IPAddress implements IAddress {
+public class IPAddress implements IAddress, Comparable<IPAddress> {
 
     private final long address;
     private final byte[] bytes;
@@ -27,7 +27,7 @@ public class IPAddress implements IAddress {
         if (address <= 0)
             throw new InvalidIPAddress();
 
-        if (address > 4294967295L)
+        if (address > 4294967296L)
             throw new InvalidIPAddress();
 
         this.address = address;
@@ -74,5 +74,10 @@ public class IPAddress implements IAddress {
     @Override
     public String toString() {
         return addressString;
+    }
+
+    @Override
+    public int compareTo(IPAddress o) {
+        return Long.signum(address - o.address);
     }
 }

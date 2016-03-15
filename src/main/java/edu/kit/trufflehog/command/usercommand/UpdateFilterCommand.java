@@ -2,8 +2,6 @@ package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.filter.*;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
-import edu.kit.trufflehog.model.network.INetworkWritingPort;
-import javafx.scene.control.SelectionModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +57,7 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
                         filter = new MACAddressFilter(nwp, filterInput);
                         break;
                     case IP:
-                        filter = new IPFilter();
+                        filter = new IPAddressFilter(nwp, filterInput);
                         break;
                     default:
                         filter = IFilter.EMPTY;

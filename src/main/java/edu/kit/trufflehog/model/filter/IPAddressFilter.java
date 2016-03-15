@@ -18,7 +18,12 @@
 package edu.kit.trufflehog.model.filter;
 
 import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.TreeRangeSet;
+import edu.kit.trufflehog.model.network.INetworkIOPort;
+import edu.kit.trufflehog.model.network.IPAddress;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.uci.ics.jung.graph.Tree;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -32,17 +37,17 @@ import java.util.List;
  * @author Mark Giraud
  * @version 0.1
  */
-public class IPFilter implements IFilter {
+public class IPAddressFilter implements IFilter {
 
-    final List<Range> ipRanges = new LinkedList<>();
+    final RangeSet<IPAddress> ipRanges = TreeRangeSet.create();
 
-    public void addInput(final FilterInput filterInput) {
+    public IPAddressFilter(INetworkIOPort networkIOPort, final FilterInput filterInput) throws InvalidFilterRule {
 
     }
 
     @Override
     public void check(final INode node) {
-
+        
     }
 
     @Override
