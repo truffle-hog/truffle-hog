@@ -472,31 +472,22 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
 
         // Define MAC and IP regex
         String macRegex = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
-        String ipRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4]" +
-                "[0-9]|25[0-5])$";
-        String submaskRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2" +
-                "[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$";
+        String ipRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2" +
+                "[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))?$";
 
         // Set patterns according to MAC or IP
-        Pattern pattern1, pattern2;
+        Pattern pattern = null;
         if (filterOrigin.equals(FilterOrigin.IP)) {
-            pattern1 = Pattern.compile(ipRegex);
-            pattern2 = Pattern.compile(submaskRegex);
-        } else {
-            pattern1 = Pattern.compile(macRegex);
-            pattern2 = null; // mac only requires one regex
+            pattern = Pattern.compile(ipRegex);
+        } else if (filterOrigin.equals(FilterOrigin.MAC)) {
+            pattern = Pattern.compile(macRegex);
         }
 
         // Check each rule to see whether it matches its regex
         for (String rule : ruleArray) {
-            boolean match1 = pattern1.matcher(rule.toLowerCase()).matches();
-            boolean match2 = false;
-            if (pattern2 != null) {
-                match2 = pattern2.matcher(rule.toLowerCase()).matches();
-            }
-
             if (filterOrigin.equals(FilterOrigin.IP) || filterOrigin.equals(FilterOrigin.MAC)) {
-                if (!match1 && !match2) {
+                assert pattern != null;
+                if (pattern.matcher(rule.toLowerCase()).matches()) {
                     if (filterOrigin.equals(FilterOrigin.IP)) {
                         errorText.setText(configData.getProperty("INVALID_IP_RULE"));
                     } else {
