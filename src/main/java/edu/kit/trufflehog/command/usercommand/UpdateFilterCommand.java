@@ -10,6 +10,9 @@ import java.util.Map;
  * <p>
  *     Command to update the graph when a filter is added, changes, or is deleted.
  * </p>
+ *
+ * @author Mark Giraud
+ * @version 1.0
  */
 public class UpdateFilterCommand implements IUserCommand<FilterInput> {
     private final MacroFilter macroFilter;
@@ -58,6 +61,9 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
                         break;
                     case IP:
                         filter = new IPAddressFilter(nwp, filterInput);
+                        break;
+                    case NAME:
+                        filter = new NameRegexFilter(nwp, filterInput);
                         break;
                     default:
                         filter = IFilter.EMPTY;
