@@ -13,13 +13,13 @@ import static org.junit.Assert.*;
 public class IPAddressTest {
 
     @Test(expected = InvalidIPAddress.class)
-    public void IPAddress_constructor_throws_on_0_address() throws Exception {
-        new IPAddress(0);
+    public void IPAddress_constructor_throws_on_negative_address() throws Exception {
+        new IPAddress(-1);
     }
 
     @Test(expected = InvalidIPAddress.class)
     public void IPAddress_constructor_throws_on_too_large_address() throws Exception {
-        new IPAddress(5000000000L);
+        new IPAddress(4294967297L);
     }
 
     @Test
