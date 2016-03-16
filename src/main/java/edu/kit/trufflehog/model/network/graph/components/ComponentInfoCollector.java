@@ -20,10 +20,9 @@ import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.TreeItem;
 
-import java.util.Collection;
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -40,39 +39,58 @@ import java.util.stream.Collector;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class ComponentInfoCollector implements Collector<IComponent, Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>,
-        Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> {
+public class ComponentInfoCollector implements Collector<IComponent, TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>,
+        TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> {
 
-    private final IComponentVisitor<Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> infoExtractor;
+    private final IComponentVisitor<TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> infoExtractor;
 
-    public ComponentInfoCollector(IComponentVisitor<Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> infoExtractor) {
+    public ComponentInfoCollector(IComponentVisitor<TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> infoExtractor) {
 
         this.infoExtractor = infoExtractor;
     }
 
     @Override
-    public Supplier<Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> supplier() {
+    public Supplier<TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> supplier() {
 
-        return LinkedList::new;
+        //return TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>::new;
+
+        return new Supplier<TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>>() {
+            @Override
+            public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> get() {
+                return new TreeItem<>(new StatisticsViewModel.StringEntry<>("Node", ""));
+            }
+        };
+
+        //return new TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>();
     }
 
     @Override
-    public BiConsumer<Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>, IComponent> accumulator() {
+    public BiConsumer<TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>, IComponent> accumulator() {
 
-        return (stringPairMap, iComponent) -> stringPairMap.addAll(iComponent.accept(infoExtractor));
+        return (treeItem, iComponent) -> treeItem.getChildren().add(iComponent.accept(infoExtractor));
     }
 
     @Override
-    public BinaryOperator<Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> combiner() {
+    public BinaryOperator<TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> combiner() {
 
         return (lhs, rhs) -> {
-            lhs.addAll(rhs);
-            return lhs;
+
+            if (lhs.getParent() == null && rhs.getParent() == null) {
+                final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> item = new TreeItem<>();
+                item.getChildren().addAll(lhs, rhs);
+                return item;
+            } else if (lhs.getParent() == null) {
+                rhs.getParent().getChildren().add(lhs);
+                return rhs;
+            } else {
+                lhs.getParent().getChildren().add(rhs);
+                return lhs;
+            }
         };
     }
 
     @Override
-    public Function<Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>, Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> finisher() {
+    public Function<TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>, TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> finisher() {
 
         return stringObjectMap -> stringObjectMap;
     }

@@ -25,12 +25,12 @@ import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.TreeItem;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collector;
@@ -59,9 +59,9 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
 
     private Pair<Set<INode>, Set<IConnection>> selected = new ImmutablePair<>(new HashSet<>(), new HashSet<>());
 
-    private final IComponentVisitor<Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> infoVisitor = new ComponentInfoVisitor();
-    private final Collector<IComponent, Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>,
-            Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> collector = new ComponentInfoCollector(this.infoVisitor);
+    private final IComponentVisitor<TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> infoVisitor = new ComponentInfoVisitor();
+    private final Collector<IComponent, TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>,
+            TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> collector = new ComponentInfoCollector(this.infoVisitor);
 
     public SelectionCommand(StatisticsViewModel statisticsViewModel) {
 
@@ -81,7 +81,7 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
 
         if (nodes.size() == 1) {
 
-            final Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infos = nodes.iterator().next().parallelStream().collect(collector);
+            final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infos = nodes.iterator().next().stream().collect(collector);
             logger.debug(infos);
             statisticsViewModel.setSelectionValues(infos);
 
@@ -114,7 +114,7 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
 
     private void clearStatistics() {
 
-       // statisticsViewModel.clearSelectionStatistics();
+       statisticsViewModel.clearStatistics();
     }
 
     @Override

@@ -12,19 +12,16 @@ import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
-import javafx.beans.property.Property;
-import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * <p>
@@ -36,6 +33,8 @@ import javafx.scene.layout.StackPane;
 public class LiveViewViewController extends AnchorPaneController {
     // General variables
     private final ConfigData configData;
+
+    private static final Logger logger = LogManager.getLogger(LiveViewViewController.class);
 
     // View layers
     private final StackPane stackPane;
@@ -149,51 +148,11 @@ public class LiveViewViewController extends AnchorPaneController {
      */
     private void addNodeStatisticsOverlay() {
 
+        final StatisticsViewController statisticsViewController = new StatisticsViewController(statViewModel);
+        this.getChildren().add(statisticsViewController);
 
-        TreeTableView<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> treeTableView = new TreeTableView<>();
-
-
-        final TableColumn<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, String> keyColumn = new TableColumn<>("Key");
-        final TableColumn<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> valueColumn = new TableColumn<>("value");
-
-       final TableView<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> table = new TableView<>();
-
-        keyColumn.setMinWidth(100);
-        keyColumn.setCellValueFactory(param -> param.getValue().getKeyProperty());
-
-        valueColumn.setMinWidth(100);
-        valueColumn.setCellValueFactory(param -> param.getValue().getValueProperty());
-        table.setItems(statViewModel.getInfoListProperty().get());
-
-        table.getColumns().addAll(keyColumn, valueColumn);
-
-        //AnchorPane.setTopAnchor(table, 10d);
-        //AnchorPane.setRightAnchor(table, 10d);
-
-        table.setVisible(true);
-
-        table.setPrefSize(500, 500);
-
-        this.getChildren().add(table);
-
-       // table.setMinWidth(500);
-      //  table.setMinHeight(500);
-
-        //Stage stage = new Stage(); stage.setScene(new Scene(new Group(table)));
-        //stage.show();
-
-
- //       OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
-/*        nodeStatisticsOverlay.getChildren().add(table);
-        this.getChildren().add(nodeStatisticsOverlay);*/
-
-   //     nodeStatisticsOverlay.setItems(statViewModel.getInfoListProperty());
-
-  //      nodeStatisticsOverlay.getColumns().addAll(keyColumn, valueColumn);
-
-     //   AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
-    //    AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
-     //   nodeStatisticsOverlay.setVisible(true);
+        AnchorPane.setTopAnchor(statisticsViewController, 10d);
+        AnchorPane.setRightAnchor(statisticsViewController, 10d);
     }
 
     /**

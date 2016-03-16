@@ -27,10 +27,7 @@ import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
+import javafx.scene.control.TreeItem;
 
 /**
  * \brief
@@ -41,70 +38,70 @@ import java.util.LinkedList;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class ComponentInfoVisitor implements IComponentVisitor<Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> {
+public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> {
 
     @Override
-    public Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(ViewComponent viewComponent) {
+    public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(ViewComponent component) {
 
-        return Collections.emptyList();
+        return new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
     }
 
     @Override
-    public Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(EdgeStatisticsComponent edgeStatisticsComponent) {
+    public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(EdgeStatisticsComponent component) {
 
-        final Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infoMap = new LinkedList<>();
+        final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
 
-        infoMap.add(new StatisticsViewModel.StringEntry<>("Connection Traffic", edgeStatisticsComponent.getTrafficProperty()));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Connection Traffic", component.getTrafficProperty())));
 
-        return infoMap;
+        return root;
     }
 
     @Override
-    public Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(NodeStatisticsComponent nodeStatisticsComponent) {
+    public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(NodeStatisticsComponent component) {
 
-        final Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infoMap = new LinkedList<>();
+        final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
 
-        infoMap.add(new StatisticsViewModel.StringEntry<>("Outgoing and ingoing Communication", nodeStatisticsComponent.getCommunicationCountProperty()));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Outgoing and ingoing Communication", component.getCommunicationCountProperty())));
 
-        return infoMap;
+        return root;
     }
 
     @Override
-    public Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(NodeInfoComponent nodeInfoComponent) {
+    public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(NodeInfoComponent component) {
 
-        final Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infoMap = new LinkedList<>();
+        final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
 
-        infoMap.add(new StatisticsViewModel.StringEntry<>("Device name", nodeInfoComponent.getDeviceNameProperty()));
-        infoMap.add(new StatisticsViewModel.StringEntry<>("IP Address", nodeInfoComponent.getIpAddressProperty()));
-        infoMap.add(new StatisticsViewModel.StringEntry<>("Mac Address", new SimpleObjectProperty<>(nodeInfoComponent.getMacAddress())));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Device name", component.getDeviceNameProperty())));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("IP Address", component.getIpAddressProperty())));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Mac Address", new SimpleObjectProperty<>(component.getMacAddress()))));
 
-        return infoMap;
+        return root;
     }
 
     @Override
-    public Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(FilterPropertiesComponent filterPropertiesComponent) {
+    public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(FilterPropertiesComponent component) {
 
-        final Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infoMap = new LinkedList<>();
-        infoMap.add(new StatisticsViewModel.StringEntry<>("Status", new SimpleObjectProperty<>(filterPropertiesComponent.getFilterColor())));
-        return infoMap;
+        final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Status", new SimpleObjectProperty<>(component.getFilterColor()))));
+        return root;
     }
 
     @Override
-    public Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(PacketDataLoggingComponent packetDataLoggingComponent) {
+    public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(PacketDataLoggingComponent component) {
 
-        final Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infoMap = new LinkedList<>();
-        infoMap.add(new StatisticsViewModel.StringEntry<>("Packets", packetDataLoggingComponent.getObservablePacketsProperty()));
+        final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Packets", component.getObservablePacketsProperty())));
 
-        return infoMap;
+        return root;
     }
 
     @Override
-    public Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(NetworkNode iComponents) {
-        return Collections.emptyList();
+    public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(NetworkNode component) {
+        return new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
     }
 
     @Override
-    public Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(NetworkConnection iComponents) {
-        return Collections.emptyList();
+    public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(NetworkConnection component) {
+        return new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
     }
 }

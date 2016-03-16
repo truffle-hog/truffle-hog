@@ -16,26 +16,14 @@
  */
 package edu.kit.trufflehog.viewmodel;
 
-import edu.kit.trufflehog.model.network.graph.IConnection;
-import edu.kit.trufflehog.model.network.graph.INode;
 import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import org.apache.commons.lang3.tuple.Pair;
+import javafx.scene.control.TreeItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Collection;
-import java.util.Set;
 
 /**
  * \brief
@@ -50,78 +38,30 @@ public class StatisticsViewModel {
 
     private static final Logger logger = LogManager.getLogger(StatisticsViewModel.class);
 
+    private final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> rootItem = new TreeItem<>(new StringEntry<>("Info", ""));
 
-    private final ObjectProperty<SelectionStatus> selectionStatus = new SimpleObjectProperty<>(SelectionStatus.NONE);
+    private final ListProperty<TreeItem<
+                    StatisticsViewModel.IEntry<
+                            StringProperty, ? extends  Property>>> infoListProperty = new SimpleListProperty<>(rootItem.getChildren());
 
-
-    private final TableColumn keyColumn = new TableColumn("Key");
-    private final TableColumn valueColumn = new TableColumn("Value");
-
-    private final TableView<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> table = new TableView<>();
-
-    private final ObservableList<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infoList = FXCollections.observableArrayList();
-
-    private final ListProperty<StatisticsViewModel.IEntry<StringProperty, ? extends  Property>> infoListProperty = new SimpleListProperty<>(infoList);
-
-    public StatisticsViewModel() {
-
-        keyColumn.setMinWidth(100);
-        keyColumn.setCellValueFactory(
-                new PropertyValueFactory<IEntry<StringProperty, ? extends Property>, String>("key")
-        );
-
-        valueColumn.setMinWidth(100);
-        valueColumn.setCellValueFactory(
-                new PropertyValueFactory<IEntry<StringProperty, ? extends Property>, String>("value")
-        );
-        table.setItems(infoList);
-
+    public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> getRootItem() {
+        return rootItem;
     }
 
-    public ListProperty<StatisticsViewModel.IEntry<StringProperty, ? extends  Property>> getInfoListProperty() {
+    public ListProperty<TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends  Property>>> getInfoListProperty() {
         return infoListProperty;
     }
 
-    synchronized
-    public void updateSelection(Pair<Set<INode>, Set<IConnection>> selected) {
+    public void setSelectionValues(TreeItem<IEntry<StringProperty, ? extends Property>> selectionValues) {
+
+        rootItem.getChildren().clear();
+        rootItem.getChildren().add(selectionValues);
     }
 
+    public void clearStatistics() {
 
-    public SelectionStatus getSelectionStatus() {
-        return selectionStatus.get();
+        rootItem.getChildren().clear();
     }
-
-    public ObjectProperty<SelectionStatus> selectionStatusProperty() {
-        return selectionStatus;
-    }
-
-    private void recompute() {
-
-
-    }
-
-    synchronized
-    public void updateNodeSelection(Collection<INode> selectedNodes) {
-
-        recompute();
-    }
-
-    synchronized
-    public void updateEdgeSelection(Collection<IConnection> selectedConnections) {
-
-        recompute();
-    }
-
-    public void setSelectionValues(Collection<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> selectionValues) {
-
-        infoList.clear();
-        infoList.addAll(selectionValues);
-    }
-
-    public enum SelectionStatus {
-        NONE, ONE_VERTEX, ONE_EDGE, ONE_EDGE_ONE_VERTEX, MULTI_VERTEX, MULTI_EDGE, MIX
-    }
-
 
     public static class StringEntry<T extends Property> implements IEntry<StringProperty, T> {
 
@@ -132,6 +72,13 @@ public class StatisticsViewModel {
 
             keyProperty = new SimpleStringProperty(label);
             valueProperty = property;
+        }
+
+        public StringEntry(String name, String value) {
+
+            keyProperty = new SimpleStringProperty(name);
+            // FIXME do the suprressiong of warning... because we know its a property here... so safely cast it to that
+            valueProperty = (T) new SimpleStringProperty(value);
         }
 
 

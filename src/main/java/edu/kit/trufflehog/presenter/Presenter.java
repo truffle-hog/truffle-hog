@@ -185,7 +185,7 @@ public class Presenter {
         }
 
         // Shut down the system
-        //System.exit(0);
+        System.exit(0);
     }
 
     //TODO remove someday but for now leave as reference
