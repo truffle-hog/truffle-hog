@@ -20,6 +20,8 @@ public interface INetwork extends DeepCopyable<NetworkCopy> {
      */
     INetworkWritingPort getWritingPort();
 
+
+
     /**
      * Returns the view port of this network. This will be accessed by view elements that need to access
      * data about the network. The view port also needs to provide access to all metadata of this network

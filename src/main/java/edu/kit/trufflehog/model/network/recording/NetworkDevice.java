@@ -73,8 +73,10 @@ public class NetworkDevice implements INetworkDevice {
         port.setActiveViewPort(network.getViewPort());
     }
 
+
+
     @Override
-    public void play(final INetworkTape tape, final INetworkViewPortSwitch viewPortSwitch) {
+    public void goReplay(final INetworkTape tape, final INetworkViewPortSwitch viewPortSwitch) {
 
         if (tape.getFrameCount() == 0) {
 
@@ -105,6 +107,10 @@ public class NetworkDevice implements INetworkDevice {
     @Override
     public void stop() {
 
+        if (frameWriter == null) {
+            logger.warn("Currently there is no ongoing recording");
+            return;
+        }
         frameWriter.stop();
     }
 

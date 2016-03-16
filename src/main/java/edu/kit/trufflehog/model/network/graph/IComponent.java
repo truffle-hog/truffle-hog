@@ -16,6 +16,7 @@
  */
 package edu.kit.trufflehog.model.network.graph;
 
+import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.util.DeepCopyable;
 import edu.kit.trufflehog.util.Updatable;
 
@@ -36,4 +37,5 @@ public interface IComponent extends DeepCopyable<IComponent>, Updatable<ICompone
      */
     String name();
 
+    <T> T accept(IComponentVisitor<T> visitor);
 }

@@ -3,6 +3,7 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
+import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.ListProperty;
@@ -67,6 +68,11 @@ public class PacketDataLoggingComponent extends AbstractComponent implements ICo
     @Override
     public String name() {
         return "Packet Logs";
+    }
+
+    @Override
+    public <T> T accept(IComponentVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 
     @Override

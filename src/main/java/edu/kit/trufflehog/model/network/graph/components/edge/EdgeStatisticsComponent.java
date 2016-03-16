@@ -3,6 +3,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
+import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
@@ -43,6 +44,12 @@ public class EdgeStatisticsComponent extends AbstractComponent implements ICompo
     @Override
     public String name() {
         return "Traffic info";
+    }
+
+    @Override
+    public <T> T accept(IComponentVisitor<T> visitor) {
+
+        return visitor.visit(this);
     }
 
     @Override

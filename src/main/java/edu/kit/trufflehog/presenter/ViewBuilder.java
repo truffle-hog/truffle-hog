@@ -20,9 +20,7 @@ package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
 import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
-import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
@@ -32,14 +30,23 @@ import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkTape;
 import edu.kit.trufflehog.util.IListener;
-import edu.kit.trufflehog.view.*;
+import edu.kit.trufflehog.view.LiveViewViewController;
+import edu.kit.trufflehog.view.MainViewController;
+import edu.kit.trufflehog.view.MenuBarViewController;
+import edu.kit.trufflehog.view.RootWindowController;
+import edu.kit.trufflehog.view.StartViewViewController;
+import edu.kit.trufflehog.view.ViewSwitcher;
 import edu.kit.trufflehog.view.controllers.IWindowController;
-import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.Slider;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -117,9 +124,12 @@ public class ViewBuilder {
                       final IUserCommand<FilterInput> updateFilterCommand) {
         loadFonts();
 
-        final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
-        networkViewScreen.addListener(userCommandIListener);
-        networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+        //final StatisticsViewModel statView = new StatisticsViewModel();
+
+        // FIXME this screen is also created in the LiveViewViewController... is that necessary??!
+        //final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
+        //networkViewScreen.addListener(userCommandIListener);
+        //networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statView));
 
         // Load menu bar
         final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml");
@@ -191,7 +201,7 @@ public class ViewBuilder {
         });
 
         playButton.setOnAction(handler -> {
-            networkDevice.play(tape, viewPortSwitch);
+            networkDevice.goReplay(tape, viewPortSwitch);
             liveButton.setDisable(false);
         });
 

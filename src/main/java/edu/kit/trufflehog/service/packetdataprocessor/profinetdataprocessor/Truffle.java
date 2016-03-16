@@ -6,7 +6,6 @@ import edu.kit.trufflehog.model.network.InvalidMACAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 
-import javax.crypto.Mac;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -28,9 +28,9 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.value.ObservableValue;
 import javafx.util.Duration;
 import org.apache.commons.collections15.Transformer;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,6 +47,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -69,6 +70,9 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             new EnumMap<>(GraphInteraction.class);
 
 	public NetworkViewScreen(INetworkViewPort port, long refreshRate) {
+
+		this.viewPort = port;
+		initialize();
 
         refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
             repaint();
@@ -93,8 +97,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                 refresher.playFromStart();
             }
         });
-		this.viewPort = port;
-		initialize();
+
         // Add this view screen as listener to the picked state, so we can send commands, when the picked state
         // changes.
 		getPickedVertexState().addItemListener(this);
@@ -103,6 +106,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 	public void initialize() {
 
 		jungView = new FXVisualizationViewer<>(this.viewPort);
+
 		//jungView.getRenderContext().setEdgeLabelRenderer((EdgeLabelRenderer) new FXEdgeLabelRenderer<>());
 		//jungView.revalidate();
 		//createAndSetSwingContent(this, jungView);
@@ -194,7 +198,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 
             final NodeStatisticsComponent statComp = iNode.getComponent(NodeStatisticsComponent.class);
-            int currentSize = statComp.getThroughput();
+            int currentSize = statComp.getCommunicationCount();
             long maxSize = viewPort.getMaxThroughput();
 
             double relation = (double) currentSize / (double) maxSize;
@@ -483,19 +487,20 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 	}
 
 	@Override
+    synchronized
 	public void itemStateChanged(ItemEvent e) {
 
         // if ItemEvent is Vertex Selection
 
-        final IUserCommand command = interactionMap.get(GraphInteraction.VERTEX_SELECTED);
+        final IUserCommand selectionCommand = interactionMap.get(GraphInteraction.SELECTION);
 
-        if (command != null) {
-            command.setSelection(getPickedVertexState());
-        }
-		notifyListeners(interactionMap.get(GraphInteraction.VERTEX_SELECTED));
+		if (selectionCommand == null) {
+			logger.warn("There is no command registered to: " + GraphInteraction.SELECTION);
+            return;
+		}
 
-        // else if ItemEvent is Connection Selection
+        selectionCommand.setSelection(new ImmutablePair<>(new HashSet<>(getPickedVertexState().getPicked()), new HashSet<>(getPickedEdgeState().getPicked())));
 
-		//throw new UnsupportedOperationException("Operation not implemented yet");
+        notifyListeners(selectionCommand);
 	}
 }

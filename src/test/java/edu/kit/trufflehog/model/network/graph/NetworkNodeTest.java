@@ -30,23 +30,23 @@ public class NetworkNodeTest {
 
         node.addComponent(new NodeStatisticsComponent(1));
 
-        node.getComponent(NodeStatisticsComponent.class).setThroughputProperty(4);
+        node.getComponent(NodeStatisticsComponent.class).setCommunicationCountProperty(4);
 
         node.getComponent(NodeStatisticsComponent.class).incrementThroughput(1);
 
         final INode deepCopy = node.createDeepCopy(copyCreator);
         final NodeStatisticsComponent statCopy = deepCopy.getComponent(NodeStatisticsComponent.class);
 
-        //statCopy.setThroughputProperty(10);
+        //statCopy.setCommunicationCountProperty(10);
 
-        assertEquals(5, statCopy.getThroughput());
-        assertEquals(5, node.getComponent(NodeStatisticsComponent.class).getThroughput());
+        assertEquals(5, statCopy.getCommunicationCount());
+        assertEquals(5, node.getComponent(NodeStatisticsComponent.class).getCommunicationCount());
 
 
-        statCopy.setThroughputProperty(10);
+        statCopy.setCommunicationCountProperty(10);
 
-        assertEquals(10, statCopy.getThroughput());
-        assertEquals(5, node.getComponent(NodeStatisticsComponent.class).getThroughput());
+        assertEquals(10, statCopy.getCommunicationCount());
+        assertEquals(5, node.getComponent(NodeStatisticsComponent.class).getCommunicationCount());
 
 
     }
@@ -62,11 +62,11 @@ public class NetworkNodeTest {
 
         final NodeStatisticsComponent c = node.getComponent(NodeStatisticsComponent.class);
 
-        assertEquals(1, c.getThroughput());
+        assertEquals(1, c.getCommunicationCount());
 
         c.incrementThroughput(5);
 
-        assertEquals(6, c.getThroughput());
+        assertEquals(6, c.getCommunicationCount());
     }
 
     @Test

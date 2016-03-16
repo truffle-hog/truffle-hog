@@ -3,17 +3,24 @@ package edu.kit.trufflehog.presenter;
 import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
-import edu.kit.trufflehog.model.filter.*;
+import edu.kit.trufflehog.model.filter.MacroFilter;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
-import edu.kit.trufflehog.model.network.recording.*;
+import edu.kit.trufflehog.model.network.recording.INetworkDevice;
+import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
+import edu.kit.trufflehog.model.network.recording.INetworkWritingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkDevice;
+import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
@@ -23,10 +30,7 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -121,7 +125,7 @@ public class Presenter {
             liveNetwork.getViewPort().setViewTime(Instant.now().toEpochMilli());
         }));
         updateTime.setCycleCount(Timeline.INDEFINITE);
-        updateTime.play();*/
+        updateTime.goReplay();*/
 
         /*
         // initialize the replay network that will be written on by a networkTape if the device plays a replay
@@ -151,8 +155,8 @@ public class Presenter {
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
 
-        final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
-        //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
+        //final TruffleReceiver truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
+        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
         truffleFetchService.execute(truffleReceiver);
         truffleReceiver.connect();
 
@@ -161,8 +165,8 @@ public class Presenter {
         commandExecutorService.execute(commandExecutor);
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 
-        // play that ongoing recording on the given viewportswitch
-        //networkDevice.play(tape, viewPortSwitch);
+        // goReplay that ongoing recording on the given viewportswitch
+        //networkDevice.goReplay(tape, viewPortSwitch);
 
         // track the live network on the given viewportswitch
         networkDevice.goLive(liveNetwork, viewPortSwitch);
@@ -181,7 +185,7 @@ public class Presenter {
         }
 
         // Shut down the system
-        System.exit(0);
+        //System.exit(0);
     }
 
     //TODO remove someday but for now leave as reference
@@ -221,7 +225,7 @@ public class Presenter {
         });
 
         playButton.setOnAction(handler -> {
-            networkDevice.play(tape, viewPortSwitch);
+            networkDevice.goReplay(tape, viewPortSwitch);
             liveButton.setDisable(false);
         });
 

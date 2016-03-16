@@ -155,7 +155,7 @@ public class TapeCopyCreator implements ICopyCreator, GraphCopier<INode, IConnec
     @Override
     public IComponent createDeepCopy(NodeStatisticsComponent nodeStatisticsComponent) {
         if (nodeStatisticsComponent == null) throw new NullPointerException("nodeStatisticsComponent must not be null!");
-        IntegerProperty throughput = nodeStatisticsComponent.getThroughputProperty();
+        IntegerProperty throughput = nodeStatisticsComponent.getCommunicationCountProperty();
 
         return new NodeStatisticsComponent(throughput.getValue());
     }

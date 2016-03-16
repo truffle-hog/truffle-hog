@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.model.network;
 
-import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -67,7 +66,7 @@ public class NetworkIOPort implements INetworkIOPort {
 
             final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);
             if (nodeStat != null) {
-                maxThroughputBinding.bindProperty(nodeStat.getThroughputProperty());
+                maxThroughputBinding.bindProperty(nodeStat.getCommunicationCountProperty());
             }
             idNodeMap.put(node.getAddress(), node);
         }

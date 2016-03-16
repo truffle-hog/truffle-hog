@@ -3,6 +3,7 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
+import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -16,32 +17,37 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
 
     private static final Logger logger = LogManager.getLogger(NodeStatisticsComponent.class);
     
-    private final IntegerProperty throughputProperty = new SimpleIntegerProperty(1);
+    private final IntegerProperty communicationCount = new SimpleIntegerProperty(1);
 
     public NodeStatisticsComponent(int initial) {
 
-        throughputProperty.set(initial);
+        communicationCount.set(initial);
     }
 
-    public IntegerProperty getThroughputProperty() {
-        return throughputProperty;
+    public IntegerProperty getCommunicationCountProperty() {
+        return communicationCount;
     }
 
-    public int getThroughput() {
-        return throughputProperty.get();
+    public int getCommunicationCount() {
+        return communicationCount.get();
     }
 
-    public void setThroughputProperty(int value) {
-        throughputProperty.set(value);
+    public void setCommunicationCountProperty(int value) {
+        communicationCount.set(value);
     }
 
     public void incrementThroughput(int step) {
-        setThroughputProperty(getThroughput() + step);
+        setCommunicationCountProperty(getCommunicationCount() + step);
     }
 
     @Override
     public String name() {
         return "Traffic info";
+    }
+
+    @Override
+    public <T> T accept(IComponentVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 
     @Override
@@ -52,7 +58,7 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
     @Override
     public String toString() {
 
-        return name() + ": " + "Throughput=" + getThroughput();
+        return name() + ": " + "Throughput=" + getCommunicationCount();
 
     }
 

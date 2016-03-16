@@ -24,18 +24,21 @@ public class IPAddress implements IAddress {
 
     public IPAddress(final long address) throws InvalidIPAddress {
 
-        if (address == 0)
-            throw new InvalidIPAddress();
-
-        if (address > 4294967295L)
-            throw new InvalidIPAddress();
-
         this.address = address;
+
+        if (this.address <= 0) {
+            throw new InvalidIPAddress();
+        }
+
+        if (this.address > 0xFFFFFFF) {
+            throw new InvalidIPAddress();
+        }
+
         hash = new Long(address).hashCode();
 
         // transform to byte array
         bytes = new byte[4];
-        byte[] extractedBytes = ByteBuffer.allocate(8).putLong(address).array();
+        final byte[] extractedBytes = ByteBuffer.allocate(8).putLong(address).array();
         System.arraycopy(extractedBytes, 4, bytes, 0, extractedBytes.length - 4);
 
         // set multicast bit

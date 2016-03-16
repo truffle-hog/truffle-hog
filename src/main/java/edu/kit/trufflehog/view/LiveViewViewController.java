@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.command.usercommand.NodeSelectionCommand;
+import edu.kit.trufflehog.command.usercommand.SelectionCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
@@ -11,9 +11,15 @@ import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
+import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
+import javafx.beans.property.Property;
+import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -42,6 +48,8 @@ public class LiveViewViewController extends AnchorPaneController {
     private final IUserCommand<FilterInput> updateFilterCommand;
     private final IListener<IUserCommand> userCommandListener;
 
+    private final StatisticsViewModel statViewModel = new StatisticsViewModel();
+
     public LiveViewViewController(String fxml,
                                   ConfigData configData,
                                   StackPane stackPane,
@@ -59,9 +67,13 @@ public class LiveViewViewController extends AnchorPaneController {
 
         this.stackPane = stackPane;
 
+
+        //final StatisticsViewModel statView = new StatisticsViewModel();
+        // FIXME this screen is also create in the ViewBuilder... is that necessary??!
         final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
         networkViewScreen.addListener(userCommandIListener);
-        networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+        networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statViewModel));
+        //networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
 
         this.getChildren().add(networkViewScreen);
 
@@ -136,11 +148,52 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private void addNodeStatisticsOverlay() {
-        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
-        this.getChildren().add(nodeStatisticsOverlay);
-        AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
-        AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
-        nodeStatisticsOverlay.setVisible(false);
+
+
+        TreeTableView<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> treeTableView = new TreeTableView<>();
+
+
+        final TableColumn<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, String> keyColumn = new TableColumn<>("Key");
+        final TableColumn<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> valueColumn = new TableColumn<>("value");
+
+       final TableView<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> table = new TableView<>();
+
+        keyColumn.setMinWidth(100);
+        keyColumn.setCellValueFactory(param -> param.getValue().getKeyProperty());
+
+        valueColumn.setMinWidth(100);
+        valueColumn.setCellValueFactory(param -> param.getValue().getValueProperty());
+        table.setItems(statViewModel.getInfoListProperty().get());
+
+        table.getColumns().addAll(keyColumn, valueColumn);
+
+        //AnchorPane.setTopAnchor(table, 10d);
+        //AnchorPane.setRightAnchor(table, 10d);
+
+        table.setVisible(true);
+
+        table.setPrefSize(500, 500);
+
+        this.getChildren().add(table);
+
+       // table.setMinWidth(500);
+      //  table.setMinHeight(500);
+
+        //Stage stage = new Stage(); stage.setScene(new Scene(new Group(table)));
+        //stage.show();
+
+
+ //       OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
+/*        nodeStatisticsOverlay.getChildren().add(table);
+        this.getChildren().add(nodeStatisticsOverlay);*/
+
+   //     nodeStatisticsOverlay.setItems(statViewModel.getInfoListProperty());
+
+  //      nodeStatisticsOverlay.getColumns().addAll(keyColumn, valueColumn);
+
+     //   AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
+    //    AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
+     //   nodeStatisticsOverlay.setVisible(true);
     }
 
     /**
