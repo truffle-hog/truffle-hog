@@ -45,7 +45,7 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
                 filterMap.remove(filterInput);
             }
 
-            if (!filterInput.isActive()) {
+            if (!filterInput.isActive() || filterInput.isDeleted()) {
                 return;
             }
 

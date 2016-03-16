@@ -340,12 +340,15 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         removeButton.setOnAction(actionEvent -> {
             final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             if (!data.isEmpty() && filterInput != null) {
+
                 data.remove(filterInput);
 
                 // Update model
-                if (interactionMap.get(FilterInteraction.REMOVE) != null) {
-                    filterInput.getActiveProperty().setValue(false);
-                    notifyListeners(interactionMap.get(FilterInteraction.REMOVE));
+                IUserCommand updateFilterCommand = interactionMap.get(FilterInteraction.REMOVE);
+                if (updateFilterCommand != null) {
+                    filterInput.setDeleted();
+                    updateFilterCommand.setSelection(filterInput);
+                    notifyListeners(updateFilterCommand);
                 }
                 configData.removeFilterInput(filterInput);
 
