@@ -487,7 +487,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         for (String rule : ruleArray) {
             if (filterOrigin.equals(FilterOrigin.IP) || filterOrigin.equals(FilterOrigin.MAC)) {
                 assert pattern != null;
-                if (pattern.matcher(rule.toLowerCase()).matches()) {
+                if (!pattern.matcher(rule).matches()) {
                     if (filterOrigin.equals(FilterOrigin.IP)) {
                         errorText.setText(configData.getProperty("INVALID_IP_RULE"));
                     } else {

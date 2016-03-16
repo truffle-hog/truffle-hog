@@ -53,7 +53,7 @@ public class RecordMenuViewController extends AnchorPaneController {
                 pressed = true;
                 Platform.runLater(() -> {
                     button.startGlow();
-                    //timerField.startTimer();
+                    timerField.startTimer();
                 });
 
 
@@ -61,7 +61,7 @@ public class RecordMenuViewController extends AnchorPaneController {
             } else {
                 pressed = false;
                 button.stopGlow();
-                //timerField.stopTimer();
+                timerField.stopTimer();
             }
         });
     }
