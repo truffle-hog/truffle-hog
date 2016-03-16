@@ -92,6 +92,7 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
 
         }
 
+
     }
 
     private void updateConnectionStatistics(Set<IConnection> connections) {
@@ -138,18 +139,22 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
 
         if (selected.getLeft().isEmpty() && selected.getRight().isEmpty()) {
 
+            logger.debug("nothing selected");
             clearStatistics();
 
         } else if (selected.getLeft().isEmpty() && !selected.getRight().isEmpty()) {
 
+            logger.debug("only edges selected");
             updateConnectionStatistics(selected.getRight());
 
         } else if (!selected.getLeft().isEmpty() && selected.getRight().isEmpty()) {
 
+            logger.debug("only nodes selected");
             updateNodeStatistics(selected.getLeft());
 
         } else if (!selected.getLeft().isEmpty() && !selected.getRight().isEmpty()) {
 
+            logger.debug("nodes and edges selected");
             updateMixedStatistics(selected.getLeft(), selected.getRight());
         }
 

@@ -101,6 +101,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
         // Add this view screen as listener to the picked state, so we can send commands, when the picked state
         // changes.
 		getPickedVertexState().addItemListener(this);
+		getPickedEdgeState().addItemListener(this);
 	}
 
 	public void initialize() {

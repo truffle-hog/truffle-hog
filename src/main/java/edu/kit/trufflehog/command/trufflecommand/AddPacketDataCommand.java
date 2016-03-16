@@ -54,15 +54,21 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final MacAddress sourceAddress = data.getAttribute(MacAddress.class, "sourceMacAddress");
         final MacAddress destAddress = data.getAttribute(MacAddress.class, "destMacAddress");
 
+        final PacketDataLoggingComponent connectionPacketLogger = new PacketDataLoggingComponent();
+        final PacketDataLoggingComponent srcPacketLogger = new PacketDataLoggingComponent();
+        final PacketDataLoggingComponent destPacketLogger = new PacketDataLoggingComponent();
+        connectionPacketLogger.addPacket(data);
+        srcPacketLogger.addPacket(data);
+        destPacketLogger.addPacket(data);
 
-        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(sourceAddress));
-        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(destAddress));
+        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(sourceAddress), srcPacketLogger);
+        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(destAddress), destPacketLogger);
 
-        final PacketDataLoggingComponent packetLogger = new PacketDataLoggingComponent();
 
-        packetLogger.addPacket(data);
 
-        final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1), packetLogger);
+
+
+        final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1), connectionPacketLogger);
 
         sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
         destNode.addComponent(new ViewComponent(new NodeRenderer()));
