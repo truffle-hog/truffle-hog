@@ -19,7 +19,7 @@ public class IPAddressTest {
 
     @Test(expected = InvalidIPAddress.class)
     public void IPAddress_constructor_throws_on_too_large_address() throws Exception {
-        new IPAddress(4294967297L);
+        new IPAddress(0x100000000L);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class IPAddressTest {
         assertTrue("IPAddress(1) should be less than IPAddress(2) but is not", a.compareTo(b) < 0);
 
         IPAddress a1 = new IPAddress(1);
-        IPAddress b1 = new IPAddress(4294967296L);
+        IPAddress b1 = new IPAddress(0xFFFFFFL);
 
         assertTrue("IPAddress(1) should be less than IPAddress(4294967296) but is not", a1.compareTo(b1) < 0);
     }
@@ -117,7 +117,7 @@ public class IPAddressTest {
 
         assertTrue("IPAddress(2) should be greater than IPAddress(1) but is not", a.compareTo(b) > 0);
 
-        IPAddress a1 = new IPAddress(4294967296L);
+        IPAddress a1 = new IPAddress(0xFFFFFFL);
         IPAddress b1 = new IPAddress(1);
 
         assertTrue("IPAddress(4294967296) should be greater than IPAddress(1) but is not", a1.compareTo(b1) > 0);

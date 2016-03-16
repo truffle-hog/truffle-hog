@@ -114,7 +114,7 @@ jmethodID getBuildTruffle(JNIEnv *env)
         jclass truffleClass = getTruffleClass(env);
         _CHECK_JAVA_EXCEPTION(env);
 
-        buildTruffleMID = (*env)->GetStaticMethodID(env, truffleClass, "buildTruffle", "(JJJJLjava/lang/String;S)Ledu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle;");
+        buildTruffleMID = (*env)->GetStaticMethodID(env, truffleClass, "buildTruffle", "(JJIILjava/lang/String;S)Ledu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle;");
         _CHECK_JAVA_EXCEPTION(env);
         check_to(buildTruffleMID != 0, noBuildTruffle, "buildTruffle method not found");
     }

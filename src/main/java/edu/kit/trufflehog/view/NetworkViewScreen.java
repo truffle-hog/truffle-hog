@@ -30,6 +30,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import org.apache.commons.collections15.Transformer;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,6 +44,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -68,32 +70,40 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		this.viewPort = port;
 		initialize();
 
-        refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> repaint()));
+        refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
+            repaint();
+        }));
 
-		port.addGraphEventListener(e -> {
-			if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
-				final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
-				node.getComponent(ViewComponent.class).animate();
-				refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
-				repaint();
-				refresher.playFromStart();
-			} else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
-				final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
-				connection.getComponent(ViewComponent.class).animate();
-				refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
-				repaint();
-				refresher.playFromStart();
-			}
-		});
+        port.addGraphEventListener(e -> {
 
-		// Add this view screen as listener to the picked state, so we can send commands, when the picked state
+            if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
+
+                final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
+                node.getComponent(ViewComponent.class).animate();
+                refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
+                repaint();
+                refresher.playFromStart();
+
+            } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
+
+                final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
+                connection.getComponent(ViewComponent.class).animate();
+                refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
+                repaint();
+                refresher.playFromStart();
+            }
+        });
+
+        // Add this view screen as listener to the picked state, so we can send commands, when the picked state
         // changes.
 		getPickedVertexState().addItemListener(this);
+		getPickedEdgeState().addItemListener(this);
 	}
 
 	public void initialize() {
 
 		jungView = new FXVisualizationViewer<>(this.viewPort);
+
 		//jungView.getRenderContext().setEdgeLabelRenderer((EdgeLabelRenderer) new FXEdgeLabelRenderer<>());
 		//jungView.revalidate();
 		//createAndSetSwingContent(this, jungView);
@@ -185,7 +195,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 
             final NodeStatisticsComponent statComp = iNode.getComponent(NodeStatisticsComponent.class);
-            int currentSize = statComp.getThroughput();
+            int currentSize = statComp.getCommunicationCount();
             long maxSize = viewPort.getMaxThroughput();
 
             double relation = (double) currentSize / (double) maxSize;
@@ -474,22 +484,20 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 	}
 
 	@Override
+    synchronized
 	public void itemStateChanged(ItemEvent e) {
 
         // if ItemEvent is Vertex Selection
 
-        final IUserCommand command = interactionMap.get(GraphInteraction.VERTEX_SELECTED);
+        final IUserCommand selectionCommand = interactionMap.get(GraphInteraction.SELECTION);
 
-        if (command != null) {
-            command.setSelection(getPickedVertexState());
-        }
+		if (selectionCommand == null) {
+			logger.warn("There is no command registered to: " + GraphInteraction.SELECTION);
+            return;
+		}
 
-        if (interactionMap.containsKey(GraphInteraction.VERTEX_SELECTED)) {
-            notifyListeners(interactionMap.get(GraphInteraction.VERTEX_SELECTED));
-        }
+        selectionCommand.setSelection(new ImmutablePair<>(new HashSet<>(getPickedVertexState().getPicked()), new HashSet<>(getPickedEdgeState().getPicked())));
 
-        // else if ItemEvent is Connection Selection
-
-		//throw new UnsupportedOperationException("Operation not implemented yet");
+        notifyListeners(selectionCommand);
 	}
 }

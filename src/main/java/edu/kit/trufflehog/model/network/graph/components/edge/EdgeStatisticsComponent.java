@@ -3,7 +3,7 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
-import edu.kit.trufflehog.util.ICopyCreator;
+import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -46,6 +46,12 @@ public class EdgeStatisticsComponent extends AbstractComponent implements ICompo
     }
 
     @Override
+    public <T> T accept(IComponentVisitor<T> visitor) {
+
+        return visitor.visit(this);
+    }
+
+    @Override
     public boolean isMutable() {
         return true;
     }
@@ -60,12 +66,6 @@ public class EdgeStatisticsComponent extends AbstractComponent implements ICompo
 
     public void setLastUpdateTimeProperty(long value) {
         lastUpdateTimeProperty().setValue(value);
-    }
-
-    @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
-        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
-        return copyCreator.createDeepCopy(this);
     }
 
     @Override

@@ -62,6 +62,9 @@ public class Main extends Application {
 
 		// TODO horror
 		primaryStage.setTitle("TruffleHog");
+
+        // FIXME ... wo wird dieses icon sonst noch gesetzt?
+		//primaryStage.getIcons().add(new Image("file:resources/edu/kit/trufflehog/view/icon.png"));
 		presenter = new Presenter(primaryStage);
 		presenter.present();
 	}

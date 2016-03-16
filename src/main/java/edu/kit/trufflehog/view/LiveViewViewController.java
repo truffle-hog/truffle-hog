@@ -1,7 +1,9 @@
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.command.usercommand.SelectionCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
+import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
@@ -11,6 +13,7 @@ import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
+import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -19,6 +22,8 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * <p>
@@ -31,6 +36,8 @@ public class LiveViewViewController extends AnchorPaneController {
     // General variables
     private final ConfigData configData;
 
+    private static final Logger logger = LogManager.getLogger(LiveViewViewController.class);
+
     // View layers
     private final StackPane stackPane;
 
@@ -41,6 +48,7 @@ public class LiveViewViewController extends AnchorPaneController {
     private OverlayViewController settingsOverlayViewController;
     private final IUserCommand<FilterInput> updateFilterCommand;
     private final IListener<IUserCommand> userCommandListener;
+    private final StatisticsViewModel statViewModel = new StatisticsViewModel();
 
     public LiveViewViewController(final String fxml,
                                   final ConfigData configData,
@@ -61,9 +69,12 @@ public class LiveViewViewController extends AnchorPaneController {
 
         this.stackPane = stackPane;
 
+
+        //final StatisticsViewModel statView = new StatisticsViewModel();
+        // FIXME this screen is also create in the ViewBuilder... is that necessary??!
         final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
         networkViewScreen.addListener(userCommandIListener);
-        //FIXME map new command?
+        networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statViewModel));
         //networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
 
         this.getChildren().add(networkViewScreen);
@@ -139,11 +150,11 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private void addNodeStatisticsOverlay() {
-        final OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
-        this.getChildren().add(nodeStatisticsOverlay);
-        AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
-        AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
-        nodeStatisticsOverlay.setVisible(false);
+        final StatisticsViewController statisticsViewController = new StatisticsViewController(statViewModel);
+        this.getChildren().add(statisticsViewController);
+
+        AnchorPane.setTopAnchor(statisticsViewController, 10d);
+        AnchorPane.setRightAnchor(statisticsViewController, 10d);
     }
 
     /**
