@@ -14,7 +14,7 @@ public class TruffleCrook extends TruffleReceiver {
     private final IFilter filter;
 
     private long[] addresses;
-    private int maxAddresses = 15;
+    private int maxAddresses = 2000;
 
     public TruffleCrook(INetworkWritingPort writingPort, IFilter filter) {
         networkWritingPort = writingPort;
@@ -37,7 +37,7 @@ public class TruffleCrook extends TruffleReceiver {
         while(!Thread.interrupted()) {
             synchronized (this) {
                 try {
-                    Thread.sleep(100);
+                    //Thread.sleep(0, 1);
 
                     final Truffle truffle = getTruffle();
 
@@ -58,7 +58,7 @@ public class TruffleCrook extends TruffleReceiver {
         int a2 = (int)(Math.random()*maxAddresses);
 
         try {
-            return Truffle.buildTruffle(addresses[0], addresses[a2], addresses[0], addresses[a2], null, (short) 0);
+            return Truffle.buildTruffle(addresses[a1], addresses[a2], addresses[a1], addresses[a2], null, (short) 0);
         } catch (InvalidProfinetPacket invalidProfinetPacket) {
             invalidProfinetPacket.printStackTrace();
         }

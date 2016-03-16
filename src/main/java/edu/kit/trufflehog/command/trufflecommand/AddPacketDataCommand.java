@@ -77,7 +77,7 @@ public class AddPacketDataCommand implements ITruffleCommand {
 
         final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1), connectionPacketLogger);
 
-        sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
+/*        sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
         destNode.addComponent(new ViewComponent(new NodeRenderer()));
 
         sourceNode.addComponent(new FilterPropertiesComponent());
@@ -90,7 +90,7 @@ public class AddPacketDataCommand implements ITruffleCommand {
         }
 
         filter.check(sourceNode);
-        filter.check(destNode);
+        filter.check(destNode);*/
 
         writingPort.writeNode(sourceNode);
         writingPort.writeNode(destNode);

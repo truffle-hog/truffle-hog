@@ -4,6 +4,7 @@ package edu.kit.trufflehog.view;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
@@ -19,6 +20,7 @@ import edu.kit.trufflehog.view.graph.renderers.FXRenderer;
 import edu.kit.trufflehog.view.graph.renderers.FXVertexLabelRenderer;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationModel;
@@ -60,6 +62,10 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	private FXModalGraphMouse graphMouse;
 
+    private Dimension dimension;
+
+	private Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory;
+
 	private final Timeline refresher;
 
     /** The commands that are mapped to their interactions. **/
@@ -67,8 +73,18 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             new EnumMap<>(GraphInteraction.class);
 
 	public NetworkViewScreen(INetworkViewPort port, long refreshRate) {
-		this.viewPort = port;
-		initialize();
+
+        this(port, refreshRate, new Dimension(600,600));
+	}
+
+    public NetworkViewScreen(INetworkViewPort port, long refreshRate, Dimension dimension) {
+
+        this.dimension = dimension;
+        this.viewPort = port;
+        jungView = new FXVisualizationViewer<>(this.viewPort, dimension);
+        initialize();
+
+        this.layoutFactory = new FRLayoutFactory();
 
         refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
             repaint();
@@ -78,31 +94,31 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
             if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
 
-                final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
+/*                final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
                 node.getComponent(ViewComponent.class).animate();
                 refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
                 repaint();
-                refresher.playFromStart();
+                refresher.playFromStart();*/
 
             } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
 
-                final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
+/*                final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
                 connection.getComponent(ViewComponent.class).animate();
                 refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
                 repaint();
-                refresher.playFromStart();
+                refresher.playFromStart();*/
             }
         });
 
         // Add this view screen as listener to the picked state, so we can send commands, when the picked state
         // changes.
-		getPickedVertexState().addItemListener(this);
-		getPickedEdgeState().addItemListener(this);
-	}
+        getPickedVertexState().addItemListener(this);
+        getPickedEdgeState().addItemListener(this);
+    }
 
-	public void initialize() {
+    public void initialize() {
 
-		jungView = new FXVisualizationViewer<>(this.viewPort);
+
 
 		//jungView.getRenderContext().setEdgeLabelRenderer((EdgeLabelRenderer) new FXEdgeLabelRenderer<>());
 		//jungView.revalidate();
@@ -127,7 +143,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		jungView.setBackground(new Color(0x3e4451));
 		//jungView.setBackground(new Color(0xE8EAF6));
 		//jungView.setBackground(new Color(0x5e6d67));
-		jungView.setPreferredSize(new Dimension(350, 350));
+		//jungView.setPreferredSize(new Dimension(1000, 1000));
 		// Show vertex and edge labels
 
 		// Create a graph mouse and add it to the visualization component
@@ -138,24 +154,25 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	}
 
+	public void refreshLayout() {
+
+        jungView.setSize(dimension);
+        jungView.setGraphLayout(layoutFactory.transform(jungView.getGraphLayout().getGraph()));
+
+	}
+
+	public void setLayoutFactory(Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory) {
+
+		this.layoutFactory = layoutFactory;
+	}
+
 	private void initRenderers() {
 
+        /*
 		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getAddress().toString());
-		//jungView.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
 
 		// TODO null check for component
 		jungView.getRenderContext().setEdgeLabelTransformer(edge -> String.valueOf(edge.getComponent(EdgeStatisticsComponent.class).getTraffic()));
-
-/*		jungView.getRenderContext().setVertexFillPaintTransformer(
-                new PickableVertexPaintTransformer<>(
-                        getPickedVertexState(), new Color(0xa1928b), new Color(0xccc1bb)));*/
-
-/*        jungView.getRenderContext().setVertexFillPaintTransformer(
-                new PickableVertexPaintTransformer<>(
-                        getPickedVertexState(), new Color(0x528bff), new Color(0x000000)));*/
-
-/*        jungView.getRenderContext().setEdgeDrawPaintTransformer(
-                new PickableEdgePaintTransformer<>(getPickedEdgeState(), new Color(0x21252b), new Color(0x353b45)));*/
 
         jungView.getRenderContext().setVertexIncludePredicate(iNode -> !iNode.element.getAddress().isMulticast());
 
@@ -164,9 +181,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
         jungView.getRenderContext().setEdgeShapeTransformer(new FXEdgeShape.QuadCurve());
 
 		jungView.getRenderContext().setEdgeStrokeTransformer(iConnection -> {
-			//	return new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
-              //      BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
-//				final long maxSize = layout.getNetworkGraph().getMaxConnectionSize();
 
 			final ViewComponent rendererComponent = iConnection.getComponent(ViewComponent.class);
 
@@ -187,13 +201,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 		jungView.getRenderContext().setVertexShapeTransformer(iNode -> {
 
-            //final Ellipse2D circle = new Ellipse2D.Double(-1, -1, 2, 2);
-            // in this case, the vertex is twice as large
-
-            //System.out.println(layout.transform(iNode));
-
-
-
             final NodeStatisticsComponent statComp = iNode.getComponent(NodeStatisticsComponent.class);
             int currentSize = statComp.getCommunicationCount();
             long maxSize = viewPort.getMaxThroughput();
@@ -201,7 +208,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             double relation = (double) currentSize / (double) maxSize;
             double sizeMulti = (50.0 * relation) + 10;
             return new Ellipse2D.Double(-sizeMulti, -sizeMulti, 2*sizeMulti, 2*sizeMulti);
-            //return AffineTransform.getScaleInstance(sizeMulti, sizeMulti).createTransformedShape(circle);
+
         });
 
         final Color base = new Color(0x7f7784);
@@ -211,20 +218,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
         final Color basePicked = new Color(0xf0caa3);
         final float[] hsbValsPicked = new float[3];
         Color.RGBtoHSB(basePicked.getRed(), basePicked.getGreen(), basePicked.getBlue(), hsbValsPicked);
-
-/*        jungView.getRenderContext().setVertexShapeTransformer(iNode -> {
-
-            final NodeRenderer rendererComponent = iNode.getComponent(NodeRenderer.class);
-
-            if (rendererComponent == null) {
-                return new ConstantT
-            }
-
-            return new Shape() {
-
-            };
-
-        });*/
 
         jungView.getRenderContext().setVertexFillPaintTransformer(node -> {
 
@@ -266,6 +259,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                 return viewComponent.getRenderer().getColorUnpicked();
             }
         });
+        */
 	}
 
 	public void setGraphMouse(FXVisualizationViewer.FXGraphMouse graphMouse) {

@@ -5,6 +5,8 @@ import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import org.apache.commons.collections15.Transformer;
 
+import java.awt.*;
+
 /**
  * <p>
  *     Creates a {@link Layout} implementation of the Fruchterman-Reingold algorithm.

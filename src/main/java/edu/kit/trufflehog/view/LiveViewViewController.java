@@ -8,6 +8,9 @@ import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.graph.CircleLayoutFactory;
+import edu.kit.trufflehog.model.network.graph.FRLayout2Factory;
+import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
@@ -24,6 +27,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.awt.*;
 
 /**
  * <p>
@@ -72,10 +77,15 @@ public class LiveViewViewController extends AnchorPaneController {
 
         //final StatisticsViewModel statView = new StatisticsViewModel();
         // FIXME this screen is also create in the ViewBuilder... is that necessary??!
-        final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
+        final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPort, 10, new Dimension(10000, 10000));
         networkViewScreen.addListener(userCommandIListener);
         networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statViewModel));
         //networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
+
+        networkViewScreen.setLayoutFactory(new FRLayoutFactory());
+
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN),
+                networkViewScreen::refreshLayout);
 
         this.getChildren().add(networkViewScreen);
 

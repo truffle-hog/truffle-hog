@@ -113,6 +113,7 @@ public class ViewBuilder {
                       final IUserCommand<FilterInput> updateFilterCommand) {
         loadFonts();
 
+
         //final StatisticsViewModel statView = new StatisticsViewModel();
 
         // FIXME this screen is also created in the LiveViewViewController... is that necessary??!
@@ -162,6 +163,9 @@ public class ViewBuilder {
 
         // Now we add the actual views to the split pane and to the view switcher
         buildViews(userCommandIListener, updateFilterCommand, device, liveNetwork);
+
+        /*primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN),
+                viewPort::refreshLayout);*/
     }
 
     private FlowPane buildReplayFunction(INetworkDevice networkDevice,
