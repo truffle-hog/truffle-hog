@@ -5,7 +5,6 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
-import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -22,7 +21,7 @@ import java.util.Collection;
 public class PacketDataLoggingComponent extends AbstractComponent implements IComponent {
 
     private final ObservableList<IPacketData> dataList;
-    private ListProperty dataProperty;
+    private final ListProperty dataProperty;
 
     /**
      * <p>
@@ -78,13 +77,6 @@ public class PacketDataLoggingComponent extends AbstractComponent implements ICo
     @Override
     public boolean isMutable() {
         return true;
-    }
-
-
-    @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
-        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
-        return copyCreator.createDeepCopy(this);
     }
 
     @Override

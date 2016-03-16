@@ -4,7 +4,6 @@ import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
-import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.awt.Color;
 import java.util.Map;
@@ -53,12 +52,6 @@ public class FilterPropertiesComponent implements IComponent {
     @Override
     public <T> T accept(IComponentVisitor<T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
-        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
-        return copyCreator.createDeepCopy(this);
     }
 
     @Override

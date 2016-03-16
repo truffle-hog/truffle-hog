@@ -3,7 +3,11 @@ package edu.kit.trufflehog.model.network.recording;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.util.ICopyCreator;
+import edu.kit.trufflehog.model.network.recording.copying.ComponentCopier;
+import edu.kit.trufflehog.model.network.recording.copying.ConnectionCopier;
+import edu.kit.trufflehog.model.network.recording.copying.NetworkCopier;
+import edu.kit.trufflehog.model.network.recording.copying.NodeCopier;
+import edu.kit.trufflehog.model.network.recording.copying.TapeGraphCopier;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
@@ -30,14 +34,20 @@ public class NetworkDevice implements INetworkDevice {
     private boolean isRecording = false;
     private boolean isLive = true;
 
-    private final ICopyCreator copyCreator = new TapeCopyCreator();
+    private final NetworkCopier copier;
 
     private boolean userLocation = false;
     private IntegerProperty playbackFrameProperty = new SimpleIntegerProperty(0);
     private IntegerProperty playbackFrameCountProperty = new SimpleIntegerProperty(0);
 
+    public NetworkDevice() {
+        final NodeCopier nodeCopier = new NodeCopier(new ComponentCopier());
+        copier = new NetworkCopier(new TapeGraphCopier(nodeCopier, new ConnectionCopier(nodeCopier)));
+    }
+
     @Override
     public boolean record(final INetwork network, final INetworkTape tape, final int framerate) {
+
 
         // TODO check if there is an ongoin recording on the given tape
 /*        if (tape.isRecording) {
@@ -53,7 +63,7 @@ public class NetworkDevice implements INetworkDevice {
 
         frameWriter = new Timeline(new KeyFrame(Duration.millis(frameLength), event -> {
 
-            final NetworkCopy copiedNetwork = network.createDeepCopy(copyCreator);
+            final NetworkCopy copiedNetwork = network.accept(copier);
 
             tape.writeFrame(copiedNetwork);
 

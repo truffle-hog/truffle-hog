@@ -25,8 +25,10 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComp
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -82,7 +84,7 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
     public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(FilterPropertiesComponent component) {
 
         final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
-        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Status", new SimpleObjectProperty<>(component.getFilterColor()))));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Status", new SimpleListProperty(FXCollections.observableArrayList(component.getFilterColors().values())))));
         return root;
     }
 

@@ -16,6 +16,7 @@ import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesCo
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 
 
@@ -57,7 +58,11 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(sourceAddress));
         final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(destAddress));
 
-        final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1));
+        final PacketDataLoggingComponent packetLogger = new PacketDataLoggingComponent();
+
+        packetLogger.addPacket(data);
+
+        final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1), packetLogger);
 
         sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
         destNode.addComponent(new ViewComponent(new NodeRenderer()));

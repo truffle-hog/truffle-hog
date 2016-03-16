@@ -29,4 +29,6 @@ public interface INetwork extends DeepCopyable<NetworkCopy> {
      * @return the view port of this network
      */
     INetworkViewPort getViewPort();
+
+    <T> T accept(NetworkVisitor<T> visitor);
 }

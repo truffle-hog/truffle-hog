@@ -77,12 +77,13 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
 
     private void updateNodeStatistics(Set<INode> nodes) {
 
-        clearStatistics();
+        //clearStatistics();
 
         if (nodes.size() == 1) {
 
             final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infos = nodes.iterator().next().stream().collect(collector);
             logger.debug(infos);
+            infos.setExpanded(true);
             statisticsViewModel.setSelectionValues(infos);
 
         } else {
@@ -95,7 +96,21 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
 
     private void updateConnectionStatistics(Set<IConnection> connections) {
 
-        clearStatistics();
+        //clearStatistics();
+
+        if (connections.size() == 1) {
+
+            final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infos = connections.iterator().next().stream().collect(collector);
+            logger.debug(infos);
+            infos.setExpanded(true);
+            statisticsViewModel.setSelectionValues(infos);
+
+        } else {
+
+
+
+        }
+
 
     }
 

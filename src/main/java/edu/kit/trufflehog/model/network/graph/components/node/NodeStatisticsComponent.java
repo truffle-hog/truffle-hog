@@ -4,7 +4,6 @@ import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
-import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
@@ -60,12 +59,6 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
 
         return name() + ": " + "Throughput=" + getCommunicationCount();
 
-    }
-
-    @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
-        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
-        return copyCreator.createDeepCopy(this);
     }
 
     @Override

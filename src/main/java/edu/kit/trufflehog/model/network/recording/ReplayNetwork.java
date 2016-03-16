@@ -77,6 +77,11 @@ public class ReplayNetwork implements INetwork {
     }
 
     @Override
+    public <T> T accept(NetworkVisitor<T> visitor) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
     public String toString() {
         return port.toString();
     }

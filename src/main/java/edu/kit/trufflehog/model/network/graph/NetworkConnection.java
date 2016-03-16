@@ -2,7 +2,6 @@ package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.util.ICopyCreator;
 
 /**
  * <p>
@@ -76,12 +75,6 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
         return true;
     }
 
-
-    @Override
-    public IConnection createDeepCopy(ICopyCreator copyCreator) {
-
-        return copyCreator.createDeepCopy(this);
-    }
 
     /**
      * Updates this connection with the given connection

@@ -3,7 +3,6 @@ package edu.kit.trufflehog.model.network.graph;
 import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-import edu.kit.trufflehog.util.ICopyCreator;
 
 import java.io.Serializable;
 
@@ -32,26 +31,6 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 	@Override
 	public IAddress getAddress() {
 		return address;
-	}
-
-	@Override
-	public INode createDeepCopy(ICopyCreator copyCreator) {
-
-		copyCreator.createDeepCopy(this);
-
-		final INode node = new NetworkNode(address);
-
-		components.values().stream().forEach(component -> {
-			if (component.isMutable()) {
-
-
-				node.addComponent(component.createDeepCopy(copyCreator));
-
-			} else {
-				node.addComponent(component);
-			}
-		});
-		return node;
 	}
 
 	/**

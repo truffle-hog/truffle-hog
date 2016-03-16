@@ -47,6 +47,11 @@ public class LiveNetwork implements INetwork {
     }
 
     @Override
+    public <T> T accept(NetworkVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
     public NetworkCopy createDeepCopy(ICopyCreator copyCreator) {
 
         return copyCreator.createDeepCopy(this);
