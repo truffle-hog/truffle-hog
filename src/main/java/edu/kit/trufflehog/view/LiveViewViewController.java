@@ -38,6 +38,7 @@ import javafx.util.converter.NumberStringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
 import java.awt.Dimension;
@@ -194,9 +195,11 @@ public class LiveViewViewController extends AnchorPaneController {
         this.getChildren().add(generalStatisticsOverlay);
 
         StringProperty timeProperty = new SimpleStringProperty("");
+        StringProperty throughputStringProperty = new SimpleStringProperty();
+        throughputStringProperty.bindBidirectional(viewPort.getThroughputProperty(), new DecimalFormat("0.00"));
 
         generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Population", viewPort.getPopulationProperty())));
-        generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Packages per second", viewPort.getThroughputProperty())));
+        generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Packages per second", throughputStringProperty)));
         generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Running", timeProperty)));
         //generalStatisticsOverlay.setVisible(true);
 
