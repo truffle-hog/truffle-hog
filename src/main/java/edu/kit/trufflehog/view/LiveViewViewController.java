@@ -286,10 +286,15 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         return connectButton;
     }
 
+    /**
+     * <p>
+     *     Adds the close button.
+     * </p>
+     */
     private void addCloseButton() {
         final ImageButton closeButton = new ImageButton("close.png");
 
-        closeButton.setOnAction(event -> viewSwitcher.replace(this, "start"));
+        closeButton.setOnAction(event -> viewSwitcher.replace(this, ViewSwitcher.START_VIEW));
 
         closeButton.setScaleX(0.8);
         closeButton.setScaleY(0.8);

@@ -41,8 +41,6 @@ import javafx.beans.property.IntegerProperty;
  */
 public class ComponentCopier implements IComponentVisitor<IComponent> {
 
-
-
     @Override
     public IComponent visit(NetworkNode iComponents) {
         throw new UnsupportedOperationException("Operation not implemented yet");
@@ -53,14 +51,11 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
-
     @Override
     public IComponent visit(EdgeStatisticsComponent edgeStatisticsComponent) {
 
         return new EdgeStatisticsComponent(edgeStatisticsComponent.getTraffic());
     }
-
-
 
     @Override
     public IComponent visit(ViewComponent viewComponent) {
@@ -73,8 +68,6 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
         return new ViewComponent(renderer);
 
     }
-
-
 
     @Override
     public IComponent visit(NodeStatisticsComponent nodeStatisticsComponent) {
@@ -106,9 +99,6 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
 
         return new PacketDataLoggingComponent(packetDataLoggingComponent.getObservablePackets());
     }
-
-
-
 
     @Override
     public IComponent visit(FilterPropertiesComponent filterPropertiesComponent) {
