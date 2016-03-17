@@ -54,17 +54,13 @@ public class NetworkNodeTest {
         final IAddress address = new MacAddress(0x000000ffffff);
         final INode node = new NetworkNode(address);
 
-        final IComponent statistics = new NodeStatisticsComponent(1);
+        final IComponent statistics = new NodeStatisticsComponent(1,0);
 
         node.addComponent(statistics);
 
         final NodeStatisticsComponent c = node.getComponent(NodeStatisticsComponent.class);
 
         assertEquals(1, c.getCommunicationCount());
-
-        c.incrementCommunicationCount(5);
-
-        assertEquals(6, c.getCommunicationCount());
     }
 
     @Test
@@ -73,7 +69,7 @@ public class NetworkNodeTest {
         final IAddress address = new MacAddress(0x000000ffffff);
         final INode node = new NetworkNode(address);
 
-        final IComponent statistics = new NodeStatisticsComponent(1);
+        final IComponent statistics = new NodeStatisticsComponent(1,0);
 
         node.addComponent(statistics);
 
@@ -88,7 +84,7 @@ public class NetworkNodeTest {
         final IAddress address = new MacAddress(0x000000ffffff);
         final INode node = new NetworkNode(address);
 
-        final IComponent statistics = new NodeStatisticsComponent(1);
+        final IComponent statistics = new NodeStatisticsComponent(1,0);
 
         node.addComponent(statistics);
 

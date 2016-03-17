@@ -67,6 +67,8 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
 
         root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("In/out packages", component.getCommunicationCountProperty())));
         root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Packages per second", component.getThroughputProperty())));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Outgoing", component.outgoingCountProperty())));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Incoming", component.ingoingCountProperty())));
 
         return root;
     }

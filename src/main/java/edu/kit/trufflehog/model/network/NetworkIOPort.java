@@ -54,6 +54,8 @@ public class NetworkIOPort implements INetworkIOPort {
 
         final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
 
+
+
         if (delegate.addEdge(connection, connection.getSrc(), connection.getDest())) {
 
             final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);

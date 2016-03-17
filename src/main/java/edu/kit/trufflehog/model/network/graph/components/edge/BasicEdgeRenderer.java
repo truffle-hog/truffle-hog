@@ -55,7 +55,7 @@ public class BasicEdgeRenderer implements IRenderer {
             }
 
             protected void interpolate(double frac) {
-                Platform.runLater(() -> currentBrightness = (float) (frac < 0.5 ? 0.5 + frac : 1.5 - frac));
+                currentBrightness = (float) (frac < 0.5 ? 0.5 + frac : 1.5 - frac);
             }
         };
 
@@ -123,7 +123,7 @@ public class BasicEdgeRenderer implements IRenderer {
 
     public void animate() {
         // animator.stop();
-        Platform.runLater(animator::play);
+        animator.play();
     }
 
     @Override

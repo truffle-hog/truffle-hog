@@ -54,18 +54,21 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final IPAddress destIP = data.getAttribute(IPAddress.class, "destIPAddress");
 
         final String deviceName = data.getAttribute(String.class, "deviceName");
-        final boolean isResponse = data.getAttribute(Boolean.class, "isResponse");
+        final Boolean isResponse = data.getAttribute(Boolean.class, "isResponse");
 
         // build the source node info
         NodeInfoComponent sourceNIC = new NodeInfoComponent(sourceAddress);
-        sourceNIC.setIPAddress(sourceIP);
-        if (isResponse) {
-            sourceNIC.setDeviceName(deviceName);
+        if (isResponse != null && isResponse) {
+            if (deviceName != null) {
+                sourceNIC.setDeviceName(deviceName);
+            }
+            if (sourceIP != null && !sourceIP.equals(IPAddress.INVALID_ADDRESS)) {
+                sourceNIC.setIPAddress(sourceIP);
+            }
         }
 
         // build the destination node info
         NodeInfoComponent destNIC = new NodeInfoComponent(destAddress);
-        destNIC.setIPAddress(destIP);
 
 
 
@@ -78,8 +81,8 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final PacketDataLoggingComponent destPacketLogger = new PacketDataLoggingComponent();
         destPacketLogger.addPacket(data);
 
-        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), sourceNIC, srcPacketLogger);
-        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), destNIC, destPacketLogger);
+        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1, 0), sourceNIC, srcPacketLogger);
+        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(0, 1), destNIC, destPacketLogger);
 
         final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1), connectionPacketLogger);
 

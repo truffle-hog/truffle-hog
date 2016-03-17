@@ -32,7 +32,7 @@ public class AbstractCompositionTest {
 
         final IAddress mac = new MacAddress(0x0);
 
-        node = new NetworkNode(mac, new NodeStatisticsComponent(5), new NodeInfoComponent((MacAddress) mac));
+        node = new NetworkNode(mac, new NodeStatisticsComponent(5,3), new NodeInfoComponent((MacAddress) mac));
 
     }
 
