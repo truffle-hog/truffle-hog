@@ -10,6 +10,7 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.graph.FXVisualizationViewer;
@@ -100,13 +101,33 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
         port.addGraphEventListener(e -> {
 
-            if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
+			Platform.runLater(() -> {
+
+				if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
+
+					final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
+					node.getComponent(ViewComponent.class).animate();
+					refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
+					this.repaint();
+					refresher.playFromStart();
+
+				} else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
+
+					final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
+					connection.getComponent(ViewComponent.class).animate();
+					refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
+					this.repaint();
+					refresher.playFromStart();
+				}
+			});
+
+            /*if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
 
                 final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
                 Platform.runLater(() -> node.getComponent(ViewComponent.class).animate());
                 refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
                 Platform.runLater(this::repaint);
-                refresher.play();
+				Platform.runLater(refresher::playFromStart);
 
             } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
 
@@ -114,8 +135,8 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                 Platform.runLater(() -> connection.getComponent(ViewComponent.class).animate());
                 refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
                 Platform.runLater(this::repaint);
-                refresher.play();
-            }
+                Platform.runLater(refresher::playFromStart);
+            }*/
         });
 
         // Add this view screen as listener to the picked state, so we can send commands, when the picked state
@@ -164,7 +185,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	public void refreshLayout() {
 
-        jungView.setSize(dimension);
+        //jungView.setSize(dimension);
         jungView.setGraphLayout(layoutFactory.transform(jungView.getGraphLayout().getGraph()));
 
 	}
@@ -177,7 +198,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 	private void initRenderers() {
 
 
-		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getAddress().toString());
+		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getComponent(NodeInfoComponent.class).toString());
 
 		// TODO null check for component
 		jungView.getRenderContext().setEdgeLabelTransformer(edge -> String.valueOf(edge.getComponent(EdgeStatisticsComponent.class).getTraffic()));

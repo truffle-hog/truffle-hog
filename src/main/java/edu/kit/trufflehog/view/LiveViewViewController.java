@@ -80,7 +80,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
 
         //final StatisticsViewModel statView = new StatisticsViewModel();
         // FIXME this screen is also create in the ViewBuilder... is that necessary??!
-        final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPort, 10, new Dimension(700, 700));
+        final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPort, 30, new Dimension(700, 700));
         networkViewScreen.addListener(userCommandIListener);
         networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statViewModel));
         //networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());

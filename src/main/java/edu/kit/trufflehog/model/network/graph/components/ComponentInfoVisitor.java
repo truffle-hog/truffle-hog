@@ -63,7 +63,8 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
 
         final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
 
-        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Outgoing and ingoing Communication", component.getCommunicationCountProperty())));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Outgoing", component.outgoingCountProperty())));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Ingoing", component.ingoingCountProperty())));
 
         return root;
     }
@@ -75,6 +76,7 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
 
         root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Device name", component.getDeviceNameProperty())));
         root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("IP Address", component.getIpAddressProperty())));
+        //TODO maybe use the read only property rather than wrapping the actual value in a temporary property
         root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Mac Address", new SimpleObjectProperty<>(component.getMacAddress()))));
 
         return root;

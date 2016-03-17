@@ -114,7 +114,7 @@ jmethodID getBuildTruffle(JNIEnv *env)
         jclass truffleClass = getTruffleClass(env);
         _CHECK_JAVA_EXCEPTION(env);
 
-        buildTruffleMID = (*env)->GetStaticMethodID(env, truffleClass, "buildTruffle", "(JJJJLjava/lang/String;IILjava/lang/String;ILjava/lang/String;JI)Ledu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle;");
+        buildTruffleMID = (*env)->GetStaticMethodID(env, truffleClass, "buildTruffle", "(JJJJLjava/lang/String;IILjava/lang/String;ILjava/lang/String;JII)Ledu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle;");
         _CHECK_JAVA_EXCEPTION(env);
         check_to(buildTruffleMID != 0, noBuildTruffle, "buildTruffle method not found");
     }
@@ -327,8 +327,9 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
     uint32_t xID = 0;
     uint16_t responseDelay = 0;
+    uint8_t isResponse = 0;
 
-    uint16_t dataLength = 0;
+    uint16_t dataLength = 0; // add to truffle maybe?
 
     if (truffle.frame.type == IS_DCP)
     {
@@ -356,6 +357,7 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
         xID = truffle.frame.val.dcp.xID;
         responseDelay = truffle.frame.val.dcp.responseDelay;
+        isResponse = truffle.frame.val.dcp.isResponse;
 
     }
 
@@ -373,9 +375,9 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
     final long xid,
     final int responseDelay
     */
-	jobject truffleObject = (*env)->CallStaticObjectMethod(env,
-	                                                       truffleClass,
-	                                                       buildTruffleMID,
+	jobject truffleObject = (*env)->CallStaticObjectMethod(env,                                     // java env
+	                                                       truffleClass,                            // truffle class id
+	                                                       buildTruffleMID,                         // buildTruffle method id
 	                                                       truffle.etherHeader.sourceMacAddress,    // srcMACAddr
 	                                                       truffle.etherHeader.destMacAddress,      // dstMACAddr
 	                                                       0,                                       // srcIPAddr
@@ -387,7 +389,8 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 	                                                       serviceType,                             // serviceType
 	                                                       serviceTypeName,                         // serviceTypeName
 	                                                       xID,                                     // xid
-	                                                       responseDelay);                          // responseDelay
+	                                                       responseDelay,                           // responseDelay
+	                                                       isResponse);                             // isResponse
     _CHECK_JAVA_EXCEPTION(env);
 
     return truffleObject;

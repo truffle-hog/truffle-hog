@@ -113,7 +113,8 @@ public class NodeInfoComponent implements IComponent {
 
     @Override
     public String name() {
-        return "Node Info";
+        //TODO put this in property file
+        return "Device info";
     }
 
     @Override
@@ -136,5 +137,15 @@ public class NodeInfoComponent implements IComponent {
     @Override
     public boolean equals(Object other) {
         return other instanceof NodeInfoComponent;
+    }
+
+    @Override
+    public String toString() {
+
+        if (deviceNameProperty.getValue() == null)
+            return "MAC Address: " + macAddressProperty.getValue();
+
+        return "MAC Address: " + macAddressProperty.getValue() + ", " +
+                "Device name: " + deviceNameProperty.getValue();
     }
 }
