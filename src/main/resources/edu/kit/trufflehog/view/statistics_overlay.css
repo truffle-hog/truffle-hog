@@ -5,7 +5,7 @@ root {
 .column-header-background { visibility: hidden; -fx-padding: -1em; }
 
 .text {
-    -fx-fill: white;
+    -fx-fill: #9BA2B1;
     -fx-opacity: 100%;
     -fx-font-size: 90%;
     -fx-font-weight: 100;
@@ -14,28 +14,28 @@ root {
 
 .background {
     -fx-background-color: #282C34;
-    -fx-opacity: 95%;
+    -fx-opacity: 99%;
     -fx-background-radius: 2;
 }
 
 .label {
     -fx-font-size: 11pt;
     -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: white;
+    -fx-text-fill: #9BA2B1;
     -fx-opacity: 0.6;
 }
 
 .label-bright {
     -fx-font-size: 11pt;
     -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: white;
+    -fx-text-fill: #9BA2B1;
     -fx-opacity: 0.8;
 }
 
 .label-header {
     -fx-font-size: 32pt;
     -fx-font-family: "Segoe UI Light";
-    -fx-text-fill: white;
+    -fx-text-fill: #9BA2B1;
 }
 
 .table-view {
@@ -65,7 +65,7 @@ root {
 .table-view .column-header .label {
     -fx-font-size: 20pt;
     -fx-font-family: "Segoe UI Light";
-    -fx-text-fill: white;
+    -fx-text-fill: #9BA2B1;
     -fx-alignment: center-left;
     -fx-opacity: 1;
 }
@@ -91,7 +91,7 @@ root {
 .menu-bar .label {
     -fx-font-size: 14pt;
     -fx-font-family: "Segoe UI Light";
-    -fx-text-fill: white;
+    -fx-text-fill: #9BA2B1;
     -fx-opacity: 0.9;
 }
 
@@ -109,7 +109,7 @@ root {
  */
 .button {
     -fx-padding: 5 22 5 22;
-    -fx-border-color: #e2e2e2;
+    -fx-border-color: #9BA2B1;
     -fx-border-width: 2;
     -fx-background-radius: 0;
     -fx-background-color: #282C34;
@@ -124,12 +124,12 @@ root {
 }
 
 .button:pressed, .button:default:hover:pressed {
-    -fx-background-color: white;
-    -fx-text-fill: #282C34;
+    -fx-background-color: transparent;
+    -fx-text-fill: #9BA2B1;
 }
 
 .button:focused {
-    -fx-border-color: white, white;
+    -fx-border-color: transparent, transparent;
     -fx-border-width: 1, 1;
     -fx-border-style: solid, segments(1, 1);
     -fx-border-radius: 0, 0;
@@ -139,12 +139,12 @@ root {
 .button:disabled, .button:default:disabled {
     -fx-opacity: 0.4;
     -fx-background-color: #282C34;
-    -fx-text-fill: white;
+    -fx-text-fill: #9BA2B1;
 }
 
 .button:default {
     -fx-background-color: -fx-focus-color;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #9BA2B1;
 }
 
 .button:default:hover {

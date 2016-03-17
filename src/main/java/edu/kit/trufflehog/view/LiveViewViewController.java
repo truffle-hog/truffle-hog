@@ -100,6 +100,8 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         AnchorPane.setLeftAnchor(networkViewScreen, 0d);
         AnchorPane.setRightAnchor(networkViewScreen, 0d);
 
+        addCloseButton();
+
         addToolbar();
         addGeneralStatisticsOverlay();
         addNodeStatisticsOverlay();
@@ -280,6 +282,22 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         connectButton.setScaleY(0.8);
 
         return connectButton;
+    }
+
+    private void addCloseButton() {
+        final ImageButton closeButton = new ImageButton("close.png");
+
+        closeButton.setOnAction(event -> {
+
+        });
+
+        closeButton.setScaleX(0.8);
+        closeButton.setScaleY(0.8);
+
+        AnchorPane.setTopAnchor(closeButton, 10d);
+        AnchorPane.setLeftAnchor(closeButton, 10d);
+
+        this.getChildren().add(closeButton);
     }
 
     /**

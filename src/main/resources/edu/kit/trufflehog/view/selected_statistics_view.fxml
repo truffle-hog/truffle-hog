@@ -24,7 +24,7 @@
 <?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.BorderPane?>
 
-<fx:root opacity="0.95" styleClass="background" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root opacity="0.95" styleClass="background" minWidth="402" maxWidth="402" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
    <stylesheets>
        <URL value="@statistics_overlay.css" />
        <URL value="@scrollbar.css" />
