@@ -20,7 +20,6 @@ package edu.kit.trufflehog.model.filter;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.IPAddress;
 import edu.kit.trufflehog.model.network.InvalidIPAddress;
