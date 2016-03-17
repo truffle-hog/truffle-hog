@@ -69,12 +69,19 @@ public interface IFilter extends Comparable<IFilter> {
 
     /**
      * <p>
-     *     This method gets the color of the node if it was changed by this filter.
+     *     This method gets the color that this filter uses.
      * </p>
-     * @param node the node to check
-     * @return the color that was set beforehand
+     * @return the color this filter uses
      */
-    Color getFilterColor(INode node);
+    Color getFilterColor();
+
+    /**
+     * <p>
+     *     Gets the name of this filter.
+     * </p>
+     * @return the name of this filter
+     */
+    String getName();
 
     class EmptyFilter implements IFilter {
 
@@ -94,8 +101,13 @@ public interface IFilter extends Comparable<IFilter> {
         }
 
         @Override
-        public Color getFilterColor(INode node) {
+        public Color getFilterColor() {
             return null;
+        }
+
+        @Override
+        public String getName() {
+            return "Empty filter";
         }
 
         @Override

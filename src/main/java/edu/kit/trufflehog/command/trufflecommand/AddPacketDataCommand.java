@@ -2,6 +2,7 @@ package edu.kit.trufflehog.command.trufflecommand;
 
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import edu.kit.trufflehog.model.network.IPAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -16,6 +17,7 @@ import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesCo
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 
 
@@ -52,18 +54,34 @@ public class AddPacketDataCommand implements ITruffleCommand {
 
         final MacAddress sourceAddress = data.getAttribute(MacAddress.class, "sourceMacAddress");
         final MacAddress destAddress = data.getAttribute(MacAddress.class, "destMacAddress");
+        final IPAddress sourceIP = data.getAttribute(IPAddress.class, "sourceIPAddress");
+        final IPAddress destIP = data.getAttribute(IPAddress.class, "destIPAddress");
 
+        NodeInfoComponent sourceNIC = new NodeInfoComponent(sourceAddress);
+        sourceNIC.setIPAddress(sourceIP);
 
-        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(sourceAddress));
-        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), new NodeInfoComponent(destAddress));
+        NodeInfoComponent destNIC = new NodeInfoComponent(destAddress);
+        destNIC.setIPAddress(destIP);
 
-        final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1));
+        final PacketDataLoggingComponent connectionPacketLogger = new PacketDataLoggingComponent();
+        connectionPacketLogger.addPacket(data);
 
-        sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
-        destNode.addComponent(new ViewComponent(new NodeRenderer()));
+        final PacketDataLoggingComponent srcPacketLogger = new PacketDataLoggingComponent();
+        srcPacketLogger.addPacket(data);
+
+        final PacketDataLoggingComponent destPacketLogger = new PacketDataLoggingComponent();
+        destPacketLogger.addPacket(data);
+
+        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), sourceNIC, srcPacketLogger);
+        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), destNIC, destPacketLogger);
+
+        final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1), connectionPacketLogger);
 
         sourceNode.addComponent(new FilterPropertiesComponent());
         destNode.addComponent(new FilterPropertiesComponent());
+
+        sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
+        destNode.addComponent(new ViewComponent(new NodeRenderer()));
 
         if (destAddress.isMulticast()) {
             connection.addComponent(new ViewComponent(new MulticastEdgeRenderer()));

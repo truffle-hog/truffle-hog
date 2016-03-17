@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ This file is part of TruffleHog.
+  ~
+  ~ TruffleHog is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ TruffleHog is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<!--<?import edu.kit.trufflehog.view.elements.FormattedTableCellFactory?>
+<?import javafx.collections.FXCollections?>-->
+
+<?import java.net.URL?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.layout.BorderPane?>
+
+<fx:root opacity="0.8" styleClass="background" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <stylesheets>
+      <URL value="@statistics_overlay.css" />
+   </stylesheets>
+   <center>
+      <TreeTableView fx:id="infoTable" opacity="0.8" prefHeight="250.0" prefWidth="400.0" styleClass="background" BorderPane.alignment="CENTER">
+         <columns>
+            <TreeTableColumn fx:id="keyColumn" prefWidth="200.0" styleClass="background" text="key">
+<!--               <cellFactory>
+                  <FormattedTableCellFactory />
+               </cellFactory>-->
+            </TreeTableColumn>
+            <TreeTableColumn fx:id="valueColumn" prefWidth="200.0" styleClass="background" text="value">
+<!--          <cellFactory>
+                  <FormattedTableCellFactory />
+               </cellFactory>-->
+            </TreeTableColumn>
+         </columns>
+
+
+      </TreeTableView>
+   </center>
+</fx:root>

@@ -125,13 +125,13 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
 
         boolean changed = false;
 
-        if (other.getDeviceName() != null) {
+        if (other.getDeviceName() != null && nodeInfoComponent.getDeviceName() != null) {
             changed = !nodeInfoComponent.getDeviceName().equals(other.getDeviceName()) || changed;
             nodeInfoComponent.setDeviceName(other.getDeviceName());
         }
 
-        if (other.getIPAddress() != null) {
-            changed = !nodeInfoComponent.getDeviceName().equals(other.getDeviceName()) || changed;
+        if (other.getIPAddress() != null && nodeInfoComponent.getIPAddress() != null) {
+            changed = !nodeInfoComponent.getIPAddress().equals(other.getIPAddress()) || changed;
             nodeInfoComponent.setIPAddress(other.getIPAddress());
         }
 
@@ -159,7 +159,7 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
         if (!filterPropertiesComponent.equals(instance))
             return false;
 
-        filterPropertiesComponent.getFilterColors().putAll(((FilterPropertiesComponent)instance).getFilterColors());
+        filterPropertiesComponent.addFilterColors(((FilterPropertiesComponent)instance).getFilterColors());
         return true;
     }
 

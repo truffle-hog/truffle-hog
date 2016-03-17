@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * @author Mark Giraud
  * @version 1.0
  */
-public class IPAddress implements IAddress {
+public class IPAddress implements IAddress, Comparable<IPAddress> {
 
     private final long address;
     private final byte[] bytes;
@@ -24,18 +24,21 @@ public class IPAddress implements IAddress {
 
     public IPAddress(final long address) throws InvalidIPAddress {
 
-        if (address == 0)
-            throw new InvalidIPAddress();
+        if (address < 0) {
+            throw new InvalidIPAddress(address);
+        }
 
-        if (address > 4294967295L)
-            throw new InvalidIPAddress();
+        if (address > 0xFFFFFFFFL) {
+            throw new InvalidIPAddress(address);
+        }
 
         this.address = address;
-        hash = new Long(address).hashCode();
+
+        hash = new Long(this.address).hashCode();
 
         // transform to byte array
         bytes = new byte[4];
-        byte[] extractedBytes = ByteBuffer.allocate(8).putLong(address).array();
+        final byte[] extractedBytes = ByteBuffer.allocate(8).putLong(this.address).array();
         System.arraycopy(extractedBytes, 4, bytes, 0, extractedBytes.length - 4);
 
         // set multicast bit
@@ -74,5 +77,10 @@ public class IPAddress implements IAddress {
     @Override
     public String toString() {
         return addressString;
+    }
+
+    @Override
+    public int compareTo(IPAddress o) {
+        return Long.signum(address - o.address);
     }
 }

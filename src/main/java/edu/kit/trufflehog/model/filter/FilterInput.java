@@ -75,6 +75,9 @@ public class FilterInput implements Serializable {
     private boolean active;
     private int priority;
 
+    // is this filter deleted?
+    private transient boolean deleted;
+
     // Property variables for table view
     private transient StringProperty nameProperty;
     private transient StringProperty typeProperty;
@@ -138,6 +141,7 @@ public class FilterInput implements Serializable {
         this.color = color;
         this.active = false;
         this.priority = priority;
+        this.deleted = false;
     }
 
     /**
@@ -315,6 +319,14 @@ public class FilterInput implements Serializable {
      */
     public IntegerProperty getPriorityProperty() {
         return priorityProperty;
+    }
+
+    public void setDeleted() {
+        deleted = true;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     /**

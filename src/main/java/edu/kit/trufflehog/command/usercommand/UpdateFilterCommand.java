@@ -2,16 +2,17 @@ package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.filter.*;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
-import edu.kit.trufflehog.model.network.INetworkWritingPort;
-import javafx.scene.control.SelectionModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * <p>
- *     Command to update the graph after a newly added filter is enbaled
+ *     Command to update the graph when a filter is added, changes, or is deleted.
  * </p>
+ *
+ * @author Mark Giraud
+ * @version 1.0
  */
 public class UpdateFilterCommand implements IUserCommand<FilterInput> {
     private final MacroFilter macroFilter;
@@ -21,9 +22,12 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
     private final Map<FilterInput, IFilter> filterMap = new HashMap<>();
 
     /**
-     * //TODO document
-     * @param nwp
-     * @param macroFilter
+     * <p>
+     *     Constructs the update filter command. This command always needs a network io port to apply the newly added
+     *     filters and pass the port to the constructed filter, which needs the port to clean up, when it is removed.
+     * </p>
+     * @param nwp the network port that is used to access the network
+     * @param macroFilter the macro filter to add all sub filters to.
      */
     public UpdateFilterCommand(final INetworkIOPort nwp, final MacroFilter macroFilter) {
         if(macroFilter == null)
@@ -44,7 +48,7 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
                 filterMap.remove(filterInput);
             }
 
-            if (!filterInput.isActive()) {
+            if (!filterInput.isActive() || filterInput.isDeleted()) {
                 return;
             }
 
@@ -56,7 +60,10 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
                         filter = new MACAddressFilter(nwp, filterInput);
                         break;
                     case IP:
-                        filter = new IPFilter();
+                        filter = new IPAddressFilter(nwp, filterInput);
+                        break;
+                    case NAME:
+                        filter = new NameRegexFilter(nwp, filterInput);
                         break;
                     default:
                         filter = IFilter.EMPTY;

@@ -8,7 +8,6 @@ import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -79,6 +78,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                     Thread.currentThread().interrupt();
                 } catch (ReceiverReadError receiverReadError) {
                     logger.debug(receiverReadError);
+                    disconnect();
                 }
             }
         }

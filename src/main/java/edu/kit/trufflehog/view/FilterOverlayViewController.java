@@ -343,8 +343,11 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
                 data.remove(filterInput);
 
                 // Update model
-                if (interactionMap.get(FilterInteraction.REMOVE) != null) {
-                    notifyListeners(interactionMap.get(FilterInteraction.REMOVE));
+                IUserCommand updateFilterCommand = interactionMap.get(FilterInteraction.REMOVE);
+                if (updateFilterCommand != null) {
+                    filterInput.setDeleted();
+                    updateFilterCommand.setSelection(filterInput);
+                    notifyListeners(updateFilterCommand);
                 }
                 configData.removeFilterInput(filterInput);
 

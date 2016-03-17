@@ -20,6 +20,8 @@ public interface INetwork extends DeepCopyable<NetworkCopy> {
      */
     INetworkWritingPort getWritingPort();
 
+
+
     /**
      * Returns the IO port of this network. The IO port is a reading and a writing port.
      * @return the IO port of this network
@@ -33,4 +35,6 @@ public interface INetwork extends DeepCopyable<NetworkCopy> {
      * @return the view port of this network
      */
     INetworkViewPort getViewPort();
+
+    <T> T accept(NetworkVisitor<T> visitor);
 }

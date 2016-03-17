@@ -6,10 +6,10 @@ package edu.kit.trufflehog.model.network;
  * </p>
  * @author Mark Giraud
  */
-public class InvalidIPAddress extends Exception {
+public class InvalidIPAddress extends IllegalArgumentException {
 
-    public InvalidIPAddress() {
-        super();
+    public InvalidIPAddress(long value) {
+        super("The provided address value is in wrong format: " + value);
     }
 
     public InvalidIPAddress(String msg) {

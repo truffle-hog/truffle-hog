@@ -5,6 +5,7 @@ import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
+import javafx.application.Platform;
 import javafx.util.Duration;
 
 import java.awt.BasicStroke;
@@ -55,18 +56,23 @@ public class MulticastEdgeRenderer implements IRenderer {
 
             protected void interpolate(double frac) {
 
-                strokeWidth = (float) (frac * baseWidth);
-                opac = frac >= 0.6 ? 0 : (float) (0.6f - frac);
-                multiplier = (float) (baseSize * frac);
+                Platform.runLater(() -> {
+                    strokeWidth = (float) (frac * baseWidth);
+                    opac = frac >= 0.6 ? 0 : (float) (0.6f - frac);
+                    multiplier = (float) (baseSize * frac);
+                });
+
             }
 
         };
         animator.setCycleCount(2);
         animator.setInterpolator(Interpolator.EASE_OUT);
         animator.setOnFinished(e -> {
-            multiplier = 0;
-            opac = 0;
-            strokeWidth = 0;
+            Platform.runLater(() -> {
+                multiplier = 0;
+                opac = 0;
+                strokeWidth = 0;
+            });
         });
 
 
@@ -127,7 +133,7 @@ public class MulticastEdgeRenderer implements IRenderer {
     @Override
     public void animate() {
 
-        animator.play();
+        Platform.runLater(animator::play);
     }
 
     @Override

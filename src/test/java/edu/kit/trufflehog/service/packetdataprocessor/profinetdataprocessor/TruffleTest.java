@@ -37,7 +37,7 @@ public class TruffleTest {
      */
     @Test
     public void buildTruffle_stores_values_correctly() throws Exception {
-        final Truffle truffle = Truffle.buildTruffle(1, 2, 3, 4, "test", (short) 5);
+        final Truffle truffle = Truffle.buildTruffle(1, 2, 3, 4, "test", 5, 6, "testing", 7, "type", 8, 9);
 
         assertEquals(new MacAddress(1), truffle.getAttribute(MacAddress.class, "sourceMacAddress"));
         assertEquals(new MacAddress(2), truffle.getAttribute(MacAddress.class, "destMacAddress"));

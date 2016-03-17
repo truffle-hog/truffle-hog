@@ -66,7 +66,7 @@ public class NetworkIOPort implements INetworkIOPort {
 
             final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);
             if (nodeStat != null) {
-                maxThroughputBinding.bindProperty(nodeStat.getThroughputProperty());
+                maxThroughputBinding.bindProperty(nodeStat.getCommunicationCountProperty());
             }
             idNodeMap.put(node.getAddress(), node);
         }
