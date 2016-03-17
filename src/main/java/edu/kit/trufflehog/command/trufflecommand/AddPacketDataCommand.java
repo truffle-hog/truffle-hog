@@ -77,11 +77,11 @@ public class AddPacketDataCommand implements ITruffleCommand {
 
         final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1), connectionPacketLogger);
 
-/*        sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
-        destNode.addComponent(new ViewComponent(new NodeRenderer()));
-
         sourceNode.addComponent(new FilterPropertiesComponent());
         destNode.addComponent(new FilterPropertiesComponent());
+
+        sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
+        destNode.addComponent(new ViewComponent(new NodeRenderer()));
 
         if (destAddress.isMulticast()) {
             connection.addComponent(new ViewComponent(new MulticastEdgeRenderer()));
@@ -90,7 +90,7 @@ public class AddPacketDataCommand implements ITruffleCommand {
         }
 
         filter.check(sourceNode);
-        filter.check(destNode);*/
+        filter.check(destNode);
 
         writingPort.writeNode(sourceNode);
         writingPort.writeNode(destNode);

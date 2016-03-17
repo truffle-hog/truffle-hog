@@ -30,6 +30,7 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.util.Duration;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -86,27 +87,34 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
         this.layoutFactory = new FRLayoutFactory();
 
+ /*       refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
+            Platform.runLater(this::repaint);
+        }));
+
+        refresher.setCycleCount(50);
+        refresher.play();*/
+
         refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
-            repaint();
+            Platform.runLater(this::repaint);
         }));
 
         port.addGraphEventListener(e -> {
 
             if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
 
-/*                final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
+                final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
                 node.getComponent(ViewComponent.class).animate();
                 refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
-                repaint();
-                refresher.playFromStart();*/
+                Platform.runLater(this::repaint);
+                refresher.play();
 
             } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
 
-/*                final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
+                final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
                 connection.getComponent(ViewComponent.class).animate();
                 refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
-                repaint();
-                refresher.playFromStart();*/
+                Platform.runLater(this::repaint);
+                refresher.play();
             }
         });
 
@@ -168,7 +176,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	private void initRenderers() {
 
-        /*
+
 		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getAddress().toString());
 
 		// TODO null check for component
@@ -240,8 +248,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
             final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
 
-            //viewComponent.getRenderer().updateState();
-
             if (getPickedVertexState().isPicked(node)) {
                 return viewComponent.getRenderer().getColorPicked();
             } else {
@@ -259,7 +265,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                 return viewComponent.getRenderer().getColorUnpicked();
             }
         });
-        */
+
 	}
 
 	public void setGraphMouse(FXVisualizationViewer.FXGraphMouse graphMouse) {
