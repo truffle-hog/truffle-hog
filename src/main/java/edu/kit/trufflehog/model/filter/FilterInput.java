@@ -143,6 +143,7 @@ public class FilterInput implements Serializable {
                        final FilterOrigin origin,
                        final List<String> rules,
                        final Color color,
+                       final boolean legal,
                        final int priority) {
         this.name = name;
         this.selectionModel = selectionModel;
@@ -150,6 +151,7 @@ public class FilterInput implements Serializable {
         this.rules = rules;
         this.color = color;
         this.active = false;
+        this.legal = legal;
         this.priority = priority;
         this.deleted = false;
     }
@@ -292,7 +294,7 @@ public class FilterInput implements Serializable {
      *
      * @return The legality state property of this filter.
      */
-    public BooleanProperty legalPropertyProperty() {
+    public BooleanProperty getLegalProperty() {
         return legalProperty;
     }
 
@@ -386,15 +388,21 @@ public class FilterInput implements Serializable {
     public void load(ConfigData configData) {
         // Instantiate property objects
         nameProperty = new SimpleStringProperty(name);
-        selectionModelProperty = new SimpleStringProperty(selectionModel.name());
         colorProperty = new SimpleObjectProperty<>(color);
         priorityProperty = new SimpleIntegerProperty(priority);
         legalProperty = new SimpleBooleanProperty(legal);
         activeProperty = new SimpleBooleanProperty(active);
 
+        // Make the selection model look nicer on screen
+        if (selectionModel.equals(SelectionModel.SELECTION)) {
+            selectionModelProperty = new SimpleStringProperty(configData.getProperty("SELECTION_LABEL"));
+        } else {
+            selectionModelProperty = new SimpleStringProperty(configData.getProperty("INVERSE_SELECTION_LABEL"));
+        }
+
         // Make the origin look nicer on screen
         if (origin.equals(FilterOrigin.NAME)) {
-            originProperty = new SimpleStringProperty("Name Regex");
+            originProperty = new SimpleStringProperty(configData.getProperty("NAME_LABEL"));
         } else {
             originProperty = new SimpleStringProperty(origin.name());
         }
@@ -419,10 +427,10 @@ public class FilterInput implements Serializable {
 
         // Bind type to database update function
         selectionModelProperty.addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals(SelectionModel.INVERSE_SELECTION.name())) {
-                selectionModel = SelectionModel.INVERSE_SELECTION;
-            } else {
+            if (newValue.equals(configData.getProperty("SELECTION_LABEL"))) {
                 selectionModel = SelectionModel.SELECTION;
+            } else {
+                selectionModel = SelectionModel.INVERSE_SELECTION;
             }
 
             configData.updateFilterInput(this);

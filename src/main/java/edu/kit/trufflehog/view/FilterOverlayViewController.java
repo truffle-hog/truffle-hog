@@ -114,7 +114,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         // Set up table view
         final TableView tableView = new TableView();
         tableView.setEditable(true);
-        tableView.setMinWidth(452);
+        tableView.setMinWidth(502);
         tableView.setMinHeight(280);
 
         // Set up columns
@@ -123,6 +123,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         setUpOriginColumn(tableView);
         setUpColorColumn(tableView);
         setUpPriorityColumn(tableView);
+        setUpLegalityColumn(tableView);
         setUpActiveColumn(tableView);
 
         // Insert data from database into table
@@ -281,18 +282,13 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         activeColumn.setCellFactory(tableColumn -> {
             final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
 
-            //checkBoxTableCell.setSelectedStateCallback(index -> ((FilterInput) tableView.getItems().get(index)).getActiveProperty());
             checkBoxTableCell.setSelectedStateCallback(index -> {
-
                 FilterInput input = (FilterInput) tableView.getItems().get(index);
-
                 input.getActiveProperty().addListener(l -> {
                     notifyUpdateCommand(input);
                 });
 
                 return input.getActiveProperty();
-
-                //((FilterInput) tableView.getItems().get(index)).getActiveProperty()
             });
 
             return checkBoxTableCell;
@@ -301,8 +297,30 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
 
     /**
      * <p>
-     *     Create the active column, which holds the activity state and also creates a callback to the string property
-     *     behind it.
+     *     Create the legalality column, which holds the legality of a filter and also creates a callback to the string
+     *     property behind it.
+     * </p>
+     */
+    private void setUpLegalityColumn(TableView tableView) {
+        // Set up priority column
+        final TableColumn legalColumn = new TableColumn("Legal");
+        legalColumn.setMinWidth(50);
+        legalColumn.setPrefWidth(50);
+        tableView.getColumns().add(legalColumn);
+        legalColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, Boolean>,
+                ObservableValue<Boolean>>() {
+
+            // Set up callback for priority property
+            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<FilterInput, Boolean> p) {
+                return p.getValue().getLegalProperty();
+            }
+        });
+    }
+
+    /**
+     * <p>
+     *     Create the priority column, which holds the priority of a filter and also creates a callback to the
+     *     integer property behind it.
      * </p>
      */
     private void setUpPriorityColumn(TableView tableView) {

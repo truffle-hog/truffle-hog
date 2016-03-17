@@ -317,7 +317,7 @@ public class FilterDataModelTest {
         int priority = (int) (Math.random() * 1000);
 
         // Generate FilterInput object
-        return new FilterInput(name, SelectionModel.SELECTION, FilterOrigin.IP, rules, color, priority);
+        return new FilterInput(name, SelectionModel.SELECTION, FilterOrigin.IP, rules, color, true, priority);
     }
 
     /**
@@ -348,7 +348,8 @@ public class FilterDataModelTest {
 
         int priority = (int) (Math.random() * 1000);
 
-        return new FilterInput(filterInput.getName(), SelectionModel.SELECTION, FilterOrigin.MAC, rules, color, priority);
+        return new FilterInput(filterInput.getName(), SelectionModel.SELECTION, FilterOrigin.MAC, rules, color,
+                false, priority);
     }
 
     /**
