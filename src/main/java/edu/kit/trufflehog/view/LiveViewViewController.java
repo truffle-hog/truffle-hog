@@ -15,6 +15,7 @@ import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
+import edu.kit.trufflehog.viewmodel.GeneralStatisticsViewModel;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
@@ -26,6 +27,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -66,6 +68,7 @@ public class LiveViewViewController extends AnchorPaneController {
     private final IUserCommand<FilterInput> updateFilterCommand;
     private final IListener<IUserCommand> userCommandListener;
     private final StatisticsViewModel statViewModel = new StatisticsViewModel();
+    private final GeneralStatisticsViewModel generalStatViewModel = new GeneralStatisticsViewModel();
 
     public LiveViewViewController(final String fxml,
                                   final ConfigData configData,
@@ -187,40 +190,36 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private void addGeneralStatisticsOverlay() {
-        final GeneralStatisticsViewController generalStatisticsOverlay = new GeneralStatisticsViewController("general_statistics_overlay.fxml");
+        final GeneralStatisticsViewController generalStatisticsOverlay = new GeneralStatisticsViewController(generalStatViewModel);
         this.getChildren().add(generalStatisticsOverlay);
 
+        StringProperty timeProperty = new SimpleStringProperty("");
+
+        generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Population", viewPort.getPopulationProperty())));
+        generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Packages per second", viewPort.getThroughputProperty())));
+        generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Running", timeProperty)));
+        //generalStatisticsOverlay.setVisible(true);
+
         //TODO improve this!
-        /*
-        if (generalStatisticsOverlay.getChildren() != null) {
-            Text population = (Text)generalStatisticsOverlay.getChildren().get(3);
-            Text time = (Text)generalStatisticsOverlay.getChildren().get(4);
-            Text throughput = (Text)generalStatisticsOverlay.getChildren().get(5);
-            population.textProperty().bind(Bindings.convert(viewPort.getPopulationProperty()));
+        viewPort.getViewTimeProperty().addListener((observable, oldValue, newValue) -> {
+            StringBuilder sb = new StringBuilder();
+            long ms = newValue.longValue();
+            long hours = TimeUnit.MILLISECONDS.toHours(ms);
+            ms -= TimeUnit.HOURS.toMillis(hours);
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(ms);
+            ms -= TimeUnit.MINUTES.toMillis(minutes);
+            long seconds = TimeUnit.MILLISECONDS.toSeconds(ms);
 
-            StringProperty timeProperty = new SimpleStringProperty("");
-            viewPort.getViewTimeProperty().addListener((observable, oldValue, newValue) -> {
-                StringBuilder sb = new StringBuilder();
-                long ms = newValue.longValue();
-                long hours = TimeUnit.MILLISECONDS.toHours(ms);
-                ms -= TimeUnit.HOURS.toMillis(hours);
-                long minutes = TimeUnit.MILLISECONDS.toMinutes(ms);
-                ms -= TimeUnit.MINUTES.toMillis(minutes);
-                long seconds = TimeUnit.MILLISECONDS.toSeconds(ms);
+            sb.append(hours);
+            sb.append("h ");
+            sb.append(minutes);
+            sb.append("m ");
+            sb.append(seconds);
+            sb.append("s");
 
-                sb.append(hours);
-                sb.append("h ");
-                sb.append(minutes);
-                sb.append("m ");
-                sb.append(seconds);
-                sb.append("s");
+            timeProperty.setValue(sb.toString());
+        });
 
-                timeProperty.setValue(sb.toString());
-            });
-            time.textProperty().bind(timeProperty);
-            throughput.textProperty().bind(Bindings.convert(viewPort.getThroughputProperty()));
-        }
-        */
         AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
     }
