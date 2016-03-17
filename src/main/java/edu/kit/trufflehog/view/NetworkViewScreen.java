@@ -104,7 +104,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
 
                 final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
-                node.getComponent(ViewComponent.class).animate();
+                Platform.runLater(() -> node.getComponent(ViewComponent.class).animate());
                 refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
                 Platform.runLater(this::repaint);
                 refresher.play();
@@ -112,7 +112,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
 
                 final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
-                connection.getComponent(ViewComponent.class).animate();
+                Platform.runLater(() -> connection.getComponent(ViewComponent.class).animate());
                 refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
                 Platform.runLater(this::repaint);
                 refresher.play();

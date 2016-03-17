@@ -19,7 +19,6 @@ import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;

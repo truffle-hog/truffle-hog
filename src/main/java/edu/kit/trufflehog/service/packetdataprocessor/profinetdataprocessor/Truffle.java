@@ -81,7 +81,7 @@ public class Truffle implements IPacketData {
         try {
             truffle.setAttribute(IPAddress.class, "destIPAddress", new IPAddress(dstIPAddr));
         } catch (InvalidIPAddress invalidIPAddress) {
-            throw new InvalidProfinetPacket("Invalid destination ip address: " + dstIPAddr);
+           // throw new InvalidProfinetPacket("Invalid destination ip address: " + dstIPAddr);
         }
 
         if (nameOfStation != null) {
