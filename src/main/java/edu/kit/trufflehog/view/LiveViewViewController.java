@@ -45,6 +45,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
     private final Map<ProtocolControlInteraction, IUserCommand> interactionMap = new EnumMap<>(ProtocolControlInteraction.class);
     private final ConfigData configData;
     private boolean connected = false;
+    private final ViewSwitcher viewSwitcher;
 
     // View layers
     private final StackPane stackPane;
@@ -60,6 +61,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
 
     public LiveViewViewController(final String fxml,
                                   final ConfigData configData,
+                                  final ViewSwitcher viewSwitcher,
                                   final StackPane stackPane,
                                   final INetworkViewPort viewPort,
                                   final Scene scene,
@@ -68,7 +70,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
                                   final INetworkDevice networkDevice,
                                   final INetwork liveNetwork) {
         super(fxml);
-
+        this.viewSwitcher = viewSwitcher;
         this.updateFilterCommand = updateFilterCommand;
         this.userCommandListener = userCommandIListener;
 
@@ -287,9 +289,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
     private void addCloseButton() {
         final ImageButton closeButton = new ImageButton("close.png");
 
-        closeButton.setOnAction(event -> {
-
-        });
+        closeButton.setOnAction(event -> viewSwitcher.replace(this, "start"));
 
         closeButton.setScaleX(0.8);
         closeButton.setScaleY(0.8);

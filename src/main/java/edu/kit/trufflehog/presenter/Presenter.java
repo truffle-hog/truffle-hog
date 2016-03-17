@@ -149,8 +149,8 @@ public class Presenter {
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
 
-        //truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
-        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
+        truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
+        //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
         truffleFetchService.execute(truffleReceiver);
         truffleReceiver.connect();
 

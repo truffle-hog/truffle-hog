@@ -5,8 +5,6 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.IntegerBinding;
-import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
@@ -50,7 +48,7 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
         this.outgoingCount.set(outgoingCount);
     }
 
-    public int getIngoingCount() {
+    public int getIncomingCount() {
         return ingoingCount.get();
     }
 
@@ -58,7 +56,7 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
         return ingoingCount;
     }
 
-    public void setIngoingCount(int ingoingCount) {
+    public void setIncomingCount(int ingoingCount) {
         this.ingoingCount.set(ingoingCount);
     }
 
