@@ -54,12 +54,12 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final IPAddress destIP = data.getAttribute(IPAddress.class, "destIPAddress");
 
         final String deviceName = data.getAttribute(String.class, "deviceName");
-        final boolean isResponse = data.getAttribute(Boolean.class, "isResponse");
+        final Boolean isResponse = data.getAttribute(Boolean.class, "isResponse");
 
         // build the source node info
         NodeInfoComponent sourceNIC = new NodeInfoComponent(sourceAddress);
         sourceNIC.setIPAddress(sourceIP);
-        if (isResponse) {
+        if (isResponse != null && isResponse) {
             sourceNIC.setDeviceName(deviceName);
         }
 

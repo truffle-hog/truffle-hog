@@ -45,7 +45,14 @@ public class TruffleTest {
         assertEquals(new IPAddress(3), truffle.getAttribute(IPAddress.class, "sourceIPAddress"));
         assertEquals(new IPAddress(4), truffle.getAttribute(IPAddress.class, "destIPAddress"));
         assertEquals("test", truffle.getAttribute(String.class, "deviceName"));
-        assertEquals(new Short((short) 5), truffle.getAttribute(Short.class, "etherType"));
+        assertEquals(new Integer(5), truffle.getAttribute(Integer.class, "etherType"));
+        assertEquals(new Integer(6), truffle.getAttribute(Integer.class, "serviceID"));
+        assertEquals("testing", truffle.getAttribute(String.class, "serviceIDName"));
+        assertEquals(new Integer(7), truffle.getAttribute(Integer.class, "serviceType"));
+        assertEquals("type", truffle.getAttribute(String.class, "serviceTypeName"));
+        assertEquals(new Long(8), truffle.getAttribute(Long.class, "xid"));
+        assertEquals(new Integer(9), truffle.getAttribute(Integer.class, "responseDelay"));
+        assertEquals(true, truffle.getAttribute(Boolean.class, "isResponse"));
     }
 
     /**
