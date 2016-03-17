@@ -8,8 +8,11 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComp
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
 import edu.uci.ics.jung.graph.Graph;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableIntegerValue;
 import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +35,8 @@ public class NetworkIOPort implements INetworkIOPort {
 
     private final IntegerProperty maxThroughputProperty = new SimpleIntegerProperty(0);
     private final IntegerProperty maxConnectionSizeProperty = new SimpleIntegerProperty(0);
+    private final IntegerProperty population = new SimpleIntegerProperty(0);
+    private final DoubleProperty throughput = new SimpleDoubleProperty(0);
 
     private final MaximumOfValuesBinding maxTrafficBinding = new MaximumOfValuesBinding();
     private final MaximumOfValuesBinding maxThroughputBinding = new MaximumOfValuesBinding();
@@ -118,6 +123,36 @@ public class NetworkIOPort implements INetworkIOPort {
     @Override
     public IntegerProperty getMaxThroughputProperty() {
         return maxThroughputProperty;
+    }
+
+    @Override
+    public void setPopulation(int value) {
+        population.setValue(value);
+    }
+
+    @Override
+    public int getPopulation() {
+        return population.getValue();
+    }
+
+    @Override
+    public IntegerProperty getPopulationProperty() {
+        return population;
+    }
+
+    @Override
+    public void setThroughput(double value) {
+        throughput.setValue(value);
+    }
+
+    @Override
+    public double getThroughput() {
+        return throughput.getValue();
+    }
+
+    @Override
+    public DoubleProperty getThroughputProperty() {
+        return throughput;
     }
 
     @Override

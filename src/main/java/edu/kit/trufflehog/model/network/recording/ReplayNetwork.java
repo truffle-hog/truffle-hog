@@ -16,6 +16,7 @@ import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import org.apache.commons.collections15.Transformer;
@@ -235,6 +236,36 @@ public class ReplayNetwork implements INetwork {
             return null;
         }
 
+        @Override
+        public void setPopulation(int value) {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
+        @Override
+        public int getPopulation() {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
+        @Override
+        public IntegerProperty getPopulationProperty() {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
+        @Override
+        public void setThroughput(double value) {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
+        @Override
+        public double getThroughput() {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
+        @Override
+        public DoubleProperty getThroughputProperty() {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
         public void graphIntersection(Graph<INode, IConnection> graph) {
 
             final Collection<INode> filteredNodes = getGraph().getVertices().stream().filter(node -> !graph.containsVertex(node)).collect(Collectors.toList());
@@ -403,6 +434,36 @@ public class ReplayNetwork implements INetwork {
         @Override
         public IntegerProperty getMaxThroughputProperty() {
             throw new UnsupportedOperationException("not supported on replay graphs");
+        }
+
+        @Override
+        public void setPopulation(int value) {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
+        @Override
+        public int getPopulation() {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
+        @Override
+        public IntegerProperty getPopulationProperty() {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
+        @Override
+        public void setThroughput(double value) {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
+        @Override
+        public double getThroughput() {
+            throw new UnsupportedOperationException("not implemented yet!");
+        }
+
+        @Override
+        public DoubleProperty getThroughputProperty() {
+            throw new UnsupportedOperationException("not implemented yet!");
         }
 
 

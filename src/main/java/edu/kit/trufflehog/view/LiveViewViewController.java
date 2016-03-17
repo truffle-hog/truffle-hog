@@ -7,6 +7,7 @@ import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.INetworkReadingPort;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.util.IListener;
@@ -14,16 +15,27 @@ import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
+import javafx.util.converter.NumberStringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -42,6 +54,8 @@ public class LiveViewViewController extends AnchorPaneController {
     private final StackPane stackPane;
 
     private final Scene scene;
+
+    private final INetworkViewPort viewPort;
 
     private RecordMenuViewController recordOverlayViewController;
     private FilterOverlayViewController filterOverlayViewController;
@@ -69,6 +83,8 @@ public class LiveViewViewController extends AnchorPaneController {
 
         this.stackPane = stackPane;
 
+        //TODO check if needed
+        this.viewPort = viewPort;
 
         //final StatisticsViewModel statView = new StatisticsViewModel();
         // FIXME this screen is also create in the ViewBuilder... is that necessary??!
@@ -163,8 +179,40 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private void addGeneralStatisticsOverlay() {
-        final OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
+        final GeneralStatisticsViewController generalStatisticsOverlay = new GeneralStatisticsViewController("general_statistics_overlay.fxml");
         this.getChildren().add(generalStatisticsOverlay);
+
+        //TODO improve this!
+        /*
+        if (generalStatisticsOverlay.getChildren() != null) {
+            Text population = (Text)generalStatisticsOverlay.getChildren().get(3);
+            Text time = (Text)generalStatisticsOverlay.getChildren().get(4);
+            Text throughput = (Text)generalStatisticsOverlay.getChildren().get(5);
+            population.textProperty().bind(Bindings.convert(viewPort.getPopulationProperty()));
+
+            StringProperty timeProperty = new SimpleStringProperty("");
+            viewPort.getViewTimeProperty().addListener((observable, oldValue, newValue) -> {
+                StringBuilder sb = new StringBuilder();
+                long ms = newValue.longValue();
+                long hours = TimeUnit.MILLISECONDS.toHours(ms);
+                ms -= TimeUnit.HOURS.toMillis(hours);
+                long minutes = TimeUnit.MILLISECONDS.toMinutes(ms);
+                ms -= TimeUnit.MINUTES.toMillis(minutes);
+                long seconds = TimeUnit.MILLISECONDS.toSeconds(ms);
+
+                sb.append(hours);
+                sb.append("h ");
+                sb.append(minutes);
+                sb.append("m ");
+                sb.append(seconds);
+                sb.append("s");
+
+                timeProperty.setValue(sb.toString());
+            });
+            time.textProperty().bind(timeProperty);
+            throughput.textProperty().bind(Bindings.convert(viewPort.getThroughputProperty()));
+        }
+        */
         AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
     }

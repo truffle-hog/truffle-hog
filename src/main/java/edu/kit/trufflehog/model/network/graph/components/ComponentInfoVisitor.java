@@ -23,12 +23,14 @@ import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesCo
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -63,7 +65,7 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
 
         final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
 
-        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Outgoing and ingoing Communication", component.getCommunicationCountProperty())));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Out/ingoing Packages", component.getCommunicationCountProperty())));
         root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Packages per second", component.getThroughputProperty())));
 
         return root;

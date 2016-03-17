@@ -4,9 +4,7 @@ import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.MacroFilter;
-import edu.kit.trufflehog.model.network.INetwork;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
-import edu.kit.trufflehog.model.network.LiveNetwork;
+import edu.kit.trufflehog.model.network.*;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
@@ -169,7 +167,7 @@ public class Presenter {
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 
         final ExecutorService nodeStatisticsUpdaterService = Executors.newSingleThreadExecutor();
-        final NodeStatisticsUpdater nodeStatisticsUpdater = new NodeStatisticsUpdater(liveNetwork);
+        final NodeStatisticsUpdater nodeStatisticsUpdater = new NodeStatisticsUpdater(readingPortSwitch, viewPortSwitch);
         nodeStatisticsUpdaterService.execute(nodeStatisticsUpdater);
 
         // goReplay that ongoing recording on the given viewportswitch
@@ -198,7 +196,7 @@ public class Presenter {
         LoggedScheduledExecutor.getInstance().shutdownNow();
 
         // Shut down the system
-        System.exit(0);
+        //System.exit(0);
     }
 
     //TODO remove someday but for now leave as reference
