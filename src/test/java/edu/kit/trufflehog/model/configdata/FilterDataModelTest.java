@@ -21,20 +21,17 @@ import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterOrigin;
 import edu.kit.trufflehog.model.filter.FilterType;
-import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -51,7 +48,6 @@ import static org.mockito.Mockito.when;
  */
 public class FilterDataModelTest {
     private FileSystem fileSystem;
-    private ExecutorService executorService;
     private FilterDataModel filterDataModel;
     private File databaseFile;
 
@@ -65,11 +61,10 @@ public class FilterDataModelTest {
     @Before
     public void setUp() throws Exception {
         this.databaseFile = new File("./src/test/resources/data/config/filters.sql");
-        this.executorService = new LoggedScheduledExecutor(10);
         this.fileSystem = mock(FileSystem.class);
         when(fileSystem.getDataFolder()).thenAnswer(answer -> new File("./src/test/resources/data"));
         when(fileSystem.getConfigFolder()).thenAnswer(answer -> new File("./src/test/resources/data/config"));
-        this.filterDataModel = new FilterDataModel(fileSystem, executorService);
+        this.filterDataModel = new FilterDataModel(fileSystem);
     }
 
     /**
@@ -81,7 +76,7 @@ public class FilterDataModelTest {
      */
     @After
     public void tearDown() throws Exception {
-        executorService.shutdownNow();
+        filterDataModel.close();
         if (databaseFile.exists()) {
             FileUtils.forceDelete(databaseFile);
         }
@@ -96,7 +91,6 @@ public class FilterDataModelTest {
      * @throws Exception Passes any errors that occurred during the test on
      */
     // FIXME fix this test, it randomly fails (Database file locked)
-    @Ignore
     @Test
     public void testUpdateAndLoadFilterInDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
@@ -131,7 +125,7 @@ public class FilterDataModelTest {
         Thread.sleep(5000);
 
         // Retrieve them
-        filterDataModel = new FilterDataModel(fileSystem, executorService);
+        filterDataModel = new FilterDataModel(fileSystem);
         filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -149,7 +143,6 @@ public class FilterDataModelTest {
      * @throws Exception Passes any errors that occurred during the test on
      */
     // FIXME fix this test, it randomly fails (Database file locked)
-    @Ignore
     @Test
     public void testAddAndLoadFilterToDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
@@ -166,7 +159,7 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel = new FilterDataModel(fileSystem, executorService);
+        filterDataModel = new FilterDataModel(fileSystem);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -184,7 +177,6 @@ public class FilterDataModelTest {
      * @throws Exception Passes any errors that occurred during the test on
      */
     // FIXME fix this test, it randomly fails (Database file locked)
-    @Ignore
     @Test
     public void testRemoveFilterFromDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
@@ -201,7 +193,7 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel = new FilterDataModel(fileSystem, executorService);
+        filterDataModel = new FilterDataModel(fileSystem);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure we could retrieve them all correctly
@@ -216,7 +208,7 @@ public class FilterDataModelTest {
         Thread.sleep(5000);
 
         // Retrieve them
-        filterDataModel = new FilterDataModel(fileSystem, executorService);
+        filterDataModel = new FilterDataModel(fileSystem);
         filterInputFromDB = filterDataModel.getAllFilters();
 
         // Make sure none were found
@@ -241,7 +233,7 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel = new FilterDataModel(fileSystem, executorService);
+        filterDataModel = new FilterDataModel(fileSystem);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         assertEquals(1, filterInputFromDB.size());
@@ -264,7 +256,7 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel = new FilterDataModel(fileSystem, executorService);
+        filterDataModel = new FilterDataModel(fileSystem);
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         assertEquals(0, filterInputFromDB.size());
@@ -287,7 +279,7 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        filterDataModel = new FilterDataModel(fileSystem, executorService);
+        filterDataModel = new FilterDataModel(fileSystem);
 
         // Make sure they are equal
         assertEquals(filterInput.getName(), filterDataModel.get(null, filterInput.getName()).getName());

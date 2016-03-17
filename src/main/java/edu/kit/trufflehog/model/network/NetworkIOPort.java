@@ -49,6 +49,8 @@ public class NetworkIOPort implements INetworkIOPort {
 
         final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
 
+
+
         if (delegate.addEdge(connection, connection.getSrc(), connection.getDest())) {
 
             final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);
@@ -66,7 +68,7 @@ public class NetworkIOPort implements INetworkIOPort {
 
             final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);
             if (nodeStat != null) {
-                maxThroughputBinding.bindProperty(nodeStat.getThroughputProperty());
+                maxThroughputBinding.bindProperty(nodeStat.getCommunicationCountProperty());
             }
             idNodeMap.put(node.getAddress(), node);
         }

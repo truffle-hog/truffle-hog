@@ -25,7 +25,6 @@ import javafx.beans.property.StringProperty;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
 
 /**
  * <p>
@@ -49,13 +48,12 @@ public class ConfigData {
      * </p>
      *
      * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
-     * @param executorService The executor service used by TruffleHog to manage the multi-threading.
      * @throws NullPointerException Thrown when it was impossible to get config data for some reason.
      */
-    public ConfigData(final FileSystem fileSystem, final ExecutorService executorService) throws NullPointerException {
+    public ConfigData(final FileSystem fileSystem) throws NullPointerException {
         // This has to be loaded first because other data models rely on it (like the property data model)
-        this.settingsDataModel = new SettingsDataModel(fileSystem, executorService);
-        this.filterDataModel = new FilterDataModel(fileSystem, executorService);
+        this.settingsDataModel = new SettingsDataModel(fileSystem);
+        this.filterDataModel = new FilterDataModel(fileSystem);
 
         // VERY IMPORTANT: This makes sure that we can map the filter activity state to a check box in the
         // table view in the filters menu
@@ -168,5 +166,14 @@ public class ConfigData {
      */
     public String getProperty(final String key) {
         return propertiesDataModel.get(key);
+    }
+
+    /**
+     * <p>
+     *     Closes all connections to all databases and other connections that should be closed before the program exits.
+     * </p>
+     */
+    public void close() {
+        filterDataModel.close();
     }
 }

@@ -59,7 +59,27 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
     @Override
     public boolean update(NodeStatisticsComponent nodeStatisticsComponent, IComponent instance) {
 
-        nodeStatisticsComponent.incrementThroughput(1);
+        if (!nodeStatisticsComponent.equals(instance))
+            return false;
+
+        final NodeStatisticsComponent other = (NodeStatisticsComponent) instance;
+
+        nodeStatisticsComponent.setOutgoingCount(nodeStatisticsComponent.getOutgoingCount() + other.getOutgoingCount());
+
+        nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+
+        // TODO maybe check for more variants of values (potential bug???)
+/*        if (other.getOutgoingCount() == 0 && other.getIngoingCount() == 0)
+            nodeStatisticsComponent.setOutgoingCount(nodeStatisticsComponent.getOutgoingCount() + other.getOutgoingCount());
+        else if (other.getOutgoingCount() == 1 && other.getIngoingCount() == 0)
+            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+        else if (other.getOutgoingCount() == 0 && other.getIngoingCount() == 1)
+            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+        else if (other.getOutgoingCount() == 1 && other.getIngoingCount() == 1)
+            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+        else
+            throw new UnsupportedOperationException("not supported to add other numbers than 0 or 1 for ingoing and outgoing updates yet");*/
+        //nodeStatisticsComponent.incrementThroughput(1);
         return true;
     }
 
@@ -125,13 +145,13 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
 
         boolean changed = false;
 
-        if (other.getDeviceName() != null) {
+        if (other.getDeviceName() != null && nodeInfoComponent.getDeviceName() != null) {
             changed = !nodeInfoComponent.getDeviceName().equals(other.getDeviceName()) || changed;
             nodeInfoComponent.setDeviceName(other.getDeviceName());
         }
 
-        if (other.getIPAddress() != null) {
-            changed = !nodeInfoComponent.getDeviceName().equals(other.getDeviceName()) || changed;
+        if (other.getIPAddress() != null && nodeInfoComponent.getIPAddress() != null) {
+            changed = !nodeInfoComponent.getIPAddress().equals(other.getIPAddress()) || changed;
             nodeInfoComponent.setIPAddress(other.getIPAddress());
         }
 
@@ -159,7 +179,7 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
         if (!filterPropertiesComponent.equals(instance))
             return false;
 
-        filterPropertiesComponent.getFilterColors().putAll(((FilterPropertiesComponent)instance).getFilterColors());
+        filterPropertiesComponent.addFilterColors(((FilterPropertiesComponent)instance).getFilterColors());
         return true;
     }
 

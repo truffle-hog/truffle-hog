@@ -18,7 +18,6 @@ package edu.kit.trufflehog.model.network.graph.components;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
-import edu.kit.trufflehog.util.ICopyCreator;
 
 /**
  * \brief
@@ -54,9 +53,9 @@ public class ViewComponent extends AbstractComponent implements IComponent {
     }
 
     @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
-        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
-        return copyCreator.createDeepCopy(this);
+    public <T> T accept(IComponentVisitor<T> visitor) {
+
+        return visitor.visit(this);
     }
 
     @Override

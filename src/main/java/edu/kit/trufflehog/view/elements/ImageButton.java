@@ -24,16 +24,23 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 /**
- * This class is a custom JavaFX {@link Button} needed for nicely displaying just a icon instead of text and background.
+ * <p>
+ *     This class is a custom JavaFX {@link Button} that nicely displays an icon as a button.
+ * </p>
  */
 public class ImageButton extends Button {
-
     private final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-opacity: 0.87; -fx-padding: 5, 5, 5, 5;";
     private final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-opacity: 0.65; -fx-padding: 5, 6, 6, 5;";
 
-    public ImageButton(String imageurl) {
-
-        setGraphic(new ImageView(new Image(getClass().getResourceAsStream(imageurl))));
+    /**
+     * <p>
+     *     Creates a new GlowImageButton.
+     * </p>
+     *
+     * @param image The path to the image to display as the button.
+     */
+    public ImageButton(String image) {
+        setGraphic(new ImageView(new Image(getClass().getResourceAsStream(image))));
         setStyle(STYLE_NORMAL);
 
         setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -50,5 +57,4 @@ public class ImageButton extends Button {
             }
         });
     }
-
 }

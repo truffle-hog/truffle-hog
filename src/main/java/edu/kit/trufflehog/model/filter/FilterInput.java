@@ -75,6 +75,9 @@ public class FilterInput implements Serializable {
     private boolean active;
     private int priority;
 
+    // is this filter deleted?
+    private transient boolean deleted;
+
     // Property variables for table view
     private transient StringProperty nameProperty;
     private transient StringProperty typeProperty;
@@ -138,6 +141,7 @@ public class FilterInput implements Serializable {
         this.color = color;
         this.active = false;
         this.priority = priority;
+        this.deleted = false;
     }
 
     /**
@@ -317,6 +321,14 @@ public class FilterInput implements Serializable {
         return priorityProperty;
     }
 
+    public void setDeleted() {
+        deleted = true;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     /**
      * <p>
      *     Since {@link Property} objects cannot be serialized, THIS METHOD HAS TO BE CALLED AFTER EACH
@@ -335,8 +347,8 @@ public class FilterInput implements Serializable {
         activeProperty = new SimpleBooleanProperty(active);
 
         // Make the origin look nicer on screen
-        if (origin.equals(FilterOrigin.SELECTION)) {
-            originProperty = new SimpleStringProperty("Selection");
+        if (origin.equals(FilterOrigin.NAME)) {
+            originProperty = new SimpleStringProperty("Name Regex");
         } else {
             originProperty = new SimpleStringProperty(origin.name());
         }
@@ -378,7 +390,7 @@ public class FilterInput implements Serializable {
             } else if (newValue.equals(FilterOrigin.MAC.name())) {
                 origin = FilterOrigin.MAC;
             } else {
-                origin = FilterOrigin.SELECTION;
+                origin = FilterOrigin.NAME;
             }
 
             configData.updateFilterInput(this);

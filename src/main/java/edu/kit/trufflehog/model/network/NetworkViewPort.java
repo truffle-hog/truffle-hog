@@ -17,12 +17,14 @@
 
 package edu.kit.trufflehog.model.network;
 
+import edu.kit.trufflehog.model.network.graph.CircleLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentFRLayout;
 import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
 import edu.kit.trufflehog.util.ICopyCreator;
+import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
@@ -66,7 +68,7 @@ public class NetworkViewPort implements INetworkViewPort {
 
         this.graphDelegate = delegate;
 
-        this.delegate = new ConcurrentFRLayout<>(this.graphDelegate);
+        this.delegate = new FRLayout<>(this.graphDelegate);
         this.layoutFactory = new FRLayoutFactory();
 
     }
@@ -179,7 +181,7 @@ public class NetworkViewPort implements INetworkViewPort {
     @Override
     public void refreshLayout() {
 
-        delegate = layoutFactory.transform(getGraph());
+        delegate = layoutFactory.transform(delegate.getGraph());
     }
 
     @Override

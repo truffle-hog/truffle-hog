@@ -4,6 +4,7 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.animation.Transition;
+import javafx.application.Platform;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +21,8 @@ import java.awt.geom.Ellipse2D;
  *
  * @author Jan Hermes
  * @version 0.1
- *
- * TODO FIX GETTER!!!
+ *          <p/>
+ *          TODO FIX GETTER!!!
  */
 public class BasicEdgeRenderer implements IRenderer {
 
@@ -54,12 +55,11 @@ public class BasicEdgeRenderer implements IRenderer {
             }
 
             protected void interpolate(double frac) {
-
                 currentBrightness = (float) (frac < 0.5 ? 0.5 + frac : 1.5 - frac);
             }
-
         };
-        //animator.setCycleCount(40);
+
+        animator.setCycleCount(1);
 
         Color.RGBtoHSB(colorUnpicked.getRed(), colorUnpicked.getGreen(), colorUnpicked.getBlue(), hsbValsUnpicked);
         Color.RGBtoHSB(colorPicked.getRed(), colorPicked.getGreen(), colorPicked.getBlue(), hsbValsPicked);
@@ -93,7 +93,9 @@ public class BasicEdgeRenderer implements IRenderer {
     @Override
     public void setColorUnpicked(Color colorUnpicked) {
 
-        if (colorUnpicked == null) { throw new NullPointerException("colorUnpicked must not be null!"); }
+        if (colorUnpicked == null) {
+            throw new NullPointerException("colorUnpicked must not be null!");
+        }
 
         this.colorUnpicked = colorUnpicked;
         Color.RGBtoHSB(this.colorUnpicked.getRed(), this.colorUnpicked.getGreen(), this.colorUnpicked.getBlue(), hsbValsPicked);
@@ -102,19 +104,25 @@ public class BasicEdgeRenderer implements IRenderer {
     @Override
     public void setShape(Shape shape) {
 
-        if (shape == null) { throw new NullPointerException("shape must not be null!"); }
+        if (shape == null) {
+            throw new NullPointerException("shape must not be null!");
+        }
 
         this.shape = shape;
     }
 
     @Override
     public void setStroke(Stroke stroke) {
-        if (stroke == null) { throw new NullPointerException("stroke must not be null!"); }
+        if (stroke == null) {
+            throw new NullPointerException("stroke must not be null!");
+        }
         this.stroke = stroke;
     }
 
     @Override
+
     public void animate() {
+        // animator.stop();
         animator.play();
     }
 

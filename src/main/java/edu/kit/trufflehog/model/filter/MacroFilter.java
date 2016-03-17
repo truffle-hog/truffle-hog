@@ -87,9 +87,14 @@ public class MacroFilter implements IFilter {
     }
 
     @Override
-    public Color getFilterColor(INode node) {
+    public Color getFilterColor() {
         // this class never modifies any colors directly. thus null is sufficient.
         return null;
+    }
+
+    @Override
+    public String getName() {
+        return "Macro filter";
     }
 
     @Override

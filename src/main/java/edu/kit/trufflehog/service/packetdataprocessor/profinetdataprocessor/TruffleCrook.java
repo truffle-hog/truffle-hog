@@ -14,7 +14,7 @@ public class TruffleCrook extends TruffleReceiver {
     private final IFilter filter;
 
     private long[] addresses;
-    private int maxAddresses = 10;
+    private int maxAddresses = 2000;
 
     public TruffleCrook(INetworkWritingPort writingPort, IFilter filter) {
         networkWritingPort = writingPort;
@@ -37,7 +37,7 @@ public class TruffleCrook extends TruffleReceiver {
         while(!Thread.interrupted()) {
             synchronized (this) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(0, 1);
 
                     final Truffle truffle = getTruffle();
 
@@ -45,7 +45,6 @@ public class TruffleCrook extends TruffleReceiver {
                         notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filter));
                     }
 
-                    Thread.sleep(10);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -55,10 +54,23 @@ public class TruffleCrook extends TruffleReceiver {
 
     private Truffle getTruffle() {
         int a1 = (int)(Math.random()*maxAddresses);
-        int a2 = (int)(Math.random()*maxAddresses);
+        int a2 =  (int)(Math.random()*maxAddresses);
+        a2 = a2 == 0 ? 1 : a2;
 
         try {
-            return Truffle.buildTruffle(addresses[0], addresses[a2], 0, 0, null, (short) 0);
+            return Truffle.buildTruffle(addresses[0],
+                    addresses[a2],
+                    addresses[0],
+                    addresses[a2],
+                    null,
+                    0,
+                    0,
+                    null,
+                    0,
+                    null,
+                    0,
+                    0,
+                    0);
         } catch (InvalidProfinetPacket invalidProfinetPacket) {
             invalidProfinetPacket.printStackTrace();
         }
@@ -69,7 +81,7 @@ public class TruffleCrook extends TruffleReceiver {
     private void init() {
         addresses = new long[maxAddresses];
         for (int i = 0; i < maxAddresses; i++) {
-            addresses[i] = i;
+            addresses[i] = i + 1;
         }
     }
 }

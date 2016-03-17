@@ -18,6 +18,7 @@
 package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
+import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.apache.logging.log4j.LogManager;
@@ -63,12 +64,10 @@ class SettingsDataModel extends ConfigDataModel<StringProperty> {
      * </p>
      *
      * @param fileSystem The {@link FileSystem} object that gives access to relevant folders on the hard-drive.
-     * @param executorService The executor service used by TruffleHog to manage the multi-threading.
-     * @throws NullPointerException Thrown when it was impossible to get the config file for some reason.
      */
-    public SettingsDataModel(final FileSystem fileSystem, final ExecutorService executorService) {
+    public SettingsDataModel(final FileSystem fileSystem) {
         this.fileSystem = fileSystem;
-        this.executorService = executorService;
+        this.executorService = LoggedScheduledExecutor.getInstance();;
         this.settingsFile = getSettingsFile();
 
         if (settingsFile == null) {

@@ -4,8 +4,13 @@ import edu.kit.trufflehog.model.network.IPAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
-import edu.kit.trufflehog.util.ICopyCreator;
-import javafx.beans.property.*;
+import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * <p>
@@ -108,13 +113,13 @@ public class NodeInfoComponent implements IComponent {
 
     @Override
     public String name() {
-        return "Node Info";
+        //TODO put this in property file
+        return "Device info";
     }
 
     @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
-        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
-        return copyCreator.createDeepCopy(this);
+    public <T> T accept(IComponentVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 
     @Override
@@ -132,5 +137,15 @@ public class NodeInfoComponent implements IComponent {
     @Override
     public boolean equals(Object other) {
         return other instanceof NodeInfoComponent;
+    }
+
+    @Override
+    public String toString() {
+
+        if (deviceNameProperty.getValue() == null)
+            return "MAC Address: " + macAddressProperty.getValue();
+
+        return "MAC Address: " + macAddressProperty.getValue() + ", " +
+                "Device name: " + deviceNameProperty.getValue();
     }
 }

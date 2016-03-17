@@ -1,7 +1,5 @@
 package edu.kit.trufflehog.model.network;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -15,13 +13,13 @@ import static org.junit.Assert.*;
 public class IPAddressTest {
 
     @Test(expected = InvalidIPAddress.class)
-    public void IPAddress_constructor_throws_on_0_address() throws Exception {
-        new IPAddress(0);
+    public void IPAddress_constructor_throws_on_negative_address() throws Exception {
+        new IPAddress(-1);
     }
 
     @Test(expected = InvalidIPAddress.class)
     public void IPAddress_constructor_throws_on_too_large_address() throws Exception {
-        new IPAddress(5000000000L);
+        new IPAddress(0x100000000L);
     }
 
     @Test
@@ -97,5 +95,31 @@ public class IPAddressTest {
 
         assertNotEquals(a, b);
         assertNotEquals(a1, b1);
+    }
+
+    @Test
+    public void compareTo_small_ip_is_less_than_big_ip() throws Exception {
+        IPAddress a = new IPAddress(1);
+        IPAddress b = new IPAddress(2);
+
+        assertTrue("IPAddress(1) should be less than IPAddress(2) but is not", a.compareTo(b) < 0);
+
+        IPAddress a1 = new IPAddress(1);
+        IPAddress b1 = new IPAddress(0xFFFFFFL);
+
+        assertTrue("IPAddress(1) should be less than IPAddress(4294967296) but is not", a1.compareTo(b1) < 0);
+    }
+
+    @Test
+    public void compareTo_big_ip_is_greater_than_small_ip() throws Exception {
+        IPAddress a = new IPAddress(2);
+        IPAddress b = new IPAddress(1);
+
+        assertTrue("IPAddress(2) should be greater than IPAddress(1) but is not", a.compareTo(b) > 0);
+
+        IPAddress a1 = new IPAddress(0xFFFFFFL);
+        IPAddress b1 = new IPAddress(1);
+
+        assertTrue("IPAddress(4294967296) should be greater than IPAddress(1) but is not", a1.compareTo(b1) > 0);
     }
 }

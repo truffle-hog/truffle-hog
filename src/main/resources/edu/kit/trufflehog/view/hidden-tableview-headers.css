@@ -1,0 +1,19 @@
+.root {
+    display: block;
+}
+
+.column-header-background { visibility: hidden; -fx-padding: -1em; }
+
+
+.background {
+    -fx-background-color: #282C34;
+    -fx-background-radius: 2;
+}
+
+.text {
+    -fx-fill: white;
+    -fx-opacity: 100%;
+    -fx-font-size: 90%;
+    -fx-font-weight: 100;
+    -fx-font-family: monospace;
+}
