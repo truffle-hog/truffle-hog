@@ -1,10 +1,6 @@
 root {
     display: block;
 }
-/*.overlaybackground {
-    -fx-background-color: #282C34;
-    -fx-background-radius: 2;
-}*/
 
 .column-header-background { visibility: hidden; -fx-padding: -1em; }
 
@@ -13,12 +9,12 @@ root {
     -fx-opacity: 100%;
     -fx-font-size: 90%;
     -fx-font-weight: 100;
-    -fx-font-family: monospace;
+    -fx-font-family: 'Droid Sans';
 }
 
 .background {
     -fx-background-color: #282C34;
-    -fx-opacity: 85%;
+    -fx-opacity: 95%;
     -fx-background-radius: 2;
 }
 
@@ -33,20 +29,19 @@ root {
     -fx-font-size: 11pt;
     -fx-font-family: "Segoe UI Semibold";
     -fx-text-fill: white;
-    -fx-opacity: 1;
+    -fx-opacity: 0.8;
 }
 
 .label-header {
     -fx-font-size: 32pt;
     -fx-font-family: "Segoe UI Light";
     -fx-text-fill: white;
-    -fx-opacity: 1;
 }
 
 .table-view {
-    -fx-base: #1d1d1d;
-    -fx-control-inner-background: #1d1d1d;
-    -fx-background-color: #1d1d1d;
+    -fx-base: #282C34;
+    -fx-control-inner-background: #282C34;
+    -fx-background-color: #282C34;
     -fx-table-cell-border-color: transparent;
     -fx-table-header-border-color: transparent;
     -fx-padding: 5;
@@ -80,8 +75,8 @@ root {
 }
 
 .split-pane:horizontal > * > .split-pane-divider {
-    -fx-border-color: transparent #1d1d1d transparent #1d1d1d;
-    -fx-background-color: transparent, derive(#1d1d1d,20%);
+    -fx-border-color: transparent #282C34 transparent #282C34;
+    -fx-background-color: transparent, derive(#282C34,20%);
 }
 
 .split-pane {
@@ -89,7 +84,7 @@ root {
 }
 
 .menu-bar {
-    -fx-background-color: derive(#1d1d1d,20%);
+    -fx-background-color: derive(#282C34,20%);
     -fx-selection-bar: derive(-fx-background,-7%);
 }
 
@@ -117,10 +112,10 @@ root {
     -fx-border-color: #e2e2e2;
     -fx-border-width: 2;
     -fx-background-radius: 0;
-    -fx-background-color: #1d1d1d;
+    -fx-background-color: #282C34;
     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
     -fx-font-size: 11pt;
-    -fx-text-fill: #d8d8d8;
+    -fx-text-fill: #282C34;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
 }
 
@@ -130,7 +125,7 @@ root {
 
 .button:pressed, .button:default:hover:pressed {
     -fx-background-color: white;
-    -fx-text-fill: #1d1d1d;
+    -fx-text-fill: #282C34;
 }
 
 .button:focused {
@@ -143,7 +138,7 @@ root {
 
 .button:disabled, .button:default:disabled {
     -fx-opacity: 0.4;
-    -fx-background-color: #1d1d1d;
+    -fx-background-color: #282C34;
     -fx-text-fill: white;
 }
 

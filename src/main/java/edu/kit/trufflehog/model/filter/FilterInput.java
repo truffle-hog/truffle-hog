@@ -373,10 +373,10 @@ public class FilterInput implements Serializable {
 
         // Bind type to database update function
         typeProperty.addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals(FilterType.WHITELIST.name())) {
-                type = FilterType.WHITELIST;
+            if (newValue.equals(FilterType.INVERSE_SELECTION.name())) {
+                type = FilterType.INVERSE_SELECTION;
             } else {
-                type = FilterType.BLACKLIST;
+                type = FilterType.SELECTION;
             }
 
             configData.updateFilterInput(this);

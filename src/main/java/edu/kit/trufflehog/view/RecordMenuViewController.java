@@ -57,7 +57,7 @@ public class RecordMenuViewController extends AnchorPaneController {
                 });
 
 
-                startRecord(networkDevice, liveNetwork);
+                //startRecord(networkDevice, liveNetwork);
             } else {
                 pressed = false;
                 button.stopGlow();

@@ -5,12 +5,12 @@ package edu.kit.trufflehog.interaction;
  *     Interactions that can be performed on the main toolbar.
  * </p>
  */
-public enum SnortControlInteraction implements IInteraction {
+public enum ProtocolControlInteraction implements IInteraction {
 
 	/** Try to connect to a running Snort process. **/
-	CONNECT_SNORT,
+	CONNECT,
 	/** Disconnect from the Snort process connected to. **/
-	DISCONNECT_SNORT,
+	DISCONNECT,
 	/** Refresh the graph layout. **/
 	REFRESH_LAYOUT,
 	/** Start networkreplay the currently monitored network communication. **/

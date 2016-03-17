@@ -37,8 +37,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.IntStream;
+
 /**
  * <p>
  *     The FilterEditingMenuViewController is an overlay that slides in from the top center, similar to menus that ask you
