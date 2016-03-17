@@ -61,7 +61,8 @@ public class Truffle implements IPacketData {
                                 final int serviceType,
                                 final String serviceTypeName,
                                 final long xid,
-                                final int responseDelay) throws InvalidProfinetPacket {
+                                final int responseDelay,
+                                final int isResponse) throws InvalidProfinetPacket {
         final Truffle truffle = new Truffle();
 
         try {
@@ -94,6 +95,8 @@ public class Truffle implements IPacketData {
         truffle.setAttribute(Long.class, "xid", xid);
 
         truffle.setAttribute(Integer.class, "responseDelay", responseDelay);
+
+        truffle.setAttribute(Boolean.class, "isResponse", isResponse != 0);
 
         if (serviceIDName != null) {
             truffle.setAttribute(String.class, "serviceTypeName", serviceTypeName);

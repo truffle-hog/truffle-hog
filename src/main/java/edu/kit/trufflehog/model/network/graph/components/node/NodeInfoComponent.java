@@ -137,4 +137,13 @@ public class NodeInfoComponent implements IComponent {
     public boolean equals(Object other) {
         return other instanceof NodeInfoComponent;
     }
+
+    @Override
+    public String toString() {
+        return "NodeInfoComponent{" +
+                "deviceNameProperty=" + deviceNameProperty +
+                ", ipAddressProperty=" + ipAddressProperty +
+                ", macAddressProperty=" + macAddressProperty +
+                '}';
+    }
 }
