@@ -165,7 +165,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	public void refreshLayout() {
 
-        jungView.setSize(dimension);
+        //jungView.setSize(dimension);
         jungView.setGraphLayout(layoutFactory.transform(jungView.getGraphLayout().getGraph()));
 
 	}

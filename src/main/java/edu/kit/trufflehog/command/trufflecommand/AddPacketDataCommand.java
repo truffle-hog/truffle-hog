@@ -78,8 +78,8 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final PacketDataLoggingComponent destPacketLogger = new PacketDataLoggingComponent();
         destPacketLogger.addPacket(data);
 
-        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), sourceNIC, srcPacketLogger);
-        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), destNIC, destPacketLogger);
+        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1, 0), sourceNIC, srcPacketLogger);
+        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(0, 1), destNIC, destPacketLogger);
 
         final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1), connectionPacketLogger);
 

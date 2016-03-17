@@ -59,7 +59,18 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
     @Override
     public boolean update(NodeStatisticsComponent nodeStatisticsComponent, IComponent instance) {
 
-        nodeStatisticsComponent.incrementThroughput(1);
+        if (!nodeStatisticsComponent.equals(instance))
+            return false;
+
+        final NodeStatisticsComponent other = (NodeStatisticsComponent) instance;
+
+        // TODO maybe check for more vairants of values (potential bug???)
+        if (other.getOutgoingCount() >= 1)
+            nodeStatisticsComponent.setOutgoingCount(nodeStatisticsComponent.getOutgoingCount() + other.getOutgoingCount());
+        else if (other.getIngoingCount() >= 1)
+            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+
+        //nodeStatisticsComponent.incrementThroughput(1);
         return true;
     }
 

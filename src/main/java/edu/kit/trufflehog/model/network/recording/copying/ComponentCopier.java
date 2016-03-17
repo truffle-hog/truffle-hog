@@ -79,9 +79,11 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
     @Override
     public IComponent visit(NodeStatisticsComponent nodeStatisticsComponent) {
         if (nodeStatisticsComponent == null) throw new NullPointerException("nodeStatisticsComponent must not be null!");
-        IntegerProperty throughput = nodeStatisticsComponent.getCommunicationCountProperty();
 
-        return new NodeStatisticsComponent(throughput.getValue());
+        IntegerProperty ingoing = nodeStatisticsComponent.ingoingCountProperty();
+        IntegerProperty outgoing = nodeStatisticsComponent.outgoingCountProperty();
+
+        return new NodeStatisticsComponent(outgoing.get(), ingoing.get());
     }
 
     @Override
