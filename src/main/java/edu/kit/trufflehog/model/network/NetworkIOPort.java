@@ -18,11 +18,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by jan on 22.02.16.
+ * @author Jan Hermes
+ * @version 0.5
  */
 public class NetworkIOPort implements INetworkIOPort {
 
@@ -50,7 +52,7 @@ public class NetworkIOPort implements INetworkIOPort {
     }
 
     @Override
-    public void writeConnection(IConnection connection) {
+    synchronized public void writeConnection(IConnection connection) {
 
         final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
 
@@ -67,7 +69,7 @@ public class NetworkIOPort implements INetworkIOPort {
     }
 
     @Override
-    public void writeNode(INode node) {
+    synchronized public void writeNode(INode node) {
 
         if (delegate.addVertex(node)) {
 
@@ -80,18 +82,18 @@ public class NetworkIOPort implements INetworkIOPort {
     }
 
     @Override
-    public void applyFilter(IFilter filter) {
+    synchronized public void applyFilter(IFilter filter) {
         delegate.getVertices().forEach(filter::check);
     }
 
     @Override
-    public Collection<INode> getNetworkNodes() {
-        return delegate.getVertices();
+    synchronized public Collection<INode> getNetworkNodes() {
+        return new LinkedList<>(delegate.getVertices());
     }
 
     @Override
-    public Collection<IConnection> getNetworkConnections() {
-        return delegate.getEdges();
+    synchronized public Collection<IConnection> getNetworkConnections() {
+        return new LinkedList<>(delegate.getEdges());
     }
 
     @Override
