@@ -8,8 +8,6 @@ import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
-import edu.kit.trufflehog.model.network.graph.CircleLayoutFactory;
-import edu.kit.trufflehog.model.network.graph.FRLayout2Factory;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.util.IListener;
@@ -28,7 +26,7 @@ import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
+import java.awt.Dimension;
 
 /**
  * <p>
@@ -77,7 +75,7 @@ public class LiveViewViewController extends AnchorPaneController {
 
         //final StatisticsViewModel statView = new StatisticsViewModel();
         // FIXME this screen is also create in the ViewBuilder... is that necessary??!
-        final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPort, 10, new Dimension(10000, 10000));
+        final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPort, 10, new Dimension(700, 700));
         networkViewScreen.addListener(userCommandIListener);
         networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statViewModel));
         //networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
