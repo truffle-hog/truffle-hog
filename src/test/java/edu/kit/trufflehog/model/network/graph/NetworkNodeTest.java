@@ -62,7 +62,7 @@ public class NetworkNodeTest {
 
         assertEquals(1, c.getCommunicationCount());
 
-        c.incrementThroughput(5);
+        c.incrementCommunicationCount(5);
 
         assertEquals(6, c.getCommunicationCount());
     }

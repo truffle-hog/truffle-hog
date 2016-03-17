@@ -18,6 +18,7 @@ import edu.kit.trufflehog.model.network.recording.NetworkDevice;
 import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
+import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
@@ -166,6 +167,10 @@ public class Presenter {
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
         commandExecutorService.execute(commandExecutor);
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
+
+        final ExecutorService nodeStatisticsUpdaterService = Executors.newSingleThreadExecutor();
+        final NodeStatisticsUpdater nodeStatisticsUpdater = new NodeStatisticsUpdater(liveNetwork);
+        nodeStatisticsUpdaterService.execute(nodeStatisticsUpdater);
 
         // goReplay that ongoing recording on the given viewportswitch
         //networkDevice.goReplay(tape, viewPortSwitch);

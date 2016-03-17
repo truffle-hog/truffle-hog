@@ -4,7 +4,9 @@ import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +19,7 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
     private static final Logger logger = LogManager.getLogger(NodeStatisticsComponent.class);
     
     private final IntegerProperty communicationCount = new SimpleIntegerProperty(1);
+    private final DoubleProperty throughput = new SimpleDoubleProperty(1);
 
     public NodeStatisticsComponent(int initial) {
 
@@ -35,8 +38,20 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
         communicationCount.set(value);
     }
 
-    public void incrementThroughput(int step) {
+    public void incrementCommunicationCount(int step) {
         setCommunicationCountProperty(getCommunicationCount() + step);
+    }
+
+    public DoubleProperty getThroughputProperty() {
+        return throughput;
+    }
+
+    public double getThroughput() {
+        return throughput.getValue();
+    }
+
+    public void setThroughput(double value) {
+        throughput.setValue(value);
     }
 
     @Override

@@ -59,7 +59,7 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
     @Override
     public boolean update(NodeStatisticsComponent nodeStatisticsComponent, IComponent instance) {
 
-        nodeStatisticsComponent.incrementThroughput(1);
+        nodeStatisticsComponent.incrementCommunicationCount(1);
         return true;
     }
 
