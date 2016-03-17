@@ -107,7 +107,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                 Platform.runLater(() -> node.getComponent(ViewComponent.class).animate());
                 refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
                 Platform.runLater(this::repaint);
-                refresher.play();
+                refresher.playFromStart();
 
             } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
 
@@ -115,7 +115,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                 Platform.runLater(() -> connection.getComponent(ViewComponent.class).animate());
                 refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
                 Platform.runLater(this::repaint);
-                refresher.play();
+                refresher.playFromStart();
             }
         });
 

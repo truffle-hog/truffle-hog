@@ -75,6 +75,7 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
 
         root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Device name", component.getDeviceNameProperty())));
         root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("IP Address", component.getIpAddressProperty())));
+        //TODO maybe use the read only property rather than wrapping the actual value in a temporary property
         root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Mac Address", new SimpleObjectProperty<>(component.getMacAddress()))));
 
         return root;

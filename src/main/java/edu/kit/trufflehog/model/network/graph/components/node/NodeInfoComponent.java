@@ -113,7 +113,8 @@ public class NodeInfoComponent implements IComponent {
 
     @Override
     public String name() {
-        return "Node Info";
+        //TODO put this in property file
+        return "Device info";
     }
 
     @Override
@@ -140,10 +141,11 @@ public class NodeInfoComponent implements IComponent {
 
     @Override
     public String toString() {
-        return "NodeInfoComponent{" +
-                "deviceNameProperty=" + deviceNameProperty +
-                ", ipAddressProperty=" + ipAddressProperty +
-                ", macAddressProperty=" + macAddressProperty +
-                '}';
+
+        if (deviceNameProperty.getValue() == null)
+            return "MAC Address: " + macAddressProperty.getValue();
+
+        return "MAC Address: " + macAddressProperty.getValue() + ", " +
+                "Device name: " + deviceNameProperty.getValue();
     }
 }
