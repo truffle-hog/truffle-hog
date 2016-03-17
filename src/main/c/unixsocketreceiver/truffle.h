@@ -29,16 +29,26 @@ struct DeviceBlock {
 	char nameOfStation[MAX_STRING_LEN];
 };
 
+struct IPBlock {
+
+    uint32_t ip;
+    uint32_t subnet;
+    uint32_t gateway;
+
+};
+
 
 struct Block {
 
 	enum {
-		IS_DEVICE
+		IS_DEVICE = 1,
+		IS_IP = 2
 	} type;
 
 	union {
 
 		struct DeviceBlock deviceBlock;
+        struct IPBlock ipBlock;
 
 	} val;
 

@@ -58,14 +58,17 @@ public class AddPacketDataCommand implements ITruffleCommand {
 
         // build the source node info
         NodeInfoComponent sourceNIC = new NodeInfoComponent(sourceAddress);
-        sourceNIC.setIPAddress(sourceIP);
         if (isResponse != null && isResponse) {
-            sourceNIC.setDeviceName(deviceName);
+            if (deviceName != null) {
+                sourceNIC.setDeviceName(deviceName);
+            }
+            if (sourceIP != null && !sourceIP.equals(IPAddress.INVALID_ADDRESS)) {
+                sourceNIC.setIPAddress(sourceIP);
+            }
         }
 
         // build the destination node info
         NodeInfoComponent destNIC = new NodeInfoComponent(destAddress);
-        destNIC.setIPAddress(destIP);
 
 
 

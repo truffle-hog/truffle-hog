@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
  */
 public class IPAddress implements IAddress, Comparable<IPAddress> {
 
+    public static final IPAddress INVALID_ADDRESS = new IPAddress(0);
     private final long address;
     private final byte[] bytes;
     private final boolean isMulticast;

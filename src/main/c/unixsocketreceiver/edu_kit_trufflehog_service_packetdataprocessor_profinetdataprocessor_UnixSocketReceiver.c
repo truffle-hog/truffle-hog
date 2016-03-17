@@ -331,14 +331,35 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
     uint16_t dataLength = 0; // add to truffle maybe?
 
+    uint32_t ip = 0;
+    uint32_t subnet = 0;
+    uint32_t gateway = 0;
+
     if (truffle.frame.type == IS_DCP)
     {
-        // create the java string for the deviceName property
-        if (truffle.frame.val.dcp.blocks[0].type == IS_DEVICE)
+
+        for (int i = 0; i < MAX_BLOCKS; i++)
         {
-            nameStr = (*env)->NewStringUTF(env, truffle.frame.val.dcp.blocks[0].val.deviceBlock.nameOfStation);
-            _CHECK_JAVA_EXCEPTION(env);
-            check(nameStr != NULL, "could not create deviceName string");
+            switch(truffle.frame.val.dcp.blocks[i].type)
+            {
+            // create the java string for the deviceName property
+            case IS_DEVICE:
+                {
+                    nameStr = (*env)->NewStringUTF(env, truffle.frame.val.dcp.blocks[i].val.deviceBlock.nameOfStation);
+                    _CHECK_JAVA_EXCEPTION(env);
+                    check(nameStr != NULL, "could not create deviceName string");
+                    break;
+                }
+
+            case IS_IP:
+                {
+                    ip = truffle.frame.val.dcp.blocks[i].val.ipBlock.ip;
+                    break;
+                }
+
+            default:
+                break;
+            }
         }
 
         serviceID = truffle.frame.val.dcp.serviceID;
@@ -380,7 +401,7 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 	                                                       buildTruffleMID,                         // buildTruffle method id
 	                                                       truffle.etherHeader.sourceMacAddress,    // srcMACAddr
 	                                                       truffle.etherHeader.destMacAddress,      // dstMACAddr
-	                                                       0,                                       // srcIPAddr
+	                                                       ip,                                      // srcIPAddr
 	                                                       0,                                       // dstIPAddr
 	                                                       nameStr,                                 // nameOfStation
 	                                                       truffle.etherHeader.etherType,           // etherType

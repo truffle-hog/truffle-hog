@@ -142,10 +142,14 @@ public class NodeInfoComponent implements IComponent {
     @Override
     public String toString() {
 
-        if (deviceNameProperty.getValue() == null)
-            return "MAC Address: " + macAddressProperty.getValue();
+        if (deviceNameProperty.getValue() != null) {
+            return deviceNameProperty.getValue() + " (" + macAddressProperty.getValue() + ")";
+        }
 
-        return "MAC Address: " + macAddressProperty.getValue() + ", " +
-                "Device name: " + deviceNameProperty.getValue();
+        if (ipAddressProperty.getValue() != null) {
+            return ipAddressProperty.getValue() + " (" + macAddressProperty.getValue() + ")";
+        }
+
+        return macAddressProperty.getValue().toString();
     }
 }
