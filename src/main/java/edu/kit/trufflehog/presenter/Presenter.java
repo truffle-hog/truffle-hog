@@ -18,7 +18,6 @@ import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
@@ -156,8 +155,8 @@ public class Presenter {
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
 
-        truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
-        //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
+        //truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
+        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
         truffleFetchService.execute(truffleReceiver);
         truffleReceiver.connect();
 

@@ -25,11 +25,11 @@ public class IPAddress implements IAddress, Comparable<IPAddress> {
     public IPAddress(final long address) throws InvalidIPAddress {
 
         if (address < 0) {
-            throw new InvalidIPAddress();
+            throw new InvalidIPAddress(address);
         }
 
         if (address > 0xFFFFFFFFL) {
-            throw new InvalidIPAddress();
+            throw new InvalidIPAddress(address);
         }
 
         this.address = address;

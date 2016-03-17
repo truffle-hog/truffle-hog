@@ -55,5 +55,6 @@ public class StatisticsViewController extends BorderPaneController {
         infoTable.setRoot(statViewModel.getRootItem());
         infoTable.getColumns().setAll(keyColumn, valueColumn);
         infoTable.setShowRoot(false);
+        //infoTable.setEditable(true);
     }
 }

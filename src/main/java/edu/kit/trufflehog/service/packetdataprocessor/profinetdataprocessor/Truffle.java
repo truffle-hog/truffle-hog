@@ -27,6 +27,7 @@ public class Truffle implements IPacketData {
     }
 
     /**
+     *     /**
      * <p>
      * This method builds a {@link Truffle} with the specified arguments as data.
      * The source and destination mac addresses must always be valid.
@@ -38,7 +39,14 @@ public class Truffle implements IPacketData {
      * @param dstMACAddr the destination MAC address. MUST be valid
      * @param srcIPAddr  the source IP address. Can be omitted by passing 0
      * @param dstIPAddr  the destination IP address. Can be omitted by passing 0
-     * @param deviceName the device name. Can be omitted by passing null
+     * @param nameOfStation the device name. Can be omitted by passing null
+     * @param etherType
+     * @param serviceID
+     * @param serviceIDName
+     * @param serviceType
+     * @param serviceTypeName
+     * @param xid
+     * @param responseDelay
      * @return the built {@link Truffle}
      * @throws InvalidProfinetPacket
      */
@@ -46,8 +54,15 @@ public class Truffle implements IPacketData {
                                 final long dstMACAddr,
                                 final long srcIPAddr,
                                 final long dstIPAddr,
-                                final String deviceName,
-                                final short etherType) throws InvalidProfinetPacket {
+                                final String nameOfStation,
+                                final int etherType,
+                                final int serviceID,
+                                final String serviceIDName,
+                                final int serviceType,
+                                final String serviceTypeName,
+                                final long xid,
+                                final int responseDelay,
+                                final int isResponse) throws InvalidProfinetPacket {
         final Truffle truffle = new Truffle();
 
         try {
@@ -66,14 +81,30 @@ public class Truffle implements IPacketData {
         try {
             truffle.setAttribute(IPAddress.class, "destIPAddress", new IPAddress(dstIPAddr));
         } catch (InvalidIPAddress invalidIPAddress) {
-            throw new InvalidProfinetPacket("Invalid destination ip address: " + dstIPAddr);
+           // throw new InvalidProfinetPacket("Invalid destination ip address: " + dstIPAddr);
         }
 
-        if (deviceName != null) {
-            truffle.setAttribute(String.class, "deviceName", deviceName);
+        if (nameOfStation != null) {
+            truffle.setAttribute(String.class, "deviceName", nameOfStation);
         }
 
-        truffle.setAttribute(Short.class, "etherType", etherType);
+        truffle.setAttribute(Integer.class, "etherType", etherType);
+        truffle.setAttribute(Integer.class, "serviceType", serviceType);
+        truffle.setAttribute(Integer.class, "serviceID", serviceID);
+
+        truffle.setAttribute(Long.class, "xid", xid);
+
+        truffle.setAttribute(Integer.class, "responseDelay", responseDelay);
+
+        truffle.setAttribute(Boolean.class, "isResponse", isResponse != 0);
+
+        if (serviceIDName != null) {
+            truffle.setAttribute(String.class, "serviceTypeName", serviceTypeName);
+        }
+
+        if (serviceTypeName != null) {
+            truffle.setAttribute(String.class, "serviceIDName", serviceIDName);
+        }
 
         return truffle;
     }
@@ -141,6 +172,17 @@ public class Truffle implements IPacketData {
         if (etherType != null) {
             sb.append(etherType.toString());
         }
+        sb.append("\n\n");
+
+        // rest of data:
+
+        for (HashMap<String, Object> map : attributes.values()) {
+            for (Object o : map.values()) {
+                sb.append(o);
+                sb.append(", ");
+            }
+        }
+
         sb.append("\n\n");
 
         return sb.toString();

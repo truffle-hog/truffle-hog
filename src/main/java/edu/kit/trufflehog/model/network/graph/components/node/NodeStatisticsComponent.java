@@ -34,6 +34,7 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
         return communicationCount.get();
     }
 
+    //FIXME fix concurrency problem?
     public void setCommunicationCountProperty(int value) {
         communicationCount.set(value);
     }
