@@ -68,12 +68,6 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
     }
 
     public int getCommunicationCount() {
-
-        logger.debug("communication count: " + communicationCount.getValue());
-
-        logger.debug("ingoing: " + ingoingCount);
-        logger.debug("outgoing: " + outgoingCount);
-
         return communicationCount.get();
     }
 

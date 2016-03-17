@@ -64,12 +64,21 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
 
         final NodeStatisticsComponent other = (NodeStatisticsComponent) instance;
 
-        // TODO maybe check for more vairants of values (potential bug???)
-        if (other.getOutgoingCount() >= 1)
-            nodeStatisticsComponent.setOutgoingCount(nodeStatisticsComponent.getOutgoingCount() + other.getOutgoingCount());
-        else if (other.getIngoingCount() >= 1)
-            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+        nodeStatisticsComponent.setOutgoingCount(nodeStatisticsComponent.getOutgoingCount() + other.getOutgoingCount());
 
+        nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+
+        // TODO maybe check for more variants of values (potential bug???)
+/*        if (other.getOutgoingCount() == 0 && other.getIngoingCount() == 0)
+            nodeStatisticsComponent.setOutgoingCount(nodeStatisticsComponent.getOutgoingCount() + other.getOutgoingCount());
+        else if (other.getOutgoingCount() == 1 && other.getIngoingCount() == 0)
+            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+        else if (other.getOutgoingCount() == 0 && other.getIngoingCount() == 1)
+            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+        else if (other.getOutgoingCount() == 1 && other.getIngoingCount() == 1)
+            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+        else
+            throw new UnsupportedOperationException("not supported to add other numbers than 0 or 1 for ingoing and outgoing updates yet");*/
         //nodeStatisticsComponent.incrementThroughput(1);
         return true;
     }

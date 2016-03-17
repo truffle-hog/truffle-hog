@@ -56,11 +56,10 @@ public class MulticastEdgeRenderer implements IRenderer {
 
             protected void interpolate(double frac) {
 
-                Platform.runLater(() -> {
-                    strokeWidth = (float) (frac * baseWidth);
-                    opac = frac >= 0.6 ? 0 : (float) (0.6f - frac);
-                    multiplier = (float) (baseSize * frac);
-                });
+
+                strokeWidth = (float) (frac * baseWidth);
+                opac = frac >= 0.6 ? 0 : (float) (0.6f - frac);
+                multiplier = (float) (baseSize * frac);
 
             }
 
@@ -68,11 +67,10 @@ public class MulticastEdgeRenderer implements IRenderer {
         animator.setCycleCount(2);
         animator.setInterpolator(Interpolator.EASE_OUT);
         animator.setOnFinished(e -> {
-            Platform.runLater(() -> {
+
                 multiplier = 0;
                 opac = 0;
                 strokeWidth = 0;
-            });
         });
 
 
@@ -133,7 +131,7 @@ public class MulticastEdgeRenderer implements IRenderer {
     @Override
     public void animate() {
 
-        Platform.runLater(animator::play);
+        animator.play();
     }
 
     @Override
