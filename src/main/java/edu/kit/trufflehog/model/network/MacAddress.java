@@ -45,7 +45,7 @@ public class MacAddress implements IAddress {
     public MacAddress(long address) throws InvalidMACAddress {
 
         if (address > 0xFFFFFFFFFFFFL || address < 0) {
-            throw new InvalidMACAddress("the address is too big or in wrong format");
+            throw new InvalidMACAddress(address);
         }
 
         this.address = address;

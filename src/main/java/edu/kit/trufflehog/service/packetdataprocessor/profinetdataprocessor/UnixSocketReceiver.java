@@ -72,6 +72,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                     final Truffle truffle = getTruffle();
 
                     if (truffle != null) {
+                        System.out.println(truffle);
                         notifyListeners(new AddPacketDataCommand(networkWritingPort, truffle, filter));
                     }
                 } catch (InterruptedException e) {
@@ -79,6 +80,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                     Thread.currentThread().interrupt();
                 } catch (ReceiverReadError receiverReadError) {
                     logger.debug(receiverReadError);
+                    disconnect();
                 }
             }
         }

@@ -7,10 +7,10 @@ package edu.kit.trufflehog.model.network;
  * @author Mark Giraud
  * @version 1.0
  */
-public class InvalidMACAddress extends Exception {
+public class InvalidMACAddress extends IllegalArgumentException {
 
-    public InvalidMACAddress() {
-        super();
+    public InvalidMACAddress(long value) {
+        super("The provided address value is in wrong format: " + Long.toHexString(value));
     }
 
     public InvalidMACAddress(String msg) {

@@ -114,7 +114,7 @@ jmethodID getBuildTruffle(JNIEnv *env)
         jclass truffleClass = getTruffleClass(env);
         _CHECK_JAVA_EXCEPTION(env);
 
-        buildTruffleMID = (*env)->GetStaticMethodID(env, truffleClass, "buildTruffle", "(JJJJLjava/lang/String;S)Ledu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle;");
+        buildTruffleMID = (*env)->GetStaticMethodID(env, truffleClass, "buildTruffle", "(JJJJLjava/lang/String;IILjava/lang/String;ILjava/lang/String;JI)Ledu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle;");
         _CHECK_JAVA_EXCEPTION(env);
         check_to(buildTruffleMID != 0, noBuildTruffle, "buildTruffle method not found");
     }
@@ -263,7 +263,7 @@ error:
  * @param env the java environment pointer.
  * @param the truffle struct to fill the data in.
  */
-int getNextTruffle(JNIEnv *env, Truffle *truffle)
+int getNextTruffle(JNIEnv *env, Truffle_t *truffle)
 {
     fd_set read_fds, write_fds, except_fds;
     FD_ZERO(&read_fds);
@@ -279,10 +279,10 @@ int getNextTruffle(JNIEnv *env, Truffle *truffle)
     int rv = select(socketData.socketFD + 1, &read_fds, &write_fds, &except_fds, &timeout);
     if (rv > 0)
     {
-        ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(Truffle));
+        ssize_t len = read(socketData.socketFD, (void*) (truffle), sizeof(struct Truffle));
 
         check_to(len >= 0, noMessageReceived, "reading the turffle failed");
-        check(len == sizeof(Truffle), "could not read the correct number of bytes from the socket");
+        check(len == sizeof(struct Truffle), "could not read the correct number of bytes from the socket: wanted: %ld, got: %ld", sizeof(struct Truffle), len);
 
 	    return 0;
 	}
@@ -307,7 +307,7 @@ noMessageReceived:
  */
 JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_getTruffle(JNIEnv *env, jobject thisObj)
 {
-    Truffle truffle;
+    Truffle_t truffle;
     check(getNextTruffle(env, &truffle) >= 0, "getNextTruffle failed!");
 
     jclass truffleClass = getTruffleClass(env);
@@ -317,20 +317,77 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
     jmethodID buildTruffleMID = getBuildTruffle(env);
     _CHECK_JAVA_EXCEPTION(env);
 
-    // create the java string for the deviceName property
-    jstring nameStr = (*env)->NewStringUTF(env, "put name here");
-    _CHECK_JAVA_EXCEPTION(env);
-    check(nameStr != NULL, "could not create deviceName string");
+    // dcp data
+    jstring nameStr = NULL;
 
+    uint8_t serviceID = 0;
+    jstring serviceIDName = NULL;
+    uint8_t serviceType = 0;
+    jstring serviceTypeName = NULL;
+
+    uint32_t xID = 0;
+    uint16_t responseDelay = 0;
+
+    uint16_t dataLength = 0;
+
+    if (truffle.frame.type == IS_DCP)
+    {
+        // create the java string for the deviceName property
+        if (truffle.frame.val.dcp.blocks[0].type == IS_DEVICE)
+        {
+            nameStr = (*env)->NewStringUTF(env, truffle.frame.val.dcp.blocks[0].val.deviceBlock.nameOfStation);
+            _CHECK_JAVA_EXCEPTION(env);
+            check(nameStr != NULL, "could not create deviceName string");
+        }
+
+        serviceID = truffle.frame.val.dcp.serviceID;
+
+        // create the java string for the serviceIDName
+        serviceIDName = (*env)->NewStringUTF(env, truffle.frame.val.dcp.serviceIDName);
+        _CHECK_JAVA_EXCEPTION(env);
+        check(serviceIDName != NULL, "could not create serviceIDName string");
+
+        serviceType = truffle.frame.val.dcp.serviceType;
+
+        // create the java string for the serviceTypeName
+        serviceTypeName = (*env)->NewStringUTF(env, truffle.frame.val.dcp.serviceTypeName);
+        _CHECK_JAVA_EXCEPTION(env);
+        check(serviceTypeName != NULL, "could not create serviceTypeName string");
+
+        xID = truffle.frame.val.dcp.xID;
+        responseDelay = truffle.frame.val.dcp.responseDelay;
+
+    }
+
+    /*
+    final long srcMACAddr,
+    final long dstMACAddr,
+    final long srcIPAddr,
+    final long dstIPAddr,
+    final String nameOfStation,
+    final int etherType,
+    final int serviceID,
+    final String serviceIDName,
+    final int serviceType,
+    final String serviceTypeName,
+    final long xid,
+    final int responseDelay
+    */
 	jobject truffleObject = (*env)->CallStaticObjectMethod(env,
 	                                                       truffleClass,
 	                                                       buildTruffleMID,
-	                                                       truffle.etherHeader.sourceMacAddress,
-	                                                       truffle.etherHeader.destMacAddress,
-	                                                       0,
-	                                                       0,
-	                                                       nameStr,
-	                                                       truffle.etherHeader.etherType);
+	                                                       truffle.etherHeader.sourceMacAddress,    // srcMACAddr
+	                                                       truffle.etherHeader.destMacAddress,      // dstMACAddr
+	                                                       0,                                       // srcIPAddr
+	                                                       0,                                       // dstIPAddr
+	                                                       nameStr,                                 // nameOfStation
+	                                                       truffle.etherHeader.etherType,           // etherType
+	                                                       serviceID,                               // serviceID
+	                                                       serviceIDName,                           // serviceIDName
+	                                                       serviceType,                             // serviceType
+	                                                       serviceTypeName,                         // serviceTypeName
+	                                                       xID,                                     // xid
+	                                                       responseDelay);                          // responseDelay
     _CHECK_JAVA_EXCEPTION(env);
 
     return truffleObject;
