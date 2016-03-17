@@ -31,6 +31,6 @@ public class IPAddressFilterTest {
         java.util.List<String> rules = new LinkedList<>();
 
 
-        FilterInput filterInput = new FilterInput("test", FilterType.BLACKLIST, FilterOrigin.IP, rules, new Color(0x0), 1);
+        FilterInput filterInput = new FilterInput("test", SelectionModel.SELECTION, FilterOrigin.IP, rules, new Color(0x0), 1);
     }
 }

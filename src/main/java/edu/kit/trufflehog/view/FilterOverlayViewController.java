@@ -46,6 +46,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * <p>
@@ -173,7 +174,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
      */
     private void setUpTypeColumn(TableView tableView) {
         // Set up type column
-        final TableColumn typeColumn = new TableColumn("Type");
+        final TableColumn typeColumn = new TableColumn("Selection Model");
         typeColumn.setMinWidth(90);
         typeColumn.setPrefWidth(90);
         tableView.getColumns().add(typeColumn);
@@ -182,7 +183,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
 
             // Set up callback for type property
             public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
-                return p.getValue().getTypeProperty();
+                return p.getValue().getSelectionModelProperty();
             }
         });
     }
@@ -357,21 +358,6 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         removeButton.setScaleX(0.5);
         removeButton.setScaleY(0.5);
 
-        final Button selectionButton = new ImageButton("select.png");
-        selectionButton.setScaleX(0.5);
-        selectionButton.setScaleY(0.5);
-        selectionButton.setOnAction(actionEvent -> {
-
-            final Set<INode> selected = new HashSet<>(pickedState.getPicked());
-
-            final String filterString = selected.stream().map(node -> node.getAddress().toString()).collect(Collectors.joining(";\n"));
-            filterEditingMenuViewController.getNameTextField().setText("Selection " + selected.size());
-            filterEditingMenuViewController.getRulesTextArea().setText(filterString);
-            filterEditingMenuViewController.getFilterByComboBox().setValue(configData.getProperty("MAC_LABEL"));
-            filterEditingMenuViewController.showMenu();
-
-        });
-
         // Set up edit button
         final Button editButton = new ImageButton("edit.png");
         editButton.setOnAction(actionEvent -> {
@@ -382,6 +368,24 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         });
         editButton.setScaleX(0.45);
         editButton.setScaleY(0.45);
+
+        // Set up selection button
+        final Button selectionButton = new ImageButton("select.png");
+        selectionButton.setScaleX(0.5);
+        selectionButton.setScaleY(0.5);
+        selectionButton.setOnAction(actionEvent -> {
+
+            final Set<INode> selected = new HashSet<>(pickedState.getPicked());
+
+            final List<String> filterStringList = selected.stream()
+                    .map(node -> node.getAddress().toString())
+                    .collect(Collectors.toList());
+            final String filterString = concatRules(filterStringList);
+            filterEditingMenuViewController.getRulesTextArea().setText(filterString);
+            filterEditingMenuViewController.getFilterByComboBox().setValue(configData.getProperty("MAC_LABEL"));
+            filterEditingMenuViewController.showMenu();
+
+        });
 
         // Set up components on overlay
         final BorderPane borderPane = new BorderPane();
@@ -415,6 +419,29 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         return data.stream()
                 .map(FilterInput::getName)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * <p>
+     *     Takes a list of rules and concatenates them in a matter that makes the string easily readable.
+     * </p>
+     *
+     * @param rules The rules to concatenate to one string.
+     * @return The rules when they are completely concatenated.
+     */
+    String concatRules(List<String> rules) {
+        final String[] ruleArray = rules.toArray(new String[rules.size()]);
+        return IntStream.range(0, ruleArray.length)
+                .mapToObj(i -> {
+                    // Add a new line to every third element in the stream
+                    if (i % 3 == 2) {
+                        return ruleArray[i] + ";\n";
+                    } else {
+                        return ruleArray[i] + ";    ";
+                    }
+                })
+                .reduce((currentRule, rule) -> currentRule += rule)
+                .orElse("");
     }
 
     /**

@@ -19,13 +19,13 @@ package edu.kit.trufflehog.model.filter;
 
 /**
  * <p>
- *     The FilterType determines what type a filter is. A filter can either be based on a selection or an inverse selection.
+ *     The SelectionModel determines what type a filter is. A filter can either be based on a selection or an inverse selection.
  *     That means all nodes matched by the filter either count as safe (whitelist) or unsafe (blacklist).
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public enum FilterType {
+public enum SelectionModel {
     SELECTION, INVERSE_SELECTION
 }
