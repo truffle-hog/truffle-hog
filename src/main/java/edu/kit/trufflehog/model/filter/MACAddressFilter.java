@@ -41,6 +41,9 @@ public class MACAddressFilter implements IFilter {
         if (filterInput == null)
             throw new NullPointerException("filterInput must not be null!");
 
+        if (filterInput.getOrigin() != FilterOrigin.MAC)
+            throw new InvalidFilterRule("The filter input contains invalid filter rules. This filter can only handle mac rules");
+
         this.networkIOPort = networkIOPort;
         filterColor = filterInput.getColor();
         priority = filterInput.getPriority();

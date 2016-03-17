@@ -1,7 +1,5 @@
 package edu.kit.trufflehog.model.network.graph;
 
-import edu.kit.trufflehog.util.ICopyCreator;
-
 import java.io.Serializable;
 
 /**
@@ -14,10 +12,6 @@ public interface IConnection extends IComposition, Serializable {
     INode getSrc();
 
     INode getDest();
-
-    @Override
-    IConnection createDeepCopy(ICopyCreator copyCreator);
-
 
  //   boolean update(IConnection update);
 

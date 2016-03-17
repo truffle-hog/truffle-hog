@@ -17,6 +17,7 @@ import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesCo
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 
 
@@ -62,16 +63,25 @@ public class AddPacketDataCommand implements ITruffleCommand {
         NodeInfoComponent destNIC = new NodeInfoComponent(destAddress);
         destNIC.setIPAddress(destIP);
 
-        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), sourceNIC);
-        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), destNIC);
+        final PacketDataLoggingComponent connectionPacketLogger = new PacketDataLoggingComponent();
+        connectionPacketLogger.addPacket(data);
 
-        final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1));
+        final PacketDataLoggingComponent srcPacketLogger = new PacketDataLoggingComponent();
+        srcPacketLogger.addPacket(data);
 
-        sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
-        destNode.addComponent(new ViewComponent(new NodeRenderer()));
+        final PacketDataLoggingComponent destPacketLogger = new PacketDataLoggingComponent();
+        destPacketLogger.addPacket(data);
+
+        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), sourceNIC, srcPacketLogger);
+        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), destNIC, destPacketLogger);
+
+        final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1), connectionPacketLogger);
 
         sourceNode.addComponent(new FilterPropertiesComponent());
         destNode.addComponent(new FilterPropertiesComponent());
+
+        sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
+        destNode.addComponent(new ViewComponent(new NodeRenderer()));
 
         if (destAddress.isMulticast()) {
             connection.addComponent(new ViewComponent(new MulticastEdgeRenderer()));

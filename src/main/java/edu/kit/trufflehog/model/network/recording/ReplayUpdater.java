@@ -73,7 +73,7 @@ public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection>
         }
         final NodeStatisticsComponent comp = (NodeStatisticsComponent) instance;
 
-        nodeStatisticsComponent.setThroughputProperty(comp.getThroughput());
+        nodeStatisticsComponent.setCommunicationCountProperty(comp.getCommunicationCount());
         return true;
     }
 

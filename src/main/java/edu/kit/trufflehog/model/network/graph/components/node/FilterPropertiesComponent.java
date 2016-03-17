@@ -1,10 +1,14 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.TreeMultimap;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
-import edu.kit.trufflehog.util.ICopyCreator;
+import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
+
 import java.awt.*;
 
 /**
@@ -80,9 +84,8 @@ public class FilterPropertiesComponent implements IComponent {
     }
 
     @Override
-    public IComponent createDeepCopy(ICopyCreator copyCreator) {
-        if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
-        return copyCreator.createDeepCopy(this);
+    public <T> T accept(IComponentVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 
     @Override

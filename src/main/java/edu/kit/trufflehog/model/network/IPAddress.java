@@ -24,18 +24,21 @@ public class IPAddress implements IAddress, Comparable<IPAddress> {
 
     public IPAddress(final long address) throws InvalidIPAddress {
 
-        if (address < 0)
+        if (address < 0) {
             throw new InvalidIPAddress(address);
+        }
 
-        if (address > 4294967296L)
+        if (address > 0xFFFFFFFFL) {
             throw new InvalidIPAddress(address);
+        }
 
         this.address = address;
-        hash = new Long(address).hashCode();
+
+        hash = new Long(this.address).hashCode();
 
         // transform to byte array
         bytes = new byte[4];
-        byte[] extractedBytes = ByteBuffer.allocate(8).putLong(address).array();
+        final byte[] extractedBytes = ByteBuffer.allocate(8).putLong(this.address).array();
         System.arraycopy(extractedBytes, 4, bytes, 0, extractedBytes.length - 4);
 
         // set multicast bit

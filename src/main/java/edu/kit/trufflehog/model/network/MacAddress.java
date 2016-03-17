@@ -44,22 +44,23 @@ public class MacAddress implements IAddress {
 
     public MacAddress(long address) throws InvalidMACAddress {
 
-        if (address > 0xFFFFFFFFFFFFL || address < 0) {
+        this.address = address;
+
+        if (this.address > 0xFFFFFFFFFFFFL || this.address < 0) {
             throw new InvalidMACAddress(address);
         }
 
-        this.address = address;
         hashcode = (new Long(this.address)).hashCode();
 
         // transform to byte array
-        byte[] extractedBytes = ByteBuffer.allocate(8).putLong(address).array();
+        final byte[] extractedBytes = ByteBuffer.allocate(8).putLong(address).array();
         bytes = Arrays.copyOfRange(extractedBytes, 2, 8);
 
         // set multicast bit
         isMulticast = (bytes[0] & 1) == 1;
 
         // set string representation
-        List<Byte> bytes = Arrays.asList(ArrayUtils.toObject(toByteArray()));
+        final List<Byte> bytes = Arrays.asList(ArrayUtils.toObject(toByteArray()));
         addressString = bytes.stream().map(b -> String.format("%02x", b)).collect(Collectors.joining(":"));
     }
 
@@ -80,7 +81,7 @@ public class MacAddress implements IAddress {
 
     @Override
     public boolean equals(Object other) {
-        return (other instanceof IAddress) && (address == ((MacAddress)other).address);
+        return (other instanceof MacAddress) && (address == ((MacAddress)other).address);
     }
 
     @Override

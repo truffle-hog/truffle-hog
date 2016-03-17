@@ -19,7 +19,7 @@ public interface INetworkDevice {
      *
      * @param tape the tape to be played
      */
-    void play(INetworkTape tape, INetworkViewPortSwitch viewPort);
+    void goReplay(INetworkTape tape, INetworkViewPortSwitch viewPort);
 
     /**
      * Stops the recording of the network on the inserted tape.

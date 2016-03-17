@@ -20,6 +20,7 @@ package edu.kit.trufflehog.model.filter;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.IPAddress;
 import edu.kit.trufflehog.model.network.InvalidIPAddress;
@@ -36,7 +37,7 @@ import java.util.List;
  * </p>
  *
  * @author Mark Giraud
- * @version 0.1
+ * @version 1.0
  */
 public class IPAddressFilter implements IFilter {
 
@@ -52,6 +53,9 @@ public class IPAddressFilter implements IFilter {
 
         if (filterInput == null)
             throw new NullPointerException("filterInput must not be null!");
+
+        if (filterInput.getOrigin() != FilterOrigin.IP)
+            throw new InvalidFilterRule("The filter input contains invalid filter rules. This filter can only handle ip rules");
 
         this.networkIOPort = networkIOPort;
         filterColor = filterInput.getColor();
