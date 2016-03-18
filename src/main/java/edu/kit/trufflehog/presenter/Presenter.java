@@ -13,8 +13,9 @@ import edu.kit.trufflehog.model.network.graph.LiveUpdater;
 import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
+import edu.kit.trufflehog.view.ViewSwitcher;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
@@ -81,8 +82,6 @@ public class Presenter {
         configData = configDataTemp;
 
         primaryStage.setOnCloseRequest(event -> finish());
-
-        this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap);
     }
 
     /**
@@ -111,7 +110,7 @@ public class Presenter {
         liveNetwork = new LiveNetwork(og);
 
         // TODO Add real thing too, perhaps I misunderstood the viewport, need to talk to somebody in person ( - Julian)
-        viewPortMap.put("Demo", liveNetwork.getViewPort());
+        viewPortMap.put(ViewSwitcher.PROFINET_VIEW, liveNetwork.getViewPort());
 
         // TODO Where to put this???
 /*        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
@@ -149,11 +148,10 @@ public class Presenter {
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-
-        truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
-        //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
+        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
+        this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
         truffleFetchService.execute(truffleReceiver);
-        truffleReceiver.connect();
+        //truffleReceiver.connect();
 
         // Initialize the command executor and register it.
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();

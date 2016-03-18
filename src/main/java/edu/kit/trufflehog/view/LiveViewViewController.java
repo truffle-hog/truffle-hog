@@ -8,7 +8,6 @@ import edu.kit.trufflehog.interaction.ProtocolControlInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
-import edu.kit.trufflehog.model.network.INetworkReadingPort;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
@@ -18,34 +17,25 @@ import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import edu.kit.trufflehog.viewmodel.GeneralStatisticsViewModel;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
-import javafx.util.converter.NumberStringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.text.DecimalFormat;
-import java.util.concurrent.TimeUnit;
-
-import java.awt.Dimension;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -243,13 +233,11 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
      * </p>
      */
     private void addToolbar() {
-        final Button settingsButton = addSettingsButton();
         final Button filterButton = addFilterButton();
-        final Button recordButton = addRecordButton();
         final Button connectButton = addConnectButton();
 
-        final ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml", settingsButton,
-                filterButton, recordButton, connectButton);
+        final ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml",
+                filterButton, connectButton);
         this.getChildren().add(mainToolBarController);
         AnchorPane.setBottomAnchor(mainToolBarController, 5d);
         AnchorPane.setLeftAnchor(mainToolBarController, 5d);
@@ -320,12 +308,12 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         connectButton.setOnAction(event -> {
             if (!connected) {
                 // Fire event to connect to protocol source (e.g. snort)
-                //notifyListeners(interactionMap.get(ProtocolControlInteraction.CONNECT));
+                notifyListeners(interactionMap.get(ProtocolControlInteraction.CONNECT));
                 connected = true;
                 connectButton.setGraphic("access-point-connected.png");
             } else {
                 // Fire event to disconnect from protocol source (e.g. snort)
-                //notifyListeners(interactionMap.get(ProtocolControlInteraction.DISCONNECT));
+                notifyListeners(interactionMap.get(ProtocolControlInteraction.DISCONNECT));
                 connected = false;
                 connectButton.setGraphic("access-point-disconnected.png");
             }

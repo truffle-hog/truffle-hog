@@ -19,8 +19,11 @@
 package edu.kit.trufflehog.presenter;
 
 import edu.kit.trufflehog.Main;
+import edu.kit.trufflehog.command.usercommand.ConnectToSPPProfinetCommand;
+import edu.kit.trufflehog.command.usercommand.DisconnectSPPProfinetCommand;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
+import edu.kit.trufflehog.interaction.ProtocolControlInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
@@ -29,8 +32,10 @@ import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkTape;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.*;
+import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
 import edu.kit.trufflehog.view.controllers.IWindowController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -70,20 +75,21 @@ public class ViewBuilder {
     private final SplitPane splitPane;
     private final ViewSwitcher viewSwitcher;
     private final Map<String, INetworkViewPort> viewPorts;
+    private final TruffleReceiver truffleReceiver;
 
     /**
      * <p>
      *     Creates the ViewBuilder, which builds the entire view.
      * </p>
-     *
-     * @param configData   The {@link ConfigData} that is necessary to save and load configurations, like
+     *  @param configData   The {@link ConfigData} that is necessary to save and load configurations, like
      *                     filters or settings.
      * @param primaryStage The primary stage, where everything is drawn upon.
      * @param viewPorts The viewports that TruffleHog supports mapped to their names.
+     * @param truffleReceiver
      */
     public ViewBuilder(final ConfigData configData,
                        final Stage primaryStage,
-                       final Map<String, INetworkViewPort> viewPorts) {
+                       final Map<String, INetworkViewPort> viewPorts, TruffleReceiver truffleReceiver) {
         this.configData = configData;
         this.primaryStage = primaryStage;
         this.groundView = new AnchorPane();
@@ -92,6 +98,7 @@ public class ViewBuilder {
         this.viewSwitcher = new ViewSwitcher();
         this.mainViewController = new MainViewController("main_view.fxml");
         this.viewPorts = viewPorts;
+        this.truffleReceiver = truffleReceiver;
 
         if (this.primaryStage == null || this.configData == null) {
             throw new NullPointerException("primaryStage and configData shouldn't be null.");
@@ -273,15 +280,18 @@ public class ViewBuilder {
         ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724",
                 "capture-457", "capture-167");
 
-        AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
-        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, viewSwitcher, stackPane,
-                viewPorts.get(ViewSwitcher.DEMO_VIEW) , primaryStage.getScene(), updateFilterCommand, userCommandIListener,
+        final AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
+        final AnchorPaneInteractionController demoView = new LiveViewViewController("live_view.fxml", configData, viewSwitcher, stackPane,
+                viewPorts.get(ViewSwitcher.PROFINET_VIEW) , primaryStage.getScene(), updateFilterCommand, userCommandIListener,
                 networkDevice, liveNetwork);
+        demoView.addCommand(ProtocolControlInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
+        demoView.addCommand(ProtocolControlInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
+        demoView.addListener(userCommandIListener);
 
 //        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
 //                viewPorts.get("Profinet"));
         viewSwitcher.putView(ViewSwitcher.START_VIEW, startView);
-        viewSwitcher.putView(ViewSwitcher.DEMO_VIEW, demoView);
+        viewSwitcher.putView(ViewSwitcher.PROFINET_VIEW, demoView);
 
         //viewSwitcher.putView("Profinet", profinetView);
         splitPane.getItems().addAll(startView);
