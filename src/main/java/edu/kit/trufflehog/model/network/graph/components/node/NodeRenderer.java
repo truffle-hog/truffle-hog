@@ -9,7 +9,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Ellipse2D;
 
 /**
  * This Component of a node will handle how a node is displayed in the graph
@@ -24,7 +24,8 @@ public class NodeRenderer implements IRenderer {
 
     private Icon iconUnpicked = null;
     private Icon iconPicked = null;
-    private Shape shape = new Rectangle2D.Double(-50,-50,100,100);
+    //private Shape shape = new Rectangle2D.Double(-50,-50,100,100);
+    private Shape shape = new Ellipse2D.Double(-50, -50, 100, 100);
     private Color colorPicked = new Color(0xffffff);
     private Color colorUnpicked = new Color(0x528bff);
     private Stroke stroke = new BasicStroke();

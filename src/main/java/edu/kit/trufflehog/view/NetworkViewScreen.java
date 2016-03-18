@@ -49,7 +49,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -238,9 +238,9 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             long maxSize = viewPort.getMaxThroughput();
 
             double relation = (double) currentSize / (double) maxSize;
-            double sizeMulti = (50.0 * relation) + 10;
-            return new Ellipse2D.Double(-sizeMulti, -sizeMulti, 2*sizeMulti, 2*sizeMulti);
 
+            final ViewComponent viewComponent = iNode.getComponent(ViewComponent.class);
+            return AffineTransform.getScaleInstance(relation, relation).createTransformedShape(viewComponent.getRenderer().getShape());
         });
 
         final Color base = new Color(0x7f7784);
