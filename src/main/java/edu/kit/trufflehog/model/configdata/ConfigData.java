@@ -142,22 +142,6 @@ public class ConfigData {
 
     /**
      * <p>
-     *     Gets the filter input object that is mapped to the given key.
-     * </p>
-     * <p>
-     *     The given name must be the same name as the name that is stored inside the name parameter of the
-     *     {@link FilterInput} object.
-     * </p>
-     *
-     * @param name The name that belongs to the FilterInput object that should be retrieved.
-     * @return The FilterInput object that has the matching name.
-     */
-    public FilterInput getFilter(final String name) {
-        return filterDataModel.get(name);
-    }
-
-    /**
-     * <p>
      *     Gets the property from the currently loaded property file associated with the given key.
      * </p>
      * <p>
