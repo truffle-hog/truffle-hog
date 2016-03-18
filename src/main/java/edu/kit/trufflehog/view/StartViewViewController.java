@@ -34,8 +34,6 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
     private SplitPane splitPane;
     @FXML
     private ListView<String> liveListView;
-    @FXML
-    private ListView<String> captureListView;
 
     /**
      * <p>
@@ -59,11 +57,10 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
 
         // Fill the list views
         liveListView.setItems(liveItems);
-        captureListView.setItems(captureItems);
 
         // Handle mutual selection: if one cell is selected, deselect the other on automatically
-        setOnClickCellFactory(liveListView, captureListView);
-        setOnClickCellFactory(captureListView, liveListView);
+        setOnClickCellFactory(liveListView, new ListView<>());
+        setOnClickCellFactory(liveListView, new ListView<>());
 
         // Add the start button
         ImageButton startButton = new ImageButton("start.png");
@@ -78,21 +75,19 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
         final Text liveText = new Text("Live");
         liveText.setId("sub_title_text");
 
-        final Text captureText = new Text("Capture");
-        captureText.setId("sub_title_text");
+//        final Text captureText = new Text("Capture");
+//        captureText.setId("sub_title_text");
 
         // Add everything to anchor pane
-        this.getChildren().addAll(titleText, liveText, captureText, startButton);
+        this.getChildren().addAll(titleText, liveText, startButton);
 
 
         // Set up resizing of text and split pane
         titleText.translateXProperty().bind(this.widthProperty().subtract(230).divide(2));
-
-        liveText.xProperty().bind(this.widthProperty().subtract(splitPane.widthProperty()).divide(2).multiply(1.3));
-        captureText.xProperty().bind(this.widthProperty().subtract(splitPane.widthProperty()).divide(2).multiply(1.8));
+        liveText.translateXProperty().bind(this.widthProperty().subtract(30).divide(2));
 
         this.heightProperty().addListener((observable, oldValue, newValue) -> {
-            resizeHeightOnUpdate(splitPane, titleText, liveText, captureText);
+            resizeHeightOnUpdate(splitPane, titleText, liveText);
         });
 
         this.widthProperty().addListener((observable, oldValue, newValue) -> {
@@ -109,12 +104,10 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
      * @param splitPane The split pane where the two list views are included
      * @param titleText The title text of the slide (has to be
      * @param liveText The live text label
-     * @param captureText The capture text label
      */
     private void resizeHeightOnUpdate(final SplitPane splitPane,
                                       final Text titleText,
-                                      final Text liveText,
-                                      final Text captureText) {
+                                      final Text liveText) {
 
         // Resize splitpane
         AnchorPane.setBottomAnchor(splitPane, this.getHeight() * 0.25);
@@ -129,8 +122,8 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
         AnchorPane.setBottomAnchor(liveText, this.getHeight() * 0.18);
 
         // Resize captureText
-        AnchorPane.setTopAnchor(captureText, this.getHeight() * 0.77);
-        AnchorPane.setBottomAnchor(captureText, this.getHeight() * 0.18);
+//        AnchorPane.setTopAnchor(captureText, this.getHeight() * 0.77);
+//        AnchorPane.setBottomAnchor(captureText, this.getHeight() * 0.18);
     }
 
     /**
@@ -221,18 +214,11 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
      */
     private String getSelectedItem() {
         String liveItem = liveListView.getSelectionModel().getSelectedItem();
-        String captureItem = captureListView.getSelectionModel().getSelectedItem();
 
         // Make sure only 1 item is selected and check for live item selection
-        if (liveItem != null && captureItem == null) {
+        if (liveItem != null) {
             return liveItem;
         }
-
-        // Make sure only 1 item is selected and check for capture item selection
-        if (captureItem != null && liveItem == null) {
-            return captureItem;
-        }
-
         // No item selected
         return null;
     }
