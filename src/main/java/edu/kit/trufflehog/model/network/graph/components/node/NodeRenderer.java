@@ -19,9 +19,6 @@ import java.awt.geom.Ellipse2D;
  * @version 0.1
  */
 public class NodeRenderer implements IRenderer {
-
-
-
     private Icon iconUnpicked = null;
     private Icon iconPicked = null;
     //private Shape shape = new Rectangle2D.Double(-50,-50,100,100);

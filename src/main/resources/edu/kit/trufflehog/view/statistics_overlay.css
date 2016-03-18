@@ -5,41 +5,45 @@ root {
 .column-header-background { visibility: hidden; -fx-padding: -1em; }
 
 .text {
-    -fx-fill: #9BA2B1;
+    -fx-fill: white;
     -fx-opacity: 100%;
     -fx-font-size: 90%;
     -fx-font-weight: 100;
-    -fx-font-family: 'Droid Sans';
+    -fx-font-family: monospace;
 }
 
 .background {
     -fx-background-color: #282C34;
-    -fx-opacity: 99%;
+    -fx-opacity: 85%;
     -fx-background-radius: 2;
 }
 
 .label {
     -fx-font-size: 11pt;
     -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: #9BA2B1;
+    -fx-text-fill: white;
     -fx-opacity: 0.6;
 }
 
 .label-bright {
     -fx-font-size: 11pt;
     -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: #9BA2B1;
-    -fx-opacity: 0.8;
+    -fx-text-fill: white;
+    -fx-opacity: 1;
 }
 
 .label-header {
     -fx-font-size: 32pt;
     -fx-font-family: "Segoe UI Light";
-    -fx-text-fill: #9BA2B1;
+    -fx-text-fill: white;
+    -fx-opacity: 1;
 }
 
 .table-view {
+
     -fx-base: #282C34;
+    -fx-opacity: 85%;
+    /*-fx-base: #1d1d1d;*/
     -fx-control-inner-background: #282C34;
     -fx-background-color: #282C34;
     -fx-table-cell-border-color: transparent;
@@ -65,7 +69,7 @@ root {
 .table-view .column-header .label {
     -fx-font-size: 20pt;
     -fx-font-family: "Segoe UI Light";
-    -fx-text-fill: #9BA2B1;
+    -fx-text-fill: white;
     -fx-alignment: center-left;
     -fx-opacity: 1;
 }
@@ -91,7 +95,7 @@ root {
 .menu-bar .label {
     -fx-font-size: 14pt;
     -fx-font-family: "Segoe UI Light";
-    -fx-text-fill: #9BA2B1;
+    -fx-text-fill: white;
     -fx-opacity: 0.9;
 }
 
@@ -101,7 +105,6 @@ root {
 }
 
 
-
 /*
  * Metro style Push Button
  * Author: Pedro Duque Vieira
@@ -109,13 +112,13 @@ root {
  */
 .button {
     -fx-padding: 5 22 5 22;
-    -fx-border-color: #9BA2B1;
+    -fx-border-color: #e2e2e2;
     -fx-border-width: 2;
     -fx-background-radius: 0;
-    -fx-background-color: #282C34;
+    -fx-background-color: #1d1d1d;
     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
     -fx-font-size: 11pt;
-    -fx-text-fill: #282C34;
+    -fx-text-fill: #d8d8d8;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
 }
 
@@ -124,12 +127,12 @@ root {
 }
 
 .button:pressed, .button:default:hover:pressed {
-    -fx-background-color: transparent;
-    -fx-text-fill: #9BA2B1;
+    -fx-background-color: white;
+    -fx-text-fill: #1d1d1d;
 }
 
 .button:focused {
-    -fx-border-color: transparent, transparent;
+    -fx-border-color: white, white;
     -fx-border-width: 1, 1;
     -fx-border-style: solid, segments(1, 1);
     -fx-border-radius: 0, 0;
@@ -139,12 +142,12 @@ root {
 .button:disabled, .button:default:disabled {
     -fx-opacity: 0.4;
     -fx-background-color: #282C34;
-    -fx-text-fill: #9BA2B1;
+    -fx-text-fill: white;
 }
 
 .button:default {
     -fx-background-color: -fx-focus-color;
-    -fx-text-fill: #9BA2B1;
+    -fx-text-fill: #ffffff;
 }
 
 .button:default:hover {

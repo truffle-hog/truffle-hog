@@ -75,7 +75,7 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
 
         IntegerProperty incoming = nodeStatisticsComponent.ingoingCountProperty();
         IntegerProperty outgoing = nodeStatisticsComponent.outgoingCountProperty();
-        NodeStatisticsComponent component = new NodeStatisticsComponent(outgoing.get(), ingoing.get());
+        NodeStatisticsComponent component = new NodeStatisticsComponent(outgoing.get(), incoming.get());
         component.setThroughput(nodeStatisticsComponent.getThroughput());
 
         return component;

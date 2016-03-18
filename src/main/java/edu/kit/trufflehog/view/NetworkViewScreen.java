@@ -138,8 +138,8 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 		initRenderers();
 
-		//jungView.setBackground(new Color(0x3e4451));
-		jungView.setBackground(new Color(0xFFFFFF));
+		jungView.setBackground(new Color(0x3e4451));
+		//jungView.setBackground(new Color(0xFFFFFF));
 		//jungView.setBackground(new Color(0x5e6d67));
 		//jungView.setPreferredSize(new Dimension(1000, 1000));
 		// Show vertex and edge labels

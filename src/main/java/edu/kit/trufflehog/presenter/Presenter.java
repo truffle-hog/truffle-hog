@@ -11,6 +11,7 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
 import edu.kit.trufflehog.model.network.recording.*;
+import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
