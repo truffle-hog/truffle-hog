@@ -275,13 +275,13 @@ public class ViewBuilder {
 
         AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
         AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, viewSwitcher, stackPane,
-                viewPorts.get(ViewSwitcher.DEMO_VIEW) , primaryStage.getScene(), updateFilterCommand, userCommandIListener,
+                viewPorts.get(ViewSwitcher.PROFINET_VIEW) , primaryStage.getScene(), updateFilterCommand, userCommandIListener,
                 networkDevice, liveNetwork);
 
 //        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
 //                viewPorts.get("Profinet"));
         viewSwitcher.putView(ViewSwitcher.START_VIEW, startView);
-        viewSwitcher.putView(ViewSwitcher.DEMO_VIEW, demoView);
+        viewSwitcher.putView(ViewSwitcher.PROFINET_VIEW, demoView);
 
         //viewSwitcher.putView("Profinet", profinetView);
         splitPane.getItems().addAll(startView);

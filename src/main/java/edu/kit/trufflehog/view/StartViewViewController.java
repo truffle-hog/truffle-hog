@@ -72,22 +72,15 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
         final Text titleText = new Text("Choose a view port");
         titleText.setId("title_text");
 
-        final Text liveText = new Text("Live");
-        liveText.setId("sub_title_text");
-
-//        final Text captureText = new Text("Capture");
-//        captureText.setId("sub_title_text");
-
         // Add everything to anchor pane
-        this.getChildren().addAll(titleText, liveText, startButton);
+        this.getChildren().addAll(titleText, startButton);
 
 
         // Set up resizing of text and split pane
         titleText.translateXProperty().bind(this.widthProperty().subtract(230).divide(2));
-        liveText.translateXProperty().bind(this.widthProperty().subtract(30).divide(2));
 
         this.heightProperty().addListener((observable, oldValue, newValue) -> {
-            resizeHeightOnUpdate(splitPane, titleText, liveText);
+            resizeHeightOnUpdate(splitPane, titleText);
         });
 
         this.widthProperty().addListener((observable, oldValue, newValue) -> {
@@ -103,11 +96,9 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
      *
      * @param splitPane The split pane where the two list views are included
      * @param titleText The title text of the slide (has to be
-     * @param liveText The live text label
      */
     private void resizeHeightOnUpdate(final SplitPane splitPane,
-                                      final Text titleText,
-                                      final Text liveText) {
+                                      final Text titleText) {
 
         // Resize splitpane
         AnchorPane.setBottomAnchor(splitPane, this.getHeight() * 0.25);
@@ -116,14 +107,6 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
         // Resize titleText
         AnchorPane.setTopAnchor(titleText, this.getHeight() * 0.12);
         AnchorPane.setBottomAnchor(titleText, this.getHeight() * 0.82);
-
-        // Resize liveText
-        AnchorPane.setTopAnchor(liveText, this.getHeight() * 0.77);
-        AnchorPane.setBottomAnchor(liveText, this.getHeight() * 0.18);
-
-        // Resize captureText
-//        AnchorPane.setTopAnchor(captureText, this.getHeight() * 0.77);
-//        AnchorPane.setBottomAnchor(captureText, this.getHeight() * 0.18);
     }
 
     /**

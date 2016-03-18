@@ -10,18 +10,12 @@ import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
-import edu.kit.trufflehog.model.network.recording.INetworkDevice;
-import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
-import edu.kit.trufflehog.model.network.recording.INetworkWritingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.NetworkDevice;
-import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
-import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
+import edu.kit.trufflehog.view.ViewSwitcher;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
@@ -118,7 +112,7 @@ public class Presenter {
         liveNetwork = new LiveNetwork(og);
 
         // TODO Add real thing too, perhaps I misunderstood the viewport, need to talk to somebody in person ( - Julian)
-        viewPortMap.put("Demo", liveNetwork.getViewPort());
+        viewPortMap.put(ViewSwitcher.PROFINET_VIEW, liveNetwork.getViewPort());
 
         // TODO Where to put this???
 /*        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
