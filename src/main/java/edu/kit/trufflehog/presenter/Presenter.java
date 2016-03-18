@@ -82,8 +82,6 @@ public class Presenter {
         configData = configDataTemp;
 
         primaryStage.setOnCloseRequest(event -> finish());
-
-        this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap);
     }
 
     /**
@@ -150,11 +148,10 @@ public class Presenter {
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-
-        //truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
         truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
+        this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
         truffleFetchService.execute(truffleReceiver);
-        truffleReceiver.connect();
+        //truffleReceiver.connect();
 
         // Initialize the command executor and register it.
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();

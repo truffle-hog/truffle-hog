@@ -308,12 +308,12 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         connectButton.setOnAction(event -> {
             if (!connected) {
                 // Fire event to connect to protocol source (e.g. snort)
-                //notifyListeners(interactionMap.get(ProtocolControlInteraction.CONNECT));
+                notifyListeners(interactionMap.get(ProtocolControlInteraction.CONNECT));
                 connected = true;
                 connectButton.setGraphic("access-point-connected.png");
             } else {
                 // Fire event to disconnect from protocol source (e.g. snort)
-                //notifyListeners(interactionMap.get(ProtocolControlInteraction.DISCONNECT));
+                notifyListeners(interactionMap.get(ProtocolControlInteraction.DISCONNECT));
                 connected = false;
                 connectButton.setGraphic("access-point-disconnected.png");
             }
