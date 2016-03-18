@@ -245,13 +245,13 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		jungView.getRenderContext().setVertexShapeTransformer(iNode -> {
 
             final NodeStatisticsComponent statComp = iNode.getComponent(NodeStatisticsComponent.class);
-            int currentSize = statComp.getCommunicationCount();
-            long maxSize = viewPort.getMaxThroughput();
+            final int currentSize = statComp.getCommunicationCount();
+            final long maxSize = viewPort.getMaxThroughput();
 
-            double relation = (double) currentSize / (double) maxSize;
+            final double relation = (double) currentSize / (double) maxSize;
 
             final ViewComponent viewComponent = iNode.getComponent(ViewComponent.class);
-            return AffineTransform.getScaleInstance(relation, relation).createTransformedShape(viewComponent.getRenderer().getShape());
+            return AffineTransform.getScaleInstance(0.3 + relation, 0.3 + relation).createTransformedShape(viewComponent.getRenderer().getShape());
         });
 
         final Color base = new Color(0x7f7784);
