@@ -1,14 +1,13 @@
 package edu.uci.ics.jung.visualization;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 
 /**
  * An icon that is made up of a collection of Icons.
@@ -20,7 +19,7 @@ import javax.swing.ImageIcon;
  */
 public class LayeredIcon extends ImageIcon {
 
-	Set<Icon> iconSet = new LinkedHashSet<Icon>();
+	private final Set<Icon> iconSet = new LinkedHashSet<Icon>();
 
 	public LayeredIcon(Image image) {
 	    super(image);

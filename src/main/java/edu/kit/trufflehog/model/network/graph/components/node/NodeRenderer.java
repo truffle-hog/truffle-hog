@@ -4,6 +4,7 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 
+import javax.swing.Icon;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Shape;
@@ -19,6 +20,10 @@ import java.awt.geom.Rectangle2D;
  */
 public class NodeRenderer implements IRenderer {
 
+
+
+    private Icon iconUnpicked = null;
+    private Icon iconPicked = null;
     private Shape shape = new Rectangle2D.Double(-50,-50,100,100);
     private Color colorPicked = new Color(0xffffff);
     private Color colorUnpicked = new Color(0x528bff);
@@ -48,6 +53,35 @@ public class NodeRenderer implements IRenderer {
         this.shape = shape;
         this.colorPicked = colorPicked;
         this.colorUnpicked = colorUnpicked;
+    }
+
+    public NodeRenderer(Icon picked, Icon unpicked) {
+
+        if (picked == null) throw new NullPointerException("picked icon must not be null");
+        if (unpicked == null) throw new NullPointerException("unpicked icon must not be null");
+
+        this.iconUnpicked = unpicked;
+        this.iconPicked = picked;
+    }
+
+    @Override
+    public Icon getIconUnpicked() {
+        return iconUnpicked;
+    }
+
+    @Override
+    public void setIconUnpicked(Icon iconUnpicked) {
+        this.iconUnpicked = iconUnpicked;
+    }
+
+    @Override
+    public Icon getIconPicked() {
+        return iconPicked;
+    }
+
+    @Override
+    public void setIconPicked(Icon iconPicked) {
+        this.iconPicked = iconPicked;
     }
 
     /**

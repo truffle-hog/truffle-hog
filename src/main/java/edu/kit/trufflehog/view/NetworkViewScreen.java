@@ -37,9 +37,13 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.RenderingHints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyListener;
@@ -100,22 +104,25 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
         port.addGraphEventListener(e -> {
 
-            if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
+            Platform.runLater(() -> {
 
-                final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
-                Platform.runLater(() -> node.getComponent(ViewComponent.class).animate());
-                refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
-                Platform.runLater(this::repaint);
-                refresher.play();
+                if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
 
-            } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
+                    final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
+                    node.getComponent(ViewComponent.class).animate();
+                    refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
+                    repaint();
+                    refresher.playFromStart();
 
-                final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
-                Platform.runLater(() -> connection.getComponent(ViewComponent.class).animate());
-                refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
-                Platform.runLater(this::repaint);
-                refresher.play();
-            }
+                } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
+
+                    final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
+                    connection.getComponent(ViewComponent.class).animate();
+                    refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
+                    repaint();
+                    refresher.playFromStart();
+                }
+            });
         });
 
         // Add this view screen as listener to the picked state, so we can send commands, when the picked state
@@ -176,6 +183,22 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	private void initRenderers() {
 
+
+        jungView.getRenderContext().setVertexIconTransformer(new Transformer<INode, Icon>() {
+
+            @Override
+            public Icon transform(INode node) {
+
+                final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
+
+                if (getPickedVertexState().isPicked(node)) {
+                    return viewComponent.getRenderer().getIconPicked();
+                } else {
+                    return viewComponent.getRenderer().getIconUnpicked();
+                }
+
+            }
+        });
 
 		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getAddress().toString());
 

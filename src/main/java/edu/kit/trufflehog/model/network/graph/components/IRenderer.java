@@ -3,6 +3,7 @@ package edu.kit.trufflehog.model.network.graph.components;
 import edu.kit.trufflehog.util.DeepCopyable;
 import edu.kit.trufflehog.util.Updatable;
 
+import javax.swing.Icon;
 import java.awt.Color;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -32,4 +33,11 @@ public interface IRenderer extends DeepCopyable<IRenderer>, Updatable<IRenderer>
 
     int animationTime();
 
+    Icon getIconPicked();
+
+    void setIconPicked(Icon icon);
+
+    Icon getIconUnpicked();
+
+    void setIconUnpicked(Icon icon);
 }

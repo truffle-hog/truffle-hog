@@ -20,6 +20,7 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 
+import javax.swing.Icon;
 import java.awt.Color;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -103,6 +104,26 @@ public class StaticRenderer implements IRenderer {
 
     @Override
     public int animationTime() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public Icon getIconPicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setIconPicked(Icon icon) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public Icon getIconUnpicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setIconUnpicked(Icon icon) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 

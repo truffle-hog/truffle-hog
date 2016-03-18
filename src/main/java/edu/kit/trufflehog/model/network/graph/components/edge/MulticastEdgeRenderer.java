@@ -5,9 +5,9 @@ import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
-import javafx.application.Platform;
 import javafx.util.Duration;
 
+import javax.swing.Icon;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Shape;
@@ -56,23 +56,18 @@ public class MulticastEdgeRenderer implements IRenderer {
 
             protected void interpolate(double frac) {
 
-                Platform.runLater(() -> {
                     strokeWidth = (float) (frac * baseWidth);
                     opac = frac >= 0.6 ? 0 : (float) (0.6f - frac);
                     multiplier = (float) (baseSize * frac);
-                });
-
             }
 
         };
         animator.setCycleCount(2);
         animator.setInterpolator(Interpolator.EASE_OUT);
         animator.setOnFinished(e -> {
-            Platform.runLater(() -> {
                 multiplier = 0;
                 opac = 0;
                 strokeWidth = 0;
-            });
         });
 
 
@@ -133,12 +128,32 @@ public class MulticastEdgeRenderer implements IRenderer {
     @Override
     public void animate() {
 
-        Platform.runLater(animator::play);
+        animator.play();
     }
 
     @Override
     public int animationTime() {
         return 20 * 40;
+    }
+
+    @Override
+    public Icon getIconPicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setIconPicked(Icon icon) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public Icon getIconUnpicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setIconUnpicked(Icon icon) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override

@@ -4,11 +4,11 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.animation.Transition;
-import javafx.application.Platform;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.Icon;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Shape;
@@ -55,7 +55,7 @@ public class BasicEdgeRenderer implements IRenderer {
             }
 
             protected void interpolate(double frac) {
-                Platform.runLater(() -> currentBrightness = (float) (frac < 0.5 ? 0.5 + frac : 1.5 - frac));
+                currentBrightness = (float) (frac < 0.5 ? 0.5 + frac : 1.5 - frac);
             }
         };
 
@@ -122,13 +122,32 @@ public class BasicEdgeRenderer implements IRenderer {
     @Override
 
     public void animate() {
-        // animator.stop();
-        Platform.runLater(animator::play);
+        animator.play();
     }
 
     @Override
     public int animationTime() {
         return animationTime;
+    }
+
+    @Override
+    public Icon getIconPicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setIconPicked(Icon icon) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public Icon getIconUnpicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setIconUnpicked(Icon icon) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
