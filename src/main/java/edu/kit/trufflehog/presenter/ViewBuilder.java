@@ -282,7 +282,7 @@ public class ViewBuilder {
 
         final AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
         final AnchorPaneInteractionController demoView = new LiveViewViewController("live_view.fxml", configData, viewSwitcher, stackPane,
-                viewPorts.get(ViewSwitcher.PROFINET_VIEW) , primaryStage.getScene(), updateFilterCommand, userCommandIListener,
+                viewPorts.get(ViewSwitcher.DEMO_VIEW) , primaryStage.getScene(), updateFilterCommand, userCommandIListener,
                 networkDevice, liveNetwork);
         demoView.addCommand(ProtocolControlInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
         demoView.addCommand(ProtocolControlInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
@@ -291,7 +291,7 @@ public class ViewBuilder {
 //        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
 //                viewPorts.get("Profinet"));
         viewSwitcher.putView(ViewSwitcher.START_VIEW, startView);
-        viewSwitcher.putView(ViewSwitcher.PROFINET_VIEW, demoView);
+        viewSwitcher.putView(ViewSwitcher.DEMO_VIEW, demoView);
 
         //viewSwitcher.putView("Profinet", profinetView);
         splitPane.getItems().addAll(startView);

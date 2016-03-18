@@ -35,11 +35,12 @@
         <URL value="@start_view.css" />
         <URL value="@scrollbar.css" />
     </stylesheets>
-   <children>
-      <SplitPane fx:id="splitPane" layoutX="179.0" layoutY="150.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="150.0">
-         <items>
-            <ListView fx:id="liveListView" prefHeight="200.0" prefWidth="200.0" styleClass="list-view_left" />
-         </items>
-      </SplitPane>
-   </children>
+    <children>
+        <SplitPane fx:id="splitPane" dividerPositions="0.5" layoutX="179.0" layoutY="150.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="150.0">
+            <items>
+                <ListView fx:id="liveListView" prefHeight="200.0" prefWidth="200.0" styleClass="list-view_left" />
+                <ListView fx:id="captureListView" prefHeight="200.0" prefWidth="200.0" styleClass="list-view_right" />
+            </items>
+        </SplitPane>
+    </children>
 </fx:root>

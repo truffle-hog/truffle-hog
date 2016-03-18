@@ -233,11 +233,13 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
      * </p>
      */
     private void addToolbar() {
+        final Button settingsButton = addSettingsButton();
         final Button filterButton = addFilterButton();
+        final Button recordButton = addRecordButton();
         final Button connectButton = addConnectButton();
 
-        final ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml",
-                filterButton, connectButton);
+        final ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml", settingsButton,
+                filterButton, recordButton, connectButton);
         this.getChildren().add(mainToolBarController);
         AnchorPane.setBottomAnchor(mainToolBarController, 5d);
         AnchorPane.setLeftAnchor(mainToolBarController, 5d);
