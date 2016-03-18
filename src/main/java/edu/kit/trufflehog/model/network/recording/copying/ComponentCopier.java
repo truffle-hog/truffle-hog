@@ -80,10 +80,10 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
     public IComponent visit(NodeStatisticsComponent nodeStatisticsComponent) {
         if (nodeStatisticsComponent == null) throw new NullPointerException("nodeStatisticsComponent must not be null!");
 
-        IntegerProperty ingoing = nodeStatisticsComponent.ingoingCountProperty();
+        IntegerProperty incoming = nodeStatisticsComponent.ingoingCountProperty();
         IntegerProperty outgoing = nodeStatisticsComponent.outgoingCountProperty();
 
-        return new NodeStatisticsComponent(outgoing.get(), ingoing.get());
+        return new NodeStatisticsComponent(outgoing.get(), incoming.get());
     }
 
     @Override

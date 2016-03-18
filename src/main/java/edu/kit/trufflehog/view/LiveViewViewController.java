@@ -4,6 +4,7 @@ import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.SelectionCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.interaction.GraphInteraction;
+import edu.kit.trufflehog.interaction.ProtocolControlInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
@@ -11,7 +12,7 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.util.IListener;
-import edu.kit.trufflehog.view.controllers.AnchorPaneController;
+import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
@@ -26,7 +27,9 @@ import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.Dimension;
+import java.awt.*;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -35,11 +38,14 @@ import java.awt.Dimension;
  * @author Julian Brendl
  * @version 1.0
  */
-public class LiveViewViewController extends AnchorPaneController {
-    // General variables
-    private final ConfigData configData;
-
+public class LiveViewViewController extends AnchorPaneInteractionController<ProtocolControlInteraction> {
     private static final Logger logger = LogManager.getLogger(LiveViewViewController.class);
+
+    // General variables
+    private final Map<ProtocolControlInteraction, IUserCommand> interactionMap = new EnumMap<>(ProtocolControlInteraction.class);
+    private final ConfigData configData;
+    private boolean connected = false;
+    private final ViewSwitcher viewSwitcher;
 
     // View layers
     private final StackPane stackPane;
@@ -55,6 +61,7 @@ public class LiveViewViewController extends AnchorPaneController {
 
     public LiveViewViewController(final String fxml,
                                   final ConfigData configData,
+                                  final ViewSwitcher viewSwitcher,
                                   final StackPane stackPane,
                                   final INetworkViewPort viewPort,
                                   final Scene scene,
@@ -63,7 +70,7 @@ public class LiveViewViewController extends AnchorPaneController {
                                   final INetworkDevice networkDevice,
                                   final INetwork liveNetwork) {
         super(fxml);
-
+        this.viewSwitcher = viewSwitcher;
         this.updateFilterCommand = updateFilterCommand;
         this.userCommandListener = userCommandIListener;
 
@@ -94,6 +101,8 @@ public class LiveViewViewController extends AnchorPaneController {
         AnchorPane.setTopAnchor(networkViewScreen, 0d);
         AnchorPane.setLeftAnchor(networkViewScreen, 0d);
         AnchorPane.setRightAnchor(networkViewScreen, 0d);
+
+        addCloseButton();
 
         addToolbar();
         addGeneralStatisticsOverlay();
@@ -148,7 +157,7 @@ public class LiveViewViewController extends AnchorPaneController {
         recordOverlayViewController = new RecordMenuViewController("record_overlay_menu.fxml", networkDevice, liveNetwork);
         this.getChildren().add(recordOverlayViewController);
         AnchorPane.setBottomAnchor(recordOverlayViewController, 60d);
-        AnchorPane.setLeftAnchor(recordOverlayViewController, 100d);
+        AnchorPane.setLeftAnchor(recordOverlayViewController, 18d);
         recordOverlayViewController.setVisible(false);
     }
 
@@ -186,9 +195,10 @@ public class LiveViewViewController extends AnchorPaneController {
         final Button settingsButton = addSettingsButton();
         final Button filterButton = addFilterButton();
         final Button recordButton = addRecordButton();
+        final Button connectButton = addConnectButton();
 
         final ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml", settingsButton,
-                filterButton, recordButton);
+                filterButton, recordButton, connectButton);
         this.getChildren().add(mainToolBarController);
         AnchorPane.setBottomAnchor(mainToolBarController, 5d);
         AnchorPane.setLeftAnchor(mainToolBarController, 5d);
@@ -250,6 +260,48 @@ public class LiveViewViewController extends AnchorPaneController {
 
     /**
      * <p>
+     *     Builds the connect button.
+     * </p>
+     */
+    private Button addConnectButton() {
+        final ImageButton connectButton = new ImageButton("access-point-disconnected.png");
+
+        connectButton.setOnAction(event -> {
+            if (!connected) {
+                // Fire event to connect to protocol source (e.g. snort)
+                //notifyListeners(interactionMap.get(ProtocolControlInteraction.CONNECT));
+                connected = true;
+                connectButton.setGraphic("access-point-connected.png");
+            } else {
+                // Fire event to disconnect from protocol source (e.g. snort)
+                //notifyListeners(interactionMap.get(ProtocolControlInteraction.DISCONNECT));
+                connected = false;
+                connectButton.setGraphic("access-point-disconnected.png");
+            }
+        });
+
+        connectButton.setScaleX(0.8);
+        connectButton.setScaleY(0.8);
+
+        return connectButton;
+    }
+
+    private void addCloseButton() {
+        final ImageButton closeButton = new ImageButton("close.png");
+
+        closeButton.setOnAction(event -> viewSwitcher.replace(this, "start"));
+
+        closeButton.setScaleX(0.8);
+        closeButton.setScaleY(0.8);
+
+        AnchorPane.setTopAnchor(closeButton, 10d);
+        AnchorPane.setLeftAnchor(closeButton, 10d);
+
+        this.getChildren().add(closeButton);
+    }
+
+    /**
+     * <p>
      *     Handles the showing mechanism of all overlays from the toolbar. OverlayViewController1 will be shown
      *     while the other two will be hidden.
      * </p>
@@ -269,5 +321,10 @@ public class LiveViewViewController extends AnchorPaneController {
         if (overlay3.isVisible()) {
             overlay3.setVisible(false);
         }
+    }
+
+    @Override
+    public void addCommand(ProtocolControlInteraction interaction, IUserCommand command) {
+        interactionMap.put(interaction, command);
     }
 }

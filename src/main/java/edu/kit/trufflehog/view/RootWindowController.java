@@ -22,7 +22,10 @@ public final class RootWindowController implements IWindowController {
     private final MenuBarViewController menuBar;
 
     /**
-     * <p>Instantiates a new RootWindowController.</p>
+     * <p>
+     *     Instantiates a new RootWindowController.
+     * </p>
+     *
      * @param primaryStage the stage this window is placed on
      * @param monitorScene the scene to be placed into the window
      * @param icon the window icon

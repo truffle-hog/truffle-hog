@@ -101,13 +101,33 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
         port.addGraphEventListener(e -> {
 
-            if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
+			Platform.runLater(() -> {
+
+				if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
+
+					final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
+					node.getComponent(ViewComponent.class).animate();
+					refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
+					this.repaint();
+					refresher.playFromStart();
+
+				} else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
+
+					final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
+					connection.getComponent(ViewComponent.class).animate();
+					refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
+					this.repaint();
+					refresher.playFromStart();
+				}
+			});
+
+            /*if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
 
                 final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
                 Platform.runLater(() -> node.getComponent(ViewComponent.class).animate());
                 refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
                 Platform.runLater(this::repaint);
-                refresher.playFromStart();
+				Platform.runLater(refresher::playFromStart);
 
             } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
 
@@ -115,8 +135,8 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                 Platform.runLater(() -> connection.getComponent(ViewComponent.class).animate());
                 refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
                 Platform.runLater(this::repaint);
-                refresher.playFromStart();
-            }
+                Platform.runLater(refresher::playFromStart);
+            }*/
         });
 
         // Add this view screen as listener to the picked state, so we can send commands, when the picked state
@@ -149,8 +169,8 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 		initRenderers();
 
-		jungView.setBackground(new Color(0x3e4451));
-		//jungView.setBackground(new Color(0xE8EAF6));
+		//jungView.setBackground(new Color(0x3e4451));
+		jungView.setBackground(new Color(0xFFFFFF));
 		//jungView.setBackground(new Color(0x5e6d67));
 		//jungView.setPreferredSize(new Dimension(1000, 1000));
 		// Show vertex and edge labels

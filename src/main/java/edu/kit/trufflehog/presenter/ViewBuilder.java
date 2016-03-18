@@ -116,11 +116,6 @@ public class ViewBuilder {
 
         //final StatisticsViewModel statView = new StatisticsViewModel();
 
-        // FIXME this screen is also created in the LiveViewViewController... is that necessary??!
-        //final NetworkGraphViewController networkViewScreen = new NetworkViewScreen(viewPort, 10);
-        //networkViewScreen.addListener(userCommandIListener);
-        //networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statView));
-
         // Load menu bar
         final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml");
 
@@ -279,8 +274,9 @@ public class ViewBuilder {
                 "capture-457", "capture-167");
 
         AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
-        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, stackPane, viewPorts.get("Demo")
-                , primaryStage.getScene(), updateFilterCommand, userCommandIListener, networkDevice, liveNetwork);
+        AnchorPane demoView = new LiveViewViewController("live_view.fxml", configData, viewSwitcher, stackPane,
+                viewPorts.get("Demo") , primaryStage.getScene(), updateFilterCommand, userCommandIListener, networkDevice,
+                liveNetwork);
 
 //        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
 //                viewPorts.get("Profinet"));

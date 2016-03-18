@@ -64,7 +64,7 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
         final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
 
         root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Outgoing", component.outgoingCountProperty())));
-        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Ingoing", component.ingoingCountProperty())));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Incoming", component.ingoingCountProperty())));
 
         return root;
     }

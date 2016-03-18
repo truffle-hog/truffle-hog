@@ -1,10 +1,6 @@
 package edu.kit.trufflehog.view.elements;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.scene.effect.Glow;
-import javafx.util.Duration;
 
 /***
  * <p>
@@ -15,9 +11,7 @@ import javafx.util.Duration;
  * @version 1.0
  */
 public class GlowImageButton extends ImageButton {
-    private final Timeline timeline;
     private final Glow glow;
-
 
     /**
      * <p>
@@ -28,17 +22,9 @@ public class GlowImageButton extends ImageButton {
      */
     public GlowImageButton(final String image) {
         super(image);
-
         glow = new Glow();
         glow.setLevel(0.0);
         setEffect(glow);
-
-        timeline = new Timeline();
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.setAutoReverse(true);
-        final KeyValue kv = new KeyValue(glow.levelProperty(), 1);
-        final KeyFrame kf = new KeyFrame(Duration.millis(700), kv);
-        timeline.getKeyFrames().add(kf);
     }
 
     /**
@@ -47,7 +33,7 @@ public class GlowImageButton extends ImageButton {
      * </p>
      */
     public void startGlow() {
-        timeline.play();
+        glow.setLevel(10.0);
     }
 
     /**
@@ -56,7 +42,6 @@ public class GlowImageButton extends ImageButton {
      * </p>
      */
     public void stopGlow() {
-        timeline.stop();
         glow.setLevel(0.0);
     }
 }
