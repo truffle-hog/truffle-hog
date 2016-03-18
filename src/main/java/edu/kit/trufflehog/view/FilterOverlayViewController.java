@@ -114,7 +114,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         // Set up table view
         final TableView tableView = new TableView();
         tableView.setEditable(true);
-        tableView.setMinWidth(502);
+        tableView.setMinWidth(522);
         tableView.setMinHeight(280);
 
         // Set up columns
@@ -303,9 +303,9 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
      */
     private void setUpLegalityColumn(TableView tableView) {
         // Set up priority column
-        final TableColumn legalColumn = new TableColumn("Legal");
-        legalColumn.setMinWidth(50);
-        legalColumn.setPrefWidth(50);
+        final TableColumn legalColumn = new TableColumn("Authorized");
+        legalColumn.setMinWidth(70);
+        legalColumn.setPrefWidth(70);
         tableView.getColumns().add(legalColumn);
         legalColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, Boolean>,
                 ObservableValue<Boolean>>() {
