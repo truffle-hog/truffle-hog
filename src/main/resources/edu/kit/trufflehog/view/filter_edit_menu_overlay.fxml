@@ -57,7 +57,7 @@
       <Button fx:id="helpButton" layoutX="30.0" layoutY="452.0" mnemonicParsing="false" styleClass="help_button" text="Help" />
       <Text layoutX="445.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Priority:" />
       <TextField fx:id="priorityTextField" layoutX="517.0" layoutY="198.0" prefHeight="27.0" prefWidth="38.0" />
-      <CheckBox fx:id="legalCheckBox" layoutX="517.0" layoutY="158.0" mnemonicParsing="false" />
-      <Text layoutX="445.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Legal:" />
+      <CheckBox fx:id="authorizedCheckBox" layoutX="517.0" layoutY="158.0" mnemonicParsing="false" />
+      <Text layoutX="421.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="body_text" text="Authorized:" />
    </children>
 </fx:root>

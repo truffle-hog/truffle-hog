@@ -72,7 +72,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
     private ComboBox<String> filterByComboBox;
 
     @FXML
-    private CheckBox legalCheckBox;
+    private CheckBox authorizedCheckBox;
     @FXML
     private TextField priorityTextField;
     @FXML
@@ -215,7 +215,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
 
             priorityTextField.setText(filterInput.getPriority() + "");
 
-            legalCheckBox.setSelected(filterInput.isLegal());
+            authorizedCheckBox.setSelected(filterInput.isAuthorized());
 
             rulesTextArea.setText(filterOverlayViewController.concatRules(filterInput.getRules()));
         } else {
@@ -318,9 +318,9 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             filterInput.getPriorityProperty().setValue(filterInputUpdated.getPriorityProperty().getValue());
         }
 
-        // Update legality
-        if (filterInputUpdated.isLegal() != filterInput.isLegal()) {
-            filterInput.getLegalProperty().setValue(filterInputUpdated.getLegalProperty().getValue());
+        // Update authorization
+        if (filterInputUpdated.isAuthorized() != filterInput.isAuthorized()) {
+            filterInput.getAuthorizedProperty().setValue(filterInputUpdated.getAuthorizedProperty().getValue());
         }
 
         // Update rules and save to database, since they don't have a listener (since they are not shown in the table)
@@ -352,7 +352,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         final Color color = colorPicker.getValue();
         final String priorityText = priorityTextField.getText();
         final String rules = rulesTextArea.getText();
-        final boolean legal = legalCheckBox.isSelected();
+        final boolean authorized = authorizedCheckBox.isSelected();
 
         // Check if name is valid
         Pattern namePattern = Pattern.compile("[A-Za-z0-9. _-]{1,50}");
@@ -446,7 +446,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         java.awt.Color colorAwt = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255),
                 (int) (color.getBlue() * 255));
 
-        FilterInput filterInput = new FilterInput(name, selectionModel, filterOrigin, ruleList, colorAwt, legal, priority);
+        FilterInput filterInput = new FilterInput(name, selectionModel, filterOrigin, ruleList, colorAwt, authorized, priority);
         filterInput.load(configData); // Binds properties to database
 
         return filterInput;

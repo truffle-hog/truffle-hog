@@ -114,7 +114,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         // Set up table view
         final TableView tableView = new TableView();
         tableView.setEditable(true);
-        tableView.setMinWidth(502);
+        tableView.setMinWidth(522);
         tableView.setMinHeight(280);
 
         // Set up columns
@@ -123,7 +123,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         setUpOriginColumn(tableView);
         setUpColorColumn(tableView);
         setUpPriorityColumn(tableView);
-        setUpLegalityColumn(tableView);
+        setUpAuthorizedColumn(tableView);
         setUpActiveColumn(tableView);
 
         // Insert data from database into table
@@ -297,22 +297,22 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
 
     /**
      * <p>
-     *     Create the legalality column, which holds the legality of a filter and also creates a callback to the string
+     *     Create the authorized column, which holds the "legality" of a filter and also creates a callback to the string
      *     property behind it.
      * </p>
      */
-    private void setUpLegalityColumn(TableView tableView) {
+    private void setUpAuthorizedColumn(TableView tableView) {
         // Set up priority column
-        final TableColumn legalColumn = new TableColumn("Legal");
-        legalColumn.setMinWidth(50);
-        legalColumn.setPrefWidth(50);
+        final TableColumn legalColumn = new TableColumn("Authorized");
+        legalColumn.setMinWidth(70);
+        legalColumn.setPrefWidth(70);
         tableView.getColumns().add(legalColumn);
         legalColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, Boolean>,
                 ObservableValue<Boolean>>() {
 
             // Set up callback for priority property
             public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<FilterInput, Boolean> p) {
-                return p.getValue().getLegalProperty();
+                return p.getValue().getAuthorizedProperty();
             }
         });
     }

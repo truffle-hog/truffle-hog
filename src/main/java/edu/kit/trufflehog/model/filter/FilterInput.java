@@ -55,7 +55,7 @@ import java.util.List;
  *             Color: The color of the filter determines what color a matched node should become.
  *         </li>
  *         <li>
- *             Legal: If true, all nodes filtered by the filter will be considered as "good" or legal nodes. If set to
+ *             Authorized: If true, all nodes filtered by the filter will be considered as "good" or legal nodes. If set to
  *             false all nodes filtered by the filter will be considered as "evil" or illegal nodes.
  *         </li>
  *         <li>
@@ -76,7 +76,7 @@ public class FilterInput implements Serializable {
     private FilterOrigin origin;
     private List<String> rules;
     private Color color;
-    private boolean legal;
+    private boolean authorized;
     private boolean active;
     private int priority;
 
@@ -88,7 +88,7 @@ public class FilterInput implements Serializable {
     private transient StringProperty selectionModelProperty;
     private transient StringProperty originProperty;
     private transient ObjectProperty<Color> colorProperty;
-    private transient BooleanProperty legalProperty;
+    private transient BooleanProperty authorizedProperty;
     private transient BooleanProperty activeProperty;
     private transient IntegerProperty priorityProperty;
 
@@ -123,7 +123,7 @@ public class FilterInput implements Serializable {
      *             Color: The color of the filter determines what color a matched node should become.
      *         </li>
      *         <li>
-     *             Legal: If true, all nodes filtered by the filter will be considered as "good" or legal nodes. If set
+     *             Authorized: If true, all nodes filtered by the filter will be considered as "good" or legal nodes. If set
      *             to false all nodes filtered by the filter will be considered as "evil" or illegal nodes.
      *         </li>
      *         <li>
@@ -143,7 +143,7 @@ public class FilterInput implements Serializable {
                        final FilterOrigin origin,
                        final List<String> rules,
                        final Color color,
-                       final boolean legal,
+                       final boolean authorized,
                        final int priority) {
         this.name = name;
         this.selectionModel = selectionModel;
@@ -151,7 +151,7 @@ public class FilterInput implements Serializable {
         this.rules = rules;
         this.color = color;
         this.active = false;
-        this.legal = legal;
+        this.authorized = authorized;
         this.priority = priority;
         this.deleted = false;
     }
@@ -274,28 +274,28 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
-     *     Gets the legality state of this filter. If it is set to true, all nodes filtered by the filter will be
+     *     Gets the authorized state of this filter. If it is set to true, all nodes filtered by the filter will be
      *     considered as "good" or legal nodes. If it is set to false all nodes filtered by the filter will be
      *     considered as "evil" or illegal nodes.
      * </p>
      *
-     * @return The legality state of this filter.
+     * @return The authorized state of this filter.
      */
-    public boolean isLegal() {
-        return legal;
+    public boolean isAuthorized() {
+        return authorized;
     }
 
     /**
      * <p>
-     *     Gets the legality state property of this filter. If it is set to true, all nodes filtered by the filter will
+     *     Gets the authorized state property of this filter. If it is set to true, all nodes filtered by the filter will
      *     be considered as "good" or legal nodes. If it is set to false all nodes filtered by the filter will be
      *     considered as "evil" or illegal nodes.
      * </p>
      *
-     * @return The legality state property of this filter.
+     * @return The authorized state property of this filter.
      */
-    public BooleanProperty getLegalProperty() {
-        return legalProperty;
+    public BooleanProperty getAuthorizedProperty() {
+        return authorizedProperty;
     }
 
     /**
@@ -390,7 +390,7 @@ public class FilterInput implements Serializable {
         nameProperty = new SimpleStringProperty(name);
         colorProperty = new SimpleObjectProperty<>(color);
         priorityProperty = new SimpleIntegerProperty(priority);
-        legalProperty = new SimpleBooleanProperty(legal);
+        authorizedProperty = new SimpleBooleanProperty(authorized);
         activeProperty = new SimpleBooleanProperty(active);
 
         // Make the selection model look nicer on screen
@@ -459,12 +459,12 @@ public class FilterInput implements Serializable {
             logger.debug("Updated color for FilterInput: " + name + " to table view and database.");
         });
 
-        // Bind legal to database update function
-        legalProperty.addListener((observable, oldValue, newValue) -> {
-            legal = newValue;
+        // Bind authorized state to database update function
+        authorizedProperty.addListener((observable, oldValue, newValue) -> {
+            authorized = newValue;
 
             configData.updateFilterInput(this);
-            logger.debug("Updated legality for FilterInput: " + name + " to table view and database.");
+            logger.debug("Updated authorized state for FilterInput: " + name + " to table view and database.");
         });
 
         // Bind priority to database update function
