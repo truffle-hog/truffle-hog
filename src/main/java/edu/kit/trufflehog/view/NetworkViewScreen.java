@@ -278,7 +278,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                         return fpc.getFilterColor();
                     }
 				}
-
 			}
 
             final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
