@@ -20,7 +20,6 @@ package edu.kit.trufflehog.model.configdata;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.IFilter;
-import edu.kit.trufflehog.model.filter.IFilterInput;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,12 +33,12 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * <p>
- *     The FilterDataModel stores {@link IFilterInput} objects into a sqlite database. IFilterInput objects are used to
+ *     The FilterDataModel stores {@link FilterInput} objects into a sqlite database. FilterInput objects are used to
  *     create a new {@link IFilter}; they contain the core data a filter needs to be created: the user input.
  * </p>
  * <p>
- *     This class manages the storage of these IFilterInput objects. It contains a list with all existing IFilterInput
- *     objects and has the ability to add, remove get and update these IFilterInput objects from a database. As an
+ *     This class manages the storage of these FilterInput objects. It contains a list with all existing FilterInput
+ *     objects and has the ability to add, remove get and update these FilterInput objects from a database. As an
  *     implementation for the database drivers a JDBC variant was chosen that is OS agnostic.
  * </p>
  *
@@ -109,7 +108,7 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *     Loads all existing {@link IFilterInput} objects from the database into a map with their name as they key.
+     *     Loads all existing {@link FilterInput} objects from the database into a map with their name as they key.
      * </p>
      */
     private void loadFilters() {
@@ -132,9 +131,9 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
                     // Iterate through all found entries in the database and add them to the map
                     while (rs.next()) {
                         String base64String = rs.getString("filter");
-                        IFilterInput filterInput = fromBase64(base64String);
+                        FilterInput filterInput = fromBase64(base64String);
                         if (filterInput != null) {
-                            loadedFilters.put(filterInput.getName(), toFilterInput(filterInput));
+                            loadedFilters.put(filterInput.getName(), filterInput);
                         } else {
                             logger.error("Found null filter input object while loading from database, skipping");
                         }
@@ -161,27 +160,27 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *     Updates a {@link IFilterInput} entry in the database by deleting it and adding it again. The internal map is
+     *     Updates a {@link FilterInput} entry in the database by deleting it and adding it again. The internal map is
      *     updated as well.
      * </p>
      *
-     * @param filterInput The {@link IFilterInput} to update.
+     * @param filterInput The {@link FilterInput} to update.
      */
-    public void updateFilterInDatabase(IFilterInput filterInput) {
+    public void updateFilterInDatabase(FilterInput filterInput) {
         updateFilterInDatabase(filterInput, null);
     }
 
     /**
      * <p>
-     *     Updates a {@link IFilterInput} entry in the database by deleting it and adding it again.
+     *     Updates a {@link FilterInput} entry in the database by deleting it and adding it again.
      *     When the name changes, things get more complicated, because the database is index by names. Thus the old
      *     entry has to be removed before the new one is added. Since this has to be done synchronously, it requires
      *     an extra method, because the default is asynchronous.
      * </p>
      *
-     * @param filterInput The {@link IFilterInput} to update.
+     * @param filterInput The {@link FilterInput} to update.
      */
-    public void updateFilterInDatabase(final IFilterInput filterInput, final String newName) {
+    public void updateFilterInDatabase(final FilterInput filterInput, final String newName) {
         executorService.submit(() -> {
             removeFilterFromDatabaseSynchronous(filterInput);
             if (newName != null) {
@@ -193,8 +192,8 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *     Adds a {@link IFilterInput} to the database asynchronously. The internal map is updated as well. The
-     *     IFilterInput object is stored as a base64 string and not as a {@link Clob} because the internal
+     *     Adds a {@link FilterInput} to the database asynchronously. The internal map is updated as well. The
+     *     FilterInput object is stored as a base64 string and not as a {@link Clob} because the internal
      *     implementation of the database does not provide a CLOB implementation. However since it is OS agnostic,
      *     we decided to go with it anyway.
      * </p>
@@ -202,15 +201,15 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      *     If filterInput is null, nothing is added.
      * </p>
      *
-     * @param filterInput The {@link IFilterInput} to add to the database.
+     * @param filterInput The {@link FilterInput} to add to the database.
      */
-    public void addFilterToDatabaseAsynchronous(final IFilterInput filterInput) {
+    public void addFilterToDatabaseAsynchronous(final FilterInput filterInput) {
         executorService.submit(() -> addFilterToDataBaseSynchronous(filterInput));
     }
 
     /**
      * <p>
-     *     Adds a {@link IFilterInput} to the database synchronously. The internal map is updated as well. The IFilterInput
+     *     Adds a {@link FilterInput} to the database synchronously. The internal map is updated as well. The FilterInput
      *     object is stored as a base64 string and not as a {@link Clob} because the internal implementation of the
      *     database does not provide a CLOB implementation. However since it is OS agnostic, we decided to go with it
      *     anyway.
@@ -219,9 +218,9 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      *     If filterInput is null, nothing is added.
      * </p>
      *
-     * @param filterInput The {@link IFilterInput} to add to the database.
+     * @param filterInput The {@link FilterInput} to add to the database.
      */
-    private void addFilterToDataBaseSynchronous(IFilterInput filterInput) {
+    private void addFilterToDataBaseSynchronous(FilterInput filterInput) {
         // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to add filter to database, connection is null");
@@ -252,7 +251,7 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
                 connection.commit();
 
                 // Only update the map if the database query was successful
-                loadedFilters.put(filterInput.getName(), toFilterInput(filterInput));
+                loadedFilters.put(filterInput.getName(), filterInput);
             } catch (SQLException e) {
                 logger.error("Unable to add a filter to the database", e);
             }
@@ -261,29 +260,29 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *     Removes a {@link IFilterInput} from the database asynchronously. The internal map is updated as well.
+     *     Removes a {@link FilterInput} from the database asynchronously. The internal map is updated as well.
      * </p>
      * <p>
      *     If filterInput is null, nothing is done.
      * </p>
      *
-     * @param filterInput The {@link IFilterInput} to remove from the database.
+     * @param filterInput The {@link FilterInput} to remove from the database.
      */
-    public void removeFilterFromDatabaseAsynchronous(IFilterInput filterInput) {
+    public void removeFilterFromDatabaseAsynchronous(FilterInput filterInput) {
         executorService.submit(() -> removeFilterFromDatabaseSynchronous(filterInput));
     }
 
     /**
      * <p>
-     *     Removes a {@link IFilterInput} from the database synchronously. The internal map is updated as well.
+     *     Removes a {@link FilterInput} from the database synchronously. The internal map is updated as well.
      * </p>
      * <p>
      *     If filterInput is null, nothing is done.
      * </p>
      *
-     * @param filterInput The {@link IFilterInput} to remove from the database.
+     * @param filterInput The {@link FilterInput} to remove from the database.
      */
-    private void removeFilterFromDatabaseSynchronous(IFilterInput filterInput) {
+    private void removeFilterFromDatabaseSynchronous(FilterInput filterInput) {
         // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to remove filter from database, connection is null");
@@ -314,13 +313,13 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *     Converts a {@link IFilterInput} object into a base64 string, which is how it will be stored into the database.
+     *     Converts a {@link FilterInput} object into a base64 string, which is how it will be stored into the database.
      * </p>
      *
-     * @param filterInput The {@link IFilterInput} that should be converted into a base64 string.
-     * @return The base64 string representing the IFilterInput object.
+     * @param filterInput The {@link FilterInput} that should be converted into a base64 string.
+     * @return The base64 string representing the FilterInput object.
      */
-    private String toBase64(IFilterInput filterInput) {
+    private String toBase64(FilterInput filterInput) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(outputStream);
@@ -335,22 +334,22 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *     Converts a base64 string into a {@link IFilterInput} object, so that the object can be recreated from the
+     *     Converts a base64 string into a {@link FilterInput} object, so that the object can be recreated from the
      *     database.
      * </p>
      *
-     * @param string The base64 string that should be converted back into a {@link IFilterInput} object.
-     * @return The original IFilterInput object represented by the given base64 string.
+     * @param string The base64 string that should be converted back into a {@link FilterInput} object.
+     * @return The original FilterInput object represented by the given base64 string.
      */
-    private IFilterInput fromBase64(String string) {
+    private FilterInput fromBase64(String string) {
         try {
             byte[] data = Base64.getDecoder().decode(string);
             ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
-            IFilterInput filterInput = (IFilterInput) objectInputStream.readObject();
+            FilterInput filterInput = (FilterInput) objectInputStream.readObject();
             objectInputStream.close();
             return filterInput;
         } catch (IOException | ClassNotFoundException e) {
-            logger.error("Unable to convert received string into IFilterInput object", e);
+            logger.error("Unable to convert received string into FilterInput object", e);
             return null;
         }
     }
@@ -383,10 +382,10 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      *     Gets all loaded {@link FilterInput} objects. If none have been loaded yet, none are returned.
      * </p>
      * <p>
-     *     This method converts the interface IFilterInput into the class FilterInput
+     *     This method converts the interface FilterInput into the class FilterInput
      * </p>
      *
-     * @return The list of loaded {@link IFilterInput} objects.
+     * @return The list of loaded {@link FilterInput} objects.
      */
     public Map<String, FilterInput> getAllFilters() {
         return loadedFilters;
@@ -395,24 +394,5 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
     @Override
     public FilterInput get(Class classType, String key) {
         return loadedFilters.get(key);
-    }
-
-    /**
-     * <p>
-     *     Convert to an FilterInput from the interface. This is done, so that previous versions can still
-     *     be deserialized, as long as they still implement the same IFilterInput interface.
-     * </p>
-     *
-     * @param iFilterInput The {@link IFilterInput} to convert to a {@link FilterInput}
-     * @return The converted FilterInput object.
-     */
-    private FilterInput toFilterInput(IFilterInput iFilterInput) {
-        if (iFilterInput == null) {
-            return null;
-        }
-
-        return new FilterInput(iFilterInput.getName(), iFilterInput.getSelectionModel(),
-                iFilterInput.getOrigin(), iFilterInput.getRules(), iFilterInput.getColor(),
-                iFilterInput.isAuthorized(), iFilterInput.getPriority());
     }
 }

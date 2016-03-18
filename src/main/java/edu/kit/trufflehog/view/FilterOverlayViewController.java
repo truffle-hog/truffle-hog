@@ -50,8 +50,8 @@ import java.util.stream.IntStream;
 
 /**
  * <p>
- *     The FilterOverlayViewController contains all loaded filters. Through it the user can add and remove filters. Further more,
- *     the added/removed/updated filters are automatically updated accordingly in the database.
+ *     The FilterOverlayViewController contains all loaded filters. Through it the user can add and remove filters.
+ *     Further more, the added/removed/updated filters are automatically updated accordingly in the database.
  * </p>
  *
  * @author Julian Brendl
@@ -74,9 +74,10 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
      *     in order to save/remove/update filters.
      * </p>
      *
-     *  @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
+     * @param fxml The link to the fxml file that contains the base graphical layout for the filter overlay.
+     * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      * @param stackPane The groundView of the app on which the add filter menu should be drawn.
-     * @param pickedVertexState
+     * @param pickedVertexState The picked state that is used to get the current selection of nodes.
      */
     public FilterOverlayViewController(final String fxml,
                                        final ConfigData configData,
@@ -386,10 +387,9 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         final Button selectionButton = new ImageButton("select.png");
         selectionButton.setScaleX(0.5);
         selectionButton.setScaleY(0.5);
+
         selectionButton.setOnAction(actionEvent -> {
-
             final Set<INode> selected = new HashSet<>(pickedState.getPicked());
-
             final List<String> filterStringList = selected.stream()
                     .map(node -> node.getAddress().toString())
                     .collect(Collectors.toList());
@@ -397,8 +397,8 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
             filterEditingMenuViewController.getRulesTextArea().setText(filterString);
             filterEditingMenuViewController.getFilterByComboBox().setValue(configData.getProperty("MAC_LABEL"));
             filterEditingMenuViewController.showMenu();
-
         });
+
         return selectionButton;
     }
 

@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -66,8 +67,20 @@ import java.util.List;
  * @author Julian Brendl
  * @version 1.0
  */
-public class FilterInput implements IFilterInput {
+public class FilterInput implements Serializable {
     private static final transient Logger logger = LogManager.getLogger();
+
+    /**
+     * <p>
+     *     Determines if a de-serialized file is compatible with this class.
+     * </p>
+     * <p>
+     *     Only change this value if and only if changes were made to this class that are not compatible with old
+     *     versions. See Oracle docs for
+     *     <a href=https://docs.oracle.com/javase/7/docs/platform/serialization/spec/version.html#6678> details.</a>
+     * </p>
+     */
+    private static final long serialVersionUID = 441711976068210069L;
 
     // Serializable variables
     private String name;
@@ -79,7 +92,7 @@ public class FilterInput implements IFilterInput {
     private boolean active;
     private int priority;
 
-    // Is this filter deleted?
+    // Filter deleted flag
     private transient boolean deleted;
 
     // Property variables for table view
@@ -90,7 +103,6 @@ public class FilterInput implements IFilterInput {
     private transient BooleanProperty authorizedProperty;
     private transient BooleanProperty activeProperty;
     private transient IntegerProperty priorityProperty;
-
 
     /**
      * <p>
@@ -144,6 +156,7 @@ public class FilterInput implements IFilterInput {
                        final Color color,
                        final boolean authorized,
                        final int priority) {
+
         this.name = name;
         this.selectionModel = selectionModel;
         this.origin = origin;
@@ -153,6 +166,124 @@ public class FilterInput implements IFilterInput {
         this.authorized = authorized;
         this.priority = priority;
         this.deleted = false;
+    }
+
+    /**
+     * <p>
+     *     Gets the name of this filter. It has to be unique.
+     * </p>
+     *
+     * @return The name of this filter.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * <p>
+     *     Sets the name of this filter. It has to be unique.
+     * </p>
+     *
+     * @param name The name of this filter.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * <p>
+     *    Gets the selection type of the filter. A filter can either be based on a selection or on an inverse selection.
+     * </p>
+     *
+     * @return The selection type of this filter.
+     */
+    public SelectionModel getSelectionModel() {
+        return selectionModel;
+    }
+
+    /**
+     * <p>
+     *     Gets the origin of the filter. A filter can originate from an IP Address, from a MAC Address, or from the
+     *     current selection. This indicates upon what criteria the filter filters.
+     * </p>
+     *
+     * @return The origin of this filter.
+     */
+    public FilterOrigin getOrigin() {
+        return origin;
+    }
+
+    /**
+     * <p>
+     *     Gets the set of rules for this filter. The rules of the filter define what the filter matches. These are
+     *     regular expressions matching IP addresses, MAC addresses and more.
+     * </p>
+     *
+     * @return The set of rules for this filter.
+     */
+    public List<String> getRules() {
+        return rules;
+    }
+
+    /**
+     * <p>
+     *     Gets the color for this filter. The color of the filter determines what color a matched node should
+     *     become.
+     * </p>
+     *
+     * @return The color for this filter.
+     */
+    public Color getColor() {
+        return color;
+    }
+
+    /**
+     * <p>
+     *     Gets the authorized state of this filter. If it is set to true, all nodes filtered by the filter will be
+     *     considered as "good" or legal nodes. If it is set to false all nodes filtered by the filter will be
+     *     considered as "evil" or illegal nodes.
+     * </p>
+     *
+     * @return The authorized state of this filter.
+     */
+    public boolean isAuthorized() {
+        return authorized;
+    }
+
+    /**
+     * <p>
+     *     Gets the current activity state. That means this method returns true if the filter is currently being applied
+     *     to the network, and otherwise false.
+     * </p>
+     *
+     * @return True if the filter is currently being applied o the network, else false.
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * <p>
+     *     Sets the set of rules for this filter. The rules of the filter define what the filter matches. These are
+     *     regular expressions matching IP addresses, MAC addresses and more.
+     * </p>
+     *
+     * @param rules The set of rules for this filter.
+     */
+    public void setRules(List<String> rules) {
+        this.rules = rules;
+    }
+
+    /**
+     * <p>
+     *     Gets the priority of the filter. This priority is used to determine which filter color should
+     *     be rendered when multiple filters collide on the same node.
+     * </p>
+     *
+     * @return the priority of the filter.
+     */
+    public int getPriority() {
+        return priority;
     }
 
     /**
@@ -258,57 +389,15 @@ public class FilterInput implements IFilterInput {
         return deleted;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SelectionModel getSelectionModel() {
-        return selectionModel;
-    }
-
-    @Override
-    public FilterOrigin getOrigin() {
-        return origin;
-    }
-
-    @Override
-    public List<String> getRules() {
-        return rules;
-    }
-
-    @Override
-    public Color getColor() {
-        return color;
-    }
-
-    @Override
-    public boolean isAuthorized() {
-        return authorized;
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
-    }
-
-    @Override
-    public void setRules(List<String> rules) {
-        this.rules = rules;
-    }
-
-    @Override
-    public int getPriority() {
-        return priority;
-    }
-
-    @Override
+    /**
+     * <p>
+     *     Since {@link Property} objects cannot be serialized, THIS METHOD HAS TO BE CALLED AFTER EACH
+     *     DESERIALIZATION OF A FILTERINPUT OBJECT to recreate the connection between the Properties and the
+     *     normal values that were serialized.
+     * </p>
+     *
+     * @param configData The {@link ConfigData} object used to update this filter to the database.
+     */
     public void load(ConfigData configData) {
         // Instantiate property objects
         nameProperty = new SimpleStringProperty(name);

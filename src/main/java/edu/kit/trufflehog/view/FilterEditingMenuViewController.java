@@ -474,8 +474,10 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             rules = rules.substring(0, rules.length() - 1);
         }
 
-        // Remove whitespaces and line breaks
-        rules = rules.replaceAll("\\s+","").replaceAll("\n","").replaceAll("\r", "");
+        // If the rules are not based on a name regex remove whitespaces and line breaks
+        if (!filterOrigin.equals(FilterOrigin.NAME)) {
+            rules = rules.replaceAll("\\s+", "").replaceAll("\n", "").replaceAll("\r", "");
+        }
 
         String[] ruleArray = rules.split(";");
 
