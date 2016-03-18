@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network;
 
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 
 import java.util.Collection;
@@ -67,4 +68,15 @@ public interface INetworkReadingPort {
      */
     IntegerProperty getMaxThroughputProperty();
 
+    void setPopulation(int value);
+
+    int getPopulation();
+
+    IntegerProperty getPopulationProperty();
+
+    void setThroughput(double value);
+
+    double getThroughput();
+
+    DoubleProperty getThroughputProperty();
 }

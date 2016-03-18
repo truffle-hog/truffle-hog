@@ -4,7 +4,12 @@ import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,24 +21,54 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
 
     private static final Logger logger = LogManager.getLogger(NodeStatisticsComponent.class);
     
-    private final IntegerProperty communicationCount = new SimpleIntegerProperty(1);
+    private final IntegerProperty communicationCount;
+    private final DoubleProperty throughput = new SimpleDoubleProperty(1);
 
-    public NodeStatisticsComponent(int initial) {
+    private final IntegerProperty ingoingCount;
 
-        communicationCount.set(initial);
+    private final IntegerProperty outgoingCount;
+
+    public NodeStatisticsComponent(int initialOutgoing, int initialIngoing) {
+
+        ingoingCount = new SimpleIntegerProperty(initialIngoing);
+        outgoingCount = new SimpleIntegerProperty(initialOutgoing);
+
+        //communicationCountBinding = ingoingCount.add(outgoingCount);
+        communicationCount = new SimpleIntegerProperty(0);
+        communicationCount.bind(Bindings.add(ingoingCount, outgoingCount));
+    }
+
+    public int getOutgoingCount() {
+        return outgoingCount.get();
+    }
+
+    public IntegerProperty outgoingCountProperty() {
+        return outgoingCount;
+    }
+
+    public void setOutgoingCount(int outgoingCount) {
+        this.outgoingCount.set(outgoingCount);
+    }
+
+    public int getIngoingCount() {
+        return ingoingCount.get();
+    }
+
+    public IntegerProperty ingoingCountProperty() {
+        return ingoingCount;
+    }
+
+    public void setIngoingCount(int ingoingCount) {
+        this.ingoingCount.set(ingoingCount);
     }
 
     public IntegerProperty getCommunicationCountProperty() {
+
         return communicationCount;
     }
 
     public int getCommunicationCount() {
         return communicationCount.get();
-    }
-
-    //FIXME fix concurrency problem?
-    public void setCommunicationCountProperty(int value) {
-        communicationCount.set(value);
     }
 
     //FIXME fix concurrency problem?
@@ -72,8 +107,17 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
 	at java.lang.Thread.run(Thread.java:745)
      */
-    public void incrementThroughput(int step) {
-        setCommunicationCountProperty(getCommunicationCount() + step);
+
+    public DoubleProperty getThroughputProperty() {
+        return throughput;
+    }
+
+    public double getThroughput() {
+        return throughput.getValue();
+    }
+
+    public void setThroughput(double value) {
+        throughput.setValue(value);
     }
 
     @Override

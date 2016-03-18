@@ -26,7 +26,7 @@
 <?import javafx.scene.layout.BorderPane?>
 
 <?import javafx.scene.layout.GridPane?>
-<fx:root opacity="0.8" prefHeight="250.0" prefWidth="500.0" styleClass="background" type="BorderPane" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root opacity="0.8" prefHeight="100.0" prefWidth="350.0" styleClass="background" type="BorderPane" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
    <stylesheets>
       <URL value="@statistics_overlay.css" />
    </stylesheets>
@@ -35,7 +35,7 @@
       <TreeTableView fx:id="infoTable" opacity="0.8" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" styleClass="table-view" BorderPane.alignment="CENTER">
           <columnResizePolicy><TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
           <columns>
-            <TreeTableColumn fx:id="keyColumn" prefWidth="200.0" styleClass="table-view" text="key">
+            <TreeTableColumn fx:id="keyColumn" prefWidth="150.0" styleClass="table-view" text="key">
 <!--               <cellFactory>
                   <FormattedTableCellFactory />
                </cellFactory>-->

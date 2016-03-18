@@ -12,11 +12,7 @@ import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.*;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 
 
@@ -52,15 +48,29 @@ public class AddPacketDataCommand implements ITruffleCommand {
     public void execute() {
 
         final MacAddress sourceAddress = data.getAttribute(MacAddress.class, "sourceMacAddress");
-        final MacAddress destAddress = data.getAttribute(MacAddress.class, "destMacAddress");
         final IPAddress sourceIP = data.getAttribute(IPAddress.class, "sourceIPAddress");
+
+        final MacAddress destAddress = data.getAttribute(MacAddress.class, "destMacAddress");
         final IPAddress destIP = data.getAttribute(IPAddress.class, "destIPAddress");
 
-        NodeInfoComponent sourceNIC = new NodeInfoComponent(sourceAddress);
-        sourceNIC.setIPAddress(sourceIP);
+        final String deviceName = data.getAttribute(String.class, "deviceName");
+        final Boolean isResponse = data.getAttribute(Boolean.class, "isResponse");
 
+        // build the source node info
+        NodeInfoComponent sourceNIC = new NodeInfoComponent(sourceAddress);
+        if (isResponse != null && isResponse) {
+            if (deviceName != null) {
+                sourceNIC.setDeviceName(deviceName);
+            }
+            if (sourceIP != null && !sourceIP.equals(IPAddress.INVALID_ADDRESS)) {
+                sourceNIC.setIPAddress(sourceIP);
+            }
+        }
+
+        // build the destination node info
         NodeInfoComponent destNIC = new NodeInfoComponent(destAddress);
-        destNIC.setIPAddress(destIP);
+
+
 
         final PacketDataLoggingComponent connectionPacketLogger = new PacketDataLoggingComponent();
         connectionPacketLogger.addPacket(data);
@@ -71,8 +81,8 @@ public class AddPacketDataCommand implements ITruffleCommand {
         final PacketDataLoggingComponent destPacketLogger = new PacketDataLoggingComponent();
         destPacketLogger.addPacket(data);
 
-        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1), sourceNIC, srcPacketLogger);
-        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(1), destNIC, destPacketLogger);
+        final INode sourceNode = new NetworkNode(sourceAddress, new NodeStatisticsComponent(1, 0), sourceNIC, srcPacketLogger);
+        final INode destNode = new NetworkNode(destAddress, new NodeStatisticsComponent(0, 1), destNIC, destPacketLogger);
 
         final IConnection connection = new NetworkConnection(sourceNode, destNode, new EdgeStatisticsComponent(1), connectionPacketLogger);
 
@@ -80,7 +90,6 @@ public class AddPacketDataCommand implements ITruffleCommand {
         destNode.addComponent(new FilterPropertiesComponent());
 
         sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
-
         destNode.addComponent(new ViewComponent(new NodeRenderer()));
 
         if (destAddress.isMulticast()) {

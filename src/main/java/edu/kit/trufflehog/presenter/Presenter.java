@@ -4,9 +4,7 @@ import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.MacroFilter;
-import edu.kit.trufflehog.model.network.INetwork;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
-import edu.kit.trufflehog.model.network.LiveNetwork;
+import edu.kit.trufflehog.model.network.*;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
@@ -18,7 +16,9 @@ import edu.kit.trufflehog.model.network.recording.NetworkDevice;
 import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
+import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
@@ -156,8 +156,8 @@ public class Presenter {
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
 
-        //truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
-        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
+        truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
+        //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
         truffleFetchService.execute(truffleReceiver);
         truffleReceiver.connect();
 
@@ -165,6 +165,10 @@ public class Presenter {
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
         commandExecutorService.execute(commandExecutor);
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
+
+        final ExecutorService nodeStatisticsUpdaterService = Executors.newSingleThreadExecutor();
+        final NodeStatisticsUpdater nodeStatisticsUpdater = new NodeStatisticsUpdater(readingPortSwitch, viewPortSwitch);
+        nodeStatisticsUpdaterService.execute(nodeStatisticsUpdater);
 
         // goReplay that ongoing recording on the given viewportswitch
         //networkDevice.goReplay(tape, viewPortSwitch);

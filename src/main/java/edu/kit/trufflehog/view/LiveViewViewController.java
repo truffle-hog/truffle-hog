@@ -7,6 +7,7 @@ import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.INetworkReadingPort;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
@@ -14,17 +15,31 @@ import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
+import edu.kit.trufflehog.viewmodel.GeneralStatisticsViewModel;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
+import javafx.util.converter.NumberStringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.text.DecimalFormat;
+import java.util.concurrent.TimeUnit;
 
 import java.awt.Dimension;
 
@@ -46,12 +61,15 @@ public class LiveViewViewController extends AnchorPaneController {
 
     private final Scene scene;
 
+    private final INetworkViewPort viewPort;
+
     private RecordMenuViewController recordOverlayViewController;
     private FilterOverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
     private final IUserCommand<FilterInput> updateFilterCommand;
     private final IListener<IUserCommand> userCommandListener;
     private final StatisticsViewModel statViewModel = new StatisticsViewModel();
+    private final GeneralStatisticsViewModel generalStatViewModel = new GeneralStatisticsViewModel();
 
     public LiveViewViewController(final String fxml,
                                   final ConfigData configData,
@@ -72,10 +90,12 @@ public class LiveViewViewController extends AnchorPaneController {
 
         this.stackPane = stackPane;
 
+        //TODO check if needed
+        this.viewPort = viewPort;
 
         //final StatisticsViewModel statView = new StatisticsViewModel();
         // FIXME this screen is also create in the ViewBuilder... is that necessary??!
-        final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPort, 10, new Dimension(700, 700));
+        final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPort, 30, new Dimension(700, 700));
         networkViewScreen.addListener(userCommandIListener);
         networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statViewModel));
         //networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
@@ -171,8 +191,38 @@ public class LiveViewViewController extends AnchorPaneController {
      * </p>
      */
     private void addGeneralStatisticsOverlay() {
-        final OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
+        final GeneralStatisticsViewController generalStatisticsOverlay = new GeneralStatisticsViewController(generalStatViewModel);
         this.getChildren().add(generalStatisticsOverlay);
+
+        StringProperty timeProperty = new SimpleStringProperty("");
+        StringProperty throughputStringProperty = new SimpleStringProperty();
+        throughputStringProperty.bindBidirectional(viewPort.getThroughputProperty(), new DecimalFormat("0.00"));
+
+        generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Population", viewPort.getPopulationProperty())));
+        generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Packages per second", throughputStringProperty)));
+        generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Running", timeProperty)));
+        //generalStatisticsOverlay.setVisible(true);
+
+        //TODO improve this!
+        viewPort.getViewTimeProperty().addListener((observable, oldValue, newValue) -> {
+            StringBuilder sb = new StringBuilder();
+            long ms = newValue.longValue();
+            long hours = TimeUnit.MILLISECONDS.toHours(ms);
+            ms -= TimeUnit.HOURS.toMillis(hours);
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(ms);
+            ms -= TimeUnit.MINUTES.toMillis(minutes);
+            long seconds = TimeUnit.MILLISECONDS.toSeconds(ms);
+
+            sb.append(hours);
+            sb.append("h ");
+            sb.append(minutes);
+            sb.append("m ");
+            sb.append(seconds);
+            sb.append("s");
+
+            timeProperty.setValue(sb.toString());
+        });
+
         AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
         AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
     }

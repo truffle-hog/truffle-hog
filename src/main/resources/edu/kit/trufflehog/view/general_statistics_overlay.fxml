@@ -3,7 +3,7 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
@@ -41,11 +41,12 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root opacity="0.95" prefHeight="100.0" prefWidth="250.0" styleClass="background" type="GridPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root opacity="0.95" prefHeight="100.0" prefWidth="250.0" styleClass="background" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
 
     <stylesheets>
     <URL value="@statistics_overlay.css" />
     </stylesheets>
+    <!--
    <columnConstraints>
       <ColumnConstraints />
       <ColumnConstraints minWidth="10.0" prefWidth="150.0" />
@@ -68,5 +69,5 @@
       <Text layoutX="20.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="19" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
       <Text layoutX="20.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="47%" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
    </children>
-
+    -->
 </fx:root>

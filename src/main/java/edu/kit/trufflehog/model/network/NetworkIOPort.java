@@ -8,18 +8,23 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComp
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
 import edu.uci.ics.jung.graph.Graph;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableIntegerValue;
 import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by jan on 22.02.16.
+ * @author Jan Hermes
+ * @version 0.5
  */
 public class NetworkIOPort implements INetworkIOPort {
 
@@ -32,6 +37,8 @@ public class NetworkIOPort implements INetworkIOPort {
 
     private final IntegerProperty maxThroughputProperty = new SimpleIntegerProperty(0);
     private final IntegerProperty maxConnectionSizeProperty = new SimpleIntegerProperty(0);
+    private final IntegerProperty population = new SimpleIntegerProperty(0);
+    private final DoubleProperty throughput = new SimpleDoubleProperty(0);
 
     private final MaximumOfValuesBinding maxTrafficBinding = new MaximumOfValuesBinding();
     private final MaximumOfValuesBinding maxThroughputBinding = new MaximumOfValuesBinding();
@@ -45,9 +52,11 @@ public class NetworkIOPort implements INetworkIOPort {
     }
 
     @Override
-    public void writeConnection(IConnection connection) {
+    synchronized public void writeConnection(IConnection connection) {
 
         final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
+
+
 
         if (delegate.addEdge(connection, connection.getSrc(), connection.getDest())) {
 
@@ -60,7 +69,7 @@ public class NetworkIOPort implements INetworkIOPort {
     }
 
     @Override
-    public void writeNode(INode node) {
+    synchronized public void writeNode(INode node) {
 
         if (delegate.addVertex(node)) {
 
@@ -73,18 +82,18 @@ public class NetworkIOPort implements INetworkIOPort {
     }
 
     @Override
-    public void applyFilter(IFilter filter) {
+    synchronized public void applyFilter(IFilter filter) {
         delegate.getVertices().forEach(filter::check);
     }
 
     @Override
-    public Collection<INode> getNetworkNodes() {
-        return delegate.getVertices();
+    synchronized public Collection<INode> getNetworkNodes() {
+        return new LinkedList<>(delegate.getVertices());
     }
 
     @Override
-    public Collection<IConnection> getNetworkConnections() {
-        return delegate.getEdges();
+    synchronized public Collection<IConnection> getNetworkConnections() {
+        return new LinkedList<>(delegate.getEdges());
     }
 
     @Override
@@ -118,6 +127,36 @@ public class NetworkIOPort implements INetworkIOPort {
     @Override
     public IntegerProperty getMaxThroughputProperty() {
         return maxThroughputProperty;
+    }
+
+    @Override
+    public void setPopulation(int value) {
+        population.setValue(value);
+    }
+
+    @Override
+    public int getPopulation() {
+        return population.getValue();
+    }
+
+    @Override
+    public IntegerProperty getPopulationProperty() {
+        return population;
+    }
+
+    @Override
+    public void setThroughput(double value) {
+        throughput.setValue(value);
+    }
+
+    @Override
+    public double getThroughput() {
+        return throughput.getValue();
+    }
+
+    @Override
+    public DoubleProperty getThroughputProperty() {
+        return throughput;
     }
 
     @Override

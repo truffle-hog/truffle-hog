@@ -114,7 +114,7 @@ jmethodID getBuildTruffle(JNIEnv *env)
         jclass truffleClass = getTruffleClass(env);
         _CHECK_JAVA_EXCEPTION(env);
 
-        buildTruffleMID = (*env)->GetStaticMethodID(env, truffleClass, "buildTruffle", "(JJJJLjava/lang/String;IILjava/lang/String;ILjava/lang/String;JI)Ledu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle;");
+        buildTruffleMID = (*env)->GetStaticMethodID(env, truffleClass, "buildTruffle", "(JJJJLjava/lang/String;IILjava/lang/String;ILjava/lang/String;JII)Ledu/kit/trufflehog/service/packetdataprocessor/profinetdataprocessor/Truffle;");
         _CHECK_JAVA_EXCEPTION(env);
         check_to(buildTruffleMID != 0, noBuildTruffle, "buildTruffle method not found");
     }
@@ -327,17 +327,39 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
     uint32_t xID = 0;
     uint16_t responseDelay = 0;
+    uint8_t isResponse = 0;
 
-    uint16_t dataLength = 0;
+    uint16_t dataLength = 0; // add to truffle maybe?
+
+    uint32_t ip = 0;
+    uint32_t subnet = 0;
+    uint32_t gateway = 0;
 
     if (truffle.frame.type == IS_DCP)
     {
-        // create the java string for the deviceName property
-        if (truffle.frame.val.dcp.blocks[0].type == IS_DEVICE)
+
+        for (int i = 0; i < MAX_BLOCKS; i++)
         {
-            nameStr = (*env)->NewStringUTF(env, truffle.frame.val.dcp.blocks[0].val.deviceBlock.nameOfStation);
-            _CHECK_JAVA_EXCEPTION(env);
-            check(nameStr != NULL, "could not create deviceName string");
+            switch(truffle.frame.val.dcp.blocks[i].type)
+            {
+            // create the java string for the deviceName property
+            case IS_DEVICE:
+                {
+                    nameStr = (*env)->NewStringUTF(env, truffle.frame.val.dcp.blocks[i].val.deviceBlock.nameOfStation);
+                    _CHECK_JAVA_EXCEPTION(env);
+                    check(nameStr != NULL, "could not create deviceName string");
+                    break;
+                }
+
+            case IS_IP:
+                {
+                    ip = truffle.frame.val.dcp.blocks[i].val.ipBlock.ip;
+                    break;
+                }
+
+            default:
+                break;
+            }
         }
 
         serviceID = truffle.frame.val.dcp.serviceID;
@@ -356,6 +378,7 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
         xID = truffle.frame.val.dcp.xID;
         responseDelay = truffle.frame.val.dcp.responseDelay;
+        isResponse = truffle.frame.val.dcp.isResponse;
 
     }
 
@@ -373,12 +396,12 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
     final long xid,
     final int responseDelay
     */
-	jobject truffleObject = (*env)->CallStaticObjectMethod(env,
-	                                                       truffleClass,
-	                                                       buildTruffleMID,
+	jobject truffleObject = (*env)->CallStaticObjectMethod(env,                                     // java env
+	                                                       truffleClass,                            // truffle class id
+	                                                       buildTruffleMID,                         // buildTruffle method id
 	                                                       truffle.etherHeader.sourceMacAddress,    // srcMACAddr
 	                                                       truffle.etherHeader.destMacAddress,      // dstMACAddr
-	                                                       0,                                       // srcIPAddr
+	                                                       ip,                                      // srcIPAddr
 	                                                       0,                                       // dstIPAddr
 	                                                       nameStr,                                 // nameOfStation
 	                                                       truffle.etherHeader.etherType,           // etherType
@@ -387,7 +410,8 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 	                                                       serviceType,                             // serviceType
 	                                                       serviceTypeName,                         // serviceTypeName
 	                                                       xID,                                     // xid
-	                                                       responseDelay);                          // responseDelay
+	                                                       responseDelay,                           // responseDelay
+	                                                       isResponse);                             // isResponse
     _CHECK_JAVA_EXCEPTION(env);
 
     return truffleObject;

@@ -29,16 +29,26 @@ struct DeviceBlock {
 	char nameOfStation[MAX_STRING_LEN];
 };
 
+struct IPBlock {
+
+    uint32_t ip;
+    uint32_t subnet;
+    uint32_t gateway;
+
+};
+
 
 struct Block {
 
 	enum {
-		IS_DEVICE
+		IS_DEVICE = 1,
+		IS_IP = 2
 	} type;
 
 	union {
 
 		struct DeviceBlock deviceBlock;
+        struct IPBlock ipBlock;
 
 	} val;
 
@@ -55,6 +65,8 @@ struct DCP {
 	char serviceIDName[MAX_STRING_LEN];
 	uint8_t serviceType;
 	char serviceTypeName[MAX_STRING_LEN];
+    /** 0 no response, 1 response **/
+    uint8_t isResponse;
 
 	uint32_t xID;
 	uint16_t responseDelay;
@@ -68,7 +80,7 @@ struct DCP {
  * @brief Houses specific information about the frame.
  */
 struct Frame {
-  uint16_t frameID;
+  uint16_t id;
 
   enum {
   	IS_DCP, IS_RTC1

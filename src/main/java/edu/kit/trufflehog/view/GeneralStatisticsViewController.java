@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.view.controllers.BorderPaneController;
+import edu.kit.trufflehog.viewmodel.GeneralStatisticsViewModel;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
@@ -13,18 +14,18 @@ import javafx.scene.control.TreeTableView;
  *     The StatisticsViewController provides GUI components and functionality for every statistic view.
  * </p>
  */
-public class StatisticsViewController extends BorderPaneController {
+public class GeneralStatisticsViewController extends BorderPaneController {
 
     @FXML
-    private TreeTableView<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infoTable;
+    private TreeTableView<GeneralStatisticsViewModel.IEntry<StringProperty, ? extends Property>> infoTable;
 
-    private final StatisticsViewModel statViewModel;
-
-    @FXML
-    private TreeTableColumn<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, String> keyColumn;
+    private final GeneralStatisticsViewModel statViewModel;
 
     @FXML
-    private TreeTableColumn<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> valueColumn;
+    private TreeTableColumn<GeneralStatisticsViewModel.IEntry<StringProperty, ? extends Property>, String> keyColumn;
+
+    @FXML
+    private TreeTableColumn<GeneralStatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> valueColumn;
 
     /**
      * <p>
@@ -33,9 +34,9 @@ public class StatisticsViewController extends BorderPaneController {
      * </p>
      *
      */
-    public StatisticsViewController(StatisticsViewModel statModel) {
+    public GeneralStatisticsViewController(GeneralStatisticsViewModel statModel) {
 
-        super("selected_statistics_view.fxml");
+        super("general_statistics_view.fxml");
 
         this.statViewModel = statModel;
 
@@ -43,14 +44,14 @@ public class StatisticsViewController extends BorderPaneController {
         //valueColumn = new TreeTableColumn<>("Value");
 
         //keyColumn.setMinWidth(100);
-        keyColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, String> param) ->
+        keyColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<GeneralStatisticsViewModel.IEntry<StringProperty, ? extends Property>, String> param) ->
                 param.getValue().getValue().getKeyProperty());
 
         //valueColumn.setMinWidth(100);
-        valueColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> param) ->
+        valueColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<GeneralStatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> param) ->
                 param.getValue().getValue().getValueProperty());
 
-        this.visibleProperty().bind(statViewModel.getInfoListProperty().emptyProperty().not());
+        //this.visibleProperty().bind(statViewModel.getInfoListProperty().emptyProperty().not());
 
         infoTable.setRoot(statViewModel.getRootItem());
         infoTable.getColumns().setAll(keyColumn, valueColumn);
