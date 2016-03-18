@@ -92,13 +92,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
         this.layoutFactory = new FRLayoutFactory();
 
- /*       refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
-            Platform.runLater(this::repaint);
-        }));
-
-        refresher.setCycleCount(50);
-        refresher.play();*/
-
         refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
             Platform.runLater(this::repaint);
         }));
@@ -141,18 +134,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		//createAndSetSwingContent(this, jungView);
 		jungView.setRenderer(new FXRenderer<>());
 
-/*		timeLine = new Timeline(new KeyFrame(Duration.millis(300), event -> jungView.repaint()));
-		timeLine.setCycleCount(8);*/
-
 		SwingUtilities.invokeLater(() -> this.setContent(jungView));
-
-/*		Transformer<String, Stroke> edgeStroke = new Transformer<String, Stroke>() {
-			float dash[] = { 10.0f };
-			public Stroke transform(String s) {
-				return new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
-						BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
-			}
-		};*/
 
 		initRenderers();
 
@@ -185,6 +167,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 	private void initRenderers() {
 
 
+
         jungView.getRenderContext().setVertexIconTransformer(new Transformer<INode, Icon>() {
 
             @Override
@@ -200,6 +183,34 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
             }
         });
+
+
+/*        jungView.getRenderContext().setVertexIconTransformer(node -> new Icon() {
+
+            public int getIconHeight() {
+                return 20;
+            }
+
+            public int getIconWidth() {
+                return 20;
+            }
+
+            public void paintIcon(Component c, Graphics g,
+                                  int x, int y) {
+                if(jungView.getPickedVertexState().isPicked(node)) {
+                    g.setColor(Color.yellow);
+                } else {
+                    g.setColor(Color.red);
+                }
+                g.fillOval(x, y, 20, 20);
+                if(jungView.getPickedVertexState().isPicked(node)) {
+                    g.setColor(Color.black);
+                } else {
+                    g.setColor(Color.white);
+                }
+                g.drawString(""+ node , x+6, y+15);
+
+            }});*/
 
 		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getComponent(NodeInfoComponent.class).toString());
 
