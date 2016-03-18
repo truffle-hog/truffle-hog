@@ -10,18 +10,10 @@ import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
-import edu.kit.trufflehog.model.network.recording.INetworkDevice;
-import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
-import edu.kit.trufflehog.model.network.recording.INetworkWritingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.NetworkDevice;
-import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
-import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
-import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
-import edu.kit.trufflehog.service.NodeStatisticsUpdater;
+import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
@@ -157,8 +149,8 @@ public class Presenter {
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
 
-        //truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
-        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
+        truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
+        //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
         truffleFetchService.execute(truffleReceiver);
         truffleReceiver.connect();
 

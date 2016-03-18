@@ -3,7 +3,6 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
-import edu.kit.trufflehog.model.network.graph.INode;
 
 /**
  * Created by Hoehler on 04.03.2016.

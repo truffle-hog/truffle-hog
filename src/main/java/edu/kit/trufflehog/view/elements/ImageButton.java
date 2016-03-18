@@ -40,7 +40,7 @@ public class ImageButton extends Button {
      * @param image The path to the image to display as the button.
      */
     public ImageButton(String image) {
-        setGraphic(new ImageView(new Image(getClass().getResourceAsStream(image))));
+        setGraphic(image);
         setStyle(STYLE_NORMAL);
 
         setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -56,5 +56,16 @@ public class ImageButton extends Button {
                 setStyle(STYLE_NORMAL);
             }
         });
+    }
+
+    /**
+     * <p>
+     *     Sets the image of the image button.
+     * </p>
+     *
+     * @param image The path to the image for this image button.
+     */
+    public void setGraphic(String image) {
+        setGraphic(new ImageView(new Image(getClass().getResourceAsStream(image))));
     }
 }

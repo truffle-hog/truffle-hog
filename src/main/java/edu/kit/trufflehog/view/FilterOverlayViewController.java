@@ -46,6 +46,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * <p>
@@ -113,7 +114,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         // Set up table view
         final TableView tableView = new TableView();
         tableView.setEditable(true);
-        tableView.setMinWidth(452);
+        tableView.setMinWidth(502);
         tableView.setMinHeight(280);
 
         // Set up columns
@@ -122,6 +123,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         setUpOriginColumn(tableView);
         setUpColorColumn(tableView);
         setUpPriorityColumn(tableView);
+        setUpLegalityColumn(tableView);
         setUpActiveColumn(tableView);
 
         // Insert data from database into table
@@ -173,7 +175,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
      */
     private void setUpTypeColumn(TableView tableView) {
         // Set up type column
-        final TableColumn typeColumn = new TableColumn("Type");
+        final TableColumn typeColumn = new TableColumn("Selection Model");
         typeColumn.setMinWidth(90);
         typeColumn.setPrefWidth(90);
         tableView.getColumns().add(typeColumn);
@@ -182,7 +184,7 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
 
             // Set up callback for type property
             public ObservableValue<String> call(TableColumn.CellDataFeatures<FilterInput, String> p) {
-                return p.getValue().getTypeProperty();
+                return p.getValue().getSelectionModelProperty();
             }
         });
     }
@@ -280,18 +282,13 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         activeColumn.setCellFactory(tableColumn -> {
             final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
 
-            //checkBoxTableCell.setSelectedStateCallback(index -> ((FilterInput) tableView.getItems().get(index)).getActiveProperty());
             checkBoxTableCell.setSelectedStateCallback(index -> {
-
                 FilterInput input = (FilterInput) tableView.getItems().get(index);
-
                 input.getActiveProperty().addListener(l -> {
                     notifyUpdateCommand(input);
                 });
 
                 return input.getActiveProperty();
-
-                //((FilterInput) tableView.getItems().get(index)).getActiveProperty()
             });
 
             return checkBoxTableCell;
@@ -300,8 +297,30 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
 
     /**
      * <p>
-     *     Create the active column, which holds the activity state and also creates a callback to the string property
-     *     behind it.
+     *     Create the legalality column, which holds the legality of a filter and also creates a callback to the string
+     *     property behind it.
+     * </p>
+     */
+    private void setUpLegalityColumn(TableView tableView) {
+        // Set up priority column
+        final TableColumn legalColumn = new TableColumn("Legal");
+        legalColumn.setMinWidth(50);
+        legalColumn.setPrefWidth(50);
+        tableView.getColumns().add(legalColumn);
+        legalColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FilterInput, Boolean>,
+                ObservableValue<Boolean>>() {
+
+            // Set up callback for priority property
+            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<FilterInput, Boolean> p) {
+                return p.getValue().getLegalProperty();
+            }
+        });
+    }
+
+    /**
+     * <p>
+     *     Create the priority column, which holds the priority of a filter and also creates a callback to the
+     *     integer property behind it.
      * </p>
      */
     private void setUpPriorityColumn(TableView tableView) {
@@ -340,7 +359,6 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         removeButton.setOnAction(actionEvent -> {
             final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
             if (!data.isEmpty() && filterInput != null) {
-
                 data.remove(filterInput);
 
                 // Update model
@@ -358,21 +376,6 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         removeButton.setScaleX(0.5);
         removeButton.setScaleY(0.5);
 
-        final Button selectionButton = new ImageButton("select.png");
-        selectionButton.setScaleX(0.5);
-        selectionButton.setScaleY(0.5);
-        selectionButton.setOnAction(actionEvent -> {
-
-            final Set<INode> selected = new HashSet<>(pickedState.getPicked());
-
-            final String filterString = selected.stream().map(node -> node.getAddress().toString()).collect(Collectors.joining(";\n"));
-            filterEditingMenuViewController.getNameTextField().setText("Selection " + selected.size());
-            filterEditingMenuViewController.getRulesTextArea().setText(filterString);
-            filterEditingMenuViewController.getFilterByComboBox().setValue(configData.getProperty("MAC_LABEL"));
-            filterEditingMenuViewController.showMenu();
-
-        });
-
         // Set up edit button
         final Button editButton = new ImageButton("edit.png");
         editButton.setOnAction(actionEvent -> {
@@ -383,6 +386,24 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         });
         editButton.setScaleX(0.45);
         editButton.setScaleY(0.45);
+
+        // Set up selection button
+        final Button selectionButton = new ImageButton("select.png");
+        selectionButton.setScaleX(0.5);
+        selectionButton.setScaleY(0.5);
+        selectionButton.setOnAction(actionEvent -> {
+
+            final Set<INode> selected = new HashSet<>(pickedState.getPicked());
+
+            final List<String> filterStringList = selected.stream()
+                    .map(node -> node.getAddress().toString())
+                    .collect(Collectors.toList());
+            final String filterString = concatRules(filterStringList);
+            filterEditingMenuViewController.getRulesTextArea().setText(filterString);
+            filterEditingMenuViewController.getFilterByComboBox().setValue(configData.getProperty("MAC_LABEL"));
+            filterEditingMenuViewController.showMenu();
+
+        });
 
         // Set up components on overlay
         final BorderPane borderPane = new BorderPane();
@@ -416,6 +437,29 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         return data.stream()
                 .map(FilterInput::getName)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * <p>
+     *     Takes a list of rules and concatenates them in a matter that makes the string easily readable.
+     * </p>
+     *
+     * @param rules The rules to concatenate to one string.
+     * @return The rules when they are completely concatenated.
+     */
+    String concatRules(List<String> rules) {
+        final String[] ruleArray = rules.toArray(new String[rules.size()]);
+        return IntStream.range(0, ruleArray.length)
+                .mapToObj(i -> {
+                    // Add a new line to every third element in the stream
+                    if (i % 3 == 2) {
+                        return ruleArray[i] + ";\n";
+                    } else {
+                        return ruleArray[i] + ";    ";
+                    }
+                })
+                .reduce((currentRule, rule) -> currentRule += rule)
+                .orElse("");
     }
 
     /**

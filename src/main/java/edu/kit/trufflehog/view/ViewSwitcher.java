@@ -14,6 +14,12 @@ import java.util.Map;
  * @version 1.0
  */
 public class ViewSwitcher {
+    // Views
+    public static final String START_VIEW = "Start";
+    public static final String DEMO_VIEW = "Demo";
+    public static final String PROFINET_VIEW = "Profinet";
+    public static final String CAPTURE_VIEW = "Capture";
+
     private final Map<String, AnchorPane> views;
 
     public ViewSwitcher() {
