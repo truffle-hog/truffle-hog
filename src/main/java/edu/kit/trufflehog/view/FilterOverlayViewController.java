@@ -348,62 +348,11 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
      * @return A {@link BorderPane} containing the full menu.
      */
     private BorderPane setUpMenu(TableView tableView) {
-        // Set up add button
-        final Button addButton = new ImageButton("add.png");
-        addButton.setOnAction(actionEvent -> filterEditingMenuViewController.showMenu());
-        addButton.setScaleX(0.5);
-        addButton.setScaleY(0.5);
+        final Button addButton = setAddButton();
+        final Button removeButton = setRemoveButton(tableView);
+        final Button editButton = setEditButton(tableView);
+        final Button selectionButton = setSelectionButton();
 
-        // Set up remove button
-        final Button removeButton = new ImageButton("remove.png");
-        removeButton.setOnAction(actionEvent -> {
-            final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
-            if (!data.isEmpty() && filterInput != null) {
-                data.remove(filterInput);
-
-                // Update model
-                IUserCommand updateFilterCommand = interactionMap.get(FilterInteraction.REMOVE);
-                if (updateFilterCommand != null) {
-                    filterInput.setDeleted();
-                    updateFilterCommand.setSelection(filterInput);
-                    notifyListeners(updateFilterCommand);
-                }
-                configData.removeFilterInput(filterInput);
-
-                logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
-            }
-        });
-        removeButton.setScaleX(0.5);
-        removeButton.setScaleY(0.5);
-
-        // Set up edit button
-        final Button editButton = new ImageButton("edit.png");
-        editButton.setOnAction(actionEvent -> {
-            final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
-            if (!data.isEmpty() && filterInput != null) {
-                filterEditingMenuViewController.showMenu(filterInput);
-            }
-        });
-        editButton.setScaleX(0.45);
-        editButton.setScaleY(0.45);
-
-        // Set up selection button
-        final Button selectionButton = new ImageButton("select.png");
-        selectionButton.setScaleX(0.5);
-        selectionButton.setScaleY(0.5);
-        selectionButton.setOnAction(actionEvent -> {
-
-            final Set<INode> selected = new HashSet<>(pickedState.getPicked());
-
-            final List<String> filterStringList = selected.stream()
-                    .map(node -> node.getAddress().toString())
-                    .collect(Collectors.toList());
-            final String filterString = concatRules(filterStringList);
-            filterEditingMenuViewController.getRulesTextArea().setText(filterString);
-            filterEditingMenuViewController.getFilterByComboBox().setValue(configData.getProperty("MAC_LABEL"));
-            filterEditingMenuViewController.showMenu();
-
-        });
 
         // Set up components on overlay
         final BorderPane borderPane = new BorderPane();
@@ -424,6 +373,101 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         AnchorPane.setRightAnchor(selectionButton, 95d);
 
         return borderPane;
+    }
+
+    /**
+     * <p>
+     *     Set up the selection button used to create a filter from a selection.
+     * </p>
+     *
+     * @return The fully configured selection button.
+     */
+    private Button setSelectionButton() {
+        final Button selectionButton = new ImageButton("select.png");
+        selectionButton.setScaleX(0.5);
+        selectionButton.setScaleY(0.5);
+        selectionButton.setOnAction(actionEvent -> {
+
+            final Set<INode> selected = new HashSet<>(pickedState.getPicked());
+
+            final List<String> filterStringList = selected.stream()
+                    .map(node -> node.getAddress().toString())
+                    .collect(Collectors.toList());
+            final String filterString = concatRules(filterStringList);
+            filterEditingMenuViewController.getRulesTextArea().setText(filterString);
+            filterEditingMenuViewController.getFilterByComboBox().setValue(configData.getProperty("MAC_LABEL"));
+            filterEditingMenuViewController.showMenu();
+
+        });
+        return selectionButton;
+    }
+
+    /**
+     * <p>
+     *     Set up the edit button. This button is used to edit existing filters.
+     * </p>
+     *
+     * @param tableView The table view needed to get the currently selected filter.
+     * @return The fully configured edit button.
+     */
+    private Button setEditButton(TableView tableView) {
+        final Button editButton = new ImageButton("edit.png");
+        editButton.setOnAction(actionEvent -> {
+            final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
+            if (!data.isEmpty() && filterInput != null) {
+                filterEditingMenuViewController.showMenu(filterInput);
+            }
+        });
+        editButton.setScaleX(0.45);
+        editButton.setScaleY(0.45);
+        return editButton;
+    }
+
+    /**
+     * <p>
+     *     Sets up the remove button, which is used to remove filters from the table view and the graph.
+     * </p>
+     *
+     * @param tableView The table view needed to get the currently selected filter.
+     * @return The fully configured remove button.
+     */
+    private Button setRemoveButton(TableView tableView) {
+        final Button removeButton = new ImageButton("remove.png");
+        removeButton.setOnAction(actionEvent -> {
+            final FilterInput filterInput = (FilterInput) tableView.getSelectionModel().getSelectedItem();
+            if (!data.isEmpty() && filterInput != null) {
+                data.remove(filterInput);
+
+                // Update model
+                IUserCommand updateFilterCommand = interactionMap.get(FilterInteraction.REMOVE);
+                if (updateFilterCommand != null) {
+                    filterInput.setDeleted();
+                    updateFilterCommand.setSelection(filterInput);
+                    notifyListeners(updateFilterCommand);
+                }
+                configData.removeFilterInput(filterInput);
+
+                logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
+            }
+        });
+        removeButton.setScaleX(0.5);
+        removeButton.setScaleY(0.5);
+        return removeButton;
+    }
+
+    /**
+     * <p>
+     *     Sets up the add button, which is used to add filters to the graph and to the table view.
+     * </p>
+     *
+     * @return The fully configured add button.
+     */
+    private Button setAddButton() {
+        final Button addButton = new ImageButton("add.png");
+        addButton.setOnAction(actionEvent -> filterEditingMenuViewController.showMenu());
+        addButton.setScaleX(0.5);
+        addButton.setScaleY(0.5);
+        return addButton;
     }
 
     /**
@@ -487,13 +531,10 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
 
     /**
      * <p>
-     *     Clears all selections from the table view
+     *     Send a command to update filters in the graph.
      * </p>
+     * @param filterInput The filter to update in the graph.
      */
-    public void clearSelection() {
-        tableView.getSelectionModel().clearSelection();
-    }
-
     public void notifyUpdateCommand(FilterInput filterInput) {
         if (interactionMap.get(FilterInteraction.UPDATE) != null) {
             IUserCommand command = interactionMap.get(FilterInteraction.UPDATE);

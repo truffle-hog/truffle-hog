@@ -194,12 +194,12 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
         // Start the requested service
         if (switched) {
             switch (selected) {
-                case "Demo":
+                case ViewSwitcher.DEMO_VIEW:
                     if (interactionMap.get(StartViewInteraction.START_DEMO) != null) {
                         notifyListeners(interactionMap.get(StartViewInteraction.START_DEMO));
                     }
                     break;
-                case "Profinet":
+                case ViewSwitcher.PROFINET_VIEW:
                     if (interactionMap.get(StartViewInteraction.START_PROFINET) != null) {
                         notifyListeners(interactionMap.get(StartViewInteraction.START_PROFINET));
                     }
