@@ -42,6 +42,10 @@ import java.util.List;
  *         </li>
  *     </ul>
  * </p>
+ * <p>
+ *     It used to serialize and deserialize filter inputs, thus when the implementation or filter input changes, the
+ *     object can still be deserialized.
+ * </p>
  *
  * @author Julian Brendl
  * @version 1.0
