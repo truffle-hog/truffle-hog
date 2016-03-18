@@ -201,7 +201,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             }
         });
 
-		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getAddress().toString());
+		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getComponent(NodeInfoComponent.class).toString());
 
 		// TODO null check for component
 		jungView.getRenderContext().setEdgeLabelTransformer(edge -> String.valueOf(edge.getComponent(EdgeStatisticsComponent.class).getTraffic()));

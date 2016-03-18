@@ -337,8 +337,8 @@ JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_pr
 
     if (truffle.frame.type == IS_DCP)
     {
-
-        for (int i = 0; i < MAX_BLOCKS; i++)
+        int i;
+        for (i = 0; i < MAX_BLOCKS; i++)
         {
             switch(truffle.frame.val.dcp.blocks[i].type)
             {
