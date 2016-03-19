@@ -13,6 +13,7 @@ import edu.kit.trufflehog.model.network.graph.LiveUpdater;
 import edu.kit.trufflehog.model.network.recording.*;
 import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.view.ViewSwitcher;
@@ -149,9 +150,9 @@ public class Presenter {
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
         truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
+        //truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
         this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
         truffleFetchService.execute(truffleReceiver);
-        //truffleReceiver.connect();
 
         // Initialize the command executor and register it.
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
