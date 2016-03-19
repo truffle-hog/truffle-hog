@@ -281,7 +281,7 @@ public class ViewBuilder {
                 "capture-457", "capture-167");
 
         final AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
-        final AnchorPaneInteractionController demoView = new LiveViewViewController("live_view.fxml", configData, viewSwitcher, stackPane,
+        final AnchorPaneInteractionController<ProtocolControlInteraction> demoView = new LiveViewViewController("live_view.fxml", configData, viewSwitcher, stackPane,
                 viewPorts.get(ViewSwitcher.PROFINET_VIEW) , primaryStage.getScene(), updateFilterCommand, userCommandIListener,
                 networkDevice, liveNetwork);
         demoView.addCommand(ProtocolControlInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
