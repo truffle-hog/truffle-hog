@@ -31,7 +31,7 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
      */
     public UpdateFilterCommand(final INetworkIOPort nwp, final MacroFilter macroFilter) {
         if(macroFilter == null)
-            throw new NullPointerException("macroFilter must not be null!");
+            throw new NullPointerException("macroFilter should not be null!");
 
         this.macroFilter = macroFilter;
         this.nwp = nwp;

@@ -60,7 +60,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
 
     private final INetworkViewPort viewPort;
 
-    private RecordMenuViewController recordOverlayViewController;
+    private AnchorPane captureOverlayViewController;
     private FilterOverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
     private final IUserCommand<FilterInput> updateFilterCommand;
@@ -120,7 +120,10 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         addNodeStatisticsOverlay();
         addSettingsOverlay();
         addFilterMenuOverlay(networkViewScreen);
-        addRecordOverlay(networkDevice, liveNetwork);
+
+        // Add the record overlay here, this is overwritten in the capture view view controller
+        captureOverlayViewController = addCaptureOverlay(networkDevice, liveNetwork);
+        this.getChildren().add(captureOverlayViewController);
     }
 
     /**
@@ -164,12 +167,12 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
      *     Builds the record menu overlay.
      * </p>
      */
-    private void addRecordOverlay(INetworkDevice networkDevice, INetwork liveNetwork) {
-        recordOverlayViewController = new RecordMenuViewController("record_overlay_menu.fxml", networkDevice, liveNetwork);
-        this.getChildren().add(recordOverlayViewController);
-        AnchorPane.setBottomAnchor(recordOverlayViewController, 60d);
-        AnchorPane.setLeftAnchor(recordOverlayViewController, 18d);
-        recordOverlayViewController.setVisible(false);
+    protected AnchorPane addCaptureOverlay(INetworkDevice networkDevice, INetwork liveNetwork) {
+        AnchorPane captureOverlayViewController = new RecordMenuViewController("record_menu_overlay.fxml", networkDevice, liveNetwork);
+        AnchorPane.setBottomAnchor(captureOverlayViewController, 60d);
+        AnchorPane.setLeftAnchor(captureOverlayViewController, 18d);
+        captureOverlayViewController.setVisible(false);
+        return captureOverlayViewController;
     }
 
     /**
@@ -253,7 +256,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
     private Button addSettingsButton() {
         final Button settingsButton = new ImageButton("gear.png");
         settingsButton.setOnAction(event -> handleShowMechanism(settingsOverlayViewController, filterOverlayViewController,
-                recordOverlayViewController));
+                captureOverlayViewController));
 
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN),
                 settingsButton::fire);
@@ -271,7 +274,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
      */
     private Button addFilterButton() {
         final Button filterButton = new ImageButton("filter.png");
-        filterButton.setOnAction(event -> handleShowMechanism(filterOverlayViewController, recordOverlayViewController,
+        filterButton.setOnAction(event -> handleShowMechanism(filterOverlayViewController, captureOverlayViewController,
                 settingsOverlayViewController));
 
         filterButton.setScaleX(0.8);
@@ -290,7 +293,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
     private Button addRecordButton() {
         final ImageButton recordButton = new ImageButton("record.png");
 
-        recordButton.setOnAction(event -> handleShowMechanism(recordOverlayViewController, filterOverlayViewController,
+        recordButton.setOnAction(event -> handleShowMechanism(captureOverlayViewController, filterOverlayViewController,
                 settingsOverlayViewController));
 
         recordButton.setScaleX(0.8);
@@ -343,7 +346,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         AnchorPane.setTopAnchor(closeButton, 10d);
         AnchorPane.setLeftAnchor(closeButton, 10d);
 
-        this.getChildren().add(closeButton);
+        getChildren().add(closeButton);
     }
 
     /**

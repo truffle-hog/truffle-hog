@@ -118,8 +118,8 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
      *
      * @param stackPane The stackPane to put the menu on.
      * @param fxml The fxml to load.
-     * @param filterOverlayViewController The filterOverlayViewController where the {@link TableView} is held that the filter should be
-     *                          added to.
+     * @param filterOverlayViewController The filterOverlayViewController where the {@link TableView} is held that the
+     *                                    filter should be added to.
      * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      */
     public FilterEditingMenuViewController(StackPane stackPane,

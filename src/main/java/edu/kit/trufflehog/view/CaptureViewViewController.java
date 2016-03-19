@@ -1,5 +1,16 @@
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.model.configdata.ConfigData;
+import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.network.INetwork;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
+import edu.kit.trufflehog.model.network.recording.INetworkDevice;
+import edu.kit.trufflehog.util.IListener;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+
 /**
  * <p>
  * </p>
@@ -7,5 +18,29 @@ package edu.kit.trufflehog.view;
  * @author Julian Brendl
  * @version 1.0
  */
-public class CaptureViewViewController {
+public class CaptureViewViewController extends LiveViewViewController {
+
+    public CaptureViewViewController(String fxml,
+                                     ConfigData configData,
+                                     ViewSwitcher viewSwitcher,
+                                     StackPane stackPane,
+                                     INetworkViewPort viewPort,
+                                     Scene scene,
+                                     IUserCommand<FilterInput> updateFilterCommand,
+                                     IListener<IUserCommand> userCommandIListener,
+                                     INetworkDevice networkDevice,
+                                     INetwork liveNetwork) {
+
+        super(fxml, configData, viewSwitcher, stackPane, viewPort, scene, updateFilterCommand, userCommandIListener,
+                networkDevice, liveNetwork);
+    }
+
+    @Override
+    protected AnchorPane addCaptureOverlay(INetworkDevice networkDevice, INetwork liveNetwork) {
+        final AnchorPane captureView = new PlaybackMenuViewController("playback_menu_overlay.fxml");
+        AnchorPane.setBottomAnchor(captureView, 60d);
+        AnchorPane.setLeftAnchor(captureView, 18d);
+        captureView.setVisible(false);
+        return captureView;
+    }
 }

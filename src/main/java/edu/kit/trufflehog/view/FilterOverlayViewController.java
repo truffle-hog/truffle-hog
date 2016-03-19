@@ -495,8 +495,8 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
         final String[] ruleArray = rules.toArray(new String[rules.size()]);
         return IntStream.range(0, ruleArray.length)
                 .mapToObj(i -> {
-                    // Add a new line to every third element in the stream
-                    if (i % 3 == 2) {
+                    // Add a new line to every second element in the stream
+                    if (i % 2 == 1) {
                         return ruleArray[i] + ";\n";
                     } else {
                         return ruleArray[i] + ";    ";

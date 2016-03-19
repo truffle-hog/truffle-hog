@@ -74,7 +74,7 @@ public class RecordMenuViewController extends AnchorPaneController {
      * @param networkDevice
      * @param liveNetwork
      */
-    private void startRecord(INetworkDevice networkDevice, INetwork liveNetwork) {
+    private void startAction(INetworkDevice networkDevice, INetwork liveNetwork) {
         final INetworkTape tape = new NetworkTape(20);
 
         final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);

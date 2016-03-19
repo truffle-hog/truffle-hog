@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * <p>
- *     The StartViewViewController is the first view the user sees. It cannot be clicked away like the other views, and
+ *     The StartViewController is the first view the user sees. It cannot be clicked away like the other views, and
  *     it gives users an option of what to start. Once the user has selected a view port, the view is switched
  *     accordingly.
  * </p>
@@ -26,7 +26,7 @@ import java.util.Map;
  * @author Julian Brendl
  * @version 1.0
  */
-public class StartViewViewController extends AnchorPaneInteractionController<StartViewInteraction> {
+public class StartViewController extends AnchorPaneInteractionController<StartViewInteraction> {
     private final Map<StartViewInteraction, IUserCommand> interactionMap = new EnumMap<>(StartViewInteraction.class);
     private final ViewSwitcher viewSwitcher;
 
@@ -39,17 +39,16 @@ public class StartViewViewController extends AnchorPaneInteractionController<Sta
 
     /**
      * <p>
-     *     Creates a new OverlayViewController with the given fxmlFileName.
-     *     The fxml file has to be in the same namespace as the
-     *     OverlayViewController.
+     *     Creates a new StartViewController with the given fxmlFileName. The fxml file has to be in the same namespace
+     *     as the StartViewController.
      * </p>
      *
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
-    public StartViewViewController(final String fxmlFileName,
-                                   final ObservableList<String> liveItems,
-                                   final ObservableList<String> captureItems,
-                                   final ViewSwitcher viewSwitcher) {
+    public StartViewController(final String fxmlFileName,
+                               final ObservableList<String> liveItems,
+                               final ObservableList<String> captureItems,
+                               final ViewSwitcher viewSwitcher) {
         super(fxmlFileName);
         this.viewSwitcher = viewSwitcher;
 

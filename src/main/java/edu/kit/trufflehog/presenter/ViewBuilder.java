@@ -89,7 +89,9 @@ public class ViewBuilder {
      */
     public ViewBuilder(final ConfigData configData,
                        final Stage primaryStage,
-                       final Map<String, INetworkViewPort> viewPorts, TruffleReceiver truffleReceiver) {
+                       final Map<String, INetworkViewPort> viewPorts,
+                       final TruffleReceiver truffleReceiver) {
+
         this.configData = configData;
         this.primaryStage = primaryStage;
         this.groundView = new AnchorPane();
@@ -107,13 +109,12 @@ public class ViewBuilder {
 
     /**
      *
-     * @param viewPort
      * @param liveNetwork
      * @param device
      * @param userCommandIListener
      * @param updateFilterCommand
      */
-    public void build(final INetworkViewPortSwitch viewPort,
+    public void build(final INetworkViewPortSwitch viewPortSwitch,
                       final INetwork liveNetwork,
                       final INetworkDevice device,
                       final IListener<IUserCommand> userCommandIListener,
@@ -220,58 +221,6 @@ public class ViewBuilder {
         return flowPane;
     }
 
-    // Will go away, keep for reference
-//    private FlowPane buildReplayFunction(INetworkDevice networkDevice,
-//                                         INetwork liveNetwork,
-//                                         INetworkViewPortSwitch viewPortSwitch) {
-//
-//        final INetworkTape tape = new NetworkTape(20);
-//
-//        final Slider slider = new Slider(0, 100, 0);
-//        slider.setTooltip(new Tooltip("replay"));
-//        tape.getCurrentReadingFrameProperty().bindBidirectional(slider.valueProperty());
-//        tape.getFrameCountProperty().bindBidirectional(slider.maxProperty());
-//
-//        final ToggleButton liveButton = new ToggleButton("Live");
-//        liveButton.setDisable(true);
-//        final ToggleButton playButton = new ToggleButton("Play");
-//        playButton.setDisable(false);
-//        final ToggleButton stopButton = new ToggleButton("Stop");
-//        stopButton.setDisable(false);
-//        final ToggleButton recButton = new ToggleButton("Rec");
-//        recButton.setDisable(false);
-//
-//        liveButton.setOnAction(h -> {
-//            networkDevice.goLive(liveNetwork, viewPortSwitch);
-//            liveButton.setDisable(true);
-//        });
-//
-//        playButton.setOnAction(handler -> {
-//            networkDevice.play(tape, viewPortSwitch);
-//            liveButton.setDisable(false);
-//        });
-//
-//        final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);
-//        recButton.setOnAction(h -> startRecordCommand.execute());
-//
-//        slider.setStyle("-fx-background-color: transparent");
-//
-//        final ToolBar toolBar = new ToolBar();
-//        toolBar.getItems().add(stopButton);
-//        toolBar.getItems().add(playButton);
-//        toolBar.getItems().add(recButton);
-//        toolBar.getItems().add(liveButton);
-//        toolBar.setStyle("-fx-background-color: transparent");
-//        //toolBar.getItems().add(slider);
-//
-//        final FlowPane flowPane = new FlowPane();
-//
-//        flowPane.getChildren().addAll(toolBar, slider);
-//
-//        return flowPane;
-//    }
-
-
     private void buildViews(final IListener<IUserCommand> userCommandIListener,
                             final IUserCommand<FilterInput> updateFilterCommand,
                             final INetworkDevice networkDevice,
@@ -280,10 +229,11 @@ public class ViewBuilder {
         ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724",
                 "capture-457", "capture-167");
 
-        final AnchorPane startView = new StartViewViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
-        final AnchorPaneInteractionController demoView = new LiveViewViewController("live_view.fxml", configData, viewSwitcher, stackPane,
-                viewPorts.get(ViewSwitcher.DEMO_VIEW) , primaryStage.getScene(), updateFilterCommand, userCommandIListener,
-                networkDevice, liveNetwork);
+        final AnchorPane startView = new StartViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
+        final AnchorPaneInteractionController demoView = new CaptureViewViewController("live_view.fxml", configData,
+                viewSwitcher, stackPane, viewPorts.get(ViewSwitcher.DEMO_VIEW) , primaryStage.getScene(),
+                updateFilterCommand, userCommandIListener, networkDevice, liveNetwork);
+
         demoView.addCommand(ProtocolControlInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
         demoView.addCommand(ProtocolControlInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
         demoView.addListener(userCommandIListener);
