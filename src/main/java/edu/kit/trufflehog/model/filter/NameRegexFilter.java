@@ -15,8 +15,9 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- *     This class implements a filter that filters nodes by their names using regexes defined by the user.
+ * This class implements a filter that filters nodes by their names using regexes defined by the user.
  * </p>
+ *
  * @author Mark Giraud
  * @version 1.0
  */
@@ -72,24 +73,23 @@ public class NameRegexFilter implements IFilter {
 
         final String deviceName = node.getComponent(NodeInfoComponent.class).getDeviceName();
 
-        if (deviceName != null) {
-            switch (selectionModel) {
-                case SELECTION:
-                    if (patterns.parallelStream().anyMatch(p -> p.matcher(deviceName).matches())) {
-                        markNode(node);
-                    }
-                    break;
+        switch (selectionModel) {
+            case SELECTION:
+                if (deviceName != null && patterns.parallelStream().anyMatch(p -> p.matcher(deviceName).matches())) {
+                    markNode(node);
+                }
+                break;
 
-                case INVERSE_SELECTION:
-                    if (!patterns.parallelStream().anyMatch(p -> p.matcher(deviceName).matches())) {
-                        markNode(node);
-                    }
-                    break;
+            case INVERSE_SELECTION:
+                if (deviceName != null && !patterns.parallelStream().anyMatch(p -> p.matcher(deviceName).matches())) {
+                    markNode(node);
+                }
+                break;
 
-                default:
-                    break;
-            }
+            default:
+                break;
         }
+
     }
 
     private void markNode(INode node) {

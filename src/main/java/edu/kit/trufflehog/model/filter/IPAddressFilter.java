@@ -144,7 +144,7 @@ public class IPAddressFilter implements IFilter {
                 break;
 
             case INVERSE_SELECTION:
-                if (address == null || !addresses.contains(address)) {
+                if (address != null && !addresses.contains(address)) {
                     markNode(node);
                 }
                 break;
