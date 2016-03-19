@@ -92,8 +92,8 @@ public class FXVertexRenderer<V,E> implements Renderer.Vertex<V,E> {
             g.fill(shape);
             g.setPaint(oldPaint);
         }
-        //Paint drawPaint = rc.getVertexDrawPaintTransformer().transform(v);
-/*        if(drawPaint != null) {
+        Paint drawPaint = rc.getVertexDrawPaintTransformer().transform(v);
+        if(drawPaint != null) {
             g.setPaint(drawPaint);
             Stroke oldStroke = g.getStroke();
             Stroke stroke = rc.getVertexStrokeTransformer().transform(v);
@@ -103,6 +103,6 @@ public class FXVertexRenderer<V,E> implements Renderer.Vertex<V,E> {
             g.draw(shape);
             g.setPaint(oldPaint);
             g.setStroke(oldStroke);
-        }*/
+        }
     }
 }

@@ -147,6 +147,26 @@ public class MulticastEdgeRenderer implements IRenderer {
     }
 
     @Override
+    public Color getDrawUnpicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setDrawUnpicked(Color drawUnpicked) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public Color getDrawPicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setDrawPicked(Color drawPicked) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
     public Icon getIconUnpicked() {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }

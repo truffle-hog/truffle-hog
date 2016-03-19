@@ -306,7 +306,9 @@ public class FXVisualizationServer<V, E> extends JPanel
         }
     }
 
+
     protected void renderGraph(Graphics2D g2d) {
+
         if(renderContext.getGraphicsContext() == null) {
             renderContext.setGraphicsContext(new GraphicsDecorator(g2d));
         } else {

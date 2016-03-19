@@ -37,6 +37,14 @@ public interface IRenderer extends DeepCopyable<IRenderer>, Updatable<IRenderer>
 
     void setIconPicked(Icon icon);
 
+    Color getDrawUnpicked();
+
+    void setDrawUnpicked(Color drawUnpicked);
+
+    Color getDrawPicked();
+
+    void setDrawPicked(Color drawPicked);
+
     Icon getIconUnpicked();
 
     void setIconUnpicked(Icon icon);

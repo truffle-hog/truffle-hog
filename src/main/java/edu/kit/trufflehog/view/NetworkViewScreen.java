@@ -44,6 +44,7 @@ import javax.swing.event.ChangeEvent;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.RenderingHints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -138,7 +139,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 		initRenderers();
 
-		jungView.setBackground(new Color(0x3e4451));
+		jungView.setBackground(new Color(0x213245));
 		//jungView.setBackground(new Color(0xFFFFFF));
 		//jungView.setBackground(new Color(0x5e6d67));
 		//jungView.setPreferredSize(new Dimension(1000, 1000));
@@ -165,6 +166,69 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 	}
 
 	private void initRenderers() {
+
+		jungView.addPreRenderPaintable(new Paintable() {
+			@Override
+			public void paint(Graphics g2d) {
+
+				Color c = g2d.getColor();
+				g2d.setColor(new Color(0x385172));
+
+
+
+				int hGap = jungView.getSize().width / 4;
+				int vGap = jungView.getSize().height / 4;
+
+				for (int row = vGap; row < jungView.getSize().height; row += vGap) {
+
+					//for (int col = 0; col < jungView.getSize().width; col += hGap) {
+
+						for (int pos = 0; pos < jungView.getSize().width; pos += 10) {
+
+							g2d.drawLine(pos, row, pos + 5, row);
+						}
+
+					//}
+				}
+
+				for (int col = hGap; col < jungView.getSize().width; col += hGap) {
+
+					//for (int col = 0; col < jungView.getSize().width; col += hGap) {
+
+					for (int pos = 0; pos < jungView.getSize().height; pos += 10) {
+
+						g2d.drawLine(col, pos, col, pos + 5);
+					}
+
+					//}
+				}
+
+
+				//g2d.fillOval(0, 0, jungView.getSize().width, jungView.getSize().height);
+				g2d.setColor(c);
+/*				g2d.setRenderingHints(jungView.getRenderingHints());
+
+				// the size of the VisualizationViewer
+				Dimension d = getSize();
+
+				// clear the offscreen image
+				g2d.setColor(getBackground());
+				g2d.fillRect(0,0,d.width,d.height);
+
+				AffineTransform oldXform = g2d.getTransform();
+				AffineTransform newXform = new AffineTransform(oldXform);
+				newXform.concatenate(
+						renderContext.getMultiLayerTransformer().getTransformer(Layer.VIEW).getTransform());
+//        		viewTransformer.getTransform());
+
+				g2d.setTransform(newXform);*/
+			}
+
+			@Override
+			public boolean useTransform() {
+				return false;
+			}
+		});
 
 
 
@@ -254,13 +318,22 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             return AffineTransform.getScaleInstance(0.3 + relation, 0.3 + relation).createTransformedShape(viewComponent.getRenderer().getShape());
         });
 
-        final Color base = new Color(0x7f7784);
-        final float[] hsbVals = new float[3];
-        Color.RGBtoHSB(base.getRed(), base.getGreen(), base.getBlue(), hsbVals);
+		jungView.getRenderContext().setVertexStrokeTransformer(node -> {
+			final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
 
-        final Color basePicked = new Color(0xf0caa3);
-        final float[] hsbValsPicked = new float[3];
-        Color.RGBtoHSB(basePicked.getRed(), basePicked.getGreen(), basePicked.getBlue(), hsbValsPicked);
+			return viewComponent.getRenderer().getStroke();
+		});
+
+		jungView.getRenderContext().setVertexDrawPaintTransformer(node -> {
+
+			final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
+
+			if (getPickedVertexState().isPicked(node)) {
+				return viewComponent.getRenderer().getDrawPicked();
+			} else {
+				return viewComponent.getRenderer().getDrawUnpicked();
+			}
+		});
 
         jungView.getRenderContext().setVertexFillPaintTransformer(node -> {
 

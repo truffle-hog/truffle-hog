@@ -23,9 +23,15 @@ public class NodeRenderer implements IRenderer {
     private Icon iconPicked = null;
     //private Shape shape = new Rectangle2D.Double(-50,-50,100,100);
     private Shape shape = new Ellipse2D.Double(-50, -50, 100, 100);
-    private Color colorPicked = new Color(0xffffff);
-    private Color colorUnpicked = new Color(0x528bff);
-    private Stroke stroke = new BasicStroke();
+    private Color colorPicked = new Color(0x4089BFf0, true);
+    private Color colorUnpicked = new Color(0x4089BFa0, true);
+
+
+
+    private Color drawPicked = new Color(0xC6E9FF, true);
+    private Color drawUnpicked = new Color(0x4089BFa0, true);
+
+    private Stroke stroke = new BasicStroke(7f);
 
     /**
      * <p>
@@ -33,7 +39,6 @@ public class NodeRenderer implements IRenderer {
      * </p>
      */
     public NodeRenderer() {
-
     }
 
     /**
@@ -60,6 +65,23 @@ public class NodeRenderer implements IRenderer {
 
         this.iconUnpicked = unpicked;
         this.iconPicked = picked;
+    }
+
+    @Override
+    public Color getDrawUnpicked() {
+        return drawUnpicked;
+    }
+    @Override
+    public void setDrawUnpicked(Color drawUnpicked) {
+        this.drawUnpicked = drawUnpicked;
+    }
+    @Override
+    public Color getDrawPicked() {
+        return drawPicked;
+    }
+    @Override
+    public void setDrawPicked(Color drawPicked) {
+        this.drawPicked = drawPicked;
     }
 
     @Override
