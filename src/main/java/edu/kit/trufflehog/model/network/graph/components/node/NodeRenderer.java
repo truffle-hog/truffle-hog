@@ -28,8 +28,8 @@ public class NodeRenderer implements IRenderer {
 
 
 
-    private Color drawPicked = new Color(0xC6E9FF, true);
-    private Color drawUnpicked = new Color(0x4089BFa0, true);
+    private Color drawPicked = new Color(0xC6E9FFf3, true);
+    private Color drawUnpicked = new Color(0x4089BFd0, true);
 
     private Stroke stroke = new BasicStroke(7f);
 

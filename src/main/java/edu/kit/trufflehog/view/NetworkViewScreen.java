@@ -9,6 +9,7 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.IEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
@@ -38,13 +39,13 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.Icon;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -230,22 +231,107 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 			}
 		});
 
+        jungView.getRenderContext().setArrowDrawPaintTransformer(edge -> {
 
+            final ViewComponent viewComponent = edge.getComponent(ViewComponent.class);
 
-        jungView.getRenderContext().setVertexIconTransformer(new Transformer<INode, Icon>() {
+            // FIXME solve this via polymorphy!!!
+            if (viewComponent.getRenderer() instanceof IEdgeRenderer) {
 
-            @Override
-            public Icon transform(INode node) {
+                final IEdgeRenderer renderer = (IEdgeRenderer) viewComponent.getRenderer();
 
-                final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
+                if (getPickedEdgeState().isPicked(edge)) {
 
-                if (getPickedVertexState().isPicked(node)) {
-                    return viewComponent.getRenderer().getIconPicked();
+                    return renderer.getArrowDrawPicked();
+
                 } else {
-                    return viewComponent.getRenderer().getIconUnpicked();
+                    return renderer.getArrowDrawUnpicked();
+                }
+
+            } else {
+                if (getPickedEdgeState().isPicked(edge)) {
+
+                    return viewComponent.getRenderer().getColorPicked();
+
+                } else {
+                    return viewComponent.getRenderer().getColorUnpicked();
                 }
 
             }
+        });
+
+        jungView.getRenderContext().setEdgeArrowTransformer(context -> {
+
+            final ViewComponent viewComponent = context.element.getComponent(ViewComponent.class);
+
+            // FIXME solve this via polymorphy!!!
+            if (viewComponent.getRenderer() instanceof IEdgeRenderer) {
+
+                final IEdgeRenderer renderer = (IEdgeRenderer) viewComponent.getRenderer();
+
+                if (getPickedEdgeState().isPicked(context.element)) {
+
+                    return renderer.getArrowShapePicked();
+
+                } else {
+                    return renderer.getArrowShapeUnpicked();
+                }
+
+            } else {
+                if (getPickedEdgeState().isPicked(context.element)) {
+
+                    return viewComponent.getRenderer().getShape();
+
+                } else {
+                    return viewComponent.getRenderer().getShape();
+                }
+
+            }
+
+        });
+
+		jungView.getRenderContext().setArrowFillPaintTransformer((Transformer<IConnection, Paint>) edge -> {
+
+			final ViewComponent viewComponent = edge.getComponent(ViewComponent.class);
+
+			// FIXME solve this via polymorphy!!!
+			if (viewComponent.getRenderer() instanceof IEdgeRenderer) {
+
+				final IEdgeRenderer renderer = (IEdgeRenderer) viewComponent.getRenderer();
+
+				if (getPickedEdgeState().isPicked(edge)) {
+
+					return renderer.getArrowFillPicked();
+
+				} else {
+					return renderer.getArrowFillUnpicked();
+				}
+
+			} else {
+				if (getPickedEdgeState().isPicked(edge)) {
+
+					return viewComponent.getRenderer().getColorPicked();
+
+				} else {
+					return viewComponent.getRenderer().getColorUnpicked();
+				}
+
+			}
+
+        });
+
+
+
+        jungView.getRenderContext().setVertexIconTransformer(node -> {
+
+            final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
+
+            if (getPickedVertexState().isPicked(node)) {
+                return viewComponent.getRenderer().getIconPicked();
+            } else {
+                return viewComponent.getRenderer().getIconUnpicked();
+            }
+
         });
 
 

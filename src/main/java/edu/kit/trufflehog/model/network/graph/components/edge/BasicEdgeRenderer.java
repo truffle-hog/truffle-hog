@@ -24,18 +24,28 @@ import java.awt.geom.Ellipse2D;
  *          <p/>
  *          TODO FIX GETTER!!!
  */
-public class BasicEdgeRenderer implements IRenderer {
+public class BasicEdgeRenderer implements IEdgeRenderer {
 
     private static final Logger logger = LogManager.getLogger();
 
-    Color colorUnpicked = new Color(0x21252b);
-    float[] hsbValsUnpicked = new float[3];
+    private Color colorUnpicked = new Color(0x21252b);
+    private float[] hsbValsUnpicked = new float[3];
 
 
-    Color colorPicked = new Color(0x353b45);
-    float[] hsbValsPicked = new float[3];
+    private Color colorPicked = new Color(0x6CFF82);
+    private float[] hsbValsPicked = new float[3];
 
     private Shape shape = new Ellipse2D.Float(-10, -10, 20, 20);
+
+    private Color arrowFillPicked = new Color(0x6CFF82);
+    private Color arrowFillUnpicked = new Color(0xfffffff0, true);
+
+    private Color arrowDrawPicked = null;
+    private Color arrowDrawUnpicked = null;
+
+    private Shape arrowShapePicked = new Ellipse2D.Float(-8, -8, 16, 16);
+    private Shape arrowShapeUnpicked = new Ellipse2D.Float(-6, -6, 12, 12);
+
 
     //TODO change this!
     private Stroke stroke = new BasicStroke();
@@ -65,6 +75,45 @@ public class BasicEdgeRenderer implements IRenderer {
         Color.RGBtoHSB(colorPicked.getRed(), colorPicked.getGreen(), colorPicked.getBlue(), hsbValsPicked);
 
         currentBrightness = hsbValsUnpicked[2];
+    }
+
+    @Override
+    public Shape getArrowShapePicked() {
+        return arrowShapePicked;
+    }
+
+    @Override
+    public void setArrowShapePicked(Shape arrowShapePicked) {
+        this.arrowShapePicked = arrowShapePicked;
+    }
+
+    @Override
+    public Shape getArrowShapeUnpicked() {
+        return arrowShapeUnpicked;
+    }
+
+    @Override
+    public void setArrowShapeUnpicked(Shape arrowShapeUnpicked) {
+        this.arrowShapeUnpicked = arrowShapeUnpicked;
+    }
+
+
+    @Override
+    public Color getArrowDrawPicked() {
+        return arrowDrawPicked;
+    }
+    @Override
+    public void setArrowDrawPicked(Color arrowDrawPicked) {
+        this.arrowDrawPicked = arrowDrawPicked;
+    }
+    @Override
+    public Color getArrowDrawUnpicked() {
+        return arrowDrawUnpicked;
+
+    }
+    @Override
+    public void setArrowDrawUnpicked(Color arrowDrawUnpicked) {
+        this.arrowDrawUnpicked = arrowDrawUnpicked;
     }
 
     @Override
@@ -206,5 +255,25 @@ public class BasicEdgeRenderer implements IRenderer {
 
     public void setCurrentBrightness(float currentBrightness) {
         this.currentBrightness = currentBrightness;
+    }
+
+    @Override
+    public Color getArrowFillPicked() {
+        return arrowFillPicked;
+    }
+
+    @Override
+    public Color getArrowFillUnpicked() {
+        return arrowFillUnpicked;
+    }
+
+    @Override
+    public void setArrowFillPicked(Color arrowFillPicked) {
+        this.arrowFillPicked = arrowFillPicked;
+    }
+
+    @Override
+    public void setArrowFillUnpicked(Color arrowFillUnpicked) {
+        this.arrowFillUnpicked = arrowFillUnpicked;
     }
 }
