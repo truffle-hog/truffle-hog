@@ -1,3 +1,20 @@
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
@@ -12,7 +29,6 @@ import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.util.IListener;
-import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import edu.kit.trufflehog.viewmodel.GeneralStatisticsViewModel;
@@ -45,7 +61,7 @@ import java.util.concurrent.TimeUnit;
  * @author Julian Brendl
  * @version 1.0
  */
-public class LiveViewViewController extends AnchorPaneInteractionController<ProtocolControlInteraction> {
+public class LiveViewViewController extends SplitableView<ProtocolControlInteraction> {
     private static final Logger logger = LogManager.getLogger(LiveViewViewController.class);
 
     // General variables
@@ -69,6 +85,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
     private final GeneralStatisticsViewModel generalStatViewModel = new GeneralStatisticsViewModel();
     protected final INetworkDevice networkDevice;
     protected final INetwork liveNetwork;
+    private final ImageButton closeButton;
 
     public LiveViewViewController(final String fxml,
                                   final ConfigData configData,
@@ -114,7 +131,8 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         AnchorPane.setLeftAnchor(networkViewScreen, 0d);
         AnchorPane.setRightAnchor(networkViewScreen, 0d);
 
-        addCloseButton();
+        closeButton = addCloseButton(multiViewManager);
+        getChildren().add(closeButton);
 
         addToolbar();
         addGeneralStatisticsOverlay();
@@ -127,7 +145,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         this.getChildren().add(captureOverlayViewController);
 
         // Set this view as the currently selected view when it is pressed
-        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this));
+        networkViewScreen.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this));
     }
 
     /**
@@ -339,10 +357,16 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
      *     Adds the close button.
      * </p>
      */
-    private void addCloseButton() {
+    private ImageButton addCloseButton(MultiViewManager multiViewManager) {
         final ImageButton closeButton = new ImageButton("close.png");
 
-        closeButton.setOnAction(event -> multiViewManager.replace(this, MultiViewManager.START_VIEW));
+        closeButton.setOnAction(event ->  {
+            if (multiViewManager.getViewCounter() > 1) {
+                multiViewManager.merge(this);
+            } else {
+                multiViewManager.replace(this, MultiViewManager.START_VIEW);
+            }
+        });
 
         closeButton.setScaleX(0.8);
         closeButton.setScaleY(0.8);
@@ -350,7 +374,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         AnchorPane.setTopAnchor(closeButton, 10d);
         AnchorPane.setLeftAnchor(closeButton, 10d);
 
-        getChildren().add(closeButton);
+        return closeButton;
     }
 
     /**
@@ -379,6 +403,11 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
     @Override
     public void addCommand(ProtocolControlInteraction interaction, IUserCommand command) {
         interactionMap.put(interaction, command);
+    }
+
+    @Override
+    public void showCloseButton(boolean show) {
+        closeButton.setVisible(show);
     }
 
     @Override

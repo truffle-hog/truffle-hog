@@ -552,16 +552,4 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
             interactionMap.put(interaction, command);
         }
     }
-
-    /**
-     * <p>
-     *     Not needed here.
-     * </p>
-     *
-     * @return null
-     */
-    @Override
-    public AnchorPaneInteractionController clone() {
-        return null;
-    }
 }

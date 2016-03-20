@@ -1,4 +1,3 @@
-
 /*
  * This file is part of TruffleHog.
  *
@@ -35,7 +34,6 @@ import edu.kit.trufflehog.model.network.recording.NetworkTape;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.*;
-import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
 import edu.kit.trufflehog.view.controllers.IWindowController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -131,6 +129,7 @@ public class ViewBuilder {
         // because it is right on top of it.
         groundView.getChildren().add(splitPane);
         splitPane.setOrientation(Orientation.HORIZONTAL);
+        splitPane.getStyleClass().add("test");
 
         // Now we fix the splitPane to the edges of the groundView so that it can display the various graph views
         AnchorPane.setBottomAnchor(splitPane, 0d);
@@ -159,7 +158,7 @@ public class ViewBuilder {
 
         // Set min. dimensions
         primaryStage.setMinWidth(950d);
-        primaryStage.setMinHeight(650d);
+        primaryStage.setMinHeight(675d);
 
         // Add some keyboard shortcuts
         setKeyboardShortcuts(menuBar);
@@ -229,12 +228,12 @@ public class ViewBuilder {
         ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724",
                 "capture-457", "capture-167");
 
-        final AnchorPaneInteractionController startView = new StartViewController("start_view.fxml", liveItems,
+        final SplitableView startView = new StartViewController("start_view.fxml", liveItems,
                 captureItems, multiViewManager);
-        final AnchorPaneInteractionController demoView = new LiveViewViewController("live_view.fxml", configData,
+        final SplitableView demoView = new LiveViewViewController("live_view.fxml", configData,
                 multiViewManager, stackPane, viewPorts.get(MultiViewManager.DEMO_VIEW) , primaryStage.getScene(),
                 updateFilterCommand, userCommandIListener, networkDevice, liveNetwork);
-        final AnchorPaneInteractionController captureView = new CaptureViewViewController("live_view.fxml", configData,
+        final SplitableView captureView = new CaptureViewViewController("live_view.fxml", configData,
                 multiViewManager, stackPane, viewPorts.get(MultiViewManager.DEMO_VIEW) , primaryStage.getScene(),
                 updateFilterCommand, userCommandIListener, networkDevice, liveNetwork);
 
@@ -250,6 +249,7 @@ public class ViewBuilder {
 
         //multiViewManager.putView("Profinet", profinetView);
         splitPane.getItems().addAll(startView);
+        multiViewManager.setSelected(startView); // Select start view by default
     }
 
     private void setKeyboardShortcuts(MenuBar menuBar) {

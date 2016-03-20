@@ -1,8 +1,24 @@
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.StartViewInteraction;
-import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -26,7 +42,7 @@ import java.util.Map;
  * @author Julian Brendl
  * @version 1.0
  */
-public class StartViewController extends AnchorPaneInteractionController<StartViewInteraction> {
+public class StartViewController extends SplitableView<StartViewInteraction> {
     private final Map<StartViewInteraction, IUserCommand> interactionMap = new EnumMap<>(StartViewInteraction.class);
 
     private final String fxmlFileName;
@@ -109,6 +125,7 @@ public class StartViewController extends AnchorPaneInteractionController<StartVi
         });
 
         closeButton = addCloseButton(multiViewManager);
+        getChildren().add(closeButton);
         showCloseButton(false);
 
         // Set this anchor pane as the currently selected view when it is pressed
@@ -262,20 +279,15 @@ public class StartViewController extends AnchorPaneInteractionController<StartVi
         closeButton.setScaleX(0.8);
         closeButton.setScaleY(0.8);
 
-        AnchorPane.setTopAnchor(closeButton, 10d);
-        AnchorPane.setLeftAnchor(closeButton, 10d);
+        closeButton.setOnAction(event -> multiViewManager.merge(this));
 
-        getChildren().add(closeButton);
+        AnchorPane.setTopAnchor(closeButton, 5d);
+        AnchorPane.setLeftAnchor(closeButton, 5d);
+
         return closeButton;
     }
 
-    /**
-     * <p>
-     *     Shows the close button if show is set to true and hides the show button if show is set to false.
-     * </p>
-     *
-     * @param show Determines whether the close button is shown or not.
-     */
+    @Override
     public void showCloseButton(boolean show) {
         closeButton.setVisible(show);
     }

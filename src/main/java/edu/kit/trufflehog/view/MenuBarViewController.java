@@ -36,6 +36,7 @@ package edu.kit.trufflehog.view;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Orientation;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 
@@ -85,8 +86,8 @@ public class MenuBarViewController extends MenuBar {
     }
 
     private void setUpViewSwitchingButtons() {
-        splitHMenuItem.setOnAction(event -> multiViewManager.splitHorizontal());
-        splitVMenuItem.setOnAction(event -> multiViewManager.splitVertical());
+        splitHMenuItem.setOnAction(event -> multiViewManager.split(Orientation.HORIZONTAL));
+        splitVMenuItem.setOnAction(event -> multiViewManager.split(Orientation.VERTICAL));
         deleteMenuItem.setOnAction(event -> multiViewManager.merge());
     }
 
@@ -96,6 +97,6 @@ public class MenuBarViewController extends MenuBar {
      * </p>
      */
     public void onExit() {
-        throw new UnsupportedOperationException("Not implemented yet!");
+
     }
 }

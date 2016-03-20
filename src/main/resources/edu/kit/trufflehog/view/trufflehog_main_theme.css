@@ -27,6 +27,16 @@ root {
     display: block;
 }
 
+#view_selected {
+    -fx-border-color: #528BFF;
+    -fx-border-width: 1px;
+}
+
+#view_not_selected {
+    -fx-border-color: transparent;
+    -fx-border-width: 1px;
+}
+
 /* --------------------------------------------------------------------------------------------------------------------
  * --------------------------------------------- TRUFFLEHOG TOOLBAR ---------------------------------------------------
  * --------------------------------------------------------------------------------------------------------------------
@@ -215,7 +225,7 @@ root {
     -fx-border-radius: 10;
 }
 
-.start_view-split-pane .split-pane-divider {
+.start_view-split-pane > .split-pane-divider {
     -fx-padding: 0;
     -fx-border-color:  #21252B;
     -fx-background-color: #21252B;
@@ -398,6 +408,13 @@ root {
     -fx-opacity: 100%;
     -fx-focus-color: #528BFF;
     -fx-border-color: #21252B;
+}
+
+.split-pane-divider {
+    -fx-padding: 0;
+    -fx-border-color:  transparent;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
 }
 
 .split-pane *.horizontal-grabber {
