@@ -128,7 +128,7 @@ public class LiveViewViewController extends SplitableView<ProtocolControlInterac
         this.getChildren().add(captureOverlayViewController);
 
         // Set this view as the currently selected view when it is pressed
-        networkViewScreen.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this));
+        networkViewScreen.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this, 1));
     }
 
     /**
@@ -343,7 +343,13 @@ public class LiveViewViewController extends SplitableView<ProtocolControlInterac
     private ImageButton addCloseButton(MultiViewManager multiViewManager) {
         final ImageButton closeButton = new ImageButton("close.png");
 
-        closeButton.setOnAction(event -> multiViewManager.replace(this, MultiViewManager.START_VIEW));
+        closeButton.setOnAction(event ->  {
+            if (multiViewManager.getViewCounter() > 1) {
+                multiViewManager.merge(this);
+            } else {
+                multiViewManager.replace(this, MultiViewManager.START_VIEW);
+            }
+        });
 
         closeButton.setScaleX(0.8);
         closeButton.setScaleY(0.8);

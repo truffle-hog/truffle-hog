@@ -159,7 +159,7 @@ public class ViewBuilder {
 
         // Set min. dimensions
         primaryStage.setMinWidth(950d);
-        primaryStage.setMinHeight(650d);
+        primaryStage.setMinHeight(675d);
 
         // Add some keyboard shortcuts
         setKeyboardShortcuts(menuBar);
@@ -250,7 +250,7 @@ public class ViewBuilder {
 
         //multiViewManager.putView("Profinet", profinetView);
         splitPane.getItems().addAll(startView);
-        multiViewManager.setSelected(startView); // Select start view by default
+        multiViewManager.setSelected(startView, 1); // Select start view by default
     }
 
     private void setKeyboardShortcuts(MenuBar menuBar) {

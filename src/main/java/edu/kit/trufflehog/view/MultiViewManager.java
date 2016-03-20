@@ -1,8 +1,8 @@
 package edu.kit.trufflehog.view;
 
 import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.AnchorPane;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,9 +66,9 @@ public class MultiViewManager {
             return;
         }
 
-        SplitPane splitPane = (SplitPane) selected.getParent().getParent();
-        StartViewController startViewController = (StartViewController) views.get(START_VIEW);
-        StartViewController clone = startViewController.clone();
+        final SplitPane splitPane = (SplitPane) selected.getParent().getParent();
+        final SplitableView startViewController = views.get(START_VIEW);
+        final SplitableView clone = startViewController.clone();
         clone.showCloseButton(true);
 
         if (splitPane.getOrientation().equals(orientation)) {
@@ -76,11 +76,7 @@ public class MultiViewManager {
         } else {
             splitPane.getItems().replaceAll(view -> {
                 if (view.equals(selected)) {
-                    SplitPane newSplitPane = new SplitPane(clone);
-                    AnchorPane.setBottomAnchor(newSplitPane, 0d);
-                    AnchorPane.setTopAnchor(newSplitPane, 0d);
-                    AnchorPane.setLeftAnchor(newSplitPane, 0d);
-                    AnchorPane.setRightAnchor(newSplitPane, 0d);
+                    final SplitPane newSplitPane = new SplitPane();
                     newSplitPane.setOrientation(orientation);
                     newSplitPane.getItems().addAll(view, clone);
                     return newSplitPane;
@@ -94,24 +90,49 @@ public class MultiViewManager {
         }
 
         viewCounter++;
-        setSelected(selected);
+        setSelected(selected, 1);
     }
 
     public void merge() {
-
+       merge(selected);
     }
 
-    /**
-     * <p>
-     *
-     * </p>
-     *
-     * @param name
-     */
-    public void removeView(String name) {
-        if (name != null) {
-            views.remove(name);
+    public void merge(SplitableView selected) {
+        if (viewCounter == 1) {
+            return;
         }
+
+        SplitPane splitPane = (SplitPane) selected.getParent().getParent();
+        splitPane.getItems().remove(selected);
+
+        if (splitPane.getItems().size() == 1) {
+            final Node child = splitPane.getItems().get(0);
+            SplitPane parentSplitPane;
+            try {
+                parentSplitPane = (SplitPane) splitPane.getParent().getParent();
+            } catch (ClassCastException e) {
+                parentSplitPane = null;
+            }
+
+            if (parentSplitPane != null) {
+                parentSplitPane.getItems().replaceAll(node -> {
+                    if (node.equals(splitPane)) {
+                        return child;
+                    }
+                    return node;
+                });
+            }
+
+            if (viewCounter == 2) {
+                final SplitableView splitableView = (SplitableView) child;
+                if (!(splitableView instanceof LiveViewViewController)) { // I don't know how else to do this but instanceof
+                    splitableView.showCloseButton(false);
+                }
+                setSelected(splitableView, 2);
+            }
+        }
+
+        viewCounter--;
     }
 
     public boolean replace(final SplitableView currentView, final String name) {
@@ -120,22 +141,34 @@ public class MultiViewManager {
 
             splitPane.getItems().replaceAll(view -> {
                 if (view.equals(currentView)) {
-                    return views.get(name).clone();
+                    SplitableView splitableView = views.get(name).clone();
+                    if (selected.equals(currentView)) {
+                        setSelected(splitableView, 1);
+                    }
+                    return splitableView;
                 }
                 return view;
             });
-            //splitPane.getItems().add(views.get(name));
+
             return true;
         }
 
         return false;
     }
 
-    public void setSelected(SplitableView anchorPane) {
-        if (viewCounter > 1) {
+    public void setSelected(SplitableView anchorPane, int limit) {
+        if (viewCounter > limit) {
             selected.setId("view_not_selected");
             anchorPane.setId("view_selected");
+        } else if (selected != null) {
+            selected.setId("view_not_selected");
+            anchorPane.setId("view_not_selected");
         }
         selected = anchorPane;
     }
+
+    public int getViewCounter() {
+        return viewCounter;
+    }
+
 }

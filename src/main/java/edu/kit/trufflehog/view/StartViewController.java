@@ -112,7 +112,7 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
         showCloseButton(false);
 
         // Set this anchor pane as the currently selected view when it is pressed
-        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this));
+        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this, 1));
     }
 
     /**
@@ -261,6 +261,8 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
 
         closeButton.setScaleX(0.8);
         closeButton.setScaleY(0.8);
+
+        closeButton.setOnAction(event -> multiViewManager.merge(this));
 
         AnchorPane.setTopAnchor(closeButton, 5d);
         AnchorPane.setLeftAnchor(closeButton, 5d);

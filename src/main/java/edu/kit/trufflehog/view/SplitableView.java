@@ -32,5 +32,5 @@ public abstract class SplitableView<I extends IInteraction> extends AnchorPaneIn
      */
     public abstract void showCloseButton(boolean show);
 
-    public abstract AnchorPaneInteractionController clone();
+    public abstract SplitableView clone();
 }
