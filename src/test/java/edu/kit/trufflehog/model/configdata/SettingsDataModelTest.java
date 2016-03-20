@@ -97,7 +97,7 @@ public class SettingsDataModelTest {
         }
 
         this.settingsDataModel = new SettingsDataModel(fileSystem);
-        boolean exists = new File(fileSystem.getConfigFolder()  + File.separator + "system_config.xml").exists();
+        boolean exists = new File(fileSystem.getConfigFolder() + File.separator + "system_config.xml").exists();
 
         if (fileSystem.getConfigFolder().exists()) {
             FileUtils.deleteDirectory(fileSystem.getConfigFolder());

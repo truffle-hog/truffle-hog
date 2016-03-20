@@ -20,34 +20,6 @@ allprojects {
 buildscript {
     repositories {
         mavenCentral()
-
-
-
-/*
-        ivy {
-            ivyPattern "http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"
-            artifactPattern "http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"
-        }
-
-        ivy {
-
-            ivyPattern "http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"
-            artifactPattern "http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"
-        }
-
-        maven {
-
-            identity "com.springsource.repository.libraries.release"
-            name "SpringSource Enterprise Bundle Repository - SpringSource Library Releases"
-            url "http://repository.springsource.com/maven/libraries/release"
-        }
-
-        maven {
-            identity "com.springsource.repository.libraries.external"
-            name "SpringSource Enterprise Bundle Repository - External Library Releases"
-            url "http://repository.springsource.com/maven/libraries/external"
-        }*/
-
     }
 
     dependencies {
@@ -68,7 +40,6 @@ repositories {
 dependencies {
     // modified jung2
     compile 'com.github.JanSurft:jung2:-SNAPSHOT'
-
 
     // general
     compile 'commons-io:commons-io:2.4'
@@ -119,7 +90,11 @@ test.dependsOn processTestResources
 
 jar {
     manifest {
-        attributes 'Main-Class': 'edu.kit.trufflehog.Main'
+        attributes "Main-Class": "$mainClassName"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
