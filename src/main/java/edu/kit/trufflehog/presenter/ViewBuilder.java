@@ -129,7 +129,6 @@ public class ViewBuilder {
         // because it is right on top of it.
         groundView.getChildren().add(splitPane);
         splitPane.setOrientation(Orientation.HORIZONTAL);
-        splitPane.getStyleClass().add("test");
 
         // Now we fix the splitPane to the edges of the groundView so that it can display the various graph views
         AnchorPane.setBottomAnchor(splitPane, 0d);
