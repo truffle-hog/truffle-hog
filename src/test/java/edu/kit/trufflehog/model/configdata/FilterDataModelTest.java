@@ -94,7 +94,7 @@ public class FilterDataModelTest {
     @Test
     public void testUpdateAndLoadFilterInDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
-        int size = (int) (Math.random() * 100);
+        int size = (int) (Math.random() * 50);
 
         // Add X FilterInputs into the database
         for (int i = 0; i < size; i++) {
@@ -104,7 +104,7 @@ public class FilterDataModelTest {
         }
 
         // Wait for all threads to finish
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         // Retrieve them
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
@@ -146,7 +146,7 @@ public class FilterDataModelTest {
     @Test
     public void testAddAndLoadFilterToDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
-        int size = (int) (Math.random() * 100);
+        int size = (int) (Math.random() * 50);
 
         // Add X FilterInputs into the database
         for (int i = 0; i < size; i++) {
@@ -156,7 +156,7 @@ public class FilterDataModelTest {
         }
 
         // Wait for all threads to finish
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
@@ -180,7 +180,7 @@ public class FilterDataModelTest {
     @Test
     public void testRemoveFilterFromDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
-        int size = (int) (Math.random() * 100);
+        int size = (int) (Math.random() * 50);
 
         // Add X FilterInputs into the database
         for (int i = 0; i < size; i++) {
@@ -190,7 +190,7 @@ public class FilterDataModelTest {
         }
 
         // Wait for all threads to finish
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
