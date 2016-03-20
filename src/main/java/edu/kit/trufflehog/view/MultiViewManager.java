@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.view;
 
-import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
 import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
@@ -23,9 +22,8 @@ public class MultiViewManager {
     public static final String CAPTURE_VIEW = "capture";
 
     // Other variables
-    private final Map<String, AnchorPaneInteractionController> views;
-    private final Map<String, Boolean> used;
-    private AnchorPane selected;
+    private final Map<String, SplitableView> views;
+    private SplitableView selected;
     private int viewCounter = 1;
 
     /**
@@ -36,7 +34,6 @@ public class MultiViewManager {
     public MultiViewManager() {
         this.selected  = null;
         views = new HashMap<>();
-        used = new HashMap<>();
     }
 
     /**
@@ -45,13 +42,63 @@ public class MultiViewManager {
      * </p>
      *
      * @param name
-     * @param anchorPane
+     * @param splitableView
      */
-    public void putView(final String name, final AnchorPaneInteractionController anchorPane) {
-        if (name != null && anchorPane != null) {
-            views.put(name, anchorPane);
-            used.put(name, false);
+    public void putView(final String name, final SplitableView splitableView) {
+        if (name != null && splitableView != null) {
+            views.put(name, splitableView);
         }
+    }
+
+    public void split(Orientation orientation) {
+        // Make sure that the orientation is valid and that a view is selected
+        if ((!orientation.equals(Orientation.HORIZONTAL) && !orientation.equals(Orientation.VERTICAL)) || selected == null) {
+            return;
+        }
+
+        // Make sure that if we split horizontally, the width is at least 600px so that each new height will be 300
+        if (orientation.equals(Orientation.HORIZONTAL) && selected.getWidth() < 600) {
+            return;
+        }
+
+        // Make sure that if we split vertically, the height is at least 600px so that each new height will be 300
+        if (orientation.equals(Orientation.VERTICAL) && selected.getHeight() < 600) {
+            return;
+        }
+
+        SplitPane splitPane = (SplitPane) selected.getParent().getParent();
+        StartViewController startViewController = (StartViewController) views.get(START_VIEW);
+        StartViewController clone = startViewController.clone();
+        clone.showCloseButton(true);
+
+        if (splitPane.getOrientation().equals(orientation)) {
+            splitPane.getItems().add(clone);
+        } else {
+            splitPane.getItems().replaceAll(view -> {
+                if (view.equals(selected)) {
+                    SplitPane newSplitPane = new SplitPane(clone);
+                    AnchorPane.setBottomAnchor(newSplitPane, 0d);
+                    AnchorPane.setTopAnchor(newSplitPane, 0d);
+                    AnchorPane.setLeftAnchor(newSplitPane, 0d);
+                    AnchorPane.setRightAnchor(newSplitPane, 0d);
+                    newSplitPane.setOrientation(orientation);
+                    newSplitPane.getItems().addAll(view, clone);
+                    return newSplitPane;
+                }
+                return view;
+            });
+        }
+
+        if (viewCounter == 1) {
+            selected.showCloseButton(true);
+        }
+
+        viewCounter++;
+        setSelected(selected);
+    }
+
+    public void merge() {
+
     }
 
     /**
@@ -67,34 +114,7 @@ public class MultiViewManager {
         }
     }
 
-    public void splitHorizontal() {
-        SplitPane splitPane = (SplitPane) selected.getParent().getParent();
-
-        if (splitPane.getOrientation().equals(Orientation.HORIZONTAL)) {
-            StartViewController startViewController = (StartViewController) views.get(START_VIEW);
-            StartViewController clone = startViewController.clone();
-            clone.showCloseButton(true);
-            splitPane.getItems().add(clone);
-        } else {
-            StartViewController startViewController = (StartViewController) views.get(START_VIEW);
-            StartViewController clone = startViewController.clone();
-            clone.showCloseButton(true);
-            SplitPane horizontalSplitPane = new SplitPane(clone);
-            splitPane.getItems().add(horizontalSplitPane);
-        }
-
-        viewCounter++;
-    }
-
-    public void splitVertical() {
-        viewCounter++;
-    }
-
-    public void merge() {
-
-    }
-
-    public boolean replace(final AnchorPane currentView, final String name) {
+    public boolean replace(final SplitableView currentView, final String name) {
         if (views.containsKey(name)) {
             SplitPane splitPane = (SplitPane) currentView.getParent().getParent();
 
@@ -111,7 +131,11 @@ public class MultiViewManager {
         return false;
     }
 
-    public void setSelected(AnchorPane anchorPane) {
+    public void setSelected(SplitableView anchorPane) {
+        if (viewCounter > 1) {
+            selected.setId("view_not_selected");
+            anchorPane.setId("view_selected");
+        }
         selected = anchorPane;
     }
 }

@@ -31,8 +31,6 @@ public abstract  class AnchorPaneInteractionController<I extends IInteraction> e
         super(fxmlFile);
     }
 
-    public abstract AnchorPaneInteractionController clone();
-
     @Override
     public final boolean addListener(final IListener<IUserCommand> listener) {
         return viewControllerNotifier.addListener(listener);
