@@ -25,21 +25,34 @@
 
 <fx:root type="MenuBar" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
-        <URL value="@menu_bar.css" />
+        <URL value="@trufflehog_main_theme.css" />
     </stylesheets>
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
+            <MenuItem mnemonicParsing="false" text="System Preferences" />
               <MenuItem mnemonicParsing="false" text="Close" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu mnemonicParsing="false" text="View">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+            <MenuItem mnemonicParsing="false" text="View Settings" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem fx:id="splitHMenuItem" mnemonicParsing="false" text="Split Horizontal" />
+            <MenuItem fx:id="splitVMenuItem" mnemonicParsing="false" text="Split Vertical" />
+            <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" text="Delete View" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <Menu mnemonicParsing="false" text="Global Statistics">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Show" />
+                  <MenuItem mnemonicParsing="false" text="Hide" />
+              </items>
+            </Menu>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
+            <MenuItem mnemonicParsing="false" text="Manual" />
               <MenuItem mnemonicParsing="false" text="About" />
             </items>
           </Menu>

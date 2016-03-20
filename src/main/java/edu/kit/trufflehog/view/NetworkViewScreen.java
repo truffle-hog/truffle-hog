@@ -38,14 +38,18 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.RenderingHints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -88,55 +92,31 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
         this.layoutFactory = new FRLayoutFactory();
 
- /*       refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
-            Platform.runLater(this::repaint);
-        }));
-
-        refresher.setCycleCount(50);
-        refresher.play();*/
-
         refresher = new Timeline(new KeyFrame(Duration.millis(refreshRate), event -> {
             Platform.runLater(this::repaint);
         }));
 
         port.addGraphEventListener(e -> {
 
-			Platform.runLater(() -> {
+            Platform.runLater(() -> {
 
-				if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
+                if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
 
-					final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
-					node.getComponent(ViewComponent.class).animate();
-					refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
-					this.repaint();
-					refresher.playFromStart();
+                    final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
+                    node.getComponent(ViewComponent.class).animate();
+                    refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
+                    repaint();
+                    refresher.playFromStart();
 
-				} else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
+                } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
 
-					final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
-					connection.getComponent(ViewComponent.class).animate();
-					refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
-					this.repaint();
-					refresher.playFromStart();
-				}
-			});
-
-            /*if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
-
-                final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
-                Platform.runLater(() -> node.getComponent(ViewComponent.class).animate());
-                refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
-                Platform.runLater(this::repaint);
-				Platform.runLater(refresher::playFromStart);
-
-            } else if (e.getType() == GraphEvent.Type.EDGE_ADDED || e.getType() == GraphEvent.Type.EDGE_CHANGED) {
-
-                final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
-                Platform.runLater(() -> connection.getComponent(ViewComponent.class).animate());
-                refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
-                Platform.runLater(this::repaint);
-                Platform.runLater(refresher::playFromStart);
-            }*/
+                    final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
+                    connection.getComponent(ViewComponent.class).animate();
+                    refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
+                    repaint();
+                    refresher.playFromStart();
+                }
+            });
         });
 
         // Add this view screen as listener to the picked state, so we can send commands, when the picked state
@@ -154,23 +134,12 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		//createAndSetSwingContent(this, jungView);
 		jungView.setRenderer(new FXRenderer<>());
 
-/*		timeLine = new Timeline(new KeyFrame(Duration.millis(300), event -> jungView.repaint()));
-		timeLine.setCycleCount(8);*/
-
 		SwingUtilities.invokeLater(() -> this.setContent(jungView));
-
-/*		Transformer<String, Stroke> edgeStroke = new Transformer<String, Stroke>() {
-			float dash[] = { 10.0f };
-			public Stroke transform(String s) {
-				return new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
-						BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
-			}
-		};*/
 
 		initRenderers();
 
 		jungView.setBackground(new Color(0x3e4451));
-		//jungView.setBackground(new Color(0xE8EAF6));
+		//jungView.setBackground(new Color(0xFFFFFF));
 		//jungView.setBackground(new Color(0x5e6d67));
 		//jungView.setPreferredSize(new Dimension(1000, 1000));
 		// Show vertex and edge labels
@@ -197,6 +166,51 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
 	private void initRenderers() {
 
+
+
+        jungView.getRenderContext().setVertexIconTransformer(new Transformer<INode, Icon>() {
+
+            @Override
+            public Icon transform(INode node) {
+
+                final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
+
+                if (getPickedVertexState().isPicked(node)) {
+                    return viewComponent.getRenderer().getIconPicked();
+                } else {
+                    return viewComponent.getRenderer().getIconUnpicked();
+                }
+
+            }
+        });
+
+
+/*        jungView.getRenderContext().setVertexIconTransformer(node -> new Icon() {
+
+            public int getIconHeight() {
+                return 20;
+            }
+
+            public int getIconWidth() {
+                return 20;
+            }
+
+            public void paintIcon(Component c, Graphics g,
+                                  int x, int y) {
+                if(jungView.getPickedVertexState().isPicked(node)) {
+                    g.setColor(Color.yellow);
+                } else {
+                    g.setColor(Color.red);
+                }
+                g.fillOval(x, y, 20, 20);
+                if(jungView.getPickedVertexState().isPicked(node)) {
+                    g.setColor(Color.black);
+                } else {
+                    g.setColor(Color.white);
+                }
+                g.drawString(""+ node , x+6, y+15);
+
+            }});*/
 
 		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getComponent(NodeInfoComponent.class).toString());
 
@@ -231,13 +245,13 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		jungView.getRenderContext().setVertexShapeTransformer(iNode -> {
 
             final NodeStatisticsComponent statComp = iNode.getComponent(NodeStatisticsComponent.class);
-            int currentSize = statComp.getCommunicationCount();
-            long maxSize = viewPort.getMaxThroughput();
+            final int currentSize = statComp.getCommunicationCount();
+            final long maxSize = viewPort.getMaxThroughput();
 
-            double relation = (double) currentSize / (double) maxSize;
-            double sizeMulti = (50.0 * relation) + 10;
-            return new Ellipse2D.Double(-sizeMulti, -sizeMulti, 2*sizeMulti, 2*sizeMulti);
+            final double relation = (double) currentSize / (double) maxSize;
 
+            final ViewComponent viewComponent = iNode.getComponent(ViewComponent.class);
+            return AffineTransform.getScaleInstance(0.3 + relation, 0.3 + relation).createTransformedShape(viewComponent.getRenderer().getShape());
         });
 
         final Color base = new Color(0x7f7784);
@@ -264,7 +278,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                         return fpc.getFilterColor();
                     }
 				}
-
 			}
 
             final ViewComponent viewComponent = node.getComponent(ViewComponent.class);

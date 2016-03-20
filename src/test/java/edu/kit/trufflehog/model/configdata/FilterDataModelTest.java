@@ -20,7 +20,7 @@ package edu.kit.trufflehog.model.configdata;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterOrigin;
-import edu.kit.trufflehog.model.filter.FilterType;
+import edu.kit.trufflehog.model.filter.SelectionModel;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -94,7 +94,7 @@ public class FilterDataModelTest {
     @Test
     public void testUpdateAndLoadFilterInDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
-        int size = (int) (Math.random() * 100);
+        int size = (int) (Math.random() * 50);
 
         // Add X FilterInputs into the database
         for (int i = 0; i < size; i++) {
@@ -104,7 +104,7 @@ public class FilterDataModelTest {
         }
 
         // Wait for all threads to finish
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         // Retrieve them
         Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
@@ -146,7 +146,7 @@ public class FilterDataModelTest {
     @Test
     public void testAddAndLoadFilterToDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
-        int size = (int) (Math.random() * 100);
+        int size = (int) (Math.random() * 50);
 
         // Add X FilterInputs into the database
         for (int i = 0; i < size; i++) {
@@ -156,7 +156,7 @@ public class FilterDataModelTest {
         }
 
         // Wait for all threads to finish
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
@@ -180,7 +180,7 @@ public class FilterDataModelTest {
     @Test
     public void testRemoveFilterFromDatabase() throws Exception {
         List<FilterInput> filterInputs = new ArrayList<>();
-        int size = (int) (Math.random() * 100);
+        int size = (int) (Math.random() * 50);
 
         // Add X FilterInputs into the database
         for (int i = 0; i < size; i++) {
@@ -190,7 +190,7 @@ public class FilterDataModelTest {
         }
 
         // Wait for all threads to finish
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
@@ -317,7 +317,7 @@ public class FilterDataModelTest {
         int priority = (int) (Math.random() * 1000);
 
         // Generate FilterInput object
-        return new FilterInput(name, FilterType.BLACKLIST, FilterOrigin.IP, rules, color, priority);
+        return new FilterInput(name, SelectionModel.SELECTION, FilterOrigin.IP, rules, color, true, priority);
     }
 
     /**
@@ -348,7 +348,8 @@ public class FilterDataModelTest {
 
         int priority = (int) (Math.random() * 1000);
 
-        return new FilterInput(filterInput.getName(), FilterType.BLACKLIST, FilterOrigin.MAC, rules, color, priority);
+        return new FilterInput(filterInput.getName(), SelectionModel.SELECTION, FilterOrigin.MAC, rules, color,
+                false, priority);
     }
 
     /**

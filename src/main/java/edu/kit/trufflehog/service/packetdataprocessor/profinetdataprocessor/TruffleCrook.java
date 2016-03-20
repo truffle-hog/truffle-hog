@@ -3,7 +3,6 @@ package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 import edu.kit.trufflehog.command.trufflecommand.AddPacketDataCommand;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
-import edu.kit.trufflehog.model.network.graph.INode;
 
 /**
  * Created by Hoehler on 04.03.2016.
@@ -14,7 +13,7 @@ public class TruffleCrook extends TruffleReceiver {
     private final IFilter filter;
 
     private long[] addresses;
-    private int maxAddresses = 2000;
+    private int maxAddresses = 20;
 
     public TruffleCrook(INetworkWritingPort writingPort, IFilter filter) {
         networkWritingPort = writingPort;
@@ -37,7 +36,7 @@ public class TruffleCrook extends TruffleReceiver {
         while(!Thread.interrupted()) {
             synchronized (this) {
                 try {
-                    Thread.sleep(0, 1);
+                    Thread.sleep(10);
 
                     final Truffle truffle = getTruffle();
 
@@ -58,9 +57,9 @@ public class TruffleCrook extends TruffleReceiver {
         a2 = a2 == 0 ? 1 : a2;
 
         try {
-            return Truffle.buildTruffle(addresses[0],
+            return Truffle.buildTruffle(addresses[a1],
                     addresses[a2],
-                    addresses[0],
+                    addresses[a1],
                     addresses[a2],
                     null,
                     0,

@@ -29,10 +29,7 @@ import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.*;
 import org.apache.commons.collections15.Transformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,10 +56,10 @@ public class NetworkViewPort implements INetworkViewPort {
     private Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory;
 
     private final IntegerProperty maxThroughputProperty = new SimpleIntegerProperty(0);
-
     private final IntegerProperty maxConnectionSizeProperty = new SimpleIntegerProperty(0);
-
     private final LongProperty viewTimeProperty = new SimpleLongProperty(Instant.now().toEpochMilli());
+    private final IntegerProperty populationProperty = new SimpleIntegerProperty(0);
+    private final DoubleProperty throughput = new SimpleDoubleProperty(0);
 
     public NetworkViewPort(final ObservableUpdatableGraph<INode, IConnection> delegate) {
 
@@ -176,6 +173,36 @@ public class NetworkViewPort implements INetworkViewPort {
     @Override
     public LongProperty getViewTimeProperty() {
         return viewTimeProperty;
+    }
+
+    @Override
+    public void setPopulation(int value) {
+        populationProperty.setValue(value);
+    }
+
+    @Override
+    public int getPopulation() {
+        return populationProperty.get();
+    }
+
+    @Override
+    public IntegerProperty getPopulationProperty() {
+        return populationProperty;
+    }
+
+    @Override
+    public void setThroughput(double value) {
+        throughput.setValue(value);
+    }
+
+    @Override
+    public double getThroughput() {
+        return throughput.getValue();
+    }
+
+    @Override
+    public DoubleProperty getThroughputProperty() {
+        return throughput;
     }
 
     @Override

@@ -7,6 +7,7 @@ import edu.kit.trufflehog.util.DeepCopyable;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import org.apache.commons.collections15.Transformer;
@@ -62,6 +63,18 @@ public interface INetworkViewPort extends Layout<INode, IConnection>, DeepCopyab
      * @return the current time of the view port
      */
     LongProperty getViewTimeProperty();
+
+    void setPopulation(int value);
+
+    int getPopulation();
+
+    IntegerProperty getPopulationProperty();
+
+    void setThroughput(double value);
+
+    double getThroughput();
+
+    DoubleProperty getThroughputProperty();
 
     /**
      * Refreshes the Layout of the underlying graph, by reapplying a new instance of an

@@ -7,6 +7,7 @@ import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import org.apache.commons.collections15.Transformer;
@@ -88,6 +89,36 @@ public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
     @Override
     public LongProperty getViewTimeProperty() {
         return getActiveViewPort().getViewTimeProperty();
+    }
+
+    @Override
+    public void setPopulation(int value) {
+        getActiveViewPort().setPopulation(value);
+    }
+
+    @Override
+    public int getPopulation() {
+        return getActiveViewPort().getPopulation();
+    }
+
+    @Override
+    public IntegerProperty getPopulationProperty() {
+        return getActiveViewPort().getPopulationProperty();
+    }
+
+    @Override
+    public void setThroughput(double value) {
+        getActiveViewPort().setThroughput(value);
+    }
+
+    @Override
+    public double getThroughput() {
+        return getActiveViewPort().getThroughput();
+    }
+
+    @Override
+    public DoubleProperty getThroughputProperty() {
+        return getActiveViewPort().getThroughputProperty();
     }
 
     @Override

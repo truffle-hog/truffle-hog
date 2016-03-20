@@ -2,6 +2,7 @@ package edu.kit.trufflehog.model.network.graph;
 
 import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.INetworkReadingPort;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 
 import java.util.Collection;
@@ -54,5 +55,35 @@ public class NetworkReadingPort implements INetworkReadingPort {
     @Override
     public IntegerProperty getMaxThroughputProperty() {
         return null;
+    }
+
+    @Override
+    public void setPopulation(int value) {
+        throw new UnsupportedOperationException("not implemented yet!");
+    }
+
+    @Override
+    public int getPopulation() {
+        throw new UnsupportedOperationException("not implemented yet!");
+    }
+
+    @Override
+    public IntegerProperty getPopulationProperty() {
+        throw new UnsupportedOperationException("not implemented yet!");
+    }
+
+    @Override
+    public void setThroughput(double value) {
+        throw new UnsupportedOperationException("not implemented yet!");
+    }
+
+    @Override
+    public double getThroughput() {
+        throw new UnsupportedOperationException("not implemented yet!");
+    }
+
+    @Override
+    public DoubleProperty getThroughputProperty() {
+        throw new UnsupportedOperationException("not implemented yet!");
     }
 }

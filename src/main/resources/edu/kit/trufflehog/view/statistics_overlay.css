@@ -1,10 +1,6 @@
 root {
     display: block;
 }
-/*.overlaybackground {
-    -fx-background-color: #282C34;
-    -fx-background-radius: 2;
-}*/
 
 .column-header-background { visibility: hidden; -fx-padding: -1em; }
 
@@ -107,7 +103,6 @@ root {
     -fx-font-size: 12pt;
     -fx-font-family: "Segoe UI Semibold";
 }
-
 
 
 /*

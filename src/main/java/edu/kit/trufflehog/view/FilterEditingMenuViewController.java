@@ -20,7 +20,7 @@ package edu.kit.trufflehog.view;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterOrigin;
-import edu.kit.trufflehog.model.filter.FilterType;
+import edu.kit.trufflehog.model.filter.SelectionModel;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -37,8 +37,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.regex.PatternSyntaxException;
+
 /**
  * <p>
  *     The FilterEditingMenuViewController is an overlay that slides in from the top center, similar to menus that ask you
@@ -65,12 +65,14 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
     private TextField nameTextField;
 
     @FXML
-    private ComboBox<FilterType> typeComboBox;
+    private ComboBox<String> selectionComboBox;
     @FXML
     private ColorPicker colorPicker;
     @FXML
     private ComboBox<String> filterByComboBox;
 
+    @FXML
+    private CheckBox authorizedCheckBox;
     @FXML
     private TextField priorityTextField;
     @FXML
@@ -89,6 +91,9 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
     private Button helpButton;
 
     // Labels
+    private final String SELECTION_LABEL;
+    private final String INVERSE_SELECTION_LABEL;
+
     private final String MAC_LABEL;
     private final String IP_LABEL;
     private final String NAME_LABEL;
@@ -113,8 +118,8 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
      *
      * @param stackPane The stackPane to put the menu on.
      * @param fxml The fxml to load.
-     * @param filterOverlayViewController The filterOverlayViewController where the {@link TableView} is held that the filter should be
-     *                          added to.
+     * @param filterOverlayViewController The filterOverlayViewController where the {@link TableView} is held that the
+     *                                    filter should be added to.
      * @param configData The {@link ConfigData} object used to save/remove/update filters to the database.
      */
     public FilterEditingMenuViewController(StackPane stackPane,
@@ -129,6 +134,9 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         StackPane.setAlignment(this, Pos.TOP_CENTER);
 
         // Load the labels
+        SELECTION_LABEL = configData.getProperty("SELECTION_LABEL");
+        INVERSE_SELECTION_LABEL = configData.getProperty("INVERSE_SELECTION_LABEL");
+
         MAC_LABEL = configData.getProperty("MAC_LABEL");
         IP_LABEL = configData.getProperty("IP_LABEL");
         NAME_LABEL = configData.getProperty("NAME_LABEL");
@@ -148,7 +156,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         this.setVisible(false);
 
         // Fill comboboxes
-        typeComboBox.getItems().setAll(FilterType.BLACKLIST, FilterType.WHITELIST);
+        selectionComboBox.getItems().setAll(SELECTION_LABEL, INVERSE_SELECTION_LABEL);
         filterByComboBox.getItems().setAll(IP_LABEL, MAC_LABEL, NAME_LABEL);
 
         // Set the buttons
@@ -183,7 +191,14 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         if (filterInput != null) {
             updatingFilter = filterInput;
             nameTextField.setText(filterInput.getName());
-            typeComboBox.setValue(filterInput.getType());
+            selectionComboBox.setValue(filterInput.getSelectionModel().name());
+
+            // Display selection model correctly
+            if (filterInput.getSelectionModel().equals(SelectionModel.SELECTION)) {
+                selectionComboBox.setValue(SELECTION_LABEL);
+            } else {
+                selectionComboBox.setValue(INVERSE_SELECTION_LABEL);
+            }
 
             // Convert to correct color object
             colorPicker.setValue(javafx.scene.paint.Color.rgb(filterInput.getColor().getRed(),
@@ -200,7 +215,9 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
 
             priorityTextField.setText(filterInput.getPriority() + "");
 
-            rulesTextArea.setText(concatRules(filterInput.getRules()));
+            authorizedCheckBox.setSelected(filterInput.isAuthorized());
+
+            rulesTextArea.setText(filterOverlayViewController.concatRules(filterInput.getRules()));
         } else {
             updatingFilter = null;
         }
@@ -218,25 +235,13 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
      */
     private void clearMenu() {
         nameTextField.setText("");
-        typeComboBox.setValue(null);
+        selectionComboBox.setValue(null);
         colorPicker.setValue(Color.WHITE);
         filterByComboBox.setValue(null);
         priorityTextField.setText("");
         rulesTextArea.setText("");
         errorText.setText("");
         updatingFilter = null;
-    }
-
-    /**
-     * <p>
-     *     Takes a list of rules and concatenates them in a matter that makes the string easily readable.
-     * </p>
-     *
-     * @param rules The rules to concatenate to one string.
-     * @return The rules when they are completely concatenated.
-     */
-    private String concatRules(List<String> rules) {
-        return rules.stream().collect(Collectors.joining(";\n"));
     }
 
     /**
@@ -293,9 +298,9 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             filterInput.getNameProperty().setValue(filterInputUpdated.getName());
         }
 
-        // Update type
-        if (!filterInputUpdated.getType().equals(filterInput.getType())) {
-            filterInput.getTypeProperty().setValue(filterInputUpdated.getTypeProperty().getValue());
+        // Update selection model
+        if (!filterInputUpdated.getSelectionModel().equals(filterInput.getSelectionModel())) {
+            filterInput.getSelectionModelProperty().setValue(filterInputUpdated.getSelectionModelProperty().getValue());
         }
 
         // Update color
@@ -311,6 +316,11 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         // Update priority
         if (filterInputUpdated.getPriority() != filterInput.getPriority()) {
             filterInput.getPriorityProperty().setValue(filterInputUpdated.getPriorityProperty().getValue());
+        }
+
+        // Update authorization
+        if (filterInputUpdated.isAuthorized() != filterInput.isAuthorized()) {
+            filterInput.getAuthorizedProperty().setValue(filterInputUpdated.getAuthorizedProperty().getValue());
         }
 
         // Update rules and save to database, since they don't have a listener (since they are not shown in the table)
@@ -337,11 +347,12 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
      */
     private FilterInput createFilterInput() {
         final String name = nameTextField.getText();
-        final FilterType filterType = typeComboBox.getValue();
+        final String selectionModelString = selectionComboBox.getValue();
         final String filterOriginString = filterByComboBox.getValue();
         final Color color = colorPicker.getValue();
         final String priorityText = priorityTextField.getText();
         final String rules = rulesTextArea.getText();
+        final boolean authorized = authorizedCheckBox.isSelected();
 
         // Check if name is valid
         Pattern namePattern = Pattern.compile("[A-Za-z0-9. _-]{1,50}");
@@ -359,9 +370,25 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             return null;
         }
 
-        // Check if type is valid
-        if (filterType == null) {
-            errorText.setText(configData.getProperty("FILTER_TYPE_ERROR"));
+        // Check for no input for selection model
+        if (selectionModelString == null) {
+            errorText.setText(configData.getProperty("SELECTION_MODEL_ERROR"));
+            return null;
+        }
+
+        // Find the right selection model
+        SelectionModel selectionModel;
+        if (selectionModelString.equals(SELECTION_LABEL)) {
+            selectionModel = SelectionModel.SELECTION;
+        } else if (selectionModelString.equals(INVERSE_SELECTION_LABEL)) {
+            selectionModel = SelectionModel.INVERSE_SELECTION;
+        } else {
+            selectionModel = null;
+        }
+
+        // We should never get here but just for good measure
+        if (selectionModel == null) {
+            errorText.setText(configData.getProperty("SELECTION_MODEL_ERROR"));
             return null;
         }
 
@@ -371,7 +398,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             return null;
         }
 
-        // Map the string to the actual FilterOrigin object. This is done so that
+        // Check for no input for origin type
         if (filterOriginString == null) {
             errorText.setText(configData.getProperty("ORIGIN_ERROR"));
             return null;
@@ -419,7 +446,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
         java.awt.Color colorAwt = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255),
                 (int) (color.getBlue() * 255));
 
-        FilterInput filterInput = new FilterInput(name, filterType, filterOrigin, ruleList, colorAwt, priority);
+        FilterInput filterInput = new FilterInput(name, selectionModel, filterOrigin, ruleList, colorAwt, authorized, priority);
         filterInput.load(configData); // Binds properties to database
 
         return filterInput;
@@ -447,38 +474,31 @@ public class FilterEditingMenuViewController extends AnchorPaneController {
             rules = rules.substring(0, rules.length() - 1);
         }
 
-        // Remove whitespaces and line breaks
-        rules = rules.replaceAll("\\s+","").replaceAll("\n","").replaceAll("\r", "");
+        // If the rules are not based on a name regex remove whitespaces and line breaks
+        if (!filterOrigin.equals(FilterOrigin.NAME)) {
+            rules = rules.replaceAll("\\s+", "").replaceAll("\n", "").replaceAll("\r", "");
+        }
 
         String[] ruleArray = rules.split(";");
 
         // Define MAC and IP regex
         String macRegex = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
-        String ipRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4]" +
-                "[0-9]|25[0-5])$";
-        String submaskRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2" +
-                "[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$";
+        String ipRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2" +
+                "[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))?$";
 
         // Set patterns according to MAC or IP
-        Pattern pattern1, pattern2;
+        Pattern pattern = null;
         if (filterOrigin.equals(FilterOrigin.IP)) {
-            pattern1 = Pattern.compile(ipRegex);
-            pattern2 = Pattern.compile(submaskRegex);
-        } else {
-            pattern1 = Pattern.compile(macRegex);
-            pattern2 = null; // mac only requires one regex
+            pattern = Pattern.compile(ipRegex);
+        } else if (filterOrigin.equals(FilterOrigin.MAC)) {
+            pattern = Pattern.compile(macRegex);
         }
 
         // Check each rule to see whether it matches its regex
         for (String rule : ruleArray) {
-            boolean match1 = pattern1.matcher(rule.toLowerCase()).matches();
-            boolean match2 = false;
-            if (pattern2 != null) {
-                match2 = pattern2.matcher(rule.toLowerCase()).matches();
-            }
-
             if (filterOrigin.equals(FilterOrigin.IP) || filterOrigin.equals(FilterOrigin.MAC)) {
-                if (!match1 && !match2) {
+                assert pattern != null;
+                if (!pattern.matcher(rule).matches()) {
                     if (filterOrigin.equals(FilterOrigin.IP)) {
                         errorText.setText(configData.getProperty("INVALID_IP_RULE"));
                     } else {

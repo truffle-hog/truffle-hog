@@ -12,8 +12,14 @@ import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.node.*;
+import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -24,6 +30,8 @@ import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
  * </p>
  */
 public class AddPacketDataCommand implements ITruffleCommand {
+    
+    private static final Logger logger = LogManager.getLogger(AddPacketDataCommand.class);
 
     private final INetworkWritingPort writingPort;
     private final IFilter filter;
@@ -58,14 +66,17 @@ public class AddPacketDataCommand implements ITruffleCommand {
 
         // build the source node info
         NodeInfoComponent sourceNIC = new NodeInfoComponent(sourceAddress);
-        sourceNIC.setIPAddress(sourceIP);
         if (isResponse != null && isResponse) {
-            sourceNIC.setDeviceName(deviceName);
+            if (deviceName != null) {
+                sourceNIC.setDeviceName(deviceName);
+            }
+            if (sourceIP != null && !sourceIP.equals(IPAddress.INVALID_ADDRESS)) {
+                sourceNIC.setIPAddress(sourceIP);
+            }
         }
 
         // build the destination node info
         NodeInfoComponent destNIC = new NodeInfoComponent(destAddress);
-        destNIC.setIPAddress(destIP);
 
 
 
@@ -86,6 +97,11 @@ public class AddPacketDataCommand implements ITruffleCommand {
         sourceNode.addComponent(new FilterPropertiesComponent());
         destNode.addComponent(new FilterPropertiesComponent());
 
+        //Icon someIcon = createImageIcon("icon.png", "Grunz");
+
+        //logger.debug("h:" + someIcon.getIconHeight() + " w:" + someIcon.getIconWidth());
+
+
         sourceNode.addComponent(new ViewComponent(new NodeRenderer()));
         destNode.addComponent(new ViewComponent(new NodeRenderer()));
 
@@ -102,6 +118,18 @@ public class AddPacketDataCommand implements ITruffleCommand {
         writingPort.writeNode(destNode);
         writingPort.writeConnection(connection);
     }
+
+/*    *//** Returns an ImageIcon, or null if the path was invalid. *//*
+    protected ImageIcon createImageIcon(String path,
+                                        String description) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL, description);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
+        }
+    }*/
 
     @Override
     public String toString() {

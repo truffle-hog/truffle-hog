@@ -53,15 +53,18 @@ public class ConfigData {
     public ConfigData(final FileSystem fileSystem) throws NullPointerException {
         // This has to be loaded first because other data models rely on it (like the property data model)
         this.settingsDataModel = new SettingsDataModel(fileSystem);
+
+        // The settingsDataModel needs to have loaded first
+        Locale locale = new Locale(getSetting(String.class, "language").getValue());
+        this.propertiesDataModel = new PropertiesDataModel(locale, fileSystem);
+
+        // Both the settings data model and the properties data model need to have loaded first
         this.filterDataModel = new FilterDataModel(fileSystem);
 
         // VERY IMPORTANT: This makes sure that we can map the filter activity state to a check box in the
         // table view in the filters menu
         filterDataModel.getAllFilters().forEach((name, filter) -> filter.load(this));
 
-        // The settingsDataModel needs to have loaded first
-        Locale locale = new Locale(getSetting(String.class, "language").getValue());
-        this.propertiesDataModel = new PropertiesDataModel(locale, fileSystem);
     }
 
     /**
@@ -135,22 +138,6 @@ public class ConfigData {
      */
     public StringProperty getSetting(final Class typeClass, final String key) {
         return settingsDataModel.get(typeClass, key);
-    }
-
-    /**
-     * <p>
-     *     Gets the filter input object that is mapped to the given key.
-     * </p>
-     * <p>
-     *     The given name must be the same name as the name that is stored inside the name parameter of the
-     *     {@link FilterInput} object.
-     * </p>
-     *
-     * @param name The name that belongs to the FilterInput object that should be retrieved.
-     * @return The FilterInput object that has the matching name.
-     */
-    public FilterInput getFilter(final String name) {
-        return filterDataModel.get(name);
     }
 
     /**

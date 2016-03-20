@@ -36,8 +36,8 @@ import java.util.List;
  *             Name: The name of the filter. It has to be unique.
  *         </li>
  *         <li>
- *             Type: The type of the filter. A filter can either be a whitelist or a blacklist, that means all nodes
- *             matched by the filter either count as safe (whitelist) or unsafe (blacklist).
+ *             Selection model: The selection type of the filter. A filter can either be based on a selection or on an
+ *             inverse selection.
  *         </li>
  *         <li>
  *             Origin: The origin of the filter. A filter can originate from an IP Address, from a MAC Address, or
@@ -55,6 +55,10 @@ import java.util.List;
  *             Color: The color of the filter determines what color a matched node should become.
  *         </li>
  *         <li>
+ *             Authorized: If true, all nodes filtered by the filter will be considered as "good" or legal nodes. If set to
+ *             false all nodes filtered by the filter will be considered as "evil" or illegal nodes.
+ *         </li>
+ *         <li>
  *             Active: Whether this filter is currently being applied on the network or not.
  *         </li>
  *     </ul>
@@ -66,26 +70,39 @@ import java.util.List;
 public class FilterInput implements Serializable {
     private static final transient Logger logger = LogManager.getLogger();
 
+    /**
+     * <p>
+     *     Determines if a de-serialized file is compatible with this class.
+     * </p>
+     * <p>
+     *     Only change this value if and only if changes were made to this class that are not compatible with old
+     *     versions. See Oracle docs for
+     *     <a href=https://docs.oracle.com/javase/7/docs/platform/serialization/spec/version.html#6678> details.</a>
+     * </p>
+     */
+    private static final long serialVersionUID = 441711976068210069L;
+
     // Serializable variables
     private String name;
-    private FilterType type;
+    private SelectionModel selectionModel;
     private FilterOrigin origin;
     private List<String> rules;
     private Color color;
+    private boolean authorized;
     private boolean active;
     private int priority;
 
-    // is this filter deleted?
+    // Filter deleted flag
     private transient boolean deleted;
 
     // Property variables for table view
     private transient StringProperty nameProperty;
-    private transient StringProperty typeProperty;
+    private transient StringProperty selectionModelProperty;
     private transient StringProperty originProperty;
     private transient ObjectProperty<Color> colorProperty;
+    private transient BooleanProperty authorizedProperty;
     private transient BooleanProperty activeProperty;
     private transient IntegerProperty priorityProperty;
-
 
     /**
      * <p>
@@ -98,8 +115,8 @@ public class FilterInput implements Serializable {
      *             Name: The name of the filter. It has to be unique.
      *         </li>
      *         <li>
-     *             Type: The type of the filter. A filter can either be a whitelist or a blacklist, that means all nodes
-     *             matched by the filter either count as safe (whitelist) or unsafe (blacklist).
+     *             Selection model: The selection type of the filter. A filter can either be based on a selection or on
+     *             an inverse selection.
      *         </li>
      *         <li>
      *             Origin: The origin of the filter. A filter can originate from an IP Address, from a MAC Address, or
@@ -117,29 +134,36 @@ public class FilterInput implements Serializable {
      *             Color: The color of the filter determines what color a matched node should become.
      *         </li>
      *         <li>
+     *             Authorized: If true, all nodes filtered by the filter will be considered as "good" or legal nodes. If set
+     *             to false all nodes filtered by the filter will be considered as "evil" or illegal nodes.
+     *         </li>
+     *         <li>
      *             Active: Whether this filter is currently being applied on the network or not.
      *         </li>
      *     </ul>
      * </p>
      *
      * @param name The name of this filter.
-     * @param type The type of this filter.
+     * @param selectionModel The selection model of this filter (inverse selection vs selection).
      * @param origin The origin of this filter.
      * @param rules The rules that define this filter.
      * @param color The color that a node should become if it matches with the filter.
      */
     public FilterInput(final String name,
-                       final FilterType type,
+                       final SelectionModel selectionModel,
                        final FilterOrigin origin,
                        final List<String> rules,
                        final Color color,
+                       final boolean authorized,
                        final int priority) {
+
         this.name = name;
-        this.type = type;
+        this.selectionModel = selectionModel;
         this.origin = origin;
         this.rules = rules;
         this.color = color;
         this.active = false;
+        this.authorized = authorized;
         this.priority = priority;
         this.deleted = false;
     }
@@ -168,37 +192,13 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
-     *     Gets the name property of this filter. It has to be unique.
+     *    Gets the selection type of the filter. A filter can either be based on a selection or on an inverse selection.
      * </p>
      *
-     * @return The name property of this filter.
+     * @return The selection type of this filter.
      */
-    public StringProperty getNameProperty() {
-        return nameProperty;
-    }
-
-    /**
-     * <p>
-     *     Gets the type of this filter. A filter can either be a whitelist or a blacklist, that means all nodes
-     *     matched by the filter either count as safe (whitelist) or unsafe (blacklist).
-     * </p>
-     *
-     * @return The type of this filter.
-     */
-    public FilterType getType() {
-        return type;
-    }
-
-    /**
-     * <p>
-     *     Gets the type property of this filter. A filter can either be a whitelist or a blacklist, that means all
-     *     nodes matched by the filter either count as safe (whitelist) or unsafe (blacklist).
-     * </p>
-     *
-     * @return The type property of this filter.
-     */
-    public StringProperty getTypeProperty() {
-        return typeProperty;
+    public SelectionModel getSelectionModel() {
+        return selectionModel;
     }
 
     /**
@@ -211,18 +211,6 @@ public class FilterInput implements Serializable {
      */
     public FilterOrigin getOrigin() {
         return origin;
-    }
-
-    /**
-     * <p>
-     *     Gets the origin property of the filter. A filter can originate from an IP Address, from a MAC Address, or
-     *     from the current selection. This indicates upon what criteria the filter filters.
-     * </p>
-     *
-     * @return The origin property of this filter.
-     */
-    public StringProperty getOriginProperty() {
-        return originProperty;
     }
 
     /**
@@ -251,14 +239,15 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
-     *     Gets the color property for this filter. The color of the filter determines what color a matched node should
-     *     become.
+     *     Gets the authorized state of this filter. If it is set to true, all nodes filtered by the filter will be
+     *     considered as "good" or legal nodes. If it is set to false all nodes filtered by the filter will be
+     *     considered as "evil" or illegal nodes.
      * </p>
      *
-     * @return The color property for this filter.
+     * @return The authorized state of this filter.
      */
-    public ObjectProperty<Color> getColorProperty() {
-        return colorProperty;
+    public boolean isAuthorized() {
+        return authorized;
     }
 
     /**
@@ -270,7 +259,7 @@ public class FilterInput implements Serializable {
      * @return True if the filter is currently being applied o the network, else false.
      */
     public boolean isActive() {
-        return activeProperty.getValue();
+        return active;
     }
 
     /**
@@ -287,6 +276,78 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
+     *     Gets the priority of the filter. This priority is used to determine which filter color should
+     *     be rendered when multiple filters collide on the same node.
+     * </p>
+     *
+     * @return the priority of the filter.
+     */
+    public int getPriority() {
+        return priority;
+    }
+
+    /**
+     * <p>
+     *     Gets the name property of this filter. It has to be unique.
+     * </p>
+     *
+     * @return The name property of this filter.
+     */
+    public StringProperty getNameProperty() {
+        return nameProperty;
+    }
+
+    /**
+     * <p>
+     *    Gets the selection type property of the filter. A filter can either be based on a selection or on an inverse
+     *    selection.
+     * </p>
+     *
+     * @return The selection type property of this filter.
+     */
+    public StringProperty getSelectionModelProperty() {
+        return selectionModelProperty;
+    }
+
+    /**
+     * <p>
+     *     Gets the origin property of the filter. A filter can originate from an IP Address, from a MAC Address, or
+     *     from the current selection. This indicates upon what criteria the filter filters.
+     * </p>
+     *
+     * @return The origin property of this filter.
+     */
+    public StringProperty getOriginProperty() {
+        return originProperty;
+    }
+
+    /**
+     * <p>
+     *     Gets the color property for this filter. The color of the filter determines what color a matched node should
+     *     become.
+     * </p>
+     *
+     * @return The color property for this filter.
+     */
+    public ObjectProperty<Color> getColorProperty() {
+        return colorProperty;
+    }
+
+    /**
+     * <p>
+     *     Gets the authorized state property of this filter. If it is set to true, all nodes filtered by the filter will
+     *     be considered as "good" or legal nodes. If it is set to false all nodes filtered by the filter will be
+     *     considered as "evil" or illegal nodes.
+     * </p>
+     *
+     * @return The authorized state property of this filter.
+     */
+    public BooleanProperty getAuthorizedProperty() {
+        return authorizedProperty;
+    }
+
+    /**
+     * <p>
      *     Gets the BooleanProperty behind the activity state. This is mapped to the {@link CheckBoxTableCell} in the
      *     table view in the filters menu.
      * </p>
@@ -297,17 +358,6 @@ public class FilterInput implements Serializable {
         return activeProperty;
     }
 
-    /**
-     * <p>
-     *     Gets the priority of the filter. This priority is used to determine which filter color should
-     *     be rendered when multiple filters collide on the same node.
-     * </p>
-     *
-     * @return the priority of the filter.
-     */
-    public int getPriority() {
-        return priority;
-    }
 
     /**
      * <p>
@@ -321,10 +371,20 @@ public class FilterInput implements Serializable {
         return priorityProperty;
     }
 
+    /**
+     * <p>
+     *     Sets a flag that the Filter is to be deleted.
+     * </p>
+     */
     public void setDeleted() {
         deleted = true;
     }
 
+    /**
+     * <p>
+     *     Gets the deletion flag that specifies whether or not a filter is to be deleted.
+     * </p>
+     */
     public boolean isDeleted() {
         return deleted;
     }
@@ -341,14 +401,21 @@ public class FilterInput implements Serializable {
     public void load(ConfigData configData) {
         // Instantiate property objects
         nameProperty = new SimpleStringProperty(name);
-        typeProperty = new SimpleStringProperty(type.name());
         colorProperty = new SimpleObjectProperty<>(color);
         priorityProperty = new SimpleIntegerProperty(priority);
+        authorizedProperty = new SimpleBooleanProperty(authorized);
         activeProperty = new SimpleBooleanProperty(active);
+
+        // Make the selection model look nicer on screen
+        if (selectionModel.equals(SelectionModel.SELECTION)) {
+            selectionModelProperty = new SimpleStringProperty(configData.getProperty("SELECTION_LABEL"));
+        } else {
+            selectionModelProperty = new SimpleStringProperty(configData.getProperty("INVERSE_SELECTION_LABEL"));
+        }
 
         // Make the origin look nicer on screen
         if (origin.equals(FilterOrigin.NAME)) {
-            originProperty = new SimpleStringProperty("Name Regex");
+            originProperty = new SimpleStringProperty(configData.getProperty("NAME_LABEL"));
         } else {
             originProperty = new SimpleStringProperty(origin.name());
         }
@@ -372,11 +439,11 @@ public class FilterInput implements Serializable {
         });
 
         // Bind type to database update function
-        typeProperty.addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals(FilterType.WHITELIST.name())) {
-                type = FilterType.WHITELIST;
+        selectionModelProperty.addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(configData.getProperty("SELECTION_LABEL"))) {
+                selectionModel = SelectionModel.SELECTION;
             } else {
-                type = FilterType.BLACKLIST;
+                selectionModel = SelectionModel.INVERSE_SELECTION;
             }
 
             configData.updateFilterInput(this);
@@ -405,7 +472,15 @@ public class FilterInput implements Serializable {
             logger.debug("Updated color for FilterInput: " + name + " to table view and database.");
         });
 
-        // Bind color to database update function
+        // Bind authorized state to database update function
+        authorizedProperty.addListener((observable, oldValue, newValue) -> {
+            authorized = newValue;
+
+            configData.updateFilterInput(this);
+            logger.debug("Updated authorized state for FilterInput: " + name + " to table view and database.");
+        });
+
+        // Bind priority to database update function
         priorityProperty.addListener((observable, oldValue, newValue) -> {
             priority = newValue.intValue();
 

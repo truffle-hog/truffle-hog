@@ -36,7 +36,7 @@ public class RecordMenuViewController extends AnchorPaneController {
 
         final GlowImageButton button = new GlowImageButton("record-circle.png");
         final TimerField timerField = new TimerField();
-        timerField.setId("timer");
+        timerField.setId("record_timer");
 
         getChildren().addAll(timerField, button);
 
@@ -52,12 +52,12 @@ public class RecordMenuViewController extends AnchorPaneController {
             if (!pressed) {
                 pressed = true;
                 Platform.runLater(() -> {
-                    //button.startGlow();
+                    button.startGlow();
                     timerField.startTimer();
                 });
 
 
-                startRecord(networkDevice, liveNetwork);
+                //startRecord(networkDevice, liveNetwork);
             } else {
                 pressed = false;
                 button.stopGlow();
@@ -74,7 +74,7 @@ public class RecordMenuViewController extends AnchorPaneController {
      * @param networkDevice
      * @param liveNetwork
      */
-    private void startRecord(INetworkDevice networkDevice, INetwork liveNetwork) {
+    private void startAction(INetworkDevice networkDevice, INetwork liveNetwork) {
         final INetworkTape tape = new NetworkTape(20);
 
         final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);

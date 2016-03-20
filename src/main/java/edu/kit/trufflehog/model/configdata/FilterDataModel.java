@@ -68,6 +68,7 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
         // it was not. Perhaps the database library is asynchronous, though I am not sure how that would affect this map.
         this.loadedFilters = new ConcurrentHashMap<>();
 
+
         // Get database file
         File databaseFile;
         try {
@@ -379,6 +380,9 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
     /**
      * <p>
      *     Gets all loaded {@link FilterInput} objects. If none have been loaded yet, none are returned.
+     * </p>
+     * <p>
+     *     This method converts the interface FilterInput into the class FilterInput
      * </p>
      *
      * @return The list of loaded {@link FilterInput} objects.

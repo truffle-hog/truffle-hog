@@ -66,19 +66,19 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
 
         nodeStatisticsComponent.setOutgoingCount(nodeStatisticsComponent.getOutgoingCount() + other.getOutgoingCount());
 
-        nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+        nodeStatisticsComponent.setIncomingCount(nodeStatisticsComponent.getIncomingCount() + other.getIncomingCount());
 
         // TODO maybe check for more variants of values (potential bug???)
-/*        if (other.getOutgoingCount() == 0 && other.getIngoingCount() == 0)
+/*        if (other.getOutgoingCount() == 0 && other.getIncomingCount() == 0)
             nodeStatisticsComponent.setOutgoingCount(nodeStatisticsComponent.getOutgoingCount() + other.getOutgoingCount());
-        else if (other.getOutgoingCount() == 1 && other.getIngoingCount() == 0)
-            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
-        else if (other.getOutgoingCount() == 0 && other.getIngoingCount() == 1)
-            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
-        else if (other.getOutgoingCount() == 1 && other.getIngoingCount() == 1)
-            nodeStatisticsComponent.setIngoingCount(nodeStatisticsComponent.getIngoingCount() + other.getIngoingCount());
+        else if (other.getOutgoingCount() == 1 && other.getIncomingCount() == 0)
+            nodeStatisticsComponent.setIncomingCount(nodeStatisticsComponent.getIncomingCount() + other.getIncomingCount());
+        else if (other.getOutgoingCount() == 0 && other.getIncomingCount() == 1)
+            nodeStatisticsComponent.setIncomingCount(nodeStatisticsComponent.getIncomingCount() + other.getIncomingCount());
+        else if (other.getOutgoingCount() == 1 && other.getIncomingCount() == 1)
+            nodeStatisticsComponent.setIncomingCount(nodeStatisticsComponent.getIncomingCount() + other.getIncomingCount());
         else
-            throw new UnsupportedOperationException("not supported to add other numbers than 0 or 1 for ingoing and outgoing updates yet");*/
+            throw new UnsupportedOperationException("not supported to add other numbers than 0 or 1 for incoming and outgoing updates yet");*/
         //nodeStatisticsComponent.incrementThroughput(1);
         return true;
     }

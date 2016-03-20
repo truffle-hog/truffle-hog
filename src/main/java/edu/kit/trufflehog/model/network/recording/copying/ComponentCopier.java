@@ -41,8 +41,6 @@ import javafx.beans.property.IntegerProperty;
  */
 public class ComponentCopier implements IComponentVisitor<IComponent> {
 
-
-
     @Override
     public IComponent visit(NetworkNode iComponents) {
         throw new UnsupportedOperationException("Operation not implemented yet");
@@ -53,14 +51,11 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
-
     @Override
     public IComponent visit(EdgeStatisticsComponent edgeStatisticsComponent) {
 
         return new EdgeStatisticsComponent(edgeStatisticsComponent.getTraffic());
     }
-
-
 
     @Override
     public IComponent visit(ViewComponent viewComponent) {
@@ -74,16 +69,16 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
 
     }
 
-
-
     @Override
     public IComponent visit(NodeStatisticsComponent nodeStatisticsComponent) {
         if (nodeStatisticsComponent == null) throw new NullPointerException("nodeStatisticsComponent must not be null!");
 
-        IntegerProperty ingoing = nodeStatisticsComponent.ingoingCountProperty();
+        IntegerProperty incoming = nodeStatisticsComponent.ingoingCountProperty();
         IntegerProperty outgoing = nodeStatisticsComponent.outgoingCountProperty();
+        NodeStatisticsComponent component = new NodeStatisticsComponent(outgoing.get(), incoming.get());
+        component.setThroughput(nodeStatisticsComponent.getThroughput());
 
-        return new NodeStatisticsComponent(outgoing.get(), ingoing.get());
+        return component;
     }
 
     @Override
@@ -106,9 +101,6 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
 
         return new PacketDataLoggingComponent(packetDataLoggingComponent.getObservablePackets());
     }
-
-
-
 
     @Override
     public IComponent visit(FilterPropertiesComponent filterPropertiesComponent) {
