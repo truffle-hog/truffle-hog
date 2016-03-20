@@ -249,7 +249,7 @@ public class ViewBuilder {
 
         //multiViewManager.putView("Profinet", profinetView);
         splitPane.getItems().addAll(startView);
-        multiViewManager.setSelected(startView, 1); // Select start view by default
+        multiViewManager.setSelected(startView); // Select start view by default
     }
 
     private void setKeyboardShortcuts(MenuBar menuBar) {

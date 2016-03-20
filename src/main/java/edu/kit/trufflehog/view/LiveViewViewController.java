@@ -145,7 +145,7 @@ public class LiveViewViewController extends SplitableView<ProtocolControlInterac
         this.getChildren().add(captureOverlayViewController);
 
         // Set this view as the currently selected view when it is pressed
-        networkViewScreen.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this, 1));
+        networkViewScreen.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this));
     }
 
     /**

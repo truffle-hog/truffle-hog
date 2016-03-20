@@ -212,7 +212,7 @@ public class MultiViewManager {
                 if (view.equals(currentView)) {
                     SplitableView splitableView = views.get(name).clone();
                     if (selected.equals(currentView)) {
-                        setSelected(splitableView, 1);
+                        setSelected(splitableView);
                     }
                     return splitableView;
                 }
@@ -233,7 +233,7 @@ public class MultiViewManager {
      * @param splitableView The view that should be set as the current view.
      * @param limit The limit to the number of existing views for the view to get a blue border (this is usually 1).
      */
-    public void setSelected(SplitableView splitableView, int limit) {
+    private void setSelected(SplitableView splitableView, int limit) {
         if (viewCounter > limit) {
             selected.setId("view_not_selected");
             splitableView.setId("view_selected");
@@ -242,6 +242,18 @@ public class MultiViewManager {
             splitableView.setId("view_not_selected");
         }
         selected = splitableView;
+    }
+
+    /**
+     * <p>
+     *     Set the view passed as the parameter as the current view. This method also makes sure that the border
+     *     coloring is right.
+     * </p>
+     *
+     * @param splitableView The view that should be set as the current view.
+     */
+    public void setSelected(SplitableView splitableView) {
+        setSelected(splitableView, 1);
     }
 
     /**

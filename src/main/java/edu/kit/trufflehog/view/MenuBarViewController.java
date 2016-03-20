@@ -97,6 +97,6 @@ public class MenuBarViewController extends MenuBar {
      * </p>
      */
     public void onExit() {
-        throw new UnsupportedOperationException("Not implemented yet!");
+
     }
 }
