@@ -43,6 +43,5 @@ public class PlaybackMenuViewController extends AnchorPaneController {
 
         AnchorPane.setTopAnchor(pauseButton, 1d);
         AnchorPane.setRightAnchor(pauseButton, 40d);
-
     }
 }

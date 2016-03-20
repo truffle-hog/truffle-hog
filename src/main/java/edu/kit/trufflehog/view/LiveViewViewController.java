@@ -26,6 +26,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
@@ -49,28 +50,29 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
 
     // General variables
     private final Map<ProtocolControlInteraction, IUserCommand> interactionMap = new EnumMap<>(ProtocolControlInteraction.class);
-    private final ConfigData configData;
+    protected final ConfigData configData;
     private boolean connected = false;
-    private final ViewSwitcher viewSwitcher;
+    protected final MultiViewManager multiViewManager;
 
     // View layers
-    private final StackPane stackPane;
+    protected final StackPane stackPane;
+    protected final Scene scene;
 
-    private final Scene scene;
-
-    private final INetworkViewPort viewPort;
+    protected final INetworkViewPort viewPort;
 
     private AnchorPane captureOverlayViewController;
     private FilterOverlayViewController filterOverlayViewController;
     private OverlayViewController settingsOverlayViewController;
-    private final IUserCommand<FilterInput> updateFilterCommand;
-    private final IListener<IUserCommand> userCommandListener;
+    protected final IUserCommand<FilterInput> updateFilterCommand;
+    protected final IListener<IUserCommand> userCommandListener;
     private final StatisticsViewModel statViewModel = new StatisticsViewModel();
     private final GeneralStatisticsViewModel generalStatViewModel = new GeneralStatisticsViewModel();
+    protected final INetworkDevice networkDevice;
+    protected final INetwork liveNetwork;
 
     public LiveViewViewController(final String fxml,
                                   final ConfigData configData,
-                                  final ViewSwitcher viewSwitcher,
+                                  final MultiViewManager multiViewManager,
                                   final StackPane stackPane,
                                   final INetworkViewPort viewPort,
                                   final Scene scene,
@@ -79,20 +81,19 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
                                   final INetworkDevice networkDevice,
                                   final INetwork liveNetwork) {
         super(fxml);
-        this.viewSwitcher = viewSwitcher;
+        this.multiViewManager = multiViewManager;
         this.updateFilterCommand = updateFilterCommand;
         this.userCommandListener = userCommandIListener;
 
         this.configData = configData;
         this.scene = scene;
-
         this.stackPane = stackPane;
-
-        //TODO check if needed
         this.viewPort = viewPort;
+        this.networkDevice = networkDevice;
+        this.liveNetwork = liveNetwork;
+
 
         //final StatisticsViewModel statView = new StatisticsViewModel();
-        // FIXME this screen is also create in the ViewBuilder... is that necessary??!
         final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPort, 30, new Dimension(700, 700));
         networkViewScreen.addListener(userCommandIListener);
         networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statViewModel));
@@ -124,6 +125,9 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         // Add the record overlay here, this is overwritten in the capture view view controller
         captureOverlayViewController = addCaptureOverlay(networkDevice, liveNetwork);
         this.getChildren().add(captureOverlayViewController);
+
+        // Set this view as the currently selected view when it is pressed
+        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this));
     }
 
     /**
@@ -338,7 +342,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
     private void addCloseButton() {
         final ImageButton closeButton = new ImageButton("close.png");
 
-        closeButton.setOnAction(event -> viewSwitcher.replace(this, ViewSwitcher.START_VIEW));
+        closeButton.setOnAction(event -> multiViewManager.replace(this, MultiViewManager.START_VIEW));
 
         closeButton.setScaleX(0.8);
         closeButton.setScaleY(0.8);
@@ -375,5 +379,11 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
     @Override
     public void addCommand(ProtocolControlInteraction interaction, IUserCommand command) {
         interactionMap.put(interaction, command);
+    }
+
+    @Override
+    public LiveViewViewController clone() {
+        return new LiveViewViewController("live_view.fxml", configData, multiViewManager, stackPane,
+                viewPort, scene, updateFilterCommand, userCommandListener, networkDevice, liveNetwork);
     }
 }

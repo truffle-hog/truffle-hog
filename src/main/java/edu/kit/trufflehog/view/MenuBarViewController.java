@@ -34,8 +34,10 @@
 
 package edu.kit.trufflehog.view;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 
 import java.io.IOException;
 
@@ -49,6 +51,15 @@ import java.io.IOException;
  */
 public class MenuBarViewController extends MenuBar {
 
+    private final MultiViewManager multiViewManager;
+
+    @FXML
+    private MenuItem splitHMenuItem;
+    @FXML
+    private MenuItem splitVMenuItem;
+    @FXML
+    private MenuItem deleteMenuItem;
+
     /**
      * <p>
      *     Creates a new MainViewController with the given fxmlFileName. The fxml file has to be in the same namespace
@@ -57,7 +68,7 @@ public class MenuBarViewController extends MenuBar {
      *
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
-    public MenuBarViewController(final String fxmlFileName) {
+    public MenuBarViewController(final String fxmlFileName, final MultiViewManager multiViewManager) {
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFileName));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -67,6 +78,16 @@ public class MenuBarViewController extends MenuBar {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+
+        this.multiViewManager = multiViewManager;
+
+        setUpViewSwitchingButtons();
+    }
+
+    private void setUpViewSwitchingButtons() {
+        splitHMenuItem.setOnAction(event -> multiViewManager.splitHorizontal());
+        splitVMenuItem.setOnAction(event -> multiViewManager.splitVertical());
+        deleteMenuItem.setOnAction(event -> multiViewManager.merge());
     }
 
     /**

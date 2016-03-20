@@ -28,9 +28,9 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root prefHeight="60.0" prefWidth="150.0" styleClass="background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="60.0" prefWidth="150.0" styleClass="playback_menu_background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
-        <URL value="@playback_menu_overlay.css" />
+        <URL value="@trufflehog_main_theme.css" />
     </stylesheets>
    <children>
       <Slider fx:id="slider" layoutX="4.0" layoutY="23.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />

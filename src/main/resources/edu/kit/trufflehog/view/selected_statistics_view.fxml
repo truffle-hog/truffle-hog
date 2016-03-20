@@ -29,7 +29,6 @@
 <fx:root opacity="0.8" prefHeight="250.0" prefWidth="500.0" styleClass="background" type="BorderPane" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@statistics_overlay.css" />
-        <URL value="@scrollbar.css" />
     </stylesheets>
     <center>
         <GridPane>

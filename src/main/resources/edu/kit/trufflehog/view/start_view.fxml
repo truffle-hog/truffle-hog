@@ -30,16 +30,15 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="200.0" opacity="1.0" prefHeight="650.0" prefWidth="1000.0" styleClass="background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="200.0" opacity="1.0" prefHeight="650.0" prefWidth="1000.0" styleClass="start_view_background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
-        <URL value="@start_view.css" />
-        <URL value="@scrollbar.css" />
+        <URL value="@trufflehog_main_theme.css" />
     </stylesheets>
     <children>
-        <SplitPane fx:id="splitPane" dividerPositions="0.5" layoutX="179.0" layoutY="150.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="150.0">
+        <SplitPane fx:id="splitPane" dividerPositions="0.5" layoutX="179.0" layoutY="150.0" prefHeight="200.0" prefWidth="200.0" styleClass="start_view-split-pane" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="150.0">
             <items>
-                <ListView fx:id="liveListView" prefHeight="200.0" prefWidth="200.0" styleClass="list-view_left" />
-                <ListView fx:id="captureListView" prefHeight="200.0" prefWidth="200.0" styleClass="list-view_right" />
+                <ListView fx:id="liveListView" prefHeight="200.0" prefWidth="200.0" styleClass="start_view_list-view_left" />
+                <ListView fx:id="captureListView" prefHeight="200.0" prefWidth="200.0" styleClass="start_view_list-view_right" />
             </items>
         </SplitPane>
     </children>

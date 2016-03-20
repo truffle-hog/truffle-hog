@@ -36,7 +36,7 @@ public class RecordMenuViewController extends AnchorPaneController {
 
         final GlowImageButton button = new GlowImageButton("record-circle.png");
         final TimerField timerField = new TimerField();
-        timerField.setId("timer");
+        timerField.setId("record_timer");
 
         getChildren().addAll(timerField, button);
 

@@ -73,7 +73,7 @@ public class ViewBuilder {
     private final AnchorPane groundView;
     private final StackPane stackPane;
     private final SplitPane splitPane;
-    private final ViewSwitcher viewSwitcher;
+    private final MultiViewManager multiViewManager;
     private final Map<String, INetworkViewPort> viewPorts;
     private final TruffleReceiver truffleReceiver;
 
@@ -97,7 +97,7 @@ public class ViewBuilder {
         this.groundView = new AnchorPane();
         this.stackPane = new StackPane();
         this.splitPane = new SplitPane();
-        this.viewSwitcher = new ViewSwitcher();
+        this.multiViewManager = new MultiViewManager();
         this.mainViewController = new MainViewController("main_view.fxml");
         this.viewPorts = viewPorts;
         this.truffleReceiver = truffleReceiver;
@@ -125,7 +125,7 @@ public class ViewBuilder {
         //final StatisticsViewModel statView = new StatisticsViewModel();
 
         // Load menu bar
-        final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml");
+        final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml", multiViewManager);
 
         // Set up the ground view. This is always the full center of the BorderPane. We add the splitPane to it
         // because it is right on top of it.
@@ -229,9 +229,13 @@ public class ViewBuilder {
         ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724",
                 "capture-457", "capture-167");
 
-        final AnchorPane startView = new StartViewController("start_view.fxml", liveItems, captureItems, viewSwitcher);
-        final AnchorPaneInteractionController demoView = new CaptureViewViewController("live_view.fxml", configData,
-                viewSwitcher, stackPane, viewPorts.get(ViewSwitcher.DEMO_VIEW) , primaryStage.getScene(),
+        final AnchorPaneInteractionController startView = new StartViewController("start_view.fxml", liveItems,
+                captureItems, multiViewManager);
+        final AnchorPaneInteractionController demoView = new LiveViewViewController("live_view.fxml", configData,
+                multiViewManager, stackPane, viewPorts.get(MultiViewManager.DEMO_VIEW) , primaryStage.getScene(),
+                updateFilterCommand, userCommandIListener, networkDevice, liveNetwork);
+        final AnchorPaneInteractionController captureView = new CaptureViewViewController("live_view.fxml", configData,
+                multiViewManager, stackPane, viewPorts.get(MultiViewManager.DEMO_VIEW) , primaryStage.getScene(),
                 updateFilterCommand, userCommandIListener, networkDevice, liveNetwork);
 
         demoView.addCommand(ProtocolControlInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
@@ -240,10 +244,11 @@ public class ViewBuilder {
 
 //        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
 //                viewPorts.get("Profinet"));
-        viewSwitcher.putView(ViewSwitcher.START_VIEW, startView);
-        viewSwitcher.putView(ViewSwitcher.DEMO_VIEW, demoView);
+        multiViewManager.putView(MultiViewManager.START_VIEW, startView);
+        multiViewManager.putView(MultiViewManager.DEMO_VIEW, demoView);
+        multiViewManager.putView(MultiViewManager.CAPTURE_VIEW, captureView);
 
-        //viewSwitcher.putView("Profinet", profinetView);
+        //multiViewManager.putView("Profinet", profinetView);
         splitPane.getItems().addAll(startView);
     }
 

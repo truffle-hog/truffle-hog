@@ -22,7 +22,7 @@ public class CaptureViewViewController extends LiveViewViewController {
 
     public CaptureViewViewController(String fxml,
                                      ConfigData configData,
-                                     ViewSwitcher viewSwitcher,
+                                     MultiViewManager multiViewManager,
                                      StackPane stackPane,
                                      INetworkViewPort viewPort,
                                      Scene scene,
@@ -31,7 +31,7 @@ public class CaptureViewViewController extends LiveViewViewController {
                                      INetworkDevice networkDevice,
                                      INetwork liveNetwork) {
 
-        super(fxml, configData, viewSwitcher, stackPane, viewPort, scene, updateFilterCommand, userCommandIListener,
+        super(fxml, configData, multiViewManager, stackPane, viewPort, scene, updateFilterCommand, userCommandIListener,
                 networkDevice, liveNetwork);
     }
 
@@ -42,5 +42,11 @@ public class CaptureViewViewController extends LiveViewViewController {
         AnchorPane.setLeftAnchor(captureView, 18d);
         captureView.setVisible(false);
         return captureView;
+    }
+
+    @Override
+    public CaptureViewViewController clone() {
+        return new CaptureViewViewController("live_view.fxml", configData, multiViewManager, stackPane,
+                viewPort, scene, updateFilterCommand, userCommandListener, networkDevice, liveNetwork);
     }
 }

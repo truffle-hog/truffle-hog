@@ -28,7 +28,13 @@ import java.util.Map;
  */
 public class StartViewController extends AnchorPaneInteractionController<StartViewInteraction> {
     private final Map<StartViewInteraction, IUserCommand> interactionMap = new EnumMap<>(StartViewInteraction.class);
-    private final ViewSwitcher viewSwitcher;
+
+    private final String fxmlFileName;
+    private final ObservableList<String> liveItems;
+    private final ObservableList<String> captureItems;
+    private final MultiViewManager multiViewManager;
+
+    private ImageButton closeButton;
 
     @FXML
     private SplitPane splitPane;
@@ -48,9 +54,12 @@ public class StartViewController extends AnchorPaneInteractionController<StartVi
     public StartViewController(final String fxmlFileName,
                                final ObservableList<String> liveItems,
                                final ObservableList<String> captureItems,
-                               final ViewSwitcher viewSwitcher) {
+                               final MultiViewManager multiViewManager) {
         super(fxmlFileName);
-        this.viewSwitcher = viewSwitcher;
+        this.fxmlFileName = fxmlFileName;
+        this.liveItems = liveItems;
+        this.captureItems = captureItems;
+        this.multiViewManager = multiViewManager;
 
         AnchorPane.setTopAnchor(this, 0d);
         AnchorPane.setLeftAnchor(this, 0d);
@@ -72,13 +81,13 @@ public class StartViewController extends AnchorPaneInteractionController<StartVi
 
         // Set up the text
         final Text titleText = new Text("Choose a view port");
-        titleText.setId("title_text");
+        titleText.setId("start_view_title_text");
 
         final Text liveText = new Text("Live");
-        liveText.setId("sub_title_text");
+        liveText.setId("start_view_sub_title_text");
 
         final Text captureText = new Text("Capture");
-        captureText.setId("sub_title_text");
+        captureText.setId("start_view_sub_title_text");
 
         // Add everything to anchor pane
         this.getChildren().addAll(titleText, liveText, captureText, startButton);
@@ -98,6 +107,12 @@ public class StartViewController extends AnchorPaneInteractionController<StartVi
             AnchorPane.setLeftAnchor(splitPane, this.getWidth() * 0.31);
             AnchorPane.setRightAnchor(splitPane, this.getWidth() * 0.31);
         });
+
+        closeButton = addCloseButton(multiViewManager);
+        showCloseButton(false);
+
+        // Set this anchor pane as the currently selected view when it is pressed
+        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this));
     }
 
     /**
@@ -153,7 +168,7 @@ public class StartViewController extends AnchorPaneInteractionController<StartVi
             cell.textProperty().bind(cell.itemProperty());
             cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
                 listView1.requestFocus();
-                if (! cell.isEmpty()) {
+                if (!cell.isEmpty()) {
                     int index = cell.getIndex();
                     if (index >= 0 && index < listView1.getItems().size() && listView1.getSelectionModel()
                             .isSelected(index)) {
@@ -188,17 +203,17 @@ public class StartViewController extends AnchorPaneInteractionController<StartVi
         }
 
         // Switch views according to selected item
-        boolean switched = viewSwitcher.replace(this, selected);
+        boolean switched = multiViewManager.replace(this, selected);
 
         // Start the requested service
         if (switched) {
             switch (selected) {
-                case ViewSwitcher.DEMO_VIEW:
+                case MultiViewManager.DEMO_VIEW:
                     if (interactionMap.get(StartViewInteraction.START_DEMO) != null) {
                         notifyListeners(interactionMap.get(StartViewInteraction.START_DEMO));
                     }
                     break;
-                case ViewSwitcher.PROFINET_VIEW:
+                case MultiViewManager.PROFINET_VIEW:
                     if (interactionMap.get(StartViewInteraction.START_PROFINET) != null) {
                         notifyListeners(interactionMap.get(StartViewInteraction.START_PROFINET));
                     }
@@ -236,8 +251,42 @@ public class StartViewController extends AnchorPaneInteractionController<StartVi
         return null;
     }
 
+    /**
+     * <p>
+     *     Adds a close button.
+     * </p>
+     */
+    private ImageButton addCloseButton(MultiViewManager multiViewManager) {
+        final ImageButton closeButton = new ImageButton("close.png");
+
+        closeButton.setScaleX(0.8);
+        closeButton.setScaleY(0.8);
+
+        AnchorPane.setTopAnchor(closeButton, 10d);
+        AnchorPane.setLeftAnchor(closeButton, 10d);
+
+        getChildren().add(closeButton);
+        return closeButton;
+    }
+
+    /**
+     * <p>
+     *     Shows the close button if show is set to true and hides the show button if show is set to false.
+     * </p>
+     *
+     * @param show Determines whether the close button is shown or not.
+     */
+    public void showCloseButton(boolean show) {
+        closeButton.setVisible(show);
+    }
+
     @Override
     public void addCommand(StartViewInteraction interaction, IUserCommand command) {
         interactionMap.put(interaction, command);
+    }
+
+    @Override
+    public StartViewController clone() {
+        return new StartViewController(fxmlFileName, liveItems, captureItems, multiViewManager);
     }
 }
