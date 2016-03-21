@@ -26,10 +26,14 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationModel;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.GraphMouseListener;
+import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
+import edu.uci.ics.jung.visualization.util.Caching;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -41,12 +45,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Paint;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyListener;
@@ -56,6 +55,8 @@ import java.awt.geom.Point2D;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by jan on 13.01.16.
@@ -64,13 +65,15 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
     private static final Logger logger = LogManager.getLogger(NetworkViewScreen.class);
 
-	private FXVisualizationViewer<INode, IConnection> jungView;
+	private VisualizationViewer<INode, IConnection> jungView;
 
 	private INetworkViewPort viewPort;
 
-	private FXModalGraphMouse graphMouse;
+	private ModalGraphMouse graphMouse;
 
     private Dimension dimension;
+
+    private final ExecutorService tinyTaskExecutor = Executors.newCachedThreadPool();
 
 	private Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory;
 
@@ -89,7 +92,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
         this.dimension = dimension;
         this.viewPort = port;
-        jungView = new FXVisualizationViewer<>(this.viewPort, dimension);
+        jungView = new VisualizationViewer<>(viewPort, this.dimension);
         initialize();
 
         this.layoutFactory = new FRLayoutFactory();
@@ -134,7 +137,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		//jungView.getRenderContext().setEdgeLabelRenderer((EdgeLabelRenderer) new FXEdgeLabelRenderer<>());
 		//jungView.revalidate();
 		//createAndSetSwingContent(this, jungView);
-		jungView.setRenderer(new FXRenderer<>());
+		//jungView.setRenderer(new Renderer<>());
 
 		SwingUtilities.invokeLater(() -> this.setContent(jungView));
 
@@ -147,8 +150,8 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		// Show vertex and edge labels
 
 		// Create a graph mouse and add it to the visualization component
-		graphMouse = new FXDefaultModalGraphMouse();
-		graphMouse.setMode(FXModalGraphMouse.Mode.PICKING);
+		graphMouse = new DefaultModalGraphMouse();
+		graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
 
 		jungView.setGraphMouse(graphMouse);
 
@@ -231,7 +234,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 			}
 		});
 
-        jungView.getRenderContext().setArrowDrawPaintTransformer(edge -> {
+        /*jungView.getRenderContext().setArrowDrawPaintTransformer(edge -> {
 
             final ViewComponent viewComponent = edge.getComponent(ViewComponent.class);
 
@@ -332,7 +335,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                 return viewComponent.getRenderer().getIconUnpicked();
             }
 
-        });
+        });*/
 
 
 /*        jungView.getRenderContext().setVertexIconTransformer(node -> new Icon() {
@@ -362,7 +365,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
             }});*/
 
-		jungView.getRenderContext().setVertexLabelTransformer(node -> node.getComponent(NodeInfoComponent.class).toString());
+		/*jungView.getRenderContext().setVertexLabelTransformer(node -> node.getComponent(NodeInfoComponent.class).toString());
 
 		// TODO null check for component
 		jungView.getRenderContext().setEdgeLabelTransformer(edge -> String.valueOf(edge.getComponent(EdgeStatisticsComponent.class).getTraffic()));
@@ -390,21 +393,22 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             float strokeWidth = 6.0f * relation;
 
             return new BasicStroke(strokeWidth);
-        });
+        });*/
 
 		jungView.getRenderContext().setVertexShapeTransformer(iNode -> {
+
+            final ViewComponent viewComponent = iNode.getComponent(ViewComponent.class);
 
             final NodeStatisticsComponent statComp = iNode.getComponent(NodeStatisticsComponent.class);
             final int currentSize = statComp.getCommunicationCount();
             final long maxSize = viewPort.getMaxThroughput();
-
-            final double relation = (double) currentSize / (double) maxSize;
-
-            final ViewComponent viewComponent = iNode.getComponent(ViewComponent.class);
-            return AffineTransform.getScaleInstance(0.3 + relation, 0.3 + relation).createTransformedShape(viewComponent.getRenderer().getShape());
+            final double relation = (double) currentSize / (maxSize == 0 ? 1 : (double) maxSize);
+            return viewComponent.getRenderer().getShape(relation);
         });
 
-		jungView.getRenderContext().setVertexStrokeTransformer(node -> {
+		//jungView.getRenderContext().setArrowPlacementTolerance(0.1f);
+
+	/*	jungView.getRenderContext().setVertexStrokeTransformer(node -> {
 			final ViewComponent viewComponent = node.getComponent(ViewComponent.class);
 
 			return viewComponent.getRenderer().getStroke();
@@ -458,14 +462,14 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                 return viewComponent.getRenderer().getColorUnpicked();
             }
         });
-
+*/
 	}
 
-	public void setGraphMouse(FXVisualizationViewer.FXGraphMouse graphMouse) {
+	public void setGraphMouse(VisualizationViewer.GraphMouse graphMouse) {
 		jungView.setGraphMouse(graphMouse);
 	}
 
-	public FXVisualizationViewer.FXGraphMouse getGraphMouse() {
+	public VisualizationViewer.GraphMouse getGraphMouse() {
 		return jungView.getGraphMouse();
 	}
 

@@ -3,13 +3,20 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
+import org.apache.commons.collections15.buffer.BlockingBuffer;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.Icon;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.util.Arrays;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.logging.LogManager;
 
 /**
  * This Component of a node will handle how a node is displayed in the graph
@@ -19,12 +26,20 @@ import java.awt.geom.Ellipse2D;
  * @version 0.1
  */
 public class NodeRenderer implements IRenderer {
+
+    private static final Logger logger = org.apache.logging.log4j.LogManager.getLogger(NodeRenderer.class);
+
     private Icon iconUnpicked = null;
     private Icon iconPicked = null;
     //private Shape shape = new Rectangle2D.Double(-50,-50,100,100);
-    private Shape shape = new Ellipse2D.Double(-50, -50, 100, 100);
+
+    private final BlockingQueue<Shape> cachedShapes = new ArrayBlockingQueue<>(5);
+
+    private Shape shape = new Ellipse2D.Double(-30, -30, 60, 60);
     private Color colorPicked = new Color(0x4089BFf0, true);
     private Color colorUnpicked = new Color(0x4089BFa0, true);
+
+    private final Shape shapes[] = new Shape[10];
 
 
 
@@ -39,6 +54,8 @@ public class NodeRenderer implements IRenderer {
      * </p>
      */
     public NodeRenderer() {
+
+
     }
 
     /**
@@ -95,6 +112,40 @@ public class NodeRenderer implements IRenderer {
     }
 
     @Override
+    public void addCachedShape(Shape transformedShape) {
+        cachedShapes.offer(transformedShape);
+    }
+
+    @Override
+    public Shape getCachedShape() {
+        return cachedShapes.poll();
+    }
+
+    private Shape getShape(int index) {
+
+        if (shapes[index] == null) {
+
+            //shapes[index] = new Ellipse2D.Double(-(index + 1) * 10, -(index + 1) * 10, (index + 1) * 20, (index + 1) * 20);
+            shapes[index] = AffineTransform.getScaleInstance(0.3d + ((double) (index + 1) / 10d), 0.3d + ((double) (index + 1) / 10d)).createTransformedShape(shape);
+          /*  for (int i = 1; i < 11; i++) {
+                shapes[i - 1] = AffineTransform.getScaleInstance(0.3d + ((double)i / 10d), 0.3d + ((double)i / 10d)).createTransformedShape(shape);
+            }*/
+        }
+        return shapes[index];
+    }
+
+    @Override
+    public Shape getShape(double relation) {
+
+
+        //logger.debug("relation: " + relation);
+
+        //logger.debug("index: " + (int) ((shapes.length - 1) * relation));
+
+        return getShape((int) ((shapes.length - 1) * relation));
+    }
+
+    @Override
     public Icon getIconPicked() {
         return iconPicked;
     }
@@ -103,6 +154,7 @@ public class NodeRenderer implements IRenderer {
     public void setIconPicked(Icon iconPicked) {
         this.iconPicked = iconPicked;
     }
+
 
     /**
      * <p>

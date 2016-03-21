@@ -23,6 +23,9 @@ import edu.kit.trufflehog.presenter.nativebuilders.osx.OSXBuilder;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * <p>
  *     The main class in TruffleHog. It initiates everything.
@@ -30,6 +33,8 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 	private Presenter presenter;
+
+	public static ExecutorService THE_EXECUTOR = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
 	/**
 	 * <p>

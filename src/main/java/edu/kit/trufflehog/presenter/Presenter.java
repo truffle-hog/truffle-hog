@@ -31,6 +31,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static edu.kit.trufflehog.Main.THE_EXECUTOR;
+
 /**
  * <p>
  *     The Presenter builds TruffleHog. It instantiates all necessary instances of classes, registers these instances
@@ -145,22 +147,22 @@ public class Presenter {
         // Tell the network observation device to start recording the
         // given network with 25fps on the created tape
 
-        final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
+       // final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
         truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
         this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
-        truffleFetchService.execute(truffleReceiver);
+        THE_EXECUTOR.execute(truffleReceiver);
         //truffleReceiver.connect();
 
         // Initialize the command executor and register it.
-        final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
-        commandExecutorService.execute(commandExecutor);
+        //final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
+        THE_EXECUTOR.execute(commandExecutor);
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 
-        final ExecutorService nodeStatisticsUpdaterService = Executors.newSingleThreadExecutor();
+        //final ExecutorService nodeStatisticsUpdaterService = Executors.newSingleThreadExecutor();
         final NodeStatisticsUpdater nodeStatisticsUpdater = new NodeStatisticsUpdater(readingPortSwitch, viewPortSwitch);
-        nodeStatisticsUpdaterService.execute(nodeStatisticsUpdater);
+        THE_EXECUTOR.execute(nodeStatisticsUpdater);
 
         // goReplay that ongoing recording on the given viewportswitch
         //networkDevice.goReplay(tape, viewPortSwitch);

@@ -220,6 +220,24 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     }
 
     @Override
+    public void addCachedShape(Shape transformedShape) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Shape getCachedShape() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Shape getShape(double relation) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public boolean isMutable() {
         return true;
     }

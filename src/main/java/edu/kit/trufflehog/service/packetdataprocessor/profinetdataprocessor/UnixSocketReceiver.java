@@ -24,7 +24,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
     private final INetworkWritingPort networkWritingPort;
     private final IFilter filter;
-    private final ExecutorService executor = Executors.newCachedThreadPool();
+    //private final ExecutorService executor = Executors.newCachedThreadPool();
     private final Logger logger = LogManager.getLogger();
 
 

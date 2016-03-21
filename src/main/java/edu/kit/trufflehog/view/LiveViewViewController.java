@@ -93,15 +93,17 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
 
         //final StatisticsViewModel statView = new StatisticsViewModel();
         // FIXME this screen is also create in the ViewBuilder... is that necessary??!
-        final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPort, 30, new Dimension(700, 700));
-        networkViewScreen.addListener(userCommandIListener);
-        networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statViewModel));
+        //final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPort, 30, new Dimension(700, 700));
+        //networkViewScreen.addListener(userCommandIListener);
+        //networkViewScreen.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statViewModel));
         //networkViewScreen.addCommand(GraphInteraction.VERTEX_SELECTED, new NodeSelectionCommand());
 
-        networkViewScreen.setLayoutFactory(new FRLayoutFactory());
+        //networkViewScreen.setLayoutFactory(new FRLayoutFactory());
 
-        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN),
-                networkViewScreen::refreshLayout);
+        //scene.getAccelerators().put(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN),
+         //       networkViewScreen::refreshLayout);
+
+        final NetworkViewNode networkViewScreen = new NetworkViewNode(viewPort);
 
         this.getChildren().add(networkViewScreen);
 
@@ -119,7 +121,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         addGeneralStatisticsOverlay();
         addNodeStatisticsOverlay();
         addSettingsOverlay();
-        addFilterMenuOverlay(networkViewScreen);
+        //addFilterMenuOverlay(networkViewScreen);
         addRecordOverlay(networkDevice, liveNetwork);
     }
 

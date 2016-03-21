@@ -15,8 +15,9 @@ import java.util.concurrent.ExecutorService;
  * </p>
  */
 public class ReplayLogSaveService implements Runnable, IListener<ICommand> {
+
     private List<ICommand> commandList;
-    private ExecutorService executorService;
+    //private ExecutorService executorService;
 
     /**
      * <p>

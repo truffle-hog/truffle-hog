@@ -16,7 +16,6 @@
  */
 package edu.kit.trufflehog.util;
 
-import com.sun.org.apache.xalan.internal.lib.NodeInfo;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.NetworkIOPort;
 import edu.kit.trufflehog.model.network.NetworkViewPort;

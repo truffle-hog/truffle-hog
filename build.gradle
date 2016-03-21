@@ -19,8 +19,8 @@ allprojects {
 
 buildscript {
     repositories {
-        mavenCentral()
-
+        //mavenCentral()
+        jcenter()
 
 
 /*
@@ -69,7 +69,7 @@ dependencies {
 
 
     // modified jung2
-    compile 'com.github.JanSurft:jung2:-SNAPSHOT'
+    //compile 'com.github.JanSurft:jung2:-SNAPSHOT'
 
 
     // general

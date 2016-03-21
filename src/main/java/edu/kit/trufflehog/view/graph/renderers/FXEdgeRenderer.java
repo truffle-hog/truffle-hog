@@ -190,16 +190,20 @@ public class FXEdgeRenderer<V, E> implements Renderer.Edge<V,E> {
             Rectangle2D s2Bounds = s2.getBounds2D();
             xform.scale(s2Bounds.getWidth(),s2Bounds.getHeight());
             xform.translate(0, -edgeShape.getBounds2D().getWidth()/2);
+
         } else if(rc.getEdgeShapeTransformer() instanceof EdgeShape.Orthogonal) {
+
             float dx = x2-x1;
             float dy = y2-y1;
             int index = 0;
+
             if(rc.getEdgeShapeTransformer() instanceof EdgeShape.IndexedRendering) {
                 EdgeIndexFunction<V,E> peif =
                         ((EdgeShape.IndexedRendering<V,E>)rc.getEdgeShapeTransformer()).getEdgeIndexFunction();
                 index = peif.getIndex(graph, e);
                 index *= 20;
             }
+
             GeneralPath gp = new GeneralPath();
             gp.moveTo(0,0);// the xform will do the translation to x1,y1
             if(x1 > x2) {
@@ -304,6 +308,7 @@ public class FXEdgeRenderer<V, E> implements Renderer.Edge<V,E> {
                     AffineTransform at =
                             edgeArrowRenderingSupport.getArrowTransform(rc, edgeShape, destVertexShape);
                     if(at == null) return;
+
                     Shape arrow = rc.getEdgeArrowTransformer().transform(Context.<Graph<V,E>,E>getInstance(graph, e));
                     arrow = at.createTransformedShape(arrow);
                     g.setPaint(rc.getArrowFillPaintTransformer().transform(e));

@@ -148,6 +148,24 @@ public class StaticRenderer implements IRenderer {
     }
 
     @Override
+    public void addCachedShape(Shape transformedShape) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Shape getCachedShape() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Shape getShape(double relation) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public IRenderer createDeepCopy(ICopyCreator copyCreator) {
         if (copyCreator == null) throw new NullPointerException("copyCreator must not be null!");
         return copyCreator.createDeepCopy(this);

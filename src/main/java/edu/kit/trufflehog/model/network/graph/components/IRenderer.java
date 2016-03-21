@@ -48,4 +48,10 @@ public interface IRenderer extends DeepCopyable<IRenderer>, Updatable<IRenderer>
     Icon getIconUnpicked();
 
     void setIconUnpicked(Icon icon);
+
+    void addCachedShape(Shape transformedShape);
+
+    Shape getCachedShape();
+
+    Shape getShape(double relation);
 }

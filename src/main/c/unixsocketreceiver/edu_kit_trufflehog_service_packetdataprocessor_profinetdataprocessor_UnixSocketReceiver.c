@@ -286,7 +286,9 @@ int getNextTruffle(JNIEnv *env, Truffle_t *truffle)
 
 	    return 0;
 	}
-	check_to(rv != 0, noMessageReceived, "no message received");
+	//check_to(rv != 0, noMessageReceived, "no message received");
+
+	if (rv == 0) return -2;
 
 	debug("some error occurred while waiting for fd to become available: rv=%d", rv);
 	throwReceiverReadError(env, "other error");
@@ -295,6 +297,7 @@ int getNextTruffle(JNIEnv *env, Truffle_t *truffle)
 error:
 	throwReceiverReadError(env, "could not read the correct number of bytes from the socket");
 	return -1;
+
 noMessageReceived:
 	debug("read failed");
 	return -2;
@@ -308,7 +311,8 @@ noMessageReceived:
 JNIEXPORT jobject JNICALL Java_edu_kit_trufflehog_service_packetdataprocessor_profinetdataprocessor_UnixSocketReceiver_getTruffle(JNIEnv *env, jobject thisObj)
 {
     Truffle_t truffle;
-    check(getNextTruffle(env, &truffle) >= 0, "getNextTruffle failed!");
+    //check(getNextTruffle(env, &truffle) >= 0, "getNextTruffle failed!");
+    if (getNextTruffle(env, &truffle) < 0) return NULL;
 
     jclass truffleClass = getTruffleClass(env);
     _CHECK_JAVA_EXCEPTION(env);

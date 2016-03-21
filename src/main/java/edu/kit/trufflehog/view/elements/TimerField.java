@@ -22,8 +22,8 @@ public class TimerField extends Text {
     private static DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     private Instant startTime;
     private Instant endTime;
-    private StringProperty timeString;
-    private ScheduledExecutorService executorService;
+    private final StringProperty timeString;
+    private final ScheduledExecutorService executorService;
     private Future<?> future;
 
     /**
