@@ -256,7 +256,6 @@ public class ViewBuilder {
                 primaryStage::close);
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11), () -> {
             primaryStage.setFullScreen(!primaryStage.isFullScreen());
-            menuBar.setVisible(!menuBar.isVisible());
         });
         primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);

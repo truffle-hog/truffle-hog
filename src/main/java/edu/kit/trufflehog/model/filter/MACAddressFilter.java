@@ -6,10 +6,14 @@ import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -20,11 +24,14 @@ import java.util.List;
  */
 public class MACAddressFilter implements IFilter {
 
+    private static final Logger logger = LogManager.getLogger();
+
     private final Set<MacAddress> addresses = new HashSet<>();
     private final INetworkIOPort networkIOPort;
     private final Color filterColor;
     private final String name;
-    private int priority = 0;
+    private final int priority;
+    private final SelectionModel selectionModel;
 
     /**
      * //TODO document
@@ -44,17 +51,20 @@ public class MACAddressFilter implements IFilter {
         if (filterInput.getOrigin() != FilterOrigin.MAC)
             throw new InvalidFilterRule("The filter input contains invalid filter rules. This filter can only handle mac rules");
 
+        if (filterInput.getSelectionModel() == null)
+            throw new IllegalArgumentException("selectionModel in filterInput must not be null!");
+
         this.networkIOPort = networkIOPort;
         filterColor = filterInput.getColor();
         priority = filterInput.getPriority();
         name = filterInput.getName();
+        selectionModel = filterInput.getSelectionModel();
 
         final List<String> rules = filterInput.getRules();
 
         if (rules == null) {
             throw new NullPointerException("the rules list in filterInput must not be null!");
         }
-
 
         final List<MacAddress> macAddresses = new LinkedList<>();
 
@@ -108,12 +118,40 @@ public class MACAddressFilter implements IFilter {
         if (node == null)
             throw new NullPointerException("node must not be null!");
 
-        //TODO maybe null check?
-        final MacAddress address = node.getComponent(NodeInfoComponent.class).getMacAddress();
-
-        if (addresses.contains(address)) {
-            node.getComponent(FilterPropertiesComponent.class).addFilterColor(this, filterColor);
+        final NodeInfoComponent nic = node.getComponent(NodeInfoComponent.class);
+        if (nic == null) {
+            logger.debug("NodeInfoComponent doesn't exist");
+            return;
         }
+
+        final MacAddress address = nic.getMacAddress();
+
+        final boolean containsAddress = addresses.contains(address);
+
+        switch (selectionModel) {
+            case SELECTION:
+                if (containsAddress) {
+                    markNode(node);
+                }
+                break;
+
+            case INVERSE_SELECTION:
+                if (!containsAddress) {
+                    markNode(node);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void markNode(INode node) {
+        final FilterPropertiesComponent fpc = node.getComponent(FilterPropertiesComponent.class);
+        if (fpc == null) {
+            logger.debug("FilterPropertiesComponent doesn't exist!");
+            return;
+        }
+        fpc.addFilterColor(this, filterColor);
     }
 
     @Override

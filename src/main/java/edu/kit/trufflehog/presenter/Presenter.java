@@ -178,7 +178,6 @@ public class Presenter {
         //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
         this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
         truffleFetchService.execute(truffleReceiver);
-        //truffleReceiver.connect();
 
         // Initialize the command executor and register it.
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();

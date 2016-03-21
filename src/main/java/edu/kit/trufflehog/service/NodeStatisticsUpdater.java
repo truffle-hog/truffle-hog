@@ -53,7 +53,7 @@ public class NodeStatisticsUpdater implements Runnable {
                 updateGraphStatistics();
                 Thread.sleep(interval);
             } catch (InterruptedException e) {
-
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -66,42 +66,45 @@ public class NodeStatisticsUpdater implements Runnable {
      */
     private void updateNodeStatistics() {
         final Collection<INode> nodes = readingPort.getNetworkNodes();
-        if (nodes == null) return;
+
+        if (nodes == null)
+            return;
+
         if (lastNodes == null) {
-            for (INode i:nodes) {
+            for (INode node : nodes) {
                 lastNodes = new HashMap<>();
-                NodeStatisticsComponent nsc = i.getComponent(NodeStatisticsComponent.class);
+                NodeStatisticsComponent nsc = node.getComponent(NodeStatisticsComponent.class);
 
                 IComponentVisitor<IComponent> copier = new ComponentCopier();
                 NodeStatisticsComponent n2 = (NodeStatisticsComponent)nsc.accept(copier);
-                lastNodes.put(i.getAddress(), n2);
+                lastNodes.put(node.getAddress(), n2);
             }
         }
 
-        NodeStatisticsComponent cNew, cOld;
+        NodeStatisticsComponent nscNew, nscOld;
 
-        for (INode i:nodes) {
-            cNew = i.getComponent(NodeStatisticsComponent.class);
-            cOld = lastNodes.get(i.getAddress());
-            if (cOld == null) {
-                cOld = cNew;
+        for (INode node : nodes) {
+            nscNew = node.getComponent(NodeStatisticsComponent.class);
+            nscOld = lastNodes.get(node.getAddress());
+            if (nscOld == null) {
+                nscOld = nscNew;
             }
 
-            if (cNew != null && cOld != null) {
-                double delta = (cNew.getCommunicationCount() - cOld.getCommunicationCount());
-                double tOld = cOld.getThroughput();
+            if (nscNew != null) {
+                double delta = (nscNew.getCommunicationCount() - nscOld.getCommunicationCount());
+                double oldThroughput = nscOld.getThroughput();
 
-                double tn = smooth*delta + (1.0d-smooth)*tOld;
+                double nextThroughput = smooth*delta + (1.0d - smooth) * oldThroughput;
 
-                cNew.setThroughput(tn);
+                nscNew.setThroughput(nextThroughput);
             }
 
             IComponentVisitor<IComponent> copier = new ComponentCopier();
-            NodeStatisticsComponent n2 = (NodeStatisticsComponent)cNew.accept(copier);
-            if (lastNodes.get(i.getAddress()) != null) {
-                lastNodes.replace(i.getAddress(), n2);
+            NodeStatisticsComponent n2 = (NodeStatisticsComponent) (nscNew != null ? nscNew.accept(copier) : null);
+            if (lastNodes.get(node.getAddress()) != null) {
+                lastNodes.replace(node.getAddress(), n2);
             } else {
-                lastNodes.put(i.getAddress(), n2);
+                lastNodes.put(node.getAddress(), n2);
             }
         }
     }
@@ -109,22 +112,32 @@ public class NodeStatisticsUpdater implements Runnable {
     private void updateGraphStatistics() {
         Collection<INode> nodes = readingPort.getNetworkNodes();
         if (nodes != null) {
-            double tn = 0.0;
-            for (INode i:nodes) {
-                NodeStatisticsComponent pdlc = i.getComponent(NodeStatisticsComponent.class);
-                if (pdlc != null) {
-                    tn += pdlc.getThroughput();
+            double nextThroughput = 0.0;
+            int multicastCount = 0;
+
+            for (INode node : nodes) {
+                NodeStatisticsComponent nsc = node.getComponent(NodeStatisticsComponent.class);
+                if (nsc != null) {
+                    nextThroughput += nsc.getThroughput();
+                }
+
+                if (node.getAddress().isMulticast()) {
+                    multicastCount++;
                 }
             }
 
             //because we count outgoing and incoming packages, so one new package affects 2 node communication counters
-            tn = tn/2;
+            nextThroughput = nextThroughput/2;
 
-            readingPort.setThroughput(tn);
-            readingPort.setPopulation(nodes.size());
-            viewPort.setThroughput(tn);
-            viewPort.setPopulation(nodes.size());
-            if (initialTime == 0) initialTime = Instant.now().toEpochMilli();
+            readingPort.setThroughput(nextThroughput);
+            readingPort.setPopulation(nodes.size() - multicastCount);
+
+            viewPort.setThroughput(nextThroughput);
+            viewPort.setPopulation(nodes.size() - multicastCount);
+
+            if (initialTime == 0)
+                initialTime = Instant.now().toEpochMilli();
+
             viewPort.setViewTime(Instant.now().toEpochMilli() - initialTime);
         }
     }
