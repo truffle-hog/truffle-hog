@@ -26,6 +26,8 @@ import edu.kit.trufflehog.model.network.InvalidIPAddress;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.util.List;
@@ -40,11 +42,14 @@ import java.util.List;
  */
 public class IPAddressFilter implements IFilter {
 
-    final RangeSet<IPAddress> addresses = TreeRangeSet.create();
+    private static final Logger logger = LogManager.getLogger();
+
+    private final RangeSet<IPAddress> addresses = TreeRangeSet.create();
     private final INetworkIOPort networkIOPort;
     private final Color filterColor;
     private final String name;
-    private int priority = 0;
+    private final int priority;
+    private final SelectionModel selectionModel;
 
     public IPAddressFilter(INetworkIOPort networkIOPort, final FilterInput filterInput) throws InvalidFilterRule {
         if (networkIOPort == null)
@@ -56,10 +61,15 @@ public class IPAddressFilter implements IFilter {
         if (filterInput.getOrigin() != FilterOrigin.IP)
             throw new InvalidFilterRule("The filter input contains invalid filter rules. This filter can only handle ip rules");
 
+        if (filterInput.getSelectionModel() == null) {
+            throw new IllegalArgumentException("selectionModel in filterInput must not be null!");
+        }
+
         this.networkIOPort = networkIOPort;
         filterColor = filterInput.getColor();
         priority = filterInput.getPriority();
         name = filterInput.getName();
+        selectionModel = filterInput.getSelectionModel();
 
         final List<String> rules = filterInput.getRules();
 
@@ -118,11 +128,39 @@ public class IPAddressFilter implements IFilter {
         if (node == null)
             throw new NullPointerException("node must not be null!");
 
+        final NodeInfoComponent nic = node.getComponent(NodeInfoComponent.class);
+        if (nic == null) {
+            logger.debug("NodeInfoComponent was null!");
+            return;
+        }
+
         final IPAddress address = node.getComponent(NodeInfoComponent.class).getIPAddress();
 
-        if (address != null && addresses.contains(address)) {
-            node.getComponent(FilterPropertiesComponent.class).addFilterColor(this, filterColor);
+        switch (selectionModel) {
+            case SELECTION:
+                if (address != null && addresses.contains(address)) {
+                    markNode(node);
+                }
+                break;
+
+            case INVERSE_SELECTION:
+                if (address != null && !addresses.contains(address)) {
+                    markNode(node);
+                }
+                break;
+
+            default:
+                break;
         }
+    }
+
+    private void markNode(INode node) {
+        final FilterPropertiesComponent fpc = node.getComponent(FilterPropertiesComponent.class);
+        if (fpc == null) {
+            logger.debug("FilterPropertiesComponent doesn't exist!");
+            return;
+        }
+        fpc.addFilterColor(this, filterColor);
     }
 
     @Override
