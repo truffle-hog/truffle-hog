@@ -27,7 +27,7 @@ import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
  * @author Julian Brendl
  * @version 1.0
  */
-public abstract class SplitableView<I extends IInteraction> extends AnchorPaneInteractionController<I> {
+public abstract class SplitableView<I extends IInteraction> extends AnchorPaneInteractionController<I> implements BaseView {
 
     /**
      * <p>

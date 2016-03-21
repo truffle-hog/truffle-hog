@@ -184,7 +184,7 @@ public class MultiViewManager {
                 final SplitableView splitableView = (SplitableView) child;
 
                 // I don't know how else to do this but instanceof
-                if (!(splitableView instanceof LiveViewViewController)) {
+                if (!(splitableView instanceof LiveViewController)) {
                     splitableView.showCloseButton(false);
                 }
                 setSelected(splitableView, 2);

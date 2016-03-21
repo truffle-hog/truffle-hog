@@ -4,6 +4,7 @@ import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.interaction.IInteraction;
+import edu.kit.trufflehog.interaction.ListenerInteraction;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.MacroFilter;
@@ -18,12 +19,14 @@ import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
+import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.MultiViewManager;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -96,16 +99,25 @@ public class Presenter {
 
 
 
-
-
+        final Scene mainScene = new Scene(mainViewController);
+        final Map<BaseNetwork, INetworkViewPort> viewPortMap = new HashMap<>();
         final Map<IInteraction, IUserCommand> commandMap = createCommandMap();
-        BaseNetworkFactory baseNetworkFactory = new BaseNetworkFactory(commandMap);
+        final Map<IInteraction, IListener> listenerMap = createListenerMap();
+        BaseNetworkFactory baseNetworkFactory = new BaseNetworkFactory(configData, mainScene, viewPortMap, commandMap, listenerMap);
     }
 
     private Map<IInteraction, IUserCommand> createCommandMap() {
         final Map<IInteraction, IUserCommand> commandMap = new HashMap<>();
 
         commandMap.put(FilterInteraction.UPDATE, new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
+
+        return commandMap;
+    }
+
+    private Map<IInteraction, IListener> createListenerMap() {
+        final Map<IInteraction, IListener> commandMap = new HashMap<>();
+
+        commandMap.put(ListenerInteraction.USER_COMMAND, commandExecutor.asUserCommandListener());
 
         return commandMap;
     }

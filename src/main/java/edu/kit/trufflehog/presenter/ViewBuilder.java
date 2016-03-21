@@ -229,7 +229,7 @@ public class ViewBuilder {
 
         final SplitableView startView = new StartViewController("start_view.fxml", liveItems,
                 captureItems, multiViewManager);
-        final SplitableView demoView = new LiveViewViewController("live_view.fxml", configData,
+        final SplitableView demoView = new LiveViewController("live_view.fxml", configData,
                 multiViewManager, stackPane, viewPorts.get(MultiViewManager.DEMO_VIEW) , primaryStage.getScene(),
                 updateFilterCommand, userCommandIListener, networkDevice, liveNetwork);
         final SplitableView captureView = new CaptureViewViewController("live_view.fxml", configData,
@@ -240,7 +240,7 @@ public class ViewBuilder {
         demoView.addCommand(ProtocolControlInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
         demoView.addListener(userCommandIListener);
 
-//        AnchorPane profinetView = new LiveViewViewController("live_view.fxml", configData, stackPane, primaryStage,
+//        AnchorPane profinetView = new LiveViewController("live_view.fxml", configData, stackPane, primaryStage,
 //                viewPorts.get("Profinet"));
         multiViewManager.putView(MultiViewManager.START_VIEW, startView);
         multiViewManager.putView(MultiViewManager.DEMO_VIEW, demoView);

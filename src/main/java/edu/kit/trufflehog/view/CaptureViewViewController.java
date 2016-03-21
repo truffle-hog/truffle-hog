@@ -18,7 +18,7 @@ import javafx.scene.layout.StackPane;
  * @author Julian Brendl
  * @version 1.0
  */
-public class CaptureViewViewController extends LiveViewViewController {
+public class CaptureViewViewController extends LiveViewController {
 
     public CaptureViewViewController(String fxml,
                                      ConfigData configData,
