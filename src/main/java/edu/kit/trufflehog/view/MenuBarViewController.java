@@ -51,9 +51,6 @@ import java.io.IOException;
  * @version 1.0
  */
 public class MenuBarViewController extends MenuBar {
-
-    private final ViewSplitter viewSplitter;
-
     @FXML
     private MenuItem splitHMenuItem;
     @FXML
@@ -69,7 +66,7 @@ public class MenuBarViewController extends MenuBar {
      *
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
-    public MenuBarViewController(final String fxmlFileName, final ViewSplitter viewSplitter) {
+    public MenuBarViewController(final String fxmlFileName) {
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFileName));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -79,13 +76,16 @@ public class MenuBarViewController extends MenuBar {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-
-        this.viewSplitter = viewSplitter;
-
-        setUpViewSwitchingButtons();
     }
 
-    private void setUpViewSwitchingButtons() {
+    /**
+     * <p>
+     *     Sets up the view Menu Bar. That means links the buttons to their functionality etc.
+     * </p>
+     *
+     * @param viewSplitter The view splitter needed to link the split buttons to their functionality.
+     */
+    public void setUp(ViewSplitter viewSplitter) {
         splitHMenuItem.setOnAction(event -> viewSplitter.split(Orientation.HORIZONTAL));
         splitVMenuItem.setOnAction(event -> viewSplitter.split(Orientation.VERTICAL));
         deleteMenuItem.setOnAction(event -> viewSplitter.merge());

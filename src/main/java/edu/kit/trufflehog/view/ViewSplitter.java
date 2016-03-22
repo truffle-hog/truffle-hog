@@ -17,12 +17,11 @@
 
 package edu.kit.trufflehog.view;
 
+import edu.kit.trufflehog.presenter.BaseNetworkFactory;
+import edu.kit.trufflehog.presenter.NetworkType;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>
@@ -34,14 +33,7 @@ import java.util.Map;
  * @version 1.0
  */
 public class ViewSplitter {
-    // Available views
-    public static final String START_VIEW = "Start";
-    public static final String DEMO_VIEW = "Demo";
-    public static final String PROFINET_VIEW = "Profinet";
-    public static final String CAPTURE_VIEW = "capture";
-
-    // Other variables
-    private final Map<String, SplitableView> views;
+    private final BaseNetworkFactory baseNetworkFactory;
     private SplitableView selected;
     private int viewCounter = 1;
 
@@ -50,24 +42,9 @@ public class ViewSplitter {
      *     Create a new ViewSplitter.
      * </p>
      */
-    public ViewSplitter() {
+    public ViewSplitter(BaseNetworkFactory baseNetworkFactory) {
         this.selected  = null;
-        views = new HashMap<>();
-    }
-
-    /**
-     * <p>
-     *     Put a view into the internal list of views. These views are kept in order to place them into new "view slots"
-     *     when a view is split. All views that TruffleHog supports should be added to this list.
-     * </p>
-     *
-     * @param name The name of the view to add it as, use one of the constants this class offers as a name.
-     * @param splitableView The view that should be added to the internal list.
-     */
-    public void putView(final String name, final SplitableView splitableView) {
-        if (name != null && splitableView != null) {
-            views.put(name, splitableView);
-        }
+        this.baseNetworkFactory = baseNetworkFactory;
     }
 
     /**
@@ -98,21 +75,20 @@ public class ViewSplitter {
 
         // Get the parent split pane and create the new view that
         final SplitPane splitPane = (SplitPane) selected.getParent().getParent();
-        final SplitableView startViewController = views.get(START_VIEW);
-        final SplitableView clone = startViewController.clone();
-        clone.showCloseButton(true);
+        final SplitableView startViewController = (SplitableView) baseNetworkFactory.createInstance(NetworkType.START);
+        startViewController.showCloseButton(true);
 
         // Insert the new view into the window
         if (splitPane.getOrientation().equals(orientation)) {
             // This is easy, if the orientation is the same, just plain up add it
-            splitPane.getItems().add(clone);
+            splitPane.getItems().add(startViewController);
         } else {
             // Here we need to create a new split pane that holds the old (selected) view and the just created view
             splitPane.getItems().replaceAll(view -> {
                 if (view.equals(selected)) {
                     final SplitPane newSplitPane = new SplitPane();
                     newSplitPane.setOrientation(orientation);
-                    newSplitPane.getItems().addAll(view, clone);
+                    newSplitPane.getItems().addAll(view, startViewController);
                     return newSplitPane;
                 }
                 return view;
@@ -204,23 +180,20 @@ public class ViewSplitter {
      * @param name The name of the view that should be replaced with the "current view" passed over as a parameter.
      * @return True if everything was successful, and false on an error.
      */
-    public boolean replace(final SplitableView currentView, final String name) {
-        if (views.containsKey(name)) {
-            SplitPane splitPane = (SplitPane) currentView.getParent().getParent();
+    public boolean replace(final SplitableView currentView, final NetworkType name) {
+        SplitPane splitPane = (SplitPane) currentView.getParent().getParent();
 
-            splitPane.getItems().replaceAll(view -> {
-                if (view.equals(currentView)) {
-                    SplitableView splitableView = views.get(name).clone();
-                    if (selected.equals(currentView)) {
-                        setSelected(splitableView);
-                    }
-                    return splitableView;
+        splitPane.getItems().replaceAll(view -> {
+            if (view.equals(currentView)) {
+                SplitableView splitableView = (SplitableView) baseNetworkFactory.createInstance(name);
+                if (selected.equals(currentView)) {
+                    setSelected(splitableView);
                 }
-                return view;
-            });
-            return true;
-        }
-        return false;
+                return splitableView;
+            }
+            return view;
+        });
+        return true;
     }
 
     /**

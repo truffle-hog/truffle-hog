@@ -7,6 +7,6 @@ package edu.kit.trufflehog.presenter;
  * @author Julian Brendl
  * @version 1.0
  */
-public enum BaseNetwork {
-    START, DEMO, LIVE, CAPTURE
+public enum NetworkType {
+    START, DEMO, PROFINET, CAPTURE, NULL
 }

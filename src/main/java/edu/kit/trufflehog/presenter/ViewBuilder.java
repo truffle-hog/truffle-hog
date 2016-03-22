@@ -24,12 +24,11 @@ import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkTape;
-import edu.kit.trufflehog.view.ViewSplitter;
-import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
 /**
  * <p>
@@ -41,39 +40,8 @@ import javafx.stage.Stage;
  * @version 1.0
  */
 public class ViewBuilder {
-    // View layers
-    private final Stage primaryStage;
-    private final AnchorPane groundView;
-    private final StackPane stackPane;
-    private final SplitPane splitPane;
-    private final ViewSplitter viewSplitter;
 
-    /**
-     * <p>
-     *     Creates the ViewBuilder, which builds the entire view.
-     * </p>
-     * @param primaryStage The primary stage, where everything is drawn upon.
-     */
-    public ViewBuilder(final Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        this.groundView = new AnchorPane();
-        this.stackPane = new StackPane();
-        this.splitPane = new SplitPane();
-        this.viewSplitter = new ViewSplitter();
-    }
-
-    public void build() {
-
-        //final StatisticsViewModel statView = new StatisticsViewModel();
-
-
-        // Now we add the actual views to the split pane and to the view switcher
-        //buildViews(userCommandIListener, updateFilterCommand, device, liveNetwork);
-
-        /*primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN),
-                viewPort::refreshLayout);*/
-    }
-
+    // TODO keep for reference, for now
     private FlowPane buildReplayFunction(INetworkDevice networkDevice,
                                          INetwork liveNetwork,
                                          INetworkViewPortSwitch viewPortSwitch) {

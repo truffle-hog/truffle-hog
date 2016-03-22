@@ -72,6 +72,8 @@ public class FilterOverlayViewController extends AnchorPaneInteractionController
      *
      * @param fxml The link to the fxml file that contains the base graphical layout for the filter overlay.
      * @param pickedState The picked state that is used to get the current selection of nodes.
+     * @param data The data that should be bound to the table view.
+     * @param filterEditingMenu The filter edit menu through which filters can be created and updated.
      */
     public FilterOverlayViewController(final String fxml,
                                        final PickedState<INode> pickedState,

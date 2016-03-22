@@ -20,6 +20,8 @@ import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.TreeItem;
@@ -32,11 +34,26 @@ import javafx.scene.layout.StackPane;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
+ *     The BaseNetworkFactory is a network + view factory that  is able to create any network along with its view that
+ *     TruffleHog supports. That means that the cloning of the views through the split screens happens here. It is a
+ *     factory to produce any view desired.
+ * </p>
+ * <p>
+ *     This class works together with the {@link Presenter} to build TruffleHog. Any logic that should be executed more
+ *     than once when a screen is split should be within this class. If on the other hand there is logic that should
+ *     only be executed exactly once at the program start, it belongs in the Presenter.
+ * </p>
+ * <p>
+ *     For example, the {@link ConfigData} is only created once, thus its creation is in the Presenter, whereas views
+ *     have to be recreated at every screen split, thus there can be multiple instances of them in TruffleHog and that
+ *     is why they are created in this class.
  * </p>
  *
  * @author Julian Brendl
@@ -44,22 +61,39 @@ import java.util.concurrent.TimeUnit;
  */
 public class BaseNetworkFactory {
     private final ConfigData configData;
+    private final ViewSplitter viewSplitter;
+
     private final Scene scene;
     private final StackPane stackPane;
     private final INetworkDevice networkDevice;
     private final INetwork liveNetwork;
-    private final Map<BaseNetwork, INetworkViewPort> viewPortMap;
+    private final Map<NetworkType, INetworkViewPort> viewPortMap;
     private final Map<IInteraction, IUserCommand> commandMap;
     private final Map<IInteraction, IListener> listenerMap;
 
-    private final ViewSplitter viewSplitter;
+    private final List<NetworkType> liveItems;
+    private final ObservableList<String> captureItems;
 
+    /**
+     * <p>
+     *     Creates a new BaseNetworkFactory.
+     * </p>
+     *
+     * @param configData The {@link ConfigData} object that is used to access the model's saving mechanism.
+     * @param scene The main scene where everything is drawn upon.
+     * @param stackPane The stackPane to put the popover menus on.
+     * @param networkDevice TODO fill
+     * @param liveNetwork TODO fill
+     * @param viewPortMap A map with all viewports TruffleHog supports.
+     * @param commandMap A map with all commands TruffleHog supports.
+     * @param listenerMap A map with all listeners TruffleHog has.
+     */
     public BaseNetworkFactory(final ConfigData configData,
                               final Scene scene,
                               final StackPane stackPane,
                               final INetworkDevice networkDevice,
                               final INetwork liveNetwork,
-                              final Map<BaseNetwork, INetworkViewPort> viewPortMap,
+                              final Map<NetworkType, INetworkViewPort> viewPortMap,
                               final Map<IInteraction, IUserCommand> commandMap,
                               final Map<IInteraction, IListener> listenerMap) {
         this.configData = configData;
@@ -71,15 +105,52 @@ public class BaseNetworkFactory {
         this.commandMap = commandMap;
         this.listenerMap = listenerMap;
 
-        this.viewSplitter = new ViewSplitter();
+        this.viewSplitter = new ViewSplitter(this);
+
+        this.liveItems = new ArrayList<>(viewPortMap.keySet());
+        captureItems = FXCollections.observableArrayList("capture-932", "capture-724", "capture-457", "capture-167");
     }
 
-    public BaseView createInstance(BaseNetwork baseNetwork) {
-        return createLiveView();
+    /**
+     * <p>
+     *     Creates an instance of any {@link BaseView} that TruffleHog supports.
+     * </p>
+     *
+     * @param networkType The {@link BaseView} that should be created.
+     * @return The created base view.
+     */
+    public BaseView createInstance(NetworkType networkType) {
+        if (networkType == NetworkType.START) {
+            return createStartView();
+        } else if (networkType == NetworkType.DEMO) {
+            return createDemoView();
+        } else if (networkType == NetworkType.PROFINET) {
+            return createStartView();
+        } else if (networkType == NetworkType.CAPTURE) {
+            return createStartView();
+        }
+
+        return null;
     }
 
-    private BaseView createLiveView() {
-        final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPortMap.get(BaseNetwork.LIVE),
+    ViewSplitter getViewSplitter() {
+        return viewSplitter;
+    }
+
+    private BaseView createStartView() {
+        return new StartViewController(configData.getProperty("START_VIEW"), liveItems, captureItems, configData,
+                viewSplitter);
+    }
+
+    /**
+     * <p>
+     *     Creates the live network view. This is where everything happens - the graph is displayed in quasi real time.
+     * </p>
+     *
+     * @return The fully configured live network view.
+     */
+    private BaseView createDemoView() {
+        final NetworkViewScreen networkViewScreen = new NetworkViewScreen(viewPortMap.get(NetworkType.DEMO),
                 30, new Dimension(700, 700));
         final StatisticsViewModel statViewModel = new StatisticsViewModel();
 
@@ -98,13 +169,22 @@ public class BaseNetworkFactory {
         AnchorPane filterMenu = createFilterMenu(filterEditMenu, networkViewScreen.getPickedVertexState());
         AnchorPane captureMenu = createRecordOverlay(networkDevice, liveNetwork);
         BorderPane selectionStatistics = createSelectionStatisticsOverlay(statViewModel);
-        BorderPane generalStatistics = createGeneralStatisticsOverlay(viewPortMap.get(BaseNetwork.LIVE));
+        BorderPane generalStatistics = createGeneralStatisticsOverlay(viewPortMap.get(NetworkType.DEMO));
         ToolBar toolBar = createToolbar();
 
-        return new NetworkViewController(configData.getProperty("LIVE_VIEW"), viewSplitter, networkViewScreen,
+        return new NetworkViewController(configData.getProperty("NETWORK_VIEW"), viewSplitter, networkViewScreen,
                 viewSettingsMenu, filterMenu, captureMenu, selectionStatistics, generalStatistics, toolBar);
     }
 
+    /**
+     * <p>
+     *     Create the filter menu that is used to display existing filters.
+     * </p>
+     *
+     * @param filterEditMenu The filter edit menu through which filters can be created and updated.
+     * @param pickedState The picked state that is used to get the current selection of nodes.
+     * @return The fully configured FilterOverlayViewController.
+     */
     private FilterOverlayViewController createFilterMenu(FilterEditingMenuViewController filterEditMenu,
                                                          PickedState<INode> pickedState) {
         FilterOverlayViewController filterMenu = new FilterOverlayViewController(configData.getProperty("FILTER_MENU"),
@@ -118,6 +198,15 @@ public class BaseNetworkFactory {
         return filterMenu;
     }
 
+    /**
+     * <p>
+     *     Creates the filter edit menu that is used to edit and add filters.
+     * </p>
+     *
+     * @param stackPane The stack pane atop which the filter edit menu should be displayed.
+     * @param filterViewModel The filter view model needed to create and update filters.
+     * @return The fully configured FilterEditingMenuViewController.
+     */
     private FilterEditingMenuViewController createEditFilterMenu(StackPane stackPane, FilterViewModel filterViewModel) {
         FilterEditingMenuViewController filterEditMenu = new FilterEditingMenuViewController(
                 configData.getProperty("FILTER_EDIT_MENU"), configData, filterViewModel, stackPane);
@@ -128,21 +217,67 @@ public class BaseNetworkFactory {
         return filterEditMenu;
     }
 
+    /**
+     * <p>
+     *     Creates the view settings menu.
+     * </p>
+     *
+     * @return The fully configured view settings menu.
+     */
     private ViewSettingsViewController createSettingsOverlay() {
         return new ViewSettingsViewController(configData.getProperty("VIEW_SETTINGS_MENU"));
     }
 
+    /**
+     * <p>
+     *     Creates the recording menu to record the current network.
+     * </p>
+     *
+     * @param networkDevice TODO fill
+     * @param liveNetwork TODO fill
+     * @return The fully configured record menu.
+     */
     private RecordMenuViewController createRecordOverlay(final INetworkDevice networkDevice, final INetwork liveNetwork) {
         return new RecordMenuViewController(configData.getProperty("RECORD_MENU"), networkDevice, liveNetwork);
     }
 
+    /**
+     * <p>
+     *     Creates the playback menu to playback a network graph tape.
+     * </p>
+     *
+     * @return The fully configured playback menu.
+     */
+    private PlaybackMenuViewController createPlaybackOverlay() {
+        return new PlaybackMenuViewController(configData.getProperty("PLAYBACK_MENU"));
+    }
+
+    /**
+     * <p>
+     *     Creates the selection statistics overlay that is used to display selection specific statistics about the
+     *     current state of the network.
+     * </p>
+     *
+     * @param statViewModel The statistics view model associated with the StatisticsViewController.
+     * @return The fully configured StatisticsViewController.
+     */
     private StatisticsViewController createSelectionStatisticsOverlay(final StatisticsViewModel statViewModel) {
         return new StatisticsViewController(statViewModel);
     }
 
+    /**
+     * <p>
+     *     Creates the general statistics overlay that is used to display general statistics about the current state
+     *     of the network.
+     * </p>
+     *
+     * @param viewPort The view port for the network to show the statistics for.
+     * @return The fully configured GeneralStatisticsViewController.
+     */
     private GeneralStatisticsViewController createGeneralStatisticsOverlay(INetworkViewPort viewPort) {
         final GeneralStatisticsViewModel generalStatViewModel = new GeneralStatisticsViewModel();
-        final GeneralStatisticsViewController generalStatisticsOverlay = new GeneralStatisticsViewController(generalStatViewModel);
+        final GeneralStatisticsViewController generalStatisticsOverlay = new GeneralStatisticsViewController(
+                configData.getProperty("GENERAL_STATS_VIEW"), generalStatViewModel);
 
         StringProperty timeProperty = new SimpleStringProperty("");
         StringProperty throughputStringProperty = new SimpleStringProperty();
@@ -153,7 +288,7 @@ public class BaseNetworkFactory {
         generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel
                 .StringEntry<>(configData.getProperty("GS_PPS"), throughputStringProperty)));
         generalStatViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel
-                .StringEntry<>(configData.getProperty("RUNNING"), timeProperty)));
+                .StringEntry<>(configData.getProperty("GS_RUNNING"), timeProperty)));
 
         //TODO improve this!
         viewPort.getViewTimeProperty().addListener((observable, oldValue, newValue) -> {
@@ -178,6 +313,13 @@ public class BaseNetworkFactory {
         return generalStatisticsOverlay;
     }
 
+    /**
+     * <p>
+     *     Creates the toolbar for the network view that is shown on the bottom right.
+     * </p>
+     *
+     * @return The toolbar for the network view that is shown on the bottom right.
+     */
     private ToolBarViewController createToolbar() {
         return new ToolBarViewController(configData.getProperty("LIVE_VIEW_TOOLBAR"));
     }

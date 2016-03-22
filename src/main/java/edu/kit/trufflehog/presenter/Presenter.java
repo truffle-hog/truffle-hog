@@ -23,15 +23,13 @@ import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truf
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.MainViewController;
 import edu.kit.trufflehog.view.MenuBarViewController;
-import edu.kit.trufflehog.view.ViewSplitter;
 import edu.kit.trufflehog.view.SplitableView;
+import edu.kit.trufflehog.view.ViewSplitter;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.MenuBar;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -62,10 +60,10 @@ public class Presenter {
     private final FileSystem fileSystem;
     private final ScheduledExecutorService executorService;
     private final Stage primaryStage;
-    private final ViewSplitter viewSplitter;
+    private ViewSplitter viewSplitter;
     private BaseNetworkFactory baseNetworkFactory;
     private TruffleReceiver truffleReceiver;
-    private Map<BaseNetwork, INetworkViewPort> viewPortMap;
+    private Map<NetworkType, INetworkViewPort> viewPortMap;
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
@@ -82,7 +80,6 @@ public class Presenter {
     public Presenter(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.viewPortMap = new HashMap<>();
-        this.viewSplitter = new ViewSplitter();
 
         if (this.primaryStage == null) {
             throw new NullPointerException("primary stage should not be null");
@@ -133,7 +130,7 @@ public class Presenter {
     private void buildView() {
         primaryStage.setOnCloseRequest(event -> finish());
 
-        MenuBarViewController menuBar = new MenuBarViewController(configData.getProperty("MENU_BAR"), viewSplitter);
+        MenuBarViewController menuBar = new MenuBarViewController(configData.getProperty("MENU_BAR"));
         MainViewController mainViewController = new MainViewController(configData.getProperty("MAIN_VIEW"),
                 primaryStage, menuBar);
 
@@ -144,24 +141,17 @@ public class Presenter {
         final Map<IInteraction, IListener> listenerMap = createListenerMap();
 
         baseNetworkFactory = new BaseNetworkFactory(configData, mainViewController.getMainScene(),
-                mainViewController.getStackPane(), networkDevice, liveNetwork, viewPortMap, commandMap, listenerMap);
+                mainViewController.getStackPane(), networkDevice, liveNetwork, viewPortMap, commandMap,
+                listenerMap);
 
-        ObservableList<BaseNetwork> liveItems = FXCollections.observableArrayList(viewPortMap.keySet());
-        ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724",
-                "capture-457", "capture-167");
+        viewSplitter = baseNetworkFactory.getViewSplitter();
+        menuBar.setUp(viewSplitter);
 
-        final SplitableView startView = (SplitableView) baseNetworkFactory.createInstance(BaseNetwork.START);
-        final SplitableView demoView = (SplitableView) baseNetworkFactory.createInstance(BaseNetwork.LIVE);
-        final SplitableView captureView = (SplitableView) baseNetworkFactory.createInstance(BaseNetwork.CAPTURE);
-
+        final SplitableView startView = (SplitableView) baseNetworkFactory.createInstance(NetworkType.START);
+        final SplitableView demoView = (SplitableView) baseNetworkFactory.createInstance(NetworkType.DEMO);
 
         demoView.addCommand(ProtocolControlInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
         demoView.addCommand(ProtocolControlInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
-        //demoView.addListener(userCommandIListener);
-
-        viewSplitter.putView(ViewSplitter.START_VIEW, startView);
-        viewSplitter.putView(ViewSplitter.DEMO_VIEW, demoView);
-        viewSplitter.putView(ViewSplitter.CAPTURE_VIEW, captureView);
 
         mainViewController.getSplitPane().getItems().addAll(startView);
         viewSplitter.setSelected(startView); // Select start view by default
@@ -169,7 +159,7 @@ public class Presenter {
 
     private void initNetwork() {
 
-        // initialize the live network that will be writte on by the receiver commands
+        // initialize the live network that will be written on by the receiver commands
 
         // create a Graph
 
@@ -181,7 +171,7 @@ public class Presenter {
         liveNetwork = new LiveNetwork(og);
 
         // TODO Add real thing too, perhaps I misunderstood the viewport, need to talk to somebody in person ( - Julian)
-        viewPortMap.put(BaseNetwork.LIVE, liveNetwork.getViewPort());
+        viewPortMap.put(NetworkType.DEMO, liveNetwork.getViewPort());
 
         // TODO Where to put this???
 /*        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {

@@ -29,7 +29,9 @@ public class MainViewController extends BorderPaneController {
      *     as the MainViewController.
      * </p>
      *
-     * @param fxmlFileName the name of the fxml file to be loaded.
+     * @param fxmlFileName The name of the fxml file to be loaded.
+     * @param primaryStage The primary stage.
+     * @param menuBar The menu bar displayed on the top of the screen.
      */
     public MainViewController(final String fxmlFileName,
                               final Stage primaryStage,

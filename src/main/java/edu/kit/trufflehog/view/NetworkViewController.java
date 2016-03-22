@@ -19,6 +19,7 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.ProtocolControlInteraction;
+import edu.kit.trufflehog.presenter.NetworkType;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -287,7 +288,7 @@ public class NetworkViewController extends SplitableView<ProtocolControlInteract
             if (viewSplitter.getViewCounter() > 1) {
                 viewSplitter.merge(this);
             } else {
-                viewSplitter.replace(this, ViewSplitter.START_VIEW);
+                viewSplitter.replace(this, NetworkType.START);
             }
         });
 
@@ -337,10 +338,5 @@ public class NetworkViewController extends SplitableView<ProtocolControlInteract
     @Override
     public void showCloseButton(boolean show) {
         closeButton.setVisible(show);
-    }
-
-    @Override
-    public NetworkViewController clone() {
-        return null;
     }
 }
