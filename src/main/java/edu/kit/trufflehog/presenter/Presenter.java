@@ -1,10 +1,11 @@
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
+import edu.kit.trufflehog.Main;
+import edu.kit.trufflehog.command.usercommand.*;
 import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.interaction.IInteraction;
 import edu.kit.trufflehog.interaction.ListenerInteraction;
+import edu.kit.trufflehog.interaction.ProtocolControlInteraction;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.MacroFilter;
@@ -20,17 +21,27 @@ import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.util.IListener;
-import edu.kit.trufflehog.view.MultiViewManager;
+import edu.kit.trufflehog.view.MainViewController;
+import edu.kit.trufflehog.view.MenuBarViewController;
+import edu.kit.trufflehog.view.ViewSplitter;
+import edu.kit.trufflehog.view.SplitableView;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
-import javafx.scene.Scene;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.MenuBar;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -51,9 +62,10 @@ public class Presenter {
     private final FileSystem fileSystem;
     private final ScheduledExecutorService executorService;
     private final Stage primaryStage;
-    private ViewBuilder viewBuilder;
+    private final ViewSplitter viewSplitter;
+    private BaseNetworkFactory baseNetworkFactory;
     private TruffleReceiver truffleReceiver;
-    private Map<String, INetworkViewPort> viewPortMap;
+    private Map<BaseNetwork, INetworkViewPort> viewPortMap;
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
@@ -70,6 +82,7 @@ public class Presenter {
     public Presenter(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.viewPortMap = new HashMap<>();
+        this.viewSplitter = new ViewSplitter();
 
         if (this.primaryStage == null) {
             throw new NullPointerException("primary stage should not be null");
@@ -78,37 +91,20 @@ public class Presenter {
         this.fileSystem = new FileSystem();
         this.executorService = LoggedScheduledExecutor.getInstance();
 
-        ConfigData configDataTemp;
+        ConfigData configDataTemp = null;
         try {
             configDataTemp = new ConfigData(fileSystem);
         } catch (NullPointerException e) {
-            configDataTemp = null;
-            logger.error("Unable to set config data model", e);
+            logger.fatal("Unable to set config data model", e);
         }
         configData = configDataTemp;
-
-        primaryStage.setOnCloseRequest(event -> finish());
-
-
-
-
-
-
-
-
-
-
-
-        final Scene mainScene = new Scene(mainViewController);
-        final Map<BaseNetwork, INetworkViewPort> viewPortMap = new HashMap<>();
-        final Map<IInteraction, IUserCommand> commandMap = createCommandMap();
-        final Map<IInteraction, IListener> listenerMap = createListenerMap();
-        BaseNetworkFactory baseNetworkFactory = new BaseNetworkFactory(configData, mainScene, viewPortMap, commandMap, listenerMap);
     }
 
     private Map<IInteraction, IUserCommand> createCommandMap() {
         final Map<IInteraction, IUserCommand> commandMap = new HashMap<>();
 
+        commandMap.put(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
+        commandMap.put(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
         commandMap.put(FilterInteraction.UPDATE, new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
 
         return commandMap;
@@ -129,9 +125,46 @@ public class Presenter {
      * </p>
      */
     public void present() {
+        loadFonts();
         initNetwork();
-        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
-                new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
+        buildView();
+    }
+
+    private void buildView() {
+        primaryStage.setOnCloseRequest(event -> finish());
+
+        MenuBarViewController menuBar = new MenuBarViewController(configData.getProperty("MENU_BAR"), viewSplitter);
+        MainViewController mainViewController = new MainViewController(configData.getProperty("MAIN_VIEW"),
+                primaryStage, menuBar);
+
+        // Add some keyboard shortcuts
+        setKeyboardShortcuts(menuBar);
+
+        final Map<IInteraction, IUserCommand> commandMap = createCommandMap();
+        final Map<IInteraction, IListener> listenerMap = createListenerMap();
+
+        baseNetworkFactory = new BaseNetworkFactory(configData, mainViewController.getMainScene(),
+                mainViewController.getStackPane(), networkDevice, liveNetwork, viewPortMap, commandMap, listenerMap);
+
+        ObservableList<BaseNetwork> liveItems = FXCollections.observableArrayList(viewPortMap.keySet());
+        ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724",
+                "capture-457", "capture-167");
+
+        final SplitableView startView = (SplitableView) baseNetworkFactory.createInstance(BaseNetwork.START);
+        final SplitableView demoView = (SplitableView) baseNetworkFactory.createInstance(BaseNetwork.LIVE);
+        final SplitableView captureView = (SplitableView) baseNetworkFactory.createInstance(BaseNetwork.CAPTURE);
+
+
+        demoView.addCommand(ProtocolControlInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
+        demoView.addCommand(ProtocolControlInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
+        //demoView.addListener(userCommandIListener);
+
+        viewSplitter.putView(ViewSplitter.START_VIEW, startView);
+        viewSplitter.putView(ViewSplitter.DEMO_VIEW, demoView);
+        viewSplitter.putView(ViewSplitter.CAPTURE_VIEW, captureView);
+
+        mainViewController.getSplitPane().getItems().addAll(startView);
+        viewSplitter.setSelected(startView); // Select start view by default
     }
 
     private void initNetwork() {
@@ -148,7 +181,7 @@ public class Presenter {
         liveNetwork = new LiveNetwork(og);
 
         // TODO Add real thing too, perhaps I misunderstood the viewport, need to talk to somebody in person ( - Julian)
-        viewPortMap.put(MultiViewManager.DEMO_VIEW, liveNetwork.getViewPort());
+        viewPortMap.put(BaseNetwork.LIVE, liveNetwork.getViewPort());
 
         // TODO Where to put this???
 /*        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
@@ -188,7 +221,6 @@ public class Presenter {
         // TODO register the truffleReceiver somewhere so we can start or stop it.
         truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
         //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
-        this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
         truffleFetchService.execute(truffleReceiver);
 
         // Initialize the command executor and register it.
@@ -205,6 +237,25 @@ public class Presenter {
 
         // track the live network on the given viewportswitch
         networkDevice.goLive(liveNetwork, viewPortSwitch);
+    }
+
+    /**
+     * <p>
+     *     Loads all custom fonts.
+     * </p>
+     */
+    private void loadFonts() {
+        Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts" + File.separator + "DroidSans" +
+                File.separator + "DroidSans.ttf"), 12);
+    }
+
+    private void setKeyboardShortcuts(MenuBar menuBar) {
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
+                primaryStage::close);
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11),
+                () -> primaryStage.setFullScreen(!primaryStage.isFullScreen()));
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
+                primaryStage::close);
     }
 
     /**

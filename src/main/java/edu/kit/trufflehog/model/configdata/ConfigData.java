@@ -21,10 +21,9 @@ import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 
 import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * <p>
@@ -37,7 +36,7 @@ import java.util.Properties;
  * @author Julian Brendl
  * @version 1.0
  */
-public class ConfigData {
+public class ConfigData implements IConfig {
     private final ConfigDataModel<StringProperty> settingsDataModel;
     private final ConfigDataModel<String> propertiesDataModel;
     private final FilterDataModel filterDataModel;
@@ -63,7 +62,7 @@ public class ConfigData {
 
         // VERY IMPORTANT: This makes sure that we can map the filter activity state to a check box in the
         // table view in the filters menu
-        filterDataModel.getAllFilters().forEach((name, filter) -> filter.load(this));
+        filterDataModel.getAllFilters().forEach(filter -> filter.load(this));
 
     }
 
@@ -121,36 +120,16 @@ public class ConfigData {
      *
      * @return The list of loaded {@link FilterInput} objects.
      */
-    public Map<String, FilterInput> getAllLoadedFilters() {
+    public ObservableList<FilterInput> getAllLoadedFilters() {
         return filterDataModel.getAllFilters();
     }
 
-    /**
-     * <p>
-     *     Gets the value mapped to the given key in the currently loaded {@link Properties} object, or null if the key
-     *     does not exist.
-     * </p>
-     *
-     * @param typeClass The type of the object. For example, "007" could be of type java.lang.Integer, that way
-     *                  one knows that "007" can be parsed into a real integer value of 007.
-     * @param key The key of the value to get in the currently loaded {@link Properties} object.
-     * @return The value mapped to the key, if it exists, else null.
-     */
+    @Override
     public StringProperty getSetting(final Class typeClass, final String key) {
         return settingsDataModel.get(typeClass, key);
     }
 
-    /**
-     * <p>
-     *     Gets the property from the currently loaded property file associated with the given key.
-     * </p>
-     * <p>
-     *     The key must be the same key that is used in the property file.
-     * </p>
-     *
-     * @param key The key for which to return a value.
-     * @return The value mapped to the key in the currently loaded property file.
-     */
+    @Override
     public String getProperty(final String key) {
         return propertiesDataModel.get(key);
     }

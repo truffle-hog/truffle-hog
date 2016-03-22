@@ -26,50 +26,58 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 /**
  * <p>
+ *     The NetworkViewController is the core view of TruffleHog. It incorporates the network graph along with all
+ *     the menus.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public class LiveViewController extends SplitableView<ProtocolControlInteraction> {
-    private static final Logger logger = LogManager.getLogger(LiveViewController.class);
-
-    // General variables
+public class NetworkViewController extends SplitableView<ProtocolControlInteraction> {
     private final Map<ProtocolControlInteraction, IUserCommand> interactionMap = new EnumMap<>(ProtocolControlInteraction.class);
     private boolean connected = false;
-    private final MultiViewManager multiViewManager;
 
     // View layers
-    private final NetworkViewScreen networkViewScreen;
     private final AnchorPane captureMenu;
     private final AnchorPane filterMenu;
     private final AnchorPane viewSettingsMenu;
     private final BorderPane selectionStatistics;
     private final BorderPane generalStatistics;
     private final ToolBar toolBar;
+    private ImageButton closeButton;
 
-    private final ImageButton closeButton;
-
-    public LiveViewController(final String fxml,
-                              final MultiViewManager multiViewManager,
-                              final NetworkViewScreen networkViewScreen,
-                              final AnchorPane viewSettingsMenu,
-                              final AnchorPane filterMenu,
-                              final AnchorPane captureMenu,
-                              final BorderPane selectionStatistics,
-                              final BorderPane generalStatistics,
-                              final ToolBar toolBar) {
+    /**
+     * <p>
+     *     Creates a new NetworkViewController.
+     * </p>
+     *
+     * @param fxml The path to the fxml file that the NetworkViewController is linked to.
+     * @param viewSplitter The view splitter that handles the close button action.
+     * @param networkViewScreen The networkViewScreen that contains the network that should be drawn on screen.
+     * @param viewSettingsMenu The view settings menu (view local as opposed to global).
+     * @param filterMenu The filter menu.
+     * @param captureMenu The capture menu.
+     * @param selectionStatistics The selection statistic view.
+     * @param generalStatistics The general statistic view.
+     * @param toolBar The toolbar on the bottom right.
+     */
+    public NetworkViewController(final String fxml,
+                                 final ViewSplitter viewSplitter,
+                                 final NetworkViewScreen networkViewScreen,
+                                 final AnchorPane viewSettingsMenu,
+                                 final AnchorPane filterMenu,
+                                 final AnchorPane captureMenu,
+                                 final BorderPane selectionStatistics,
+                                 final BorderPane generalStatistics,
+                                 final ToolBar toolBar) {
 
         super(fxml);
-        this.networkViewScreen = networkViewScreen;
         this.viewSettingsMenu = viewSettingsMenu;
         this.filterMenu = filterMenu;
         this.captureMenu = captureMenu;
@@ -77,22 +85,20 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
         this.generalStatistics = generalStatistics;
         this.toolBar = toolBar;
 
-        this.multiViewManager = multiViewManager;
-
         this.getChildren().add(networkViewScreen);
 
         this.setMinWidth(200d);
         this.setMinHeight(200d);
 
+        // Fix the view to the corners of the screen
         AnchorPane.setBottomAnchor(networkViewScreen, 0d);
         AnchorPane.setTopAnchor(networkViewScreen, 0d);
         AnchorPane.setLeftAnchor(networkViewScreen, 0d);
         AnchorPane.setRightAnchor(networkViewScreen, 0d);
 
-        closeButton = addCloseButton(multiViewManager);
-        getChildren().add(closeButton);
-
+        // Add all components and configure them correctly
         addToolbar();
+        addCloseButton(viewSplitter);
         addGeneralStatisticsOverlay();
         addSelectionStatisticsOverlay();
         addSettingsOverlay();
@@ -100,12 +106,12 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
         addCaptureOverlay();
 
         // Set this view as the currently selected view when it is pressed
-        networkViewScreen.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this));
+        networkViewScreen.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> viewSplitter.setSelected(this));
     }
 
     /**
      * <p>
-     *     Builds the settings overlay.
+     *     Adds the settings overlay to the view.
      * </p>
      */
     private void addSettingsOverlay() {
@@ -117,11 +123,10 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
 
     /**
      * <p>
-     *     Builds the filter menu overlay.
+     *     Adds the filter menu overlay to the view.
      * </p>
      */
     private void addFilterMenuOverlay() {
-        // Set up overlay on screen
         this.getChildren().add(filterMenu);
         AnchorPane.setBottomAnchor(filterMenu, 60d);
         AnchorPane.setLeftAnchor(filterMenu, 18d);
@@ -131,19 +136,19 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
 
     /**
      * <p>
-     *     Builds the record menu overlay.
+     *     Adds the record menu overlay to the view.
      * </p>
      */
     private void addCaptureOverlay() {
+        this.getChildren().add(captureMenu);
         AnchorPane.setBottomAnchor(captureMenu, 60d);
         AnchorPane.setLeftAnchor(captureMenu, 18d);
-        this.getChildren().add(captureMenu);
         captureMenu.setVisible(false);
     }
 
     /**
      * <p>
-     *     Builds the node statistics overlay.
+     *     Adds the node statistics overlay to the view.
      * </p>
      */
     private void addSelectionStatisticsOverlay() {
@@ -159,20 +164,19 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
      */
     private void addGeneralStatisticsOverlay() {
         this.getChildren().add(generalStatistics);
-
         AnchorPane.setBottomAnchor(generalStatistics, 10d);
         AnchorPane.setRightAnchor(generalStatistics, 10d);
     }
 
     /**
      * <p>
-     *     Builds the toolbar (3 buttons on the bottom left corner).
+     *     Adds the toolbar (3 buttons on the bottom left corner) to the view.
      * </p>
      */
     private void addToolbar() {
         final Button settingsButton = addSettingsButton();
         final Button filterButton = addFilterButton();
-        final Button recordButton = addRecordButton();
+        final Button recordButton = addCaptureButton();
         final Button connectButton = addConnectButton();
 
         toolBar.getItems().addAll(settingsButton, filterButton, recordButton, connectButton);
@@ -186,6 +190,8 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
      * <p>
      *     Builds the settings button.
      * </p>
+     *
+     * @return The fully configured settings button
      */
     private Button addSettingsButton() {
         final Button settingsButton = new ImageButton("gear.png");
@@ -202,6 +208,8 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
      * <p>
      *     Builds the filter button.
      * </p>
+     *
+     * @return The fully configured filter button
      */
     private Button addFilterButton() {
         final Button filterButton = new ImageButton("filter.png");
@@ -220,23 +228,27 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
      * <p>
      *     Builds the record button.
      * </p>
+     *
+     * @return The fully configured capture button
      */
-    private Button addRecordButton() {
-        final ImageButton recordButton = new ImageButton("record.png");
+    private Button addCaptureButton() {
+        final ImageButton captureButton = new ImageButton("capture.png");
 
-        recordButton.setOnAction(event -> handleShowMechanism(captureMenu, filterMenu,
+        captureButton.setOnAction(event -> handleShowMechanism(captureMenu, filterMenu,
                 viewSettingsMenu));
 
-        recordButton.setScaleX(0.8);
-        recordButton.setScaleY(0.8);
+        captureButton.setScaleX(0.8);
+        captureButton.setScaleY(0.8);
 
-        return recordButton;
+        return captureButton;
     }
 
     /**
      * <p>
      *     Builds the connect button.
      * </p>
+     *
+     * @return The fully configured connect button
      */
     private Button addConnectButton() {
         final ImageButton connectButton = new ImageButton("access-point-disconnected.png");
@@ -263,17 +275,19 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
 
     /**
      * <p>
-     *     Adds the close button.
+     *     Adds the close button to the view.
      * </p>
+     *
+     * @param viewSplitter The viewSplitter that is used to handle the close event.
      */
-    private ImageButton addCloseButton(MultiViewManager multiViewManager) {
-        final ImageButton closeButton = new ImageButton("close.png");
+    private Button addCloseButton(ViewSplitter viewSplitter) {
+        closeButton = new ImageButton("close.png");
 
         closeButton.setOnAction(event ->  {
-            if (multiViewManager.getViewCounter() > 1) {
-                multiViewManager.merge(this);
+            if (viewSplitter.getViewCounter() > 1) {
+                viewSplitter.merge(this);
             } else {
-                multiViewManager.replace(this, MultiViewManager.START_VIEW);
+                viewSplitter.replace(this, ViewSplitter.START_VIEW);
             }
         });
 
@@ -283,6 +297,8 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
         AnchorPane.setTopAnchor(closeButton, 10d);
         AnchorPane.setLeftAnchor(closeButton, 10d);
 
+        getChildren().add(closeButton);
+
         return closeButton;
     }
 
@@ -291,6 +307,10 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
      *     Handles the showing mechanism of all overlays from the toolbar. OverlayViewController1 will be shown
      *     while the other two will be hidden.
      * </p>
+     *
+     * @param overlay1 The overlay to show.
+     * @param overlay2 An overlay to hide.
+     * @param overlay3 An overlay to hide.
      */
     private void handleShowMechanism(final Node overlay1,
                                     final Node overlay2,
@@ -320,7 +340,7 @@ public class LiveViewController extends SplitableView<ProtocolControlInteraction
     }
 
     @Override
-    public LiveViewController clone() {
+    public NetworkViewController clone() {
         return null;
     }
 }

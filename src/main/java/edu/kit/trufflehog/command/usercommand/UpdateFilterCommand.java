@@ -26,6 +26,7 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
      *     Constructs the update filter command. This command always needs a network io port to apply the newly added
      *     filters and pass the port to the constructed filter, which needs the port to clean up, when it is removed.
      * </p>
+     *
      * @param nwp the network port that is used to access the network
      * @param macroFilter the macro filter to add all sub filters to.
      */
@@ -40,9 +41,7 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
 
     @Override
     public void execute() {
-
         if (filterInput != null) {
-
             if (filterMap.get(filterInput) != null) {
                 macroFilter.removeFilter(filterMap.get(filterInput));
                 filterMap.remove(filterInput);

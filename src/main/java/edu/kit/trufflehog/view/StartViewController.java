@@ -48,7 +48,7 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
     private final String fxmlFileName;
     private final ObservableList<String> liveItems;
     private final ObservableList<String> captureItems;
-    private final MultiViewManager multiViewManager;
+    private final ViewSplitter viewSplitter;
 
     private ImageButton closeButton;
 
@@ -70,12 +70,12 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
     public StartViewController(final String fxmlFileName,
                                final ObservableList<String> liveItems,
                                final ObservableList<String> captureItems,
-                               final MultiViewManager multiViewManager) {
+                               final ViewSplitter viewSplitter) {
         super(fxmlFileName);
         this.fxmlFileName = fxmlFileName;
         this.liveItems = liveItems;
         this.captureItems = captureItems;
-        this.multiViewManager = multiViewManager;
+        this.viewSplitter = viewSplitter;
 
         AnchorPane.setTopAnchor(this, 0d);
         AnchorPane.setLeftAnchor(this, 0d);
@@ -124,12 +124,12 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
             AnchorPane.setRightAnchor(splitPane, this.getWidth() * 0.31);
         });
 
-        closeButton = addCloseButton(multiViewManager);
+        closeButton = addCloseButton(viewSplitter);
         getChildren().add(closeButton);
         showCloseButton(false);
 
         // Set this anchor pane as the currently selected view when it is pressed
-        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this));
+        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> viewSplitter.setSelected(this));
     }
 
     /**
@@ -220,17 +220,17 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
         }
 
         // Switch views according to selected item
-        boolean switched = multiViewManager.replace(this, selected);
+        boolean switched = viewSplitter.replace(this, selected);
 
         // Start the requested service
         if (switched) {
             switch (selected) {
-                case MultiViewManager.DEMO_VIEW:
+                case ViewSplitter.DEMO_VIEW:
                     if (interactionMap.get(StartViewInteraction.START_DEMO) != null) {
                         notifyListeners(interactionMap.get(StartViewInteraction.START_DEMO));
                     }
                     break;
-                case MultiViewManager.PROFINET_VIEW:
+                case ViewSplitter.PROFINET_VIEW:
                     if (interactionMap.get(StartViewInteraction.START_PROFINET) != null) {
                         notifyListeners(interactionMap.get(StartViewInteraction.START_PROFINET));
                     }
@@ -273,13 +273,13 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
      *     Adds a close button.
      * </p>
      */
-    private ImageButton addCloseButton(MultiViewManager multiViewManager) {
+    private ImageButton addCloseButton(ViewSplitter viewSplitter) {
         final ImageButton closeButton = new ImageButton("close.png");
 
         closeButton.setScaleX(0.8);
         closeButton.setScaleY(0.8);
 
-        closeButton.setOnAction(event -> multiViewManager.merge(this));
+        closeButton.setOnAction(event -> viewSplitter.merge(this));
 
         AnchorPane.setTopAnchor(closeButton, 5d);
         AnchorPane.setLeftAnchor(closeButton, 5d);
@@ -299,6 +299,6 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
 
     @Override
     public StartViewController clone() {
-        return new StartViewController(fxmlFileName, liveItems, captureItems, multiViewManager);
+        return new StartViewController(fxmlFileName, liveItems, captureItems, viewSplitter);
     }
 }

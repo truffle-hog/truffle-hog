@@ -17,40 +17,19 @@
 
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.Main;
-import edu.kit.trufflehog.command.usercommand.ConnectToSPPProfinetCommand;
-import edu.kit.trufflehog.command.usercommand.DisconnectSPPProfinetCommand;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
-import edu.kit.trufflehog.interaction.ProtocolControlInteraction;
-import edu.kit.trufflehog.model.configdata.ConfigData;
-import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkTape;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
-import edu.kit.trufflehog.util.IListener;
-import edu.kit.trufflehog.view.*;
-import edu.kit.trufflehog.view.controllers.IWindowController;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.geometry.Orientation;
-import javafx.scene.Scene;
+import edu.kit.trufflehog.view.ViewSplitter;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
-import java.io.File;
-import java.util.Map;
 
 /**
  * <p>
@@ -62,108 +41,34 @@ import java.util.Map;
  * @version 1.0
  */
 public class ViewBuilder {
-    // General variables
-    private ConfigData configData;
-
     // View layers
     private final Stage primaryStage;
-    private final MainViewController mainViewController;
     private final AnchorPane groundView;
     private final StackPane stackPane;
     private final SplitPane splitPane;
-    private final MultiViewManager multiViewManager;
-    private final Map<String, INetworkViewPort> viewPorts;
-    private final TruffleReceiver truffleReceiver;
+    private final ViewSplitter viewSplitter;
 
     /**
      * <p>
      *     Creates the ViewBuilder, which builds the entire view.
      * </p>
-     *  @param configData   The {@link ConfigData} that is necessary to save and load configurations, like
-     *                     filters or settings.
      * @param primaryStage The primary stage, where everything is drawn upon.
-     * @param viewPorts The viewports that TruffleHog supports mapped to their names.
-     * @param truffleReceiver
      */
-    public ViewBuilder(final ConfigData configData,
-                       final Stage primaryStage,
-                       final Map<String, INetworkViewPort> viewPorts,
-                       final TruffleReceiver truffleReceiver) {
-
-        this.configData = configData;
+    public ViewBuilder(final Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.groundView = new AnchorPane();
         this.stackPane = new StackPane();
         this.splitPane = new SplitPane();
-        this.multiViewManager = new MultiViewManager();
-        this.mainViewController = new MainViewController("main_view.fxml");
-        this.viewPorts = viewPorts;
-        this.truffleReceiver = truffleReceiver;
-
-        if (this.primaryStage == null || this.configData == null) {
-            throw new NullPointerException("primaryStage and configData shouldn't be null.");
-        }
+        this.viewSplitter = new ViewSplitter();
     }
 
-    /**
-     *
-     * @param liveNetwork
-     * @param device
-     * @param userCommandIListener
-     * @param updateFilterCommand
-     */
-    public void build(final INetworkViewPortSwitch viewPortSwitch,
-                      final INetwork liveNetwork,
-                      final INetworkDevice device,
-                      final IListener<IUserCommand> userCommandIListener,
-                      final IUserCommand<FilterInput> updateFilterCommand) {
-        loadFonts();
-
+    public void build() {
 
         //final StatisticsViewModel statView = new StatisticsViewModel();
 
-        // Load menu bar
-        final MenuBarViewController menuBar = new MenuBarViewController("menu_bar.fxml", multiViewManager);
-
-        // Set up the ground view. This is always the full center of the BorderPane. We add the splitPane to it
-        // because it is right on top of it.
-        groundView.getChildren().add(splitPane);
-        splitPane.setOrientation(Orientation.HORIZONTAL);
-
-        // Now we fix the splitPane to the edges of the groundView so that it can display the various graph views
-        AnchorPane.setBottomAnchor(splitPane, 0d);
-        AnchorPane.setTopAnchor(splitPane, 0d);
-        AnchorPane.setLeftAnchor(splitPane, 0d);
-        AnchorPane.setRightAnchor(splitPane, 0d);
-
-        // We add a stackPane here for the PopOverOverlays that are displayed on it
-        AnchorPane.setTopAnchor(stackPane, 0d);
-        AnchorPane.setLeftAnchor(stackPane, 0d);
-        AnchorPane.setRightAnchor(stackPane, 0d);
-        AnchorPane.setBottomAnchor(stackPane, 0d);
-        groundView.getChildren().add(stackPane);
-        stackPane.setVisible(false);
-
-        // Set up the scene
-        final Scene mainScene = new Scene(mainViewController);
-        final IWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
-
-        //mainViewController.setBottom(buildReplayFunction(device, liveNetwork, viewPort));
-
-        // Add the ground view to the center
-        mainViewController.setCenter(groundView);
-
-        rootWindow.show();
-
-        // Set min. dimensions
-        primaryStage.setMinWidth(950d);
-        primaryStage.setMinHeight(675d);
-
-        // Add some keyboard shortcuts
-        setKeyboardShortcuts(menuBar);
 
         // Now we add the actual views to the split pane and to the view switcher
-        buildViews(userCommandIListener, updateFilterCommand, device, liveNetwork);
+        //buildViews(userCommandIListener, updateFilterCommand, device, liveNetwork);
 
         /*primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN),
                 viewPort::refreshLayout);*/
@@ -217,57 +122,5 @@ public class ViewBuilder {
         flowPane.getChildren().addAll(toolBar, slider);
 
         return flowPane;
-    }
-
-    private void buildViews(final IListener<IUserCommand> userCommandIListener,
-                            final IUserCommand<FilterInput> updateFilterCommand,
-                            final INetworkDevice networkDevice,
-                            final INetwork liveNetwork) {
-        ObservableList<String> liveItems = FXCollections.observableArrayList(viewPorts.keySet());
-        ObservableList<String> captureItems = FXCollections.observableArrayList("capture-932", "capture-724",
-                "capture-457", "capture-167");
-
-        final SplitableView startView = new StartViewController("start_view.fxml", liveItems,
-                captureItems, multiViewManager);
-        final SplitableView demoView = new LiveViewController("live_view.fxml", configData,
-                multiViewManager, stackPane, viewPorts.get(MultiViewManager.DEMO_VIEW) , primaryStage.getScene(),
-                updateFilterCommand, userCommandIListener, networkDevice, liveNetwork);
-        final SplitableView captureView = new CaptureViewViewController("live_view.fxml", configData,
-                multiViewManager, stackPane, viewPorts.get(MultiViewManager.DEMO_VIEW) , primaryStage.getScene(),
-                updateFilterCommand, userCommandIListener, networkDevice, liveNetwork);
-
-        demoView.addCommand(ProtocolControlInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
-        demoView.addCommand(ProtocolControlInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
-        demoView.addListener(userCommandIListener);
-
-//        AnchorPane profinetView = new LiveViewController("live_view.fxml", configData, stackPane, primaryStage,
-//                viewPorts.get("Profinet"));
-        multiViewManager.putView(MultiViewManager.START_VIEW, startView);
-        multiViewManager.putView(MultiViewManager.DEMO_VIEW, demoView);
-        multiViewManager.putView(MultiViewManager.CAPTURE_VIEW, captureView);
-
-        //multiViewManager.putView("Profinet", profinetView);
-        splitPane.getItems().addAll(startView);
-        multiViewManager.setSelected(startView); // Select start view by default
-    }
-
-    private void setKeyboardShortcuts(MenuBar menuBar) {
-        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
-                primaryStage::close);
-        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11), () -> {
-            primaryStage.setFullScreen(!primaryStage.isFullScreen());
-        });
-        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
-                primaryStage::close);
-    }
-
-    /**
-     * <p>
-     *     Loads all custom fonts.
-     * </p>
-     */
-    private void loadFonts() {
-        Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts" + File.separator + "DroidSans" +
-                File.separator + "DroidSans.ttf"), 12);
     }
 }

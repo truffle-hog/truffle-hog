@@ -10,11 +10,14 @@ import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.*;
+import edu.kit.trufflehog.viewmodel.FilterViewModel;
 import edu.kit.trufflehog.viewmodel.GeneralStatisticsViewModel;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
+import edu.uci.ics.jung.visualization.picking.PickedState;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
@@ -25,6 +28,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -41,28 +45,37 @@ import java.util.concurrent.TimeUnit;
 public class BaseNetworkFactory {
     private final ConfigData configData;
     private final Scene scene;
+    private final StackPane stackPane;
+    private final INetworkDevice networkDevice;
+    private final INetwork liveNetwork;
     private final Map<BaseNetwork, INetworkViewPort> viewPortMap;
     private final Map<IInteraction, IUserCommand> commandMap;
     private final Map<IInteraction, IListener> listenerMap;
 
-    private final MultiViewManager multiViewManager;
+    private final ViewSplitter viewSplitter;
 
     public BaseNetworkFactory(final ConfigData configData,
                               final Scene scene,
+                              final StackPane stackPane,
+                              final INetworkDevice networkDevice,
+                              final INetwork liveNetwork,
                               final Map<BaseNetwork, INetworkViewPort> viewPortMap,
                               final Map<IInteraction, IUserCommand> commandMap,
                               final Map<IInteraction, IListener> listenerMap) {
         this.configData = configData;
         this.scene = scene;
+        this.stackPane = stackPane;
+        this.networkDevice = networkDevice;
+        this.liveNetwork = liveNetwork;
         this.viewPortMap = viewPortMap;
         this.commandMap = commandMap;
         this.listenerMap = listenerMap;
 
-        this.multiViewManager = new MultiViewManager();
+        this.viewSplitter = new ViewSplitter();
     }
 
     public BaseView createInstance(BaseNetwork baseNetwork) {
-        return null;
+        return createLiveView();
     }
 
     private BaseView createLiveView() {
@@ -78,37 +91,48 @@ public class BaseNetworkFactory {
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN),
                 networkViewScreen::refreshLayout);
 
+        FilterViewModel filterViewModel = new FilterViewModel(configData);
 
         AnchorPane viewSettingsMenu = createSettingsOverlay();
-        AnchorPane filterMenu = createFilterMenu();
-        AnchorPane captureMenu = createRecordOverlay();
+        FilterEditingMenuViewController filterEditMenu = createEditFilterMenu(stackPane, filterViewModel);
+        AnchorPane filterMenu = createFilterMenu(filterEditMenu, networkViewScreen.getPickedVertexState());
+        AnchorPane captureMenu = createRecordOverlay(networkDevice, liveNetwork);
         BorderPane selectionStatistics = createSelectionStatisticsOverlay(statViewModel);
         BorderPane generalStatistics = createGeneralStatisticsOverlay(viewPortMap.get(BaseNetwork.LIVE));
         ToolBar toolBar = createToolbar();
 
-        return new LiveViewController(configData.getProperty("LIVE_VIEW"), multiViewManager, networkViewScreen,
+        return new NetworkViewController(configData.getProperty("LIVE_VIEW"), viewSplitter, networkViewScreen,
                 viewSettingsMenu, filterMenu, captureMenu, selectionStatistics, generalStatistics, toolBar);
     }
 
-    private FilterOverlayViewController createFilterMenu() {
-        // Build filter menu
-        FilterOverlayViewController filterOverlayViewController =
-                new FilterOverlayViewController(configData.getProperty("FILTER_MENU"), configData, stackPane,
-                        networkViewScreen.getPickedVertexState());
+    private FilterOverlayViewController createFilterMenu(FilterEditingMenuViewController filterEditMenu,
+                                                         PickedState<INode> pickedState) {
+        FilterOverlayViewController filterMenu = new FilterOverlayViewController(configData.getProperty("FILTER_MENU"),
+                pickedState, configData.getAllLoadedFilters(), filterEditMenu);
 
-        filterOverlayViewController.addListener(listenerMap.get(ListenerInteraction.USER_COMMAND));
-        filterOverlayViewController.addCommand(FilterInteraction.UPDATE, commandMap.get(FilterInteraction.UPDATE));
-        filterOverlayViewController.addCommand(FilterInteraction.ADD, commandMap.get(FilterInteraction.UPDATE));
-        filterOverlayViewController.addCommand(FilterInteraction.REMOVE, commandMap.get(FilterInteraction.UPDATE));
+        filterMenu.addListener(listenerMap.get(ListenerInteraction.USER_COMMAND));
+        filterMenu.addCommand(FilterInteraction.UPDATE, commandMap.get(FilterInteraction.UPDATE));
+        filterMenu.addCommand(FilterInteraction.REMOVE, commandMap.get(FilterInteraction.REMOVE));
+        filterMenu.addListener(listenerMap.get(ListenerInteraction.USER_COMMAND));
 
-        return filterOverlayViewController;
+        return filterMenu;
+    }
+
+    private FilterEditingMenuViewController createEditFilterMenu(StackPane stackPane, FilterViewModel filterViewModel) {
+        FilterEditingMenuViewController filterEditMenu = new FilterEditingMenuViewController(
+                configData.getProperty("FILTER_EDIT_MENU"), configData, filterViewModel, stackPane);
+
+        filterEditMenu.addCommand(FilterInteraction.ADD, commandMap.get(FilterInteraction.ADD));
+        filterEditMenu.addListener(listenerMap.get(ListenerInteraction.USER_COMMAND));
+
+        return filterEditMenu;
     }
 
     private ViewSettingsViewController createSettingsOverlay() {
         return new ViewSettingsViewController(configData.getProperty("VIEW_SETTINGS_MENU"));
     }
 
-    private RecordMenuViewController createRecordOverlay(INetworkDevice networkDevice, INetwork liveNetwork) {
+    private RecordMenuViewController createRecordOverlay(final INetworkDevice networkDevice, final INetwork liveNetwork) {
         return new RecordMenuViewController(configData.getProperty("RECORD_MENU"), networkDevice, liveNetwork);
     }
 

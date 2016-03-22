@@ -26,14 +26,14 @@ import java.util.Map;
 
 /**
  * <p>
- *     The MultiViewManager manages all interactions between views. That means it splits views, merges them together,
+ *     The ViewSplitter manages all interactions between views. That means it splits views, merges them together,
  *     tracks the currently selected view etc.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public class MultiViewManager {
+public class ViewSplitter {
     // Available views
     public static final String START_VIEW = "Start";
     public static final String DEMO_VIEW = "Demo";
@@ -47,10 +47,10 @@ public class MultiViewManager {
 
     /**
      * <p>
-     *     Create a new MultiViewManager.
+     *     Create a new ViewSplitter.
      * </p>
      */
-    public MultiViewManager() {
+    public ViewSplitter() {
         this.selected  = null;
         views = new HashMap<>();
     }
@@ -184,7 +184,7 @@ public class MultiViewManager {
                 final SplitableView splitableView = (SplitableView) child;
 
                 // I don't know how else to do this but instanceof
-                if (!(splitableView instanceof LiveViewController)) {
+                if (!(splitableView instanceof NetworkViewController)) {
                     splitableView.showCloseButton(false);
                 }
                 setSelected(splitableView, 2);
@@ -197,7 +197,7 @@ public class MultiViewManager {
     /**
      * <p>
      *     Replace the view passed in as the parameter with the view matching the given name, if it has been added to
-     *     the MultiViewManager's list of existing views.
+     *     the ViewSplitter's list of existing views.
      * </p>
      *
      * @param currentView The view that should be replaced with one from the internal list.
