@@ -51,9 +51,6 @@ import java.io.IOException;
  * @version 1.0
  */
 public class MenuBarViewController extends MenuBar {
-
-    private final MultiViewManager multiViewManager;
-
     @FXML
     private MenuItem splitHMenuItem;
     @FXML
@@ -69,7 +66,7 @@ public class MenuBarViewController extends MenuBar {
      *
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
-    public MenuBarViewController(final String fxmlFileName, final MultiViewManager multiViewManager) {
+    public MenuBarViewController(final String fxmlFileName) {
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFileName));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -79,16 +76,19 @@ public class MenuBarViewController extends MenuBar {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-
-        this.multiViewManager = multiViewManager;
-
-        setUpViewSwitchingButtons();
     }
 
-    private void setUpViewSwitchingButtons() {
-        splitHMenuItem.setOnAction(event -> multiViewManager.split(Orientation.HORIZONTAL));
-        splitVMenuItem.setOnAction(event -> multiViewManager.split(Orientation.VERTICAL));
-        deleteMenuItem.setOnAction(event -> multiViewManager.merge());
+    /**
+     * <p>
+     *     Sets up the view Menu Bar. That means links the buttons to their functionality etc.
+     * </p>
+     *
+     * @param viewSplitter The view splitter needed to link the split buttons to their functionality.
+     */
+    public void setUp(ViewSplitter viewSplitter) {
+        splitHMenuItem.setOnAction(event -> viewSplitter.split(Orientation.HORIZONTAL));
+        splitVMenuItem.setOnAction(event -> viewSplitter.split(Orientation.VERTICAL));
+        deleteMenuItem.setOnAction(event -> viewSplitter.merge());
     }
 
     /**

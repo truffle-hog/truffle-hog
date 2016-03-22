@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -107,7 +109,8 @@ public class FilterDataModelTest {
         Thread.sleep(5000);
 
         // Retrieve them
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters()
+                .stream().collect(Collectors.toMap(FilterInput::getName, Function.identity()));
 
         // Make sure we could retrieve them all correctly
         for (FilterInput filterInput : filterInputs) {
@@ -126,7 +129,8 @@ public class FilterDataModelTest {
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
-        filterInputFromDB = filterDataModel.getAllFilters();
+        filterInputFromDB = filterDataModel.getAllFilters()
+                .stream().collect(Collectors.toMap(FilterInput::getName, Function.identity()));
 
         // Make sure we could retrieve them all correctly
         for (FilterInput filterInput : updatedFilterInputs) {
@@ -160,7 +164,8 @@ public class FilterDataModelTest {
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters()
+                .stream().collect(Collectors.toMap(FilterInput::getName, Function.identity()));
 
         // Make sure we could retrieve them all correctly
         for (FilterInput filterInput : filterInputs) {
@@ -194,7 +199,8 @@ public class FilterDataModelTest {
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters()
+                .stream().collect(Collectors.toMap(FilterInput::getName, Function.identity()));
 
         // Make sure we could retrieve them all correctly
         for (FilterInput filterInput : filterInputs) {
@@ -209,7 +215,8 @@ public class FilterDataModelTest {
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
-        filterInputFromDB = filterDataModel.getAllFilters();
+        filterInputFromDB = filterDataModel.getAllFilters()
+                .stream().collect(Collectors.toMap(FilterInput::getName, Function.identity()));
 
         // Make sure none were found
         assertEquals(true, filterInputFromDB.isEmpty());
@@ -227,6 +234,10 @@ public class FilterDataModelTest {
     public void testForDuplicateEntry() throws Exception {
         FilterInput filterInput = generateRandomFilterInput();
         filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
+
+        // Wait for 1st filter to be added
+        Thread.sleep(1000);
+
         filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
 
         // Wait for all threads to finish
@@ -234,7 +245,8 @@ public class FilterDataModelTest {
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters()
+                .stream().collect(Collectors.toMap(FilterInput::getName, Function.identity()));
 
         assertEquals(1, filterInputFromDB.size());
         assertEquals(true, filterInputFromDB.containsKey(filterInput.getName()));
@@ -257,7 +269,8 @@ public class FilterDataModelTest {
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters()
+                .stream().collect(Collectors.toMap(FilterInput::getName, Function.identity()));
 
         assertEquals(0, filterInputFromDB.size());
     }
@@ -281,10 +294,13 @@ public class FilterDataModelTest {
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
 
+        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters()
+                .stream().collect(Collectors.toMap(FilterInput::getName, Function.identity()));
+
         // Make sure they are equal
-        assertEquals(filterInput.getName(), filterDataModel.get(null, filterInput.getName()).getName());
-        assertEquals(filterInput.getRules(), filterDataModel.get(null, filterInput.getName()).getRules());
-        assertEquals(filterInput.getColor(), filterDataModel.get(null, filterInput.getName()).getColor());
+        assertEquals(filterInput.getName(), filterInputFromDB.get(filterInput.getName()).getName());
+        assertEquals(filterInput.getRules(), filterInputFromDB.get(filterInput.getName()).getRules());
+        assertEquals(filterInput.getColor(), filterInputFromDB.get(filterInput.getName()).getColor());
     }
 
     /**

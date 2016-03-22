@@ -19,7 +19,10 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.StartViewInteraction;
+import edu.kit.trufflehog.model.configdata.IConfig;
+import edu.kit.trufflehog.presenter.NetworkType;
 import edu.kit.trufflehog.view.elements.ImageButton;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
@@ -30,7 +33,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -46,9 +51,8 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
     private final Map<StartViewInteraction, IUserCommand> interactionMap = new EnumMap<>(StartViewInteraction.class);
 
     private final String fxmlFileName;
-    private final ObservableList<String> liveItems;
-    private final ObservableList<String> captureItems;
-    private final MultiViewManager multiViewManager;
+    private final ViewSplitter viewSplitter;
+    private final IConfig config;
 
     private ImageButton closeButton;
 
@@ -66,23 +70,31 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
      * </p>
      *
      * @param fxmlFileName the name of the fxml file to be loaded.
+     * @param liveItems The list of supported live network views that can be chosen.
+     * @param captureItems The list of network tape captures that are able to be played back.
+     * @param config The config object that is used to access configuration data from the configuration files.
+     * @param viewSplitter The view splitter needed to replace the start view with the next view.
      */
     public StartViewController(final String fxmlFileName,
-                               final ObservableList<String> liveItems,
+                               final List<NetworkType> liveItems,
                                final ObservableList<String> captureItems,
-                               final MultiViewManager multiViewManager) {
+                               final IConfig config,
+                               final ViewSplitter viewSplitter) {
         super(fxmlFileName);
         this.fxmlFileName = fxmlFileName;
-        this.liveItems = liveItems;
-        this.captureItems = captureItems;
-        this.multiViewManager = multiViewManager;
+        this.viewSplitter = viewSplitter;
+        this.config = config;
 
         AnchorPane.setTopAnchor(this, 0d);
         AnchorPane.setLeftAnchor(this, 0d);
         AnchorPane.setRightAnchor(this, 0d);
 
+
+
         // Fill the list views
-        liveListView.setItems(liveItems);
+        liveListView.setItems(FXCollections.observableArrayList(liveItems.stream()
+                .map(this::convertFromBaseNetwork)
+                .collect(Collectors.toList())));
         captureListView.setItems(captureItems);
 
         // Handle mutual selection: if one cell is selected, deselect the other on automatically
@@ -96,13 +108,13 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
         AnchorPane.setRightAnchor(startButton, 25d);
 
         // Set up the text
-        final Text titleText = new Text("Choose a view port");
+        final Text titleText = new Text(config.getProperty("SV_TITLE"));
         titleText.setId("start_view_title_text");
 
-        final Text liveText = new Text("Live");
+        final Text liveText = new Text(config.getProperty("SV_LIVE"));
         liveText.setId("start_view_sub_title_text");
 
-        final Text captureText = new Text("Capture");
+        final Text captureText = new Text(config.getProperty("SV_CAPTURE"));
         captureText.setId("start_view_sub_title_text");
 
         // Add everything to anchor pane
@@ -124,12 +136,12 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
             AnchorPane.setRightAnchor(splitPane, this.getWidth() * 0.31);
         });
 
-        closeButton = addCloseButton(multiViewManager);
+        closeButton = addCloseButton(viewSplitter);
         getChildren().add(closeButton);
         showCloseButton(false);
 
         // Set this anchor pane as the currently selected view when it is pressed
-        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> multiViewManager.setSelected(this));
+        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> viewSplitter.setSelected(this));
     }
 
     /**
@@ -179,7 +191,7 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
      * @param listView1 The first list view
      * @param listView2 The second list view
      */
-    private void setOnClickCellFactory(ListView<String> listView1, ListView<String> listView2) {
+    private void setOnClickCellFactory(final ListView<String> listView1, final ListView<String> listView2) {
         listView1.setCellFactory(lv -> {
             ListCell<String> cell = new ListCell<>();
             cell.textProperty().bind(cell.itemProperty());
@@ -220,25 +232,17 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
         }
 
         // Switch views according to selected item
-        boolean switched = multiViewManager.replace(this, selected);
+        NetworkType networkType = convertToBaseNetwork(selected);
+        boolean switched = viewSplitter.replace(this, networkType);
 
         // Start the requested service
         if (switched) {
-            switch (selected) {
-                case MultiViewManager.DEMO_VIEW:
-                    if (interactionMap.get(StartViewInteraction.START_DEMO) != null) {
-                        notifyListeners(interactionMap.get(StartViewInteraction.START_DEMO));
-                    }
-                    break;
-                case MultiViewManager.PROFINET_VIEW:
-                    if (interactionMap.get(StartViewInteraction.START_PROFINET) != null) {
-                        notifyListeners(interactionMap.get(StartViewInteraction.START_PROFINET));
-                    }
-                    break;
-                default:
-                    if (interactionMap.get(StartViewInteraction.START_CAPTURE) != null) {
-                        notifyListeners(interactionMap.get(StartViewInteraction.START_CAPTURE));
-                    }
+            if (networkType == NetworkType.DEMO && interactionMap.get(StartViewInteraction.START_DEMO) != null) {
+                notifyListeners(interactionMap.get(StartViewInteraction.START_DEMO));
+            } else if (networkType == NetworkType.PROFINET && interactionMap.get(StartViewInteraction.START_PROFINET) != null) {
+                notifyListeners(interactionMap.get(StartViewInteraction.START_PROFINET));
+            } else if (networkType == NetworkType.CAPTURE && interactionMap.get(StartViewInteraction.START_CAPTURE) != null) {
+                notifyListeners(interactionMap.get(StartViewInteraction.START_CAPTURE));
             }
         }
     }
@@ -273,18 +277,62 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
      *     Adds a close button.
      * </p>
      */
-    private ImageButton addCloseButton(MultiViewManager multiViewManager) {
+    private ImageButton addCloseButton(final ViewSplitter viewSplitter) {
         final ImageButton closeButton = new ImageButton("close.png");
 
         closeButton.setScaleX(0.8);
         closeButton.setScaleY(0.8);
 
-        closeButton.setOnAction(event -> multiViewManager.merge(this));
+        closeButton.setOnAction(event -> viewSplitter.merge(this));
 
         AnchorPane.setTopAnchor(closeButton, 5d);
         AnchorPane.setLeftAnchor(closeButton, 5d);
 
         return closeButton;
+    }
+
+    /**
+     * <p>
+     *     Converts a {@link NetworkType} to a nice string representation so that it can be beautifully displayed.
+     * </p>
+     *
+     * @param networkType The network type to convert to a string
+     * @return The converted string.
+     */
+    private String convertFromBaseNetwork(final NetworkType networkType) {
+        if (networkType == NetworkType.START) {
+            return config.getProperty("NT_START");
+        } else if (networkType == NetworkType.DEMO) {
+            return config.getProperty("NT_DEMO");
+        } else if (networkType == NetworkType.PROFINET) {
+            return config.getProperty("NT_PROFINET");
+        } else if (networkType == NetworkType.CAPTURE) {
+            return config.getProperty("NT_CAPTURE");
+        }
+
+        return "";
+    }
+
+    /**
+     * <p>
+     *     Converts a string to a {@link NetworkType}.
+     * </p>
+     *
+     * @param string The string to convert to a NetworkType.
+     * @return The resulting NetworkType.
+     */
+    private NetworkType convertToBaseNetwork(final String string) {
+        if (string.equals(config.getProperty("NT_START"))) {
+            return NetworkType.START;
+        } else if (string.equals(config.getProperty("NT_DEMO"))) {
+            return NetworkType.DEMO;
+        } else if (string.equals(config.getProperty("NT_PROFINET"))) {
+            return NetworkType.PROFINET;
+        } else if (string.equals(config.getProperty("NT_CAPTURE"))) {
+            return NetworkType.CAPTURE;
+        }
+
+        return NetworkType.NULL;
     }
 
     @Override
@@ -295,10 +343,5 @@ public class StartViewController extends SplitableView<StartViewInteraction> {
     @Override
     public void addCommand(StartViewInteraction interaction, IUserCommand command) {
         interactionMap.put(interaction, command);
-    }
-
-    @Override
-    public StartViewController clone() {
-        return new StartViewController(fxmlFileName, liveItems, captureItems, multiViewManager);
     }
 }

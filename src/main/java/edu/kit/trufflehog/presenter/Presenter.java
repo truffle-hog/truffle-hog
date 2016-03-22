@@ -1,6 +1,29 @@
+
+/*
+ * This file is part of TruffleHog.
+ *
+ * TruffleHog is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TruffleHog is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
+import edu.kit.trufflehog.Main;
+import edu.kit.trufflehog.command.usercommand.*;
+import edu.kit.trufflehog.interaction.FilterInteraction;
+import edu.kit.trufflehog.interaction.IInteraction;
+import edu.kit.trufflehog.interaction.ListenerInteraction;
+import edu.kit.trufflehog.interaction.ProtocolControlInteraction;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.MacroFilter;
@@ -15,16 +38,26 @@ import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
-import edu.kit.trufflehog.view.MultiViewManager;
+import edu.kit.trufflehog.util.IListener;
+import edu.kit.trufflehog.view.MainViewController;
+import edu.kit.trufflehog.view.MenuBarViewController;
+import edu.kit.trufflehog.view.SplitableView;
+import edu.kit.trufflehog.view.ViewSplitter;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
+import javafx.scene.control.MenuBar;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -45,9 +78,10 @@ public class Presenter {
     private final FileSystem fileSystem;
     private final ScheduledExecutorService executorService;
     private final Stage primaryStage;
-    private ViewBuilder viewBuilder;
+    private ViewSplitter viewSplitter;
+    private BaseNetworkFactory baseNetworkFactory;
     private TruffleReceiver truffleReceiver;
-    private Map<String, INetworkViewPort> viewPortMap;
+    private Map<NetworkType, INetworkViewPort> viewPortMap;
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
@@ -72,16 +106,31 @@ public class Presenter {
         this.fileSystem = new FileSystem();
         this.executorService = LoggedScheduledExecutor.getInstance();
 
-        ConfigData configDataTemp;
+        ConfigData configDataTemp = null;
         try {
             configDataTemp = new ConfigData(fileSystem);
         } catch (NullPointerException e) {
-            configDataTemp = null;
-            logger.error("Unable to set config data model", e);
+            logger.fatal("Unable to set config data model", e);
         }
         configData = configDataTemp;
+    }
 
-        primaryStage.setOnCloseRequest(event -> finish());
+    private Map<IInteraction, IUserCommand> createCommandMap() {
+        final Map<IInteraction, IUserCommand> commandMap = new HashMap<>();
+
+        commandMap.put(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
+        commandMap.put(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
+        commandMap.put(FilterInteraction.UPDATE, new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
+
+        return commandMap;
+    }
+
+    private Map<IInteraction, IListener> createListenerMap() {
+        final Map<IInteraction, IListener> commandMap = new HashMap<>();
+
+        commandMap.put(ListenerInteraction.USER_COMMAND, commandExecutor.asUserCommandListener());
+
+        return commandMap;
     }
 
     /**
@@ -91,14 +140,44 @@ public class Presenter {
      * </p>
      */
     public void present() {
+        loadFonts();
         initNetwork();
-        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
-                new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
+        buildView();
+    }
+
+    private void buildView() {
+        primaryStage.setOnCloseRequest(event -> finish());
+
+        MenuBarViewController menuBar = new MenuBarViewController(configData.getProperty("MENU_BAR"));
+        MainViewController mainViewController = new MainViewController(configData.getProperty("MAIN_VIEW"),
+                primaryStage, menuBar);
+
+        // Add some keyboard shortcuts
+        setKeyboardShortcuts(menuBar);
+
+        final Map<IInteraction, IUserCommand> commandMap = createCommandMap();
+        final Map<IInteraction, IListener> listenerMap = createListenerMap();
+
+        baseNetworkFactory = new BaseNetworkFactory(configData, mainViewController.getMainScene(),
+                mainViewController.getStackPane(), networkDevice, liveNetwork, viewPortMap, commandMap,
+                listenerMap);
+
+        viewSplitter = baseNetworkFactory.getViewSplitter();
+        menuBar.setUp(viewSplitter);
+
+        final SplitableView startView = (SplitableView) baseNetworkFactory.createInstance(NetworkType.START);
+        final SplitableView demoView = (SplitableView) baseNetworkFactory.createInstance(NetworkType.DEMO);
+
+        demoView.addCommand(ProtocolControlInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
+        demoView.addCommand(ProtocolControlInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
+
+        mainViewController.getSplitPane().getItems().addAll(startView);
+        viewSplitter.setSelected(startView); // Select start view by default
     }
 
     private void initNetwork() {
 
-        // initialize the live network that will be writte on by the receiver commands
+        // initialize the live network that will be written on by the receiver commands
 
         // create a Graph
 
@@ -110,7 +189,7 @@ public class Presenter {
         liveNetwork = new LiveNetwork(og);
 
         // TODO Add real thing too, perhaps I misunderstood the viewport, need to talk to somebody in person ( - Julian)
-        viewPortMap.put(MultiViewManager.DEMO_VIEW, liveNetwork.getViewPort());
+        viewPortMap.put(NetworkType.DEMO, liveNetwork.getViewPort());
 
         // TODO Where to put this???
 /*        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
@@ -150,9 +229,7 @@ public class Presenter {
         // TODO register the truffleReceiver somewhere so we can start or stop it.
         truffleReceiver = new TruffleCrook(writingPortSwitch, macroFilter);
         //truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
-        this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
         truffleFetchService.execute(truffleReceiver);
-        //truffleReceiver.connect();
 
         // Initialize the command executor and register it.
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
@@ -168,6 +245,25 @@ public class Presenter {
 
         // track the live network on the given viewportswitch
         networkDevice.goLive(liveNetwork, viewPortSwitch);
+    }
+
+    /**
+     * <p>
+     *     Loads all custom fonts.
+     * </p>
+     */
+    private void loadFonts() {
+        Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts" + File.separator + "DroidSans" +
+                File.separator + "DroidSans.ttf"), 12);
+    }
+
+    private void setKeyboardShortcuts(MenuBar menuBar) {
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
+                primaryStage::close);
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F11),
+                () -> primaryStage.setFullScreen(!primaryStage.isFullScreen()));
+        primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
+                primaryStage::close);
     }
 
     /**
@@ -191,108 +287,4 @@ public class Presenter {
         // Shut down the system
         System.exit(0);
     }
-
-    //TODO remove someday but for now leave as reference
-   /* private void initGUI() {
-
-        // setting up main window
-        MainViewController mainView = new MainViewController("main_view.fxml");
-        Scene mainScene = new Scene(mainView);
-        RootWindowController rootWindow = new RootWindowController(primaryStage, mainScene, "icon.png", menuBar);
-        //primaryStage.setScene(mainScene);
-        //primaryStage.show();
-        rootWindow.show();
-
-        final Node node = new NetworkViewScreen(viewPort, 50);
-
-        final AnchorPane pane = new AnchorPane();
-
-        mainView.setCenter(pane);
-
-        final Slider slider = new Slider(0, 100, 0);
-        slider.setTooltip(new Tooltip("replay"));
-        tape.getCurrentReadingFrameProperty().bindBidirectional(slider.valueProperty());
-        tape.getFrameCountProperty().bindBidirectional(slider.maxProperty());
-
-        final ToggleButton liveButton = new ToggleButton("Live");
-        liveButton.setDisable(true);
-        final ToggleButton playButton = new ToggleButton("Play");
-        playButton.setDisable(false);
-        final ToggleButton stopButton = new ToggleButton("Stop");
-        stopButton.setDisable(false);
-        final ToggleButton recButton = new ToggleButton("Rec");
-        recButton.setDisable(false);
-
-        liveButton.setOnAction(h -> {
-            networkDevice.goLive(liveNetwork, viewPortSwitch);
-            liveButton.setDisable(true);
-        });
-
-        playButton.setOnAction(handler -> {
-            networkDevice.goReplay(tape, viewPortSwitch);
-            liveButton.setDisable(false);
-        });
-
-        final IUserCommand startRecordCommand = new StartRecordCommand(networkDevice, liveNetwork, tape);
-        recButton.setOnAction(h -> startRecordCommand.execute());
-
-        slider.setStyle("-fx-background-color: transparent");
-
-        final ToolBar toolBar = new ToolBar();
-        toolBar.getItems().add(stopButton);
-        toolBar.getItems().add(playButton);
-        toolBar.getItems().add(recButton);
-        toolBar.getItems().add(liveButton);
-        toolBar.setStyle("-fx-background-color: transparent");
-        //  toolBar.getItems().add(slider);
-
-        final FlowPane flowPane = new FlowPane();
-
-        flowPane.getChildren().addAll(toolBar, slider);
-
-        mainView.setBottom(flowPane);
-
-        pane.getChildren().add(node);
-        AnchorPane.setBottomAnchor(node, 0d);
-        AnchorPane.setTopAnchor(node, 0d);
-        AnchorPane.setLeftAnchor(node, 0d);
-        AnchorPane.setRightAnchor(node, 0d);
-
-
-        // setting up general statistics overlay
-        OverlayViewController generalStatisticsOverlay = new OverlayViewController("general_statistics_overlay.fxml");
-        pane.getChildren().add(generalStatisticsOverlay);
-        AnchorPane.setBottomAnchor(generalStatisticsOverlay, 10d);
-        AnchorPane.setRightAnchor(generalStatisticsOverlay, 10d);
-
-        // setting up menubar
-        ToolBarViewController mainToolBarController = new ToolBarViewController("main_toolbar.fxml");
-        pane.getChildren().add(mainToolBarController);
-
-        // setting up node statistics overlay
-        OverlayViewController nodeStatisticsOverlay = new OverlayViewController("node_statistics_overlay.fxml");
-
-        nodeStatisticsOverlay.add(new Label("Max Connection Size"), 0, 0);
-        nodeStatisticsOverlay.add(new Label("Max Throughput"), 0, 1);
-
-        final PlatformIntegerBinding maxConBinding = new PlatformIntegerBinding(viewPortSwitch.getMaxConnectionSizeProperty());
-        final PlatformIntegerBinding maxThroughBinding = new PlatformIntegerBinding(viewPortSwitch.getMaxThroughputProperty());
-
-        final Label connectionSizeLabel = new Label();
-        connectionSizeLabel.textProperty().bind(maxConBinding.asString());
-
-        final Label throughputLabel = new Label();
-        throughputLabel.textProperty().bind(maxThroughBinding.asString());
-
-        nodeStatisticsOverlay.add(connectionSizeLabel, 1, 0);
-        nodeStatisticsOverlay.add(throughputLabel, 1, 1);
-
-
-
-        pane.getChildren().add(nodeStatisticsOverlay);
-        AnchorPane.setTopAnchor(nodeStatisticsOverlay, 10d);
-        AnchorPane.setRightAnchor(nodeStatisticsOverlay, 10d);
-
-    }*/
-
 }

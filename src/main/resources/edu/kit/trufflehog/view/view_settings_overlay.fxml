@@ -30,32 +30,22 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<fx:root opacity="1.0" prefHeight="300.0" prefWidth="400.0" styleClass="overlaybackground" type="GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root opacity="1.0" prefHeight="300.0" prefWidth="400.0" styleClass="view_settings_background" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@trufflehog_main_theme.css" />
     </stylesheets>
-    <columnConstraints>
-        <ColumnConstraints hgrow="ALWAYS" />
-    </columnConstraints>
-    <rowConstraints>
-        <RowConstraints vgrow="ALWAYS" />
-    </rowConstraints>
-   <children>
-      <AnchorPane prefHeight="300.0" prefWidth="400.0">
-         <children>
-            <TabPane prefHeight="300.0" prefWidth="400.0" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
+    <children>
+        <TabPane prefHeight="300.0" prefWidth="400.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
                 <Tab text="View Settings">
-                     <content>
+                    <content>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" />
-                     </content></Tab>
+                    </content></Tab>
                 <Tab text="Filter Settings">
-                     <content>
+                    <content>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" />
-                     </content></Tab>
-              </tabs>
-            </TabPane>
-         </children>
-      </AnchorPane>
-   </children>
+                    </content></Tab>
+            </tabs>
+        </TabPane>
+    </children>
 </fx:root>

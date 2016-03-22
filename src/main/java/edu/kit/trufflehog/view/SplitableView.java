@@ -22,12 +22,13 @@ import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
 
 /**
  * <p>
+ *     A view that can be split into multiple views and also merged back together.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public abstract class SplitableView<I extends IInteraction> extends AnchorPaneInteractionController<I> {
+public abstract class SplitableView<I extends IInteraction> extends AnchorPaneInteractionController<I> implements BaseView {
 
     /**
      * <p>
@@ -48,6 +49,4 @@ public abstract class SplitableView<I extends IInteraction> extends AnchorPaneIn
      * @param show Determines whether the close button is shown or not.
      */
     public abstract void showCloseButton(boolean show);
-
-    public abstract SplitableView clone();
 }

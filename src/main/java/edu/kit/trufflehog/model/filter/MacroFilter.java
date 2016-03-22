@@ -21,13 +21,14 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 
 import java.awt.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>
- *     The MacroFilter is the class that should be used when working with filters. You can add new filters
+ *     The MacroFilter is the class that should be used when working with appliedFilters. You can add new appliedFilters
  *     through it or check nodes against existing filters. It contains a list of all active nodes, and when a new node
- *     is created, it is checked against all filters contained in the MacroFilter.
+ *     is created, it is checked against all appliedFilters contained in the MacroFilter.
  * </p>
  * <p>
  *     When a filter is found that matches a certain node, the corresponding {@link NodeRenderer} is updated,
@@ -39,7 +40,7 @@ import java.util.*;
  * @version 1.0
  */
 public class MacroFilter implements IFilter {
-    private final Set<IFilter> filters = new HashSet<>();
+    private final Set<IFilter> appliedFilters = new HashSet<>();
 
     /**
      * <p>
@@ -49,9 +50,9 @@ public class MacroFilter implements IFilter {
      * @param filter The filter to add to the MacroFilter.
      */
     public void addFilter(final IFilter filter) {
-        if (filter == null) { throw new NullPointerException("filter must not be null!"); }
+        if (filter == null) { throw new NullPointerException("filter should not be null!"); }
 
-        filters.add(filter);
+        appliedFilters.add(filter);
     }
 
     /**
@@ -62,17 +63,17 @@ public class MacroFilter implements IFilter {
      * @param filter The filter to remove from the MacroFilter.
      */
     public void removeFilter(final IFilter filter) {
-        if (filter == null) { throw new NullPointerException("filter must not be null!"); }
+        if (filter == null) { throw new NullPointerException("filter should not be null!"); }
 
         filter.clear();
-        filters.remove(filter);
+        appliedFilters.remove(filter);
     }
 
     @Override
     public void check(final INode node) {
-        if (node == null) { throw new NullPointerException("node must not be null!"); }
+        if (node == null) { throw new NullPointerException("node should not be null!"); }
 
-        filters.stream().forEach(filter -> filter.check(node));
+        appliedFilters.stream().forEach(filter -> filter.check(node));
     }
 
     @Override
@@ -82,8 +83,8 @@ public class MacroFilter implements IFilter {
 
     @Override
     public void clear() {
-        filters.stream().forEach(IFilter::clear);
-        filters.clear();
+        appliedFilters.stream().forEach(IFilter::clear);
+        appliedFilters.clear();
     }
 
     @Override
