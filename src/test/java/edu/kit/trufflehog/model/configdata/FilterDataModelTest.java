@@ -234,6 +234,10 @@ public class FilterDataModelTest {
     public void testForDuplicateEntry() throws Exception {
         FilterInput filterInput = generateRandomFilterInput();
         filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
+
+        // Wait for 1st filter to be added
+        Thread.sleep(1000);
+
         filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
 
         // Wait for all threads to finish

@@ -202,10 +202,18 @@ class FilterDataModel {
      */
     public void addFilterToDatabaseAsynchronous(final FilterInput filterInput) {
         executorService.submit(() -> {
-            if (addFilterToDataBaseSynchronous(filterInput)) {
+            if (!isDuplicate(filterInput) && addFilterToDataBaseSynchronous(filterInput)) {
                 loadedFilters.add(filterInput);
             }
         });
+    }
+
+    private synchronized boolean isDuplicate(final FilterInput filterInput) {
+        FilterInput duplicate = loadedFilters.stream()
+                .filter(filter -> filter.getName().equals(filterInput.getName()))
+                .findFirst()
+                .orElse(null);
+        return duplicate != null;
     }
 
     /**
@@ -243,16 +251,6 @@ class FilterDataModel {
 
         // Add the base64 string into the database
         synchronized (this) {
-            // Make sure the filter does not already exist, this has to be done synchronously
-            FilterInput duplicate = loadedFilters.stream()
-                    .filter(filter -> filter.getName().equals(filterInput.getName()))
-                    .findFirst()
-                    .orElse(null);
-
-            if (duplicate != null) {
-                return false;
-            }
-
             // We use the try-with-resource statements here from Java 7
             try (Statement statement = connection.createStatement()) {
                 String sql = "INSERT INTO FILTERS(ID,FILTER) " + "VALUES('" + filterInput.getName() + "','"
