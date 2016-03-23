@@ -13,7 +13,7 @@ public class TruffleCrook extends TruffleReceiver {
     private final IFilter filter;
 
     private long[] addresses;
-    private int maxAddresses = 20;
+    private int maxAddresses = 2000;
 
     public TruffleCrook(INetworkWritingPort writingPort, IFilter filter) {
         networkWritingPort = writingPort;

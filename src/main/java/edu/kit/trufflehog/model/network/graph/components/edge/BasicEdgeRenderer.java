@@ -3,7 +3,11 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
-import javafx.animation.StrokeTransition;
+import javafx.animation.Animation;
+import javafx.animation.Transition;
+import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -25,13 +29,13 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private Color colorUnpicked = Color.web("0x21252b");
+    private Color colorUnpicked = Color.web("0xffffff3a");
     private Color colorPicked = Color.web("0x6CFF82");
 
     private Line line = new Line();
 
     private Color arrowFillPicked = Color.web("0x6CFF82");
-    private Color arrowFillUnpicked = Color.web("0xfffffff0");
+    private Color arrowFillUnpicked = Color.web("0xffffffa0");
 
     private Color arrowDrawPicked = null;
     private Color arrowDrawUnpicked = null;
@@ -39,36 +43,48 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     private Shape arrowShapePicked = new Circle(8);
     private Shape arrowShapeUnpicked = new Circle(6);
 
+    private Color currentArrowFill = arrowFillUnpicked;
+    private Color currentEdgeStrokePaint = colorUnpicked;
+
     private double currentBrightness = 0.5f;
+
+    private ObjectProperty<Color> arrowStrokePaintProperty = new SimpleObjectProperty<>(colorUnpicked);
+    private ObjectProperty<Color> arrowHeadFilleProperty = new SimpleObjectProperty<>(arrowFillUnpicked);
 
     // TODO Delete??
     private Shape shape = null;
 
-    private final StrokeTransition animator;
+    private final Animation animator;
 
     private int animationTime = 500;
+    private Shape arrowShape = new Circle(16);
+    private boolean isPicked = false;
 
     public BasicEdgeRenderer() {
 
-        line.setStroke(colorUnpicked);
+       // line.setStroke(colorUnpicked);
+        line.strokeProperty().bind(arrowStrokePaintProperty);
+        arrowShape.fillProperty().bind(arrowHeadFilleProperty);
 
-        animator = new StrokeTransition(Duration.millis(animationTime), line, colorUnpicked, Color.WHITE);
-        animator.setCycleCount(1);
-        animator.setAutoReverse(true);
+        //animator = new StrokeTransition(Duration.millis(animationTime), arrowStrokePaintProperty, Color.WHITE);
 
-/*        animator = new Transition() {
-
+        animator = new Transition() {
             {
                 setCycleDuration(Duration.millis(animationTime));
             }
 
             protected void interpolate(double frac) {
-                currentBrightness = (frac < 0.5 ? 0.5 + frac : 1.5 - frac);
-            }
-        };
-        animator.setCycleCount(1);
 
-        colorPicked.*/
+                arrowStrokePaintProperty.set(currentEdgeStrokePaint.interpolate(Color.WHITE, frac));
+                arrowHeadFilleProperty.set(currentArrowFill.interpolate(Color.WHITE, frac));
+
+            }
+
+        };
+
+        //animator = new StrokeTransition(Duration.millis(animationTime), line, colorUnpicked, Color.WHITE);
+        animator.setCycleCount(2);
+        animator.setAutoReverse(true);
     }
 
     @Override
@@ -177,6 +193,48 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     }
 
     @Override
+    public void togglePicked() {
+
+        if (isPicked) {
+            isPicked = false;
+
+        } else {
+            isPicked = true;
+        }
+        isPicked(isPicked);
+    }
+
+    @Override
+    public void isPicked(boolean b) {
+
+        if (b) {
+
+            Platform.runLater(() -> {
+
+                arrowStrokePaintProperty.set(colorPicked);
+                arrowHeadFilleProperty.set(arrowFillPicked);
+                currentArrowFill = arrowFillPicked;
+                currentEdgeStrokePaint = colorPicked;
+            });
+
+        } else {
+            Platform.runLater(() -> {
+
+                arrowStrokePaintProperty.set(colorUnpicked);
+                arrowHeadFilleProperty.set(arrowFillUnpicked);
+                currentArrowFill = arrowFillUnpicked;
+                currentEdgeStrokePaint = colorUnpicked;
+
+            });
+        }
+    }
+
+    @Override
+    public boolean picked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
     public boolean isMutable() {
         return true;
     }
@@ -230,5 +288,10 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     @Override
     public void setArrowFillUnpicked(Color arrowFillUnpicked) {
         this.arrowFillUnpicked = arrowFillUnpicked;
+    }
+
+    @Override
+    public Shape getArrowShape() {
+        return arrowShape;
     }
 }

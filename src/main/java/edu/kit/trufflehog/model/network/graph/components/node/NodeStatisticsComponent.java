@@ -5,8 +5,9 @@ import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
-import javafx.beans.property.DoubleProperty;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -46,7 +47,9 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
     }
 
     public void setOutgoingCount(int outgoingCount) {
-        this.outgoingCount.set(outgoingCount);
+
+
+        Platform.runLater(() -> this.outgoingCount.set(outgoingCount));
     }
 
     public int getIncomingCount() {
@@ -58,7 +61,7 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
     }
 
     public void setIncomingCount(int ingoingCount) {
-        this.ingoingCount.set(ingoingCount);
+        Platform.runLater(() -> this.ingoingCount.set(ingoingCount));
     }
 
     public IntegerProperty getCommunicationCountProperty() {

@@ -17,6 +17,7 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
+import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -118,9 +119,15 @@ public class AddPacketDataCommand implements ITruffleCommand {
         filter.check(sourceNode);
         filter.check(destNode);
 
-        writingPort.writeNode(sourceNode);
-        writingPort.writeNode(destNode);
-        writingPort.writeConnection(connection);
+        //logger.debug("src: " + sourceNode);
+        //logger.debug("dest: " + destNode);
+
+        Platform.runLater(() -> {
+            writingPort.writeNode(sourceNode);
+            writingPort.writeNode(destNode);
+            writingPort.writeConnection(connection);
+        });
+
     }
 
 /*    *//** Returns an ImageIcon, or null if the path was invalid. *//*

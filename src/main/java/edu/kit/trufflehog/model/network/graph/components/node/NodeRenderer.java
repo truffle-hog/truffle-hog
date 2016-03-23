@@ -3,7 +3,11 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
+import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import org.apache.logging.log4j.Logger;
@@ -23,13 +27,17 @@ public class NodeRenderer implements IRenderer {
 //    private Icon iconPicked = null;
 
 
-    private Color colorPicked = Color.web("0x4089BFf0");
-    private Color colorUnpicked = Color.web("0x4089BFa0");// = new Color(0x4089BFa0, true);
+    private Color colorPicked = Color.web("0x4089BF90");
+    private Color colorUnpicked = Color.web("0x4089BF43");// = new Color(0x4089BFa0, true);
 
     private Shape shape = new Circle(50); // = new Ellipse2D.Double(-30, -30, 60, 60);
 
-    private Color drawPicked; // = new Color(0xC6E9FFf3, true);
-    private Color drawUnpicked; // = new Color(0x4089BFd0, true);
+    private Color drawPicked = Color.web("0xC6E9FF90");
+    private Color drawUnpicked = Color.web("0x4089BF10");
+
+    private ObjectProperty<Paint> fillPaintProperty = new SimpleObjectProperty<>(colorUnpicked);
+    private ObjectProperty<Paint> strokePaintProperty = new SimpleObjectProperty<>(drawUnpicked);
+    private boolean isPicked;
 
     /**
      * <p>
@@ -38,6 +46,9 @@ public class NodeRenderer implements IRenderer {
      */
     public NodeRenderer() {
 
+        shape.fillProperty().bind(fillPaintProperty);
+        shape.strokeProperty().bind(strokePaintProperty);
+        shape.setStrokeWidth(6);
 
     }
 
@@ -73,6 +84,47 @@ public class NodeRenderer implements IRenderer {
     @Override
     public void setDrawPicked(Color drawPicked) {
         this.drawPicked = drawPicked;
+    }
+
+    @Override
+    public void togglePicked() {
+
+        if (isPicked) {
+
+            isPicked = false;
+        } else {
+            isPicked = true;
+        }
+
+        isPicked(isPicked);
+
+    }
+
+    @Override
+    public void isPicked(boolean b) {
+        if (b) {
+
+
+
+            Platform.runLater(() -> {
+
+                fillPaintProperty.set(colorPicked);
+                strokePaintProperty.set(drawPicked);
+            });
+
+        } else {
+            Platform.runLater(() -> {
+
+                fillPaintProperty.set(colorUnpicked);
+                strokePaintProperty.set(drawUnpicked);
+
+            });
+        }
+    }
+
+    @Override
+    public boolean picked() {
+        return isPicked;
     }
 
 

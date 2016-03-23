@@ -32,4 +32,9 @@ public interface IRenderer extends DeepCopyable<IRenderer>, Updatable<IRenderer>
 
     void setDrawPicked(Color drawPicked);
 
+    void togglePicked();
+
+    void isPicked(boolean b);
+
+    boolean picked();
 }

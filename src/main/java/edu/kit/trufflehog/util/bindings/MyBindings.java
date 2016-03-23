@@ -30,7 +30,9 @@ import javafx.beans.value.ObservableNumberValue;
  */
 public class MyBindings {
 
-
+    public static DoubleBinding divideIntToDouble(ObservableNumberValue divisor, ObservableNumberValue divider) {
+        return new DivideIntToDoubleBinding(divisor, divider);
+    }
 
     public static DoubleBinding sqrt(ObservableNumberValue value) {
 
@@ -70,6 +72,22 @@ public class MyBindings {
         @Override
         protected double computeValue() {
             return value.getValue().doubleValue() * value.getValue().doubleValue();
+        }
+    }
+
+    private static class DivideIntToDoubleBinding extends DoubleBinding {
+        private final ObservableNumberValue divisor;
+        private final ObservableNumberValue divider;
+
+        private DivideIntToDoubleBinding(ObservableNumberValue divisor, ObservableNumberValue divider) {
+            super.bind(divisor, divider);
+            this.divisor = divisor;
+            this.divider = divider;
+        }
+
+        @Override
+        protected double computeValue() {
+            return divisor.getValue().doubleValue() / divider.getValue().doubleValue();
         }
     }
 }

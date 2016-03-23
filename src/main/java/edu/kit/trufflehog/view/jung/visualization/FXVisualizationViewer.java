@@ -17,8 +17,10 @@
 package edu.kit.trufflehog.view.jung.visualization;
 
 import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.IEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.util.bindings.MyBindings;
@@ -37,9 +39,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
@@ -62,7 +63,7 @@ import java.util.Map;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class FXVisualizationViewer<V extends IComposition, E extends IComposition> extends Group implements VisualizationServer<V, E> {
+public class FXVisualizationViewer<V extends IComposition, E extends IComposition> extends Pane implements VisualizationServer<V, E> {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -74,10 +75,18 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
     private ObservableLayout<V, E> layout;
 
-    public FXVisualizationViewer(final ObservableLayout<V, E> layout) {
+    private INetworkViewPort port;
 
+    public FXVisualizationViewer(final ObservableLayout<V, E> layout, INetworkViewPort port) {
+
+        this.port = port;
         // create canvas
+        this.setStyle("-fx-background-color: #213245");
+
         canvas = new PannableCanvas();
+
+        // TODO make canvas transparent
+        //canvas.setStyle("-fx-background-color: #1d1d1d");
 
         // we don't want the canvas on the top/left in this example => just
         // translate it a bit
@@ -89,6 +98,9 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
         this.getChildren().add(canvas);
         this.layout = layout;
+
+        //this.layout.getGraph().getVertices().forEach(v -> Platform.runLater(() -> this.initVertex(v)));
+        //this.layout.getGraph().getEdges().forEach(e -> Platform.runLater(() -> this.initEdge(e)));
 
         this.layout.getObservableGraph().addGraphEventListener(e -> {
 
@@ -114,18 +126,22 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
                         break;
                     case EDGE_CHANGED:
 
+                        final E changedEdge = ((GraphEvent.Edge<V, E>) e).getEdge();
+                        Platform.runLater(() -> changedEdge.getComponent(ViewComponent.class).getRenderer().animate());
+
                         break;
                 }
             //});
         });
 
-        layout.getGraph().getVertices().forEach(v -> Platform.runLater(() -> this.initVertex(v)));
-        layout.getGraph().getEdges().forEach(e -> Platform.runLater(() -> this.initEdge(e)));
+
     }
 
     // TODO check if synch is needed
     synchronized
     private void initEdge(E edge) {
+
+        logger.debug(edge);
 
         final Pair<V> pair = this.layout.getGraph().getEndpoints(edge);
 
@@ -146,7 +162,6 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         final DoubleBinding normalX = deltaX.divide(length);
         final DoubleBinding normalY = deltaY.divide(length);
 
-
         final Circle destCircle = (Circle) destShape;
         final Circle srcCircle = (Circle) srcShape;
 
@@ -156,28 +171,23 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         final DoubleBinding realDestX = srcX.add(normalX.multiply(length.subtract(destCircle.radiusProperty().multiply(destShape.scaleXProperty()))));
         final DoubleBinding realDestY = srcY.add(normalY.multiply(length.subtract(destCircle.radiusProperty().multiply(destShape.scaleXProperty()))));
 
+        final IEdgeRenderer edgeRenderer = (IEdgeRenderer) edge.getComponent(ViewComponent.class).getRenderer();
 
-        final Circle mirkle = new Circle(10);
-        mirkle.setFill(Color.GREEN);
-        mirkle.translateXProperty().bind(realSoureX);
-        mirkle.translateYProperty().bind(realSoureY);
-        canvas.getChildren().add(mirkle);
-
-
-/*        final Circle circle = new Circle(50);
-        circle.translateXProperty().bind(srcX.add(destX.subtract(srcX).divide(2)));
-        circle.translateYProperty().bind(srcY.add(destY.subtract(srcY).divide(2)));
-        canvas.getChildren().add(circle);*/
-
-        IEdgeRenderer edgeRenderer = (IEdgeRenderer) edge.getComponent(ViewComponent.class).getRenderer();
+        canvas.getChildren().add(edgeRenderer.getArrowShape());
+        edgeRenderer.getArrowShape().translateXProperty().bind(realSoureX);
+        edgeRenderer.getArrowShape().translateYProperty().bind(realSoureY);
 
         // TODO create proper bezier curve and take the shape from the viewcomponent of the edge maybe??!
         final Line curve = edgeRenderer.getLine();
-        curve.setStrokeWidth(2);
-        curve.setFill(null);
+        //curve.setCacheHint(CacheHint.SPEED);
 
-       // Path path = new Path(curve);
+        curve.setOnMouseClicked(e -> {
 
+            edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
+        });
+
+        DoubleBinding edgeSize = MyBindings.divideIntToDouble(edge.getComponent(EdgeStatisticsComponent.class).getTrafficProperty(), port.getMaxConnectionSizeProperty()).multiply(8).add(2);
+        curve.strokeWidthProperty().bind(edgeSize);
 
         curve.endXProperty().bind(realDestX);
         curve.endYProperty().bind(realDestY);
@@ -190,13 +200,41 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
     synchronized
     private void initVertex(V vertex) {
 
+        //vertex.getComponent(ViewComponent.class).getRenderer().setShape(new Circle(50));
+
         final Shape nodeShape = vertex.getComponent(ViewComponent.class).getRenderer().getShape();
         nodeShape.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
         nodeShape.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
+        nodeShape.setOnMouseClicked(e -> {
+
+            vertex.getComponent(ViewComponent.class).getRenderer().togglePicked();
+
+/*            final IUserCommand selectionCommand = interactionMap.get(GraphInteraction.SELECTION);
+
+            if (selectionCommand == null) {
+                logger.warn("There is no command registered to: " + GraphInteraction.SELECTION);
+                return;
+            }
+
+            selectionCommand.setSelection(new ImmutablePair<>(new HashSet<>(getPickedVertexState().getPicked()), new HashSet<>(getPickedEdgeState().getPicked())));
+
+            notifyListeners(selectionCommand);
+
+            logger.debug(vertex);*/
+
+        });
+        //nodeShape.setCache(false);
+        //nodeShape.setCacheHint(CacheHint.);
+
         final NodeStatisticsComponent nsc = vertex.getComponent(NodeStatisticsComponent.class);
 
         logger.debug(nodeShape);
+
+        final DoubleBinding nodeSize = MyBindings.divideIntToDouble(nsc.getCommunicationCountProperty(), port.getMaxThroughputProperty()).add(1);
+
+        nodeShape.scaleXProperty().bind(nodeSize);
+        nodeShape.scaleYProperty().bind(nodeSize);
         //nodeShape.scaleXProperty().bind(nsc.getCommunicationCountProperty().divide(port.getMaxThroughputProperty()).multiply(20));
        // nodeShape.scaleYProperty().bind(nsc.getCommunicationCountProperty().divide(port.getMaxThroughputProperty()).multiply(20));
 
@@ -220,14 +258,19 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         setTranslateX(getTranslateX()-x);
         setTranslateY(getTranslateY()-y);
     }
+    synchronized
     public void refreshLayout() {
+        Platform.runLater(() -> {
 
-        this.layout = new ObservableLayout<>(new FRLayout<>(this.layout.getObservableGraph()));
-        layout.setSize(new Dimension(700,700));
+            this.layout = new ObservableLayout<>(new FRLayout<>(this.layout.getObservableGraph()));
+            layout.setSize(new Dimension(2000,2000));
 
-        this.layout.getGraph().getVertices().forEach(v -> System.out.println(layout.apply(v)));
+            this.layout.getGraph().getVertices().forEach(v -> System.out.println(layout.apply(v)));
 
-        this.repaint();
+            this.repaint();
+
+        });
+
     }
 
     @Override
@@ -372,6 +415,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
     }
 
     @Override
+    synchronized
     public void repaint() {
 
 

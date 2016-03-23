@@ -5,6 +5,7 @@ import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -34,7 +35,7 @@ public class EdgeStatisticsComponent extends AbstractComponent implements ICompo
     }
 
     public void setTrafficProperty(int value) {
-        trafficProperty.set(value);
+        Platform.runLater(() -> trafficProperty.set(value));
     }
 
     public void incrementTraffic(int step) {

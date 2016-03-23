@@ -128,7 +128,7 @@ public class Presenter {
         //ObservableLayout<INode, IConnection> layouts = new ObservableLayout<>(new FRLayout<>(sgv.g));
         //layouts.setSize(new Dimension(300,300)); // sets the initial size of the space
 
-        final FXVisualizationViewer<INode, IConnection> viewer = new FXVisualizationViewer<>(liveNetwork.getViewPort().getDelegate());
+        final FXVisualizationViewer<INode, IConnection> viewer = new FXVisualizationViewer<>(liveNetwork.getViewPort().getDelegate(), liveNetwork.getViewPort());
         SceneGestures sceneGestures = new SceneGestures(viewer.getCanvas());
 
         Scene scene = new Scene(viewer);
@@ -139,10 +139,17 @@ public class Presenter {
         scene.addEventFilter( MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
         scene.addEventFilter( ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
 
+
+
         primaryStage.setScene(scene);
         primaryStage.show();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-
+        truffleReceiver.connect();
 /*        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
                 new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));*/
     }
@@ -192,14 +199,14 @@ public class Presenter {
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
         truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
-
+       // truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
 
 
 
 
         //this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
         truffleFetchService.execute(truffleReceiver);
-        truffleReceiver.connect();
+
 
         // Initialize the command executor and register it.
         final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();

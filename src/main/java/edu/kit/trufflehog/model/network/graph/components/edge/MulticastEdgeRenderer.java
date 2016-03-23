@@ -70,6 +70,21 @@ public class MulticastEdgeRenderer implements IRenderer {
     }
 
     @Override
+    public void togglePicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void isPicked(boolean b) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public boolean picked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
     public IRenderer createDeepCopy(ICopyCreator copyCreator) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
