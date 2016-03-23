@@ -111,7 +111,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
                         final V node = ((GraphEvent.Vertex<V, E>) e).getVertex();
 
-                        logger.debug("adding: " + node);
+                        //logger.debug("adding: " + node);
 
                         Platform.runLater(() -> initVertex(node));
 
@@ -141,7 +141,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
     synchronized
     private void initEdge(E edge) {
 
-        logger.debug(edge);
+       // logger.debug(edge);
 
         final Pair<V> pair = this.layout.getGraph().getEndpoints(edge);
 
@@ -245,7 +245,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
         final NodeStatisticsComponent nsc = vertex.getComponent(NodeStatisticsComponent.class);
 
-        logger.debug(nodeShape);
+    //    logger.debug(nodeShape);
 
         final DoubleBinding nodeSize = MyBindings.divideIntToDouble(nsc.getCommunicationCountProperty(), port.getMaxThroughputProperty()).add(1);
 
@@ -259,6 +259,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         nodeShape.setTranslateY(layout.transform(vertex).getY() / myScale.get());
 
         canvas.getChildren().add(nodeShape);
+
     }
 
 
@@ -279,7 +280,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         Platform.runLater(() -> {
 
             this.layout = new ObservableLayout<>(new FRLayout<>(this.layout.getObservableGraph()));
-            layout.setSize(new Dimension(2000,2000));
+            layout.setSize(new Dimension(50000,50000));
 
             this.layout.getGraph().getVertices().forEach(v -> System.out.println(layout.transform(v)));
 
