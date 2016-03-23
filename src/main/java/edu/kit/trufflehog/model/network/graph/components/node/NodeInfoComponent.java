@@ -6,6 +6,9 @@ import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
+import edu.kit.trufflehog.util.bindings.MyBindings;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -148,6 +151,10 @@ public class NodeInfoComponent implements IComponent {
     @Override
     public boolean equals(Object other) {
         return other instanceof NodeInfoComponent;
+    }
+
+    public StringBinding toStringBinding() {
+        return MyBindings.nodeInfoStringBinding(this);
     }
 
     @Override

@@ -22,6 +22,7 @@ import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.IEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.util.bindings.MyBinding;
 import edu.kit.trufflehog.util.bindings.MyBindings;
@@ -41,7 +42,9 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.CacheHint;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -170,11 +173,11 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
         // get the real source by multiplying the normal with the radius and the scale of the shape
         final DoubleBinding realSoureX = srcX.add(normalX.multiply(srcCircle.radiusProperty().multiply(srcShape.scaleXProperty())));
-        final DoubleBinding realSoureY = srcY.add(normalY.multiply(srcCircle.radiusProperty().multiply(srcShape.scaleXProperty())));
+        final DoubleBinding realSoureY = srcY.add(normalY.multiply(srcCircle.radiusProperty().multiply(srcShape.scaleYProperty())));
 
         // get the real destination by multipling the normal vector with the length minus the radius and scale of the destination shape
         final DoubleBinding realDestX = srcX.add(normalX.multiply(length.subtract(destCircle.radiusProperty().multiply(destShape.scaleXProperty()))));
-        final DoubleBinding realDestY = srcY.add(normalY.multiply(length.subtract(destCircle.radiusProperty().multiply(destShape.scaleXProperty()))));
+        final DoubleBinding realDestY = srcY.add(normalY.multiply(length.subtract(destCircle.radiusProperty().multiply(destShape.scaleYProperty()))));
 
         final IEdgeRenderer edgeRenderer = (IEdgeRenderer) edge.getComponent(ViewComponent.class).getRenderer();
 
@@ -263,7 +266,30 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         nodeShape.setTranslateX(layout.transform(vertex).getX() / myScale.get());
         nodeShape.setTranslateY(layout.transform(vertex).getY() / myScale.get());
 
-        canvas.getChildren().add(nodeShape);
+
+        ///////////
+        // LABEL //
+        ///////////
+
+        Label nodeLabel = new Label();
+
+        // cast the shapes to circles (because right now i know they are circles) //TODO make this for arbitrary shapes
+        final Circle nodeCircle = (Circle) nodeShape;
+
+        nodeLabel.translateXProperty().bind(nodeShape.translateXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
+        nodeLabel.translateYProperty().bind(nodeShape.translateYProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty())));
+
+        nodeLabel.textFillProperty().bind(new SimpleObjectProperty<>(Color.WHITE));
+
+        NodeInfoComponent nic = vertex.getComponent(NodeInfoComponent.class);
+        if (nic != null) {
+            nodeLabel.textProperty().bind(nic.toStringBinding());
+        }
+
+        nodeLabel.scaleXProperty().bind(Bindings.divide(1, canvas.scaleXProperty()));
+        nodeLabel.scaleYProperty().bind(Bindings.divide(1, canvas.scaleYProperty()));
+
+        canvas.getChildren().addAll(nodeShape, nodeLabel);
     }
 
 

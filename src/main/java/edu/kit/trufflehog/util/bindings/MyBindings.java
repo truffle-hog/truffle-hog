@@ -16,7 +16,15 @@
  */
 package edu.kit.trufflehog.util.bindings;
 
+import edu.kit.trufflehog.model.network.IPAddress;
+import edu.kit.trufflehog.model.network.MacAddress;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableNumberValue;
 
 /**
@@ -32,6 +40,10 @@ public class MyBindings {
 
     public static DoubleBinding divideIntToDouble(ObservableNumberValue divisor, ObservableNumberValue divider) {
         return new DivideIntToDoubleBinding(divisor, divider);
+    }
+
+    public static StringBinding nodeInfoStringBinding(NodeInfoComponent nic) {
+        return new NodeInfoStringBinding(nic);
     }
 
     public static DoubleBinding sqrt(ObservableNumberValue value) {
@@ -88,6 +100,32 @@ public class MyBindings {
         @Override
         protected double computeValue() {
             return divisor.getValue().doubleValue() / divider.getValue().doubleValue();
+        }
+    }
+
+    private static class NodeInfoStringBinding extends StringBinding {
+        private final NodeInfoComponent nodeInfoComponent;
+
+        private NodeInfoStringBinding(NodeInfoComponent nic) {
+            super.bind(nic.getDeviceNameProperty(), nic.getIpAddressProperty(), nic.getMacAddressProperty());
+            this.nodeInfoComponent = nic;
+        }
+
+        @Override
+        protected String computeValue() {
+            final String deviceName = nodeInfoComponent.getDeviceName();
+            final MacAddress macAddress = nodeInfoComponent.getMacAddress();
+            final IPAddress ipAddress = nodeInfoComponent.getIPAddress();
+
+            if (deviceName != null) {
+                return deviceName + " (" + macAddress + ")";
+            }
+
+            if (ipAddress != null) {
+                return ipAddress + " (" + macAddress + ")";
+            }
+
+            return macAddress.toString();
         }
     }
 }

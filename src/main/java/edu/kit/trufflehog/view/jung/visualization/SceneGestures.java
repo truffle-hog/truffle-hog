@@ -94,6 +94,8 @@ public class SceneGestures {
         @Override
         public void handle(ScrollEvent event) {
 
+            //FIXME fix scrolling/scaling
+
             double delta = 1.2;
 
             double scale = canvas.getScale(); // currently we only use Y, same value is used for X
@@ -106,7 +108,7 @@ public class SceneGestures {
 
             scale = clamp( scale, MIN_SCALE, MAX_SCALE);
 
-            double f = (scale / oldScale)-1;
+            double f = (scale / oldScale) - 1;
 
             double dx = (event.getSceneX() - (canvas.getBoundsInParent().getWidth()/2 + canvas.getBoundsInParent().getMinX()));
             double dy = (event.getSceneY() - (canvas.getBoundsInParent().getHeight()/2 + canvas.getBoundsInParent().getMinY()));
@@ -114,7 +116,7 @@ public class SceneGestures {
             canvas.setScale( scale);
 
             // note: pivot value must be untransformed, i. e. without scaling
-            canvas.setPivot(f*dx, f*dy);
+            canvas.setPivot(f * dx, f * dy);
 
             event.consume();
 
