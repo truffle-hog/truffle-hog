@@ -145,29 +145,37 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
         final Pair<V> pair = this.layout.getGraph().getEndpoints(edge);
 
+        // source and destination shape
         final Shape srcShape = pair.getFirst().getComponent(ViewComponent.class).getRenderer().getShape();
         final Shape destShape = pair.getSecond().getComponent(ViewComponent.class).getRenderer().getShape();
 
+        // the positions of the shapes
         final DoubleProperty srcX = srcShape.translateXProperty();
         final DoubleProperty srcY = srcShape.translateYProperty();
         final DoubleProperty destX = destShape.translateXProperty();
         final DoubleProperty destY = destShape.translateYProperty();
 
 
+        // the direction vector from source to destination (deltaX, deltaY)
         final DoubleBinding deltaX = destX.subtract(srcX);
         final DoubleBinding deltaY = destY.subtract(srcY);
 
+        // the length of the direction vector
         final DoubleBinding length = MyBindings.sqrt(Bindings.add(MyBindings.pow2(deltaX), MyBindings.pow2(deltaY)));
 
+        // the normalized direction vector
         final DoubleBinding normalX = deltaX.divide(length);
         final DoubleBinding normalY = deltaY.divide(length);
 
+        // cast the shapes to circles (because right now i know they are circles) //TODO make this for arbitrary shapes
         final Circle destCircle = (Circle) destShape;
         final Circle srcCircle = (Circle) srcShape;
 
+        // get the real source by multiplying the normal with the radius and the scale of the shape
         final DoubleBinding realSoureX = srcX.add(normalX.multiply(srcCircle.radiusProperty().multiply(srcShape.scaleXProperty())));
         final DoubleBinding realSoureY = srcY.add(normalY.multiply(srcCircle.radiusProperty().multiply(srcShape.scaleXProperty())));
 
+        // get the real destination by multipling the normal vector with the length minus the radius and scale of the destination shape
         final DoubleBinding realDestX = srcX.add(normalX.multiply(length.subtract(destCircle.radiusProperty().multiply(destShape.scaleXProperty()))));
         final DoubleBinding realDestY = srcY.add(normalY.multiply(length.subtract(destCircle.radiusProperty().multiply(destShape.scaleXProperty()))));
 
@@ -177,24 +185,32 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         edgeRenderer.getArrowShape().translateXProperty().bind(realSoureX);
         edgeRenderer.getArrowShape().translateYProperty().bind(realSoureY);
 
-        // TODO create proper bezier curve and take the shape from the viewcomponent of the edge maybe??!
+        // TODO create proper bezier curve and take the shape from the viewcomponent of the edge maybe??! QuadCurve
+        // TODO have to figure out where to put the control point of the quadcurve
         final Line curve = edgeRenderer.getLine();
         //curve.setCacheHint(CacheHint.SPEED);
 
+
+        // make the edge clickabel
         curve.setOnMouseClicked(e -> {
 
             edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
         });
 
+        //get the edge size binding by dividing the total trffic with the local traffic
         DoubleBinding edgeSize = MyBindings.divideIntToDouble(edge.getComponent(EdgeStatisticsComponent.class).getTrafficProperty(), port.getMaxConnectionSizeProperty()).multiply(8).add(2);
         curve.strokeWidthProperty().bind(edgeSize);
 
+
+        // bind the ending to the real destionaion point
         curve.endXProperty().bind(realDestX);
         curve.endYProperty().bind(realDestY);
 
+        // bind the source to the real source point
         curve.startXProperty().bind(realSoureX);
         curve.startYProperty().bind(realSoureY);
 
+        // add the edge to the canvas
         canvas.getChildren().add(curve);
     }
     synchronized
