@@ -303,9 +303,11 @@ public class FilterViewModel {
         // Split and remove any unwanted characters
         rules = rules.replaceAll("\n", "").replaceAll("\r", "");
         String[] ruleArray = rules.split(";");
-        for (int i = 0; i < ruleArray.length; i++) {
-            ruleArray[i] = ruleArray[i].trim();
-        }
+        List<String> ruleList = Arrays.asList(ruleArray);
+        ruleList = ruleList.stream()
+                .map(String::trim)
+                .filter(rule -> !rule.equals(""))
+                .collect(Collectors.toList());
 
         // Define MAC and IP regex
         String macRegex = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
@@ -321,7 +323,7 @@ public class FilterViewModel {
         }
 
         // Check each rule to see whether it matches its regex
-        for (String rule : ruleArray) {
+        for (String rule : ruleList) {
             if (filterOrigin.equals(FilterOrigin.IP) || filterOrigin.equals(FilterOrigin.MAC)) {
                 assert pattern != null;
                 if (!pattern.matcher(rule).matches()) {
@@ -343,6 +345,6 @@ public class FilterViewModel {
         }
 
         // If we got here, everything should have passed
-        return Arrays.asList(ruleArray);
+        return ruleList;
     }
 }
