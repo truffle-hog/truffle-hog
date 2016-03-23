@@ -204,6 +204,7 @@ public class Presenter {
 
 
 
+
         //this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
         truffleFetchService.execute(truffleReceiver);
 
@@ -232,7 +233,9 @@ public class Presenter {
         Platform.exit();
 
         // Close all databases and other resources accessing the hard drive that need to be closed.
-        configData.close();
+        if (configData != null) {
+            configData.close();
+        }
 
         // Disconnect the truffleReceiver
         if (truffleReceiver != null) {
