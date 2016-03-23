@@ -72,17 +72,12 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
             {
                 setCycleDuration(Duration.millis(animationTime));
             }
-
             protected void interpolate(double frac) {
 
                 arrowStrokePaintProperty.set(currentEdgeStrokePaint.interpolate(Color.WHITE, frac));
                 arrowHeadFilleProperty.set(currentArrowFill.interpolate(Color.WHITE, frac));
-
             }
-
         };
-
-        //animator = new StrokeTransition(Duration.millis(animationTime), line, colorUnpicked, Color.WHITE);
         animator.setCycleCount(2);
         animator.setAutoReverse(true);
     }
