@@ -21,11 +21,12 @@ import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableNumberValue;
+import javafx.beans.value.ObservableValue;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * \brief
@@ -37,6 +38,8 @@ import javafx.beans.value.ObservableNumberValue;
  * @version 0.0.1
  */
 public class MyBindings {
+
+    private static final Logger logger = LogManager.getLogger(MyBindings.class);
 
     public static DoubleBinding divideIntToDouble(ObservableNumberValue divisor, ObservableNumberValue divider) {
         return new DivideIntToDoubleBinding(divisor, divider);
@@ -55,6 +58,44 @@ public class MyBindings {
     public static DoubleBinding pow2(ObservableNumberValue value) {
 
         return new Pow2Binding(value);
+    }
+
+    public static void bindBidirectional(DoubleProperty doubleProperty, DoubleProperty doubleProperty1, DoubleBinding multiply) {
+
+        new BidirectionalDoubleOffsetBinding(doubleProperty, doubleProperty1, multiply);
+
+    }
+
+    private static class BidirectionalDoubleOffsetBinding implements ChangeListener<Number> {
+
+        private final DoubleBinding offset;
+        private final DoubleProperty lhs;
+        private final DoubleProperty rhs;
+
+        private BidirectionalDoubleOffsetBinding(DoubleProperty property1, DoubleProperty property2, DoubleBinding offset) {
+
+
+            this.offset = offset;
+            this.lhs = property1;
+            this.rhs = property2;
+
+            rhs.addListener(this);
+            lhs.addListener(this);
+            offset.addListener(this);
+        }
+
+        @Override
+        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+            if (observable.equals(lhs)) {
+                rhs.setValue(lhs.get() - offset.get());
+            } else if (observable.equals(rhs)) {
+                lhs.setValue(rhs.get() + offset.get());
+            } else {
+                lhs.setValue(rhs.get() + offset.get());
+            }
+
+        }
     }
 
     private static class SqrtBinding extends DoubleBinding {

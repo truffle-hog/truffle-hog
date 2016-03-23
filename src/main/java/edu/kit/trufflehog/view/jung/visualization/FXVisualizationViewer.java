@@ -24,9 +24,8 @@ import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComp
 import edu.kit.trufflehog.model.network.graph.components.edge.IEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-import edu.kit.trufflehog.util.bindings.MyBinding;
 import edu.kit.trufflehog.util.bindings.MyBindings;
-import edu.uci.ics.jung.algorithms.layout.FRLayout;
+import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.event.GraphEvent;
@@ -49,7 +48,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Shape;
 import org.apache.logging.log4j.LogManager;
@@ -80,6 +78,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
     private final PannableCanvas canvas;
     private final NodeGestures nodeGestures;
+    private final CanvasGestures canvasGestures;
 
     private ObservableLayout<V, E> layout;
 
@@ -87,11 +86,18 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
     public FXVisualizationViewer(final ObservableLayout<V, E> layout, INetworkViewPort port) {
 
+
+
         this.port = port;
         // create canvas
         this.setStyle("-fx-background-color: #213245");
 
         canvas = new PannableCanvas();
+
+        canvasGestures = new CanvasGestures(canvas);
+
+      //  canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, canvasGestures.getOnMousePressedEventHandler());
+      //  canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, canvasGestures.getOnMouseDraggedEventHandler());
 
         // TODO make canvas transparent
         //canvas.setStyle("-fx-background-color: #1d1d1d");
@@ -224,6 +230,8 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         // TODO do this in component
         curve.setFill(null);
 
+
+
         // add the edge to the canvas
         canvas.getChildren().add(curve);
     }
@@ -250,7 +258,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
             notifyListeners(selectionCommand);
 
-            logger.debug(vertex);*/
+          */  logger.debug(vertex.getComponent(NodeInfoComponent.class).toString());
 
         });
         //nodeShape.setCache(false);
@@ -263,8 +271,8 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         nodeShape.scaleXProperty().bind(nodeSize);
         nodeShape.scaleYProperty().bind(nodeSize);
 
-        nodeShape.setTranslateX(layout.transform(vertex).getX() / myScale.get());
-        nodeShape.setTranslateY(layout.transform(vertex).getY() / myScale.get());
+        nodeShape.setTranslateX(layout.transform(vertex).getX() / canvas.getScale());
+        nodeShape.setTranslateY(layout.transform(vertex).getY() / canvas.getScale());
 
         ///////////
         // LABEL //
@@ -275,10 +283,23 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         // cast the shapes to circles (because right now i know they are circles) //TODO make this for arbitrary shapes
         final Circle nodeCircle = (Circle) nodeShape;
 
-        nodeLabel.translateXProperty().bind(nodeShape.translateXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
-        nodeLabel.translateYProperty().bind(nodeShape.translateYProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty())));
+/*        final DoubleProperty labelX = new SimpleDoubleProperty();
+        final DoubleProperty labelY = new SimpleDoubleProperty();*/
+
+
+
+        //labelX.bind(nodeShape.translateXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
+        //labelY.bind(nodeShape.translateYProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty())));
+
+        //nodeLabel.translateXProperty().bindBidirectional(labelX);
+        //nodeLabel.translateYProperty().bindBidirectional(labelY);
+
+        //nodeLabel.translateXProperty().bind(nodeShape.translateXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
 
         nodeLabel.textFillProperty().bind(new SimpleObjectProperty<>(Color.WHITE));
+
+        MyBindings.bindBidirectional(nodeLabel.translateXProperty(), nodeShape.translateXProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty()));
+        MyBindings.bindBidirectional(nodeLabel.translateYProperty(), nodeShape.translateYProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty()));
 
         NodeInfoComponent nic = vertex.getComponent(NodeInfoComponent.class);
         if (nic != null) {
@@ -287,6 +308,9 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
         nodeLabel.scaleXProperty().bind(Bindings.divide(1, canvas.scaleXProperty()));
         nodeLabel.scaleYProperty().bind(Bindings.divide(1, canvas.scaleYProperty()));
+
+        nodeLabel.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        nodeLabel.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
         canvas.getChildren().addAll(nodeShape, nodeLabel);
     }
@@ -309,7 +333,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
     public void refreshLayout() {
         Platform.runLater(() -> {
 
-            this.layout = new ObservableLayout<>(new FRLayout<>(this.layout.getObservableGraph()));
+            this.layout = new ObservableLayout<>(new CircleLayout<>(this.layout.getObservableGraph()));
                //TODO make the dimension changeable from settings menu?
             layout.setSize(new Dimension(1000, 1000));
 
