@@ -19,6 +19,7 @@ import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.view.ViewSwitcher;
@@ -198,8 +199,8 @@ public class Presenter {
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-        truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
-       // truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
+        //truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
+        truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
 
 
 
@@ -232,7 +233,9 @@ public class Presenter {
         Platform.exit();
 
         // Close all databases and other resources accessing the hard drive that need to be closed.
-        configData.close();
+        if (configData != null) {
+            configData.close();
+        }
 
         // Disconnect the truffleReceiver
         if (truffleReceiver != null) {

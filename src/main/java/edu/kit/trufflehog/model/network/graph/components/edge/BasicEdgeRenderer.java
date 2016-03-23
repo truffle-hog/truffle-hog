@@ -9,9 +9,7 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Shape;
+import javafx.scene.shape.*;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +30,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     private Color colorUnpicked = Color.web("0xffffff3a");
     private Color colorPicked = Color.web("0x6CFF82");
 
-    private Line line = new Line();
+    private QuadCurve line = new QuadCurve();
 
     private Color arrowFillPicked = Color.web("0x6CFF82");
     private Color arrowFillUnpicked = Color.web("0xffffffa0");
@@ -83,7 +81,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     }
 
     @Override
-    public Line getLine() {
+    public QuadCurve getLine() {
         return line;
     }
 

@@ -23,6 +23,7 @@ import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.IEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.util.bindings.MyBinding;
 import edu.kit.trufflehog.util.bindings.MyBindings;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
@@ -37,12 +38,16 @@ import edu.uci.ics.jung.visualization.renderers.Renderer;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.CacheHint;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Shape;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -108,27 +113,21 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
                 switch (e.getType()) {
                     case VERTEX_ADDED:
-
                         final V node = ((GraphEvent.Vertex<V, E>) e).getVertex();
-
-                        logger.debug("adding: " + node);
-
                         Platform.runLater(() -> initVertex(node));
-
                         break;
-                    case EDGE_ADDED:
 
+                    case EDGE_ADDED:
                         final E edge = ((GraphEvent.Edge<V, E>) e).getEdge();
                         Platform.runLater(() -> initEdge(edge));
                         break;
+
                     case VERTEX_CHANGED:
-
                         break;
-                    case EDGE_CHANGED:
 
+                    case EDGE_CHANGED:
                         final E changedEdge = ((GraphEvent.Edge<V, E>) e).getEdge();
                         Platform.runLater(() -> changedEdge.getComponent(ViewComponent.class).getRenderer().animate());
-
                         break;
                 }
             //});
@@ -140,8 +139,6 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
     // TODO check if synch is needed
     synchronized
     private void initEdge(E edge) {
-
-        logger.debug(edge);
 
         final Pair<V> pair = this.layout.getGraph().getEndpoints(edge);
 
@@ -182,20 +179,15 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         final IEdgeRenderer edgeRenderer = (IEdgeRenderer) edge.getComponent(ViewComponent.class).getRenderer();
 
         canvas.getChildren().add(edgeRenderer.getArrowShape());
-        edgeRenderer.getArrowShape().translateXProperty().bind(realSoureX);
-        edgeRenderer.getArrowShape().translateYProperty().bind(realSoureY);
+        edgeRenderer.getArrowShape().translateXProperty().bind(realDestX);
+        edgeRenderer.getArrowShape().translateYProperty().bind(realDestY);
 
-        // TODO create proper bezier curve and take the shape from the viewcomponent of the edge maybe??! QuadCurve
-        // TODO have to figure out where to put the control point of the quadcurve
-        final Line curve = edgeRenderer.getLine();
-        //curve.setCacheHint(CacheHint.SPEED);
+        final QuadCurve curve = edgeRenderer.getLine();
+        curve.setCacheHint(CacheHint.SPEED);
 
 
-        // make the edge clickabel
-        curve.setOnMouseClicked(e -> {
-
-            edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
-        });
+        // make the edge clickable
+        curve.setOnMouseClicked(e -> edge.getComponent(ViewComponent.class).getRenderer().togglePicked());
 
         //get the edge size binding by dividing the total trffic with the local traffic
         DoubleBinding edgeSize = MyBindings.divideIntToDouble(edge.getComponent(EdgeStatisticsComponent.class).getTrafficProperty(), port.getMaxConnectionSizeProperty()).multiply(8).add(2);
@@ -210,13 +202,31 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         curve.startXProperty().bind(realSoureX);
         curve.startYProperty().bind(realSoureY);
 
+        NumberBinding normalVectorX = Bindings.subtract(realDestY, realSoureY).negate();
+        NumberBinding normalVectorY = Bindings.subtract(realDestX, realSoureX);
+
+        NumberBinding centerPointX = Bindings.divide(Bindings.add(curve.endXProperty(), curve.startXProperty()), 2);
+        NumberBinding centerPointY = Bindings.divide(Bindings.add(curve.endYProperty(), curve.startYProperty()), 2);
+
+        NumberBinding normalLength = MyBindings.sqrt(Bindings.add(normalVectorX.multiply(normalVectorX), normalVectorY.multiply(normalVectorY)));
+
+        NumberBinding normalizedNVX = normalVectorX.divide(normalLength);
+        NumberBinding normalizedNVY = normalVectorY.divide(normalLength);
+
+        NumberBinding bezierPointOffset = length.multiply(.1);
+
+        curve.controlXProperty().bind(Bindings.add(centerPointX, normalizedNVX.multiply(bezierPointOffset)));
+        curve.controlYProperty().bind(Bindings.add(centerPointY, normalizedNVY.multiply(bezierPointOffset)));
+
+        // TODO do this in component
+        curve.setFill(null);
+
         // add the edge to the canvas
         canvas.getChildren().add(curve);
     }
+
     synchronized
     private void initVertex(V vertex) {
-
-        //vertex.getComponent(ViewComponent.class).getRenderer().setShape(new Circle(50));
 
         final Shape nodeShape = vertex.getComponent(ViewComponent.class).getRenderer().getShape();
         nodeShape.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
@@ -245,15 +255,10 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
         final NodeStatisticsComponent nsc = vertex.getComponent(NodeStatisticsComponent.class);
 
-        logger.debug(nodeShape);
-
         final DoubleBinding nodeSize = MyBindings.divideIntToDouble(nsc.getCommunicationCountProperty(), port.getMaxThroughputProperty()).add(1);
 
         nodeShape.scaleXProperty().bind(nodeSize);
         nodeShape.scaleYProperty().bind(nodeSize);
-        //nodeShape.scaleXProperty().bind(nsc.getCommunicationCountProperty().divide(port.getMaxThroughputProperty()).multiply(20));
-       // nodeShape.scaleYProperty().bind(nsc.getCommunicationCountProperty().divide(port.getMaxThroughputProperty()).multiply(20));
-
 
         nodeShape.setTranslateX(layout.transform(vertex).getX() / myScale.get());
         nodeShape.setTranslateY(layout.transform(vertex).getY() / myScale.get());
@@ -274,14 +279,15 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
         setTranslateX(getTranslateX()-x);
         setTranslateY(getTranslateY()-y);
     }
+
     synchronized
     public void refreshLayout() {
         Platform.runLater(() -> {
 
             this.layout = new ObservableLayout<>(new FRLayout<>(this.layout.getObservableGraph()));
-            layout.setSize(new Dimension(2000,2000));
 
-            this.layout.getGraph().getVertices().forEach(v -> System.out.println(layout.transform(v)));
+            //TODO make the dimension changeable from settings menu?
+            layout.setSize(new Dimension(1000, 1000));
 
             this.repaint();
 
