@@ -19,11 +19,10 @@ package edu.kit.trufflehog.model.network.recording.copying;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
+import edu.kit.trufflehog.model.network.graph.NetworkNodeTester;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
-import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.StaticRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
@@ -51,6 +50,12 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
+    // TODO Delete
+    @Override
+    public IComponent visit(NetworkNodeTester iComponents) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
     @Override
     public IComponent visit(EdgeStatisticsComponent edgeStatisticsComponent) {
 
@@ -59,14 +64,9 @@ public class ComponentCopier implements IComponentVisitor<IComponent> {
 
     @Override
     public IComponent visit(ViewComponent viewComponent) {
-
-        final IRenderer comp = viewComponent.getRenderer();
-
-        final StaticRenderer renderer = new StaticRenderer(comp.getShape(),
-                comp.getColorPicked(), comp.getColorUnpicked(), comp.getStroke());
-
-        return new ViewComponent(renderer);
-
+        // FIXME do this
+        throw new UnsupportedOperationException("not working yet correctly");
+        //return new ViewComponent(viewComponent.getRenderer());
     }
 
     @Override

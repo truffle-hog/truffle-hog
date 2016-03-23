@@ -3,18 +3,6 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
-import javafx.animation.Interpolator;
-import javafx.animation.Transition;
-import javafx.util.Duration;
-
-import javax.swing.Icon;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.time.Instant;
 
 /**
  * This Component of a node will handle how a node is displayed in the graph
@@ -26,8 +14,77 @@ import java.time.Instant;
  * //TODO FIX GETTER!!!
  */
 public class MulticastEdgeRenderer implements IRenderer {
+    @Override
+    public javafx.scene.shape.Shape getShape() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
 
-    private long lastUpdate = Instant.now().toEpochMilli();
+    @Override
+    public javafx.scene.paint.Color getColorUnpicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public javafx.scene.paint.Color getColorPicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setColorPicked(javafx.scene.paint.Color colorPicked) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setColorUnpicked(javafx.scene.paint.Color colorUnpicked) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setShape(javafx.scene.shape.Shape shape) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void animate() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public javafx.scene.paint.Color getDrawUnpicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setDrawUnpicked(javafx.scene.paint.Color drawUnpicked) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public javafx.scene.paint.Color getDrawPicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setDrawPicked(javafx.scene.paint.Color drawPicked) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public IRenderer createDeepCopy(ICopyCreator copyCreator) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public boolean isMutable() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public boolean update(IRenderer instance, IUpdater updater) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    /*private long lastUpdate = Instant.now().toEpochMilli();
 
     private Shape shape = new Ellipse2D.Float(-10, -10, 20, 20);
 
@@ -231,5 +288,5 @@ public class MulticastEdgeRenderer implements IRenderer {
 
     public void setMultiplier(float multiplier) {
         this.multiplier = multiplier;
-    }
+    }*/
 }

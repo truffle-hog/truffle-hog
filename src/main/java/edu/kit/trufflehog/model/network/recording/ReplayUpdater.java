@@ -98,7 +98,6 @@ public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection>
         }
         final MulticastEdgeRenderer comp = (MulticastEdgeRenderer) instance;
 
-        multicastEdgeRendererComponent.setStroke(comp.getStroke());
         multicastEdgeRendererComponent.setShape(comp.getShape());
         multicastEdgeRendererComponent.setColorUnpicked(comp.getColorUnpicked());
         multicastEdgeRendererComponent.setColorPicked(comp.getColorPicked());
@@ -114,7 +113,6 @@ public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection>
         }
         final BasicEdgeRenderer comp = (BasicEdgeRenderer) instance;
 
-        basicEdgeRendererComponent.setStroke(comp.getStroke());
         basicEdgeRendererComponent.setShape(comp.getShape());
         basicEdgeRendererComponent.setColorUnpicked(comp.getColorUnpicked());
         basicEdgeRendererComponent.setColorPicked(comp.getColorPicked());
@@ -165,7 +163,6 @@ public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection>
         component.setColorPicked(instance.getColorPicked());
         component.setColorUnpicked(instance.getColorUnpicked());
         component.setShape(instance.getShape());
-        component.setStroke(instance.getStroke());
         return true;
     }
 
@@ -177,7 +174,8 @@ public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection>
         }
         final ViewComponent other = (ViewComponent) instance;
 
-        return viewComponent.getRenderer().update(other.getRenderer(), this);
+        // FIXME correct updating
+        return true;
     }
 
     @Override

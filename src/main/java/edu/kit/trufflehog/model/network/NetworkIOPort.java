@@ -7,12 +7,11 @@ import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComp
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
-import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ObservableIntegerValue;
 import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +29,7 @@ public class NetworkIOPort implements INetworkIOPort {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private final Graph<INode, IConnection> delegate;
+    private final ObservableUpdatableGraph<INode, IConnection> delegate;
 
     private final Map<IAddress, INode> idNodeMap = new ConcurrentHashMap<>();
     private final Map<MultiKey<IAddress>, IConnection> idConnectionMap = new ConcurrentHashMap<>();
@@ -43,7 +42,7 @@ public class NetworkIOPort implements INetworkIOPort {
     private final MaximumOfValuesBinding maxTrafficBinding = new MaximumOfValuesBinding();
     private final MaximumOfValuesBinding maxThroughputBinding = new MaximumOfValuesBinding();
 
-    public NetworkIOPort(final Graph<INode, IConnection> delegate) {
+    public NetworkIOPort(final ObservableUpdatableGraph<INode, IConnection> delegate) {
 
         maxConnectionSizeProperty.bind(maxTrafficBinding);
         maxThroughputProperty.bind(maxThroughputBinding);
@@ -55,8 +54,6 @@ public class NetworkIOPort implements INetworkIOPort {
     synchronized public void writeConnection(IConnection connection) {
 
         final MultiKey<IAddress> connectionKey = new MultiKey<>(connection.getSrc().getAddress(), connection.getDest().getAddress());
-
-
 
         if (delegate.addEdge(connection, connection.getSrc(), connection.getDest())) {
 
@@ -84,6 +81,11 @@ public class NetworkIOPort implements INetworkIOPort {
     @Override
     synchronized public void applyFilter(IFilter filter) {
         delegate.getVertices().forEach(filter::check);
+    }
+
+    @Override
+    public ObservableUpdatableGraph<INode, IConnection> getGraph() {
+        return delegate;
     }
 
     @Override

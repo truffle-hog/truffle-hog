@@ -18,23 +18,20 @@ package edu.kit.trufflehog.model.network.graph.components;
 
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
+import edu.kit.trufflehog.model.network.graph.NetworkNodeTester;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
-import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringExpression;
-import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
-import javafx.util.StringConverter;
-import javafx.util.converter.NumberStringConverter;
 
 import java.text.DecimalFormat;
 
@@ -98,7 +95,7 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
     public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(FilterPropertiesComponent component) {
 
         final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
-        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Status", new SimpleListProperty(FXCollections.observableArrayList(component.getFilterColors().values())))));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Status", new SimpleListProperty<>(FXCollections.observableArrayList(component.getFilterColors().values())))));
         return root;
     }
 
@@ -119,5 +116,11 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
     @Override
     public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(NetworkConnection component) {
         return new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
+    }
+
+    // TODO DELTE
+    @Override
+    public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(NetworkNodeTester iComponents) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 }

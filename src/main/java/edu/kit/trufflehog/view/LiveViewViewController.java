@@ -1,15 +1,12 @@
 package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.command.usercommand.SelectionCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
-import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.interaction.ProtocolControlInteraction;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
-import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.view.controllers.AnchorPaneInteractionController;
@@ -31,7 +28,6 @@ import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.EnumMap;
 import java.util.Map;
@@ -103,7 +99,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         //scene.getAccelerators().put(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN),
          //       networkViewScreen::refreshLayout);
 
-        final NetworkViewNode networkViewScreen = new NetworkViewNode(viewPort);
+/*        final NetworkViewNode networkViewScreen = new NetworkViewNode(viewPort);
 
         this.getChildren().add(networkViewScreen);
 
@@ -113,7 +109,7 @@ public class LiveViewViewController extends AnchorPaneInteractionController<Prot
         AnchorPane.setBottomAnchor(networkViewScreen, 0d);
         AnchorPane.setTopAnchor(networkViewScreen, 0d);
         AnchorPane.setLeftAnchor(networkViewScreen, 0d);
-        AnchorPane.setRightAnchor(networkViewScreen, 0d);
+        AnchorPane.setRightAnchor(networkViewScreen, 0d);*/
 
         addCloseButton();
 

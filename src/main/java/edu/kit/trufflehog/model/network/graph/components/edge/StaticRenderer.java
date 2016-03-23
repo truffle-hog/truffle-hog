@@ -20,11 +20,6 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 
-import javax.swing.Icon;
-import java.awt.Color;
-import java.awt.Shape;
-import java.awt.Stroke;
-
 /**
  * \brief
  * \details
@@ -35,8 +30,77 @@ import java.awt.Stroke;
  * @version 0.0.1
  */
 public class StaticRenderer implements IRenderer {
+    @Override
+    public javafx.scene.shape.Shape getShape() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
 
-    private Shape shape;
+    @Override
+    public javafx.scene.paint.Color getColorUnpicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public javafx.scene.paint.Color getColorPicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setColorPicked(javafx.scene.paint.Color colorPicked) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setColorUnpicked(javafx.scene.paint.Color colorUnpicked) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setShape(javafx.scene.shape.Shape shape) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void animate() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public javafx.scene.paint.Color getDrawUnpicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setDrawUnpicked(javafx.scene.paint.Color drawUnpicked) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public javafx.scene.paint.Color getDrawPicked() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setDrawPicked(javafx.scene.paint.Color drawPicked) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public IRenderer createDeepCopy(ICopyCreator copyCreator) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public boolean isMutable() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public boolean update(IRenderer instance, IUpdater updater) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+/*    private Shape shape;
     private Color picked;
     private Color unpicked;
     private Stroke stroke;
@@ -187,5 +251,5 @@ public class StaticRenderer implements IRenderer {
     @Override
     public boolean equals(Object o) {
         return (o instanceof StaticRenderer);
-    }
+    }*/
 }

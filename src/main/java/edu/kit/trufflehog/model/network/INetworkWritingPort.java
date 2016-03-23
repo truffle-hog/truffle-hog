@@ -1,10 +1,10 @@
 package edu.kit.trufflehog.model.network;
 
-import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.util.DeepCopyable;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 
 import java.util.Collection;
 
@@ -30,4 +30,6 @@ public interface INetworkWritingPort extends DeepCopyable<Collection<IConnection
      * @param filter filter to be applied to the graph
      */
     void applyFilter(IFilter filter);
+
+    ObservableUpdatableGraph<INode, IConnection> getGraph();
 }

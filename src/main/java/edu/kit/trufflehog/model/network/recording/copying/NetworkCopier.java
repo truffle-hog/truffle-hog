@@ -87,8 +87,8 @@ public class NetworkCopier implements NetworkVisitor<NetworkCopy>, ICopyCreator 
             final IAddress src = connection.getSrc().getAddress();
             final IAddress dest = connection.getDest().getAddress();
 
-            final Point2D srcLoc = networkViewPort.transform(connection.getSrc());
-            final Point2D destLoc = networkViewPort.transform(connection.getDest());
+            final Point2D srcLoc = networkViewPort.apply(connection.getSrc());
+            final Point2D destLoc = networkViewPort.apply(connection.getDest());
 
             locationMap.put(src, new Point2D.Double(srcLoc.getX(), srcLoc.getY()));
             locationMap.put(dest, new Point2D.Double(destLoc.getX(), destLoc.getY()));

@@ -3,20 +3,10 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
-import org.apache.commons.collections15.buffer.BlockingBuffer;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Shape;
 import org.apache.logging.log4j.Logger;
-
-import javax.swing.Icon;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.util.Arrays;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.logging.LogManager;
 
 /**
  * This Component of a node will handle how a node is displayed in the graph
@@ -29,24 +19,17 @@ public class NodeRenderer implements IRenderer {
 
     private static final Logger logger = org.apache.logging.log4j.LogManager.getLogger(NodeRenderer.class);
 
-    private Icon iconUnpicked = null;
-    private Icon iconPicked = null;
-    //private Shape shape = new Rectangle2D.Double(-50,-50,100,100);
-
-    private final BlockingQueue<Shape> cachedShapes = new ArrayBlockingQueue<>(5);
-
-    private Shape shape = new Ellipse2D.Double(-30, -30, 60, 60);
-    private Color colorPicked = new Color(0x4089BFf0, true);
-    private Color colorUnpicked = new Color(0x4089BFa0, true);
-
-    private final Shape shapes[] = new Shape[10];
+//    private Icon iconUnpicked = null;
+//    private Icon iconPicked = null;
 
 
+    private Color colorPicked = Color.web("0x4089BFf0");
+    private Color colorUnpicked = Color.web("0x4089BFa0");// = new Color(0x4089BFa0, true);
 
-    private Color drawPicked = new Color(0xC6E9FFf3, true);
-    private Color drawUnpicked = new Color(0x4089BFd0, true);
+    private Shape shape = new Circle(50); // = new Ellipse2D.Double(-30, -30, 60, 60);
 
-    private Stroke stroke = new BasicStroke(7f);
+    private Color drawPicked; // = new Color(0xC6E9FFf3, true);
+    private Color drawUnpicked; // = new Color(0x4089BFd0, true);
 
     /**
      * <p>
@@ -75,15 +58,6 @@ public class NodeRenderer implements IRenderer {
         this.colorUnpicked = colorUnpicked;
     }
 
-    public NodeRenderer(Icon picked, Icon unpicked) {
-
-        if (picked == null) throw new NullPointerException("picked icon must not be null");
-        if (unpicked == null) throw new NullPointerException("unpicked icon must not be null");
-
-        this.iconUnpicked = unpicked;
-        this.iconPicked = picked;
-    }
-
     @Override
     public Color getDrawUnpicked() {
         return drawUnpicked;
@@ -99,60 +73,6 @@ public class NodeRenderer implements IRenderer {
     @Override
     public void setDrawPicked(Color drawPicked) {
         this.drawPicked = drawPicked;
-    }
-
-    @Override
-    public Icon getIconUnpicked() {
-        return iconUnpicked;
-    }
-
-    @Override
-    public void setIconUnpicked(Icon iconUnpicked) {
-        this.iconUnpicked = iconUnpicked;
-    }
-
-    @Override
-    public void addCachedShape(Shape transformedShape) {
-        cachedShapes.offer(transformedShape);
-    }
-
-    @Override
-    public Shape getCachedShape() {
-        return cachedShapes.poll();
-    }
-
-    private Shape getShape(int index) {
-
-        if (shapes[index] == null) {
-
-            //shapes[index] = new Ellipse2D.Double(-(index + 1) * 10, -(index + 1) * 10, (index + 1) * 20, (index + 1) * 20);
-            shapes[index] = AffineTransform.getScaleInstance(0.3d + ((double) (index + 1) / 10d), 0.3d + ((double) (index + 1) / 10d)).createTransformedShape(shape);
-          /*  for (int i = 1; i < 11; i++) {
-                shapes[i - 1] = AffineTransform.getScaleInstance(0.3d + ((double)i / 10d), 0.3d + ((double)i / 10d)).createTransformedShape(shape);
-            }*/
-        }
-        return shapes[index];
-    }
-
-    @Override
-    public Shape getShape(double relation) {
-
-
-        //logger.debug("relation: " + relation);
-
-        //logger.debug("index: " + (int) ((shapes.length - 1) * relation));
-
-        return getShape((int) ((shapes.length - 1) * relation));
-    }
-
-    @Override
-    public Icon getIconPicked() {
-        return iconPicked;
-    }
-
-    @Override
-    public void setIconPicked(Icon iconPicked) {
-        this.iconPicked = iconPicked;
     }
 
 
@@ -186,11 +106,6 @@ public class NodeRenderer implements IRenderer {
         return colorUnpicked;
     }
 
-    @Override
-    public Stroke getStroke() {
-        return stroke;
-    }
-
     /**
      * <p>
      *     Sets the current shape of the node (must not be null!).
@@ -203,19 +118,8 @@ public class NodeRenderer implements IRenderer {
     }
 
     @Override
-    public void setStroke(Stroke stroke) {
-        if (stroke == null) { throw new NullPointerException("stroke must not be null!"); }
-        this.stroke = stroke;
-    }
-
-    @Override
     public void animate() {
 
-    }
-
-    @Override
-    public int animationTime() {
-        return 0;
     }
 
     /**

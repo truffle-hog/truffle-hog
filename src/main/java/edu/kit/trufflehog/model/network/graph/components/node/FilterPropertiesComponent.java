@@ -6,6 +6,7 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 
@@ -91,6 +92,16 @@ public class FilterPropertiesComponent implements IComponent {
     @Override
     public boolean isMutable() {
         return true;
+    }
+
+    @Override
+    public void setParent(IComposition parent) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public IComposition getParent() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override

@@ -21,6 +21,7 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
+import edu.kit.trufflehog.model.network.graph.NetworkNodeTester;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
@@ -93,6 +94,12 @@ public class TapeCopyCreator implements IComponentVisitor<IComponent>, GraphCopi
 
     @Override
     public IComponent visit(NetworkConnection iComponents) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    // TODO delete
+    @Override
+    public IComponent visit(NetworkNodeTester iComponents) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 

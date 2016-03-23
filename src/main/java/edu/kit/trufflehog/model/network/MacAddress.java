@@ -38,10 +38,9 @@ public class MacAddress implements IAddress {
 
     private final byte[] bytes;
     private final long address;
-    private final int hashcode;
     private final String addressString;
     private final boolean isMulticast;
-
+    private final int hashcode;
     public MacAddress(long address) throws InvalidMACAddress {
 
         this.address = address;
@@ -50,8 +49,7 @@ public class MacAddress implements IAddress {
             throw new InvalidMACAddress(address);
         }
 
-        hashcode = (new Long(this.address)).hashCode();
-
+        hashcode = (new Long(address)).hashCode();
         // transform to byte array
         final byte[] extractedBytes = ByteBuffer.allocate(8).putLong(address).array();
         bytes = Arrays.copyOfRange(extractedBytes, 2, 8);

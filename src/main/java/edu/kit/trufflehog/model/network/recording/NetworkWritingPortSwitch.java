@@ -5,6 +5,7 @@ import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.util.ICopyCreator;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 
 import java.util.Collection;
 
@@ -41,6 +42,11 @@ public class NetworkWritingPortSwitch implements INetworkWritingPortSwitch {
     @Override
     public void applyFilter(IFilter filter) {
         activePort.applyFilter(filter);
+    }
+
+    @Override
+    public ObservableUpdatableGraph<INode, IConnection> getGraph() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override

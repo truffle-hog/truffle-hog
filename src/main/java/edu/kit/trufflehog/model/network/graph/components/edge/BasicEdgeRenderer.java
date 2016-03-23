@@ -3,17 +3,14 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
-import javafx.animation.Transition;
+import javafx.animation.StrokeTransition;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import javax.swing.Icon;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.Ellipse2D;
 
 /**
  * This Component of a node will handle how a node is displayed in the graph
@@ -28,53 +25,55 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private Color colorUnpicked = new Color(0x21252b);
-    private float[] hsbValsUnpicked = new float[3];
+    private Color colorUnpicked = Color.web("0x21252b");
+    private Color colorPicked = Color.web("0x6CFF82");
 
+    private Line line = new Line();
 
-    private Color colorPicked = new Color(0x6CFF82);
-    private float[] hsbValsPicked = new float[3];
-
-    private Shape shape = new Ellipse2D.Float(-10, -10, 20, 20);
-
-    private Color arrowFillPicked = new Color(0x6CFF82);
-    private Color arrowFillUnpicked = new Color(0xfffffff0, true);
+    private Color arrowFillPicked = Color.web("0x6CFF82");
+    private Color arrowFillUnpicked = Color.web("0xfffffff0");
 
     private Color arrowDrawPicked = null;
     private Color arrowDrawUnpicked = null;
 
-    private Shape arrowShapePicked = new Ellipse2D.Float(-8, -8, 16, 16);
-    private Shape arrowShapeUnpicked = new Ellipse2D.Float(-6, -6, 12, 12);
+    private Shape arrowShapePicked = new Circle(8);
+    private Shape arrowShapeUnpicked = new Circle(6);
 
+    private double currentBrightness = 0.5f;
 
-    //TODO change this!
-    private Stroke stroke = new BasicStroke();
+    // TODO Delete??
+    private Shape shape = null;
 
-    private float currentBrightness = 0.5f;
-
-    private final Transition animator;
+    private final StrokeTransition animator;
 
     private int animationTime = 500;
 
     public BasicEdgeRenderer() {
 
-        animator = new Transition() {
+        line.setStroke(colorUnpicked);
+
+        animator = new StrokeTransition(Duration.millis(animationTime), line, colorUnpicked, Color.WHITE);
+        animator.setCycleCount(1);
+        animator.setAutoReverse(true);
+
+/*        animator = new Transition() {
 
             {
                 setCycleDuration(Duration.millis(animationTime));
             }
 
             protected void interpolate(double frac) {
-                currentBrightness = (float) (frac < 0.5 ? 0.5 + frac : 1.5 - frac);
+                currentBrightness = (frac < 0.5 ? 0.5 + frac : 1.5 - frac);
             }
         };
-
         animator.setCycleCount(1);
 
-        Color.RGBtoHSB(colorUnpicked.getRed(), colorUnpicked.getGreen(), colorUnpicked.getBlue(), hsbValsUnpicked);
-        Color.RGBtoHSB(colorPicked.getRed(), colorPicked.getGreen(), colorPicked.getBlue(), hsbValsPicked);
+        colorPicked.*/
+    }
 
-        currentBrightness = hsbValsUnpicked[2];
+    @Override
+    public Line getLine() {
+        return line;
     }
 
     @Override
@@ -118,25 +117,18 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
     @Override
     public Shape getShape() {
-        return shape;
+        return line;
     }
 
     @Override
     public Color getColorUnpicked() {
 
-        return new Color(Color.HSBtoRGB(hsbValsUnpicked[0], hsbValsUnpicked[1], currentBrightness));
+        return colorUnpicked;
     }
 
     @Override
     public Color getColorPicked() {
-        // TODO implement
-        return new Color(Color.HSBtoRGB(hsbValsPicked[0], hsbValsPicked[1],
-                (currentBrightness <= 0.7f) ? (currentBrightness + 0.3f) : 1.0f));
-    }
-
-    @Override
-    public Stroke getStroke() {
-        return stroke;
+       return colorPicked;
     }
 
     @Override
@@ -147,7 +139,6 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
         }
 
         this.colorUnpicked = colorUnpicked;
-        Color.RGBtoHSB(this.colorUnpicked.getRed(), this.colorUnpicked.getGreen(), this.colorUnpicked.getBlue(), hsbValsPicked);
     }
 
     @Override
@@ -161,32 +152,8 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     }
 
     @Override
-    public void setStroke(Stroke stroke) {
-        if (stroke == null) {
-            throw new NullPointerException("stroke must not be null!");
-        }
-        this.stroke = stroke;
-    }
-
-    @Override
-
     public void animate() {
         animator.play();
-    }
-
-    @Override
-    public int animationTime() {
-        return animationTime;
-    }
-
-    @Override
-    public Icon getIconPicked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void setIconPicked(Icon icon) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
@@ -210,34 +177,6 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     }
 
     @Override
-    public Icon getIconUnpicked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void setIconUnpicked(Icon icon) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void addCachedShape(Shape transformedShape) {
-        //TODO implement this method
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Shape getCachedShape() {
-        //TODO implement this method
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Shape getShape(double relation) {
-        //TODO implement this method
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
     public boolean isMutable() {
         return true;
     }
@@ -245,8 +184,6 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     public void setColorPicked(Color colorPicked) {
         if (colorPicked == null) throw new NullPointerException("colorPicked must not be null!");
         this.colorPicked = colorPicked;
-
-        Color.RGBtoHSB(this.colorPicked.getRed(), this.colorPicked.getGreen(), this.colorPicked.getBlue(), hsbValsPicked);
     }
 
     @Override
@@ -267,11 +204,11 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
         return (o instanceof BasicEdgeRenderer);
     }
 
-    public float getCurrentBrightness() {
+    public double getCurrentBrightness() {
         return currentBrightness;
     }
 
-    public void setCurrentBrightness(float currentBrightness) {
+    public void setCurrentBrightness(double currentBrightness) {
         this.currentBrightness = currentBrightness;
     }
 

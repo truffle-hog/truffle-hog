@@ -11,7 +11,6 @@ import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
@@ -20,6 +19,8 @@ import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingC
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Random;
 
 
 /**
@@ -36,6 +37,9 @@ public class AddPacketDataCommand implements ITruffleCommand {
     private final INetworkWritingPort writingPort;
     private final IFilter filter;
     private final IPacketData data;
+
+
+    private static final Random random = new Random(500);
 
     /**
      * <p>
@@ -106,7 +110,7 @@ public class AddPacketDataCommand implements ITruffleCommand {
         destNode.addComponent(new ViewComponent(new NodeRenderer()));
 
         if (destAddress.isMulticast()) {
-            connection.addComponent(new ViewComponent(new MulticastEdgeRenderer()));
+            connection.addComponent(new ViewComponent(new BasicEdgeRenderer()));
         } else {
             connection.addComponent(new ViewComponent(new BasicEdgeRenderer()));
         }

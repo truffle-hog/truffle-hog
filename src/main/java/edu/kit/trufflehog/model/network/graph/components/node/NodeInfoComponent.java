@@ -3,6 +3,7 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 import edu.kit.trufflehog.model.network.IPAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import javafx.beans.property.ObjectProperty;
@@ -125,6 +126,16 @@ public class NodeInfoComponent implements IComponent {
     @Override
     public boolean isMutable() {
         return true;
+    }
+
+    @Override
+    public void setParent(IComposition parent) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public IComposition getParent() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override

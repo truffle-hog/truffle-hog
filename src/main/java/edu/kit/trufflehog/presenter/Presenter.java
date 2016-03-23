@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.command.usercommand.UpdateFilterCommand;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.MacroFilter;
@@ -10,17 +9,31 @@ import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
-import edu.kit.trufflehog.model.network.recording.*;
+import edu.kit.trufflehog.model.network.recording.INetworkDevice;
+import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
+import edu.kit.trufflehog.model.network.recording.INetworkWritingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkDevice;
+import edu.kit.trufflehog.model.network.recording.NetworkReadingPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
+import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.view.ViewSwitcher;
+import edu.kit.trufflehog.view.jung.visualization.FXVisualizationViewer;
+import edu.kit.trufflehog.view.jung.visualization.SceneGestures;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
-import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,8 +43,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
-import static edu.kit.trufflehog.Main.THE_EXECUTOR;
 
 /**
  * <p>
@@ -83,7 +94,26 @@ public class Presenter {
         }
         configData = configDataTemp;
 
-        primaryStage.setOnCloseRequest(event -> finish());
+       // primaryStage.setOnCloseRequest(event -> finish());
+
+        primaryStage.setOnCloseRequest(e -> {
+            Platform.exit();
+
+            ExecutorService service = Executors.newSingleThreadExecutor();
+            // Close all databases and other resources accessing the hard drive that need to be closed.
+            configData.close();
+
+            // Disconnect the truffleReceiver
+            if (truffleReceiver != null) {
+                truffleReceiver.disconnect();
+            }
+
+            // Kill all threads and the thread pool with it
+            LoggedScheduledExecutor.getInstance().shutdownNow();
+
+            // Shut down the system
+            System.exit(0);
+        });
     }
 
     /**
@@ -94,8 +124,27 @@ public class Presenter {
      */
     public void present() {
         initNetwork();
-        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
-                new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
+
+        //ObservableLayout<INode, IConnection> layouts = new ObservableLayout<>(new FRLayout<>(sgv.g));
+        //layouts.setSize(new Dimension(300,300)); // sets the initial size of the space
+
+        final FXVisualizationViewer<INode, IConnection> viewer = new FXVisualizationViewer<>(liveNetwork.getViewPort().getDelegate());
+        SceneGestures sceneGestures = new SceneGestures(viewer.getCanvas());
+
+        Scene scene = new Scene(viewer);
+
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN),
+                viewer::refreshLayout);
+        scene.addEventFilter( MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
+        scene.addEventFilter( MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
+        scene.addEventFilter( ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+
+/*        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
+                new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));*/
     }
 
     private void initNetwork() {
@@ -104,7 +153,7 @@ public class Presenter {
 
         // create a Graph
 
-        final Graph<INode, IConnection> graph = Graphs.synchronizedDirectedGraph(new DirectedSparseGraph<>());
+        final Graph<INode, IConnection> graph = new DirectedSparseGraph<>();
 
         final ObservableUpdatableGraph<INode, IConnection> og = new ObservableUpdatableGraph<>(graph, new LiveUpdater());
 
@@ -114,14 +163,6 @@ public class Presenter {
         // TODO Add real thing too, perhaps I misunderstood the viewport, need to talk to somebody in person ( - Julian)
         viewPortMap.put(ViewSwitcher.PROFINET_VIEW, liveNetwork.getViewPort());
 
-        // TODO Where to put this???
-/*        final Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(50), event -> {
-            //refresh();
-            //Platform.runLater(() -> repaint());
-            liveNetwork.getViewPort().setViewTime(Instant.now().toEpochMilli());
-        }));
-        updateTime.setCycleCount(Timeline.INDEFINITE);
-        updateTime.goReplay();*/
 
         /*
         // initialize the replay network that will be written on by a networkTape if the device plays a replay
@@ -147,22 +188,27 @@ public class Presenter {
         // Tell the network observation device to start recording the
         // given network with 25fps on the created tape
 
-       // final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
+        final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-        truffleReceiver = new UnixSocketReceiver(writingPortSwitch, macroFilter);
-        this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
-        THE_EXECUTOR.execute(truffleReceiver);
-        //truffleReceiver.connect();
+        truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
+
+
+
+
+
+        //this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
+        truffleFetchService.execute(truffleReceiver);
+        truffleReceiver.connect();
 
         // Initialize the command executor and register it.
-        //final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
-        THE_EXECUTOR.execute(commandExecutor);
+        final ExecutorService commandExecutorService = Executors.newSingleThreadExecutor();
+        commandExecutorService.execute(commandExecutor);
         truffleReceiver.addListener(commandExecutor.asTruffleCommandListener());
 
-        //final ExecutorService nodeStatisticsUpdaterService = Executors.newSingleThreadExecutor();
+        final ExecutorService nodeStatisticsUpdaterService = Executors.newSingleThreadExecutor();
         final NodeStatisticsUpdater nodeStatisticsUpdater = new NodeStatisticsUpdater(readingPortSwitch, viewPortSwitch);
-        THE_EXECUTOR.execute(nodeStatisticsUpdater);
+        nodeStatisticsUpdaterService.execute(nodeStatisticsUpdater);
 
         // goReplay that ongoing recording on the given viewportswitch
         //networkDevice.goReplay(tape, viewPortSwitch);

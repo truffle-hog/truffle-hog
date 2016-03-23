@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.network;
 
+import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
@@ -27,6 +28,8 @@ public interface INetworkViewPort extends Layout<INode, IConnection>, DeepCopyab
     int getMaxConnectionSize();
 
     void setMaxConnectionSize(int size);
+
+    ObservableLayout<INode, IConnection> getDelegate();
 
     /**
      * Returns the maximum number of connections that

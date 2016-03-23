@@ -17,9 +17,9 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
-
-import java.awt.Color;
-import java.awt.Shape;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 
 /**
  * \brief
@@ -31,6 +31,9 @@ import java.awt.Shape;
  * @version 0.0.1
  */
 public interface IEdgeRenderer extends IRenderer {
+
+    // TODO change to QuadCurve
+    Line getLine();
 
     Shape getArrowShapePicked();
 

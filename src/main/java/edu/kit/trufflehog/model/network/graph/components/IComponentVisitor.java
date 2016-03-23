@@ -18,6 +18,7 @@ package edu.kit.trufflehog.model.network.graph.components;
 
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
+import edu.kit.trufflehog.model.network.graph.NetworkNodeTester;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
@@ -44,4 +45,7 @@ public interface IComponentVisitor<T> {
     T visit(PacketDataLoggingComponent packetDataLoggingComponent);
     T visit(NetworkNode iComponents);
     T visit(NetworkConnection iComponents);
+
+    // TODO delete
+    T visit(NetworkNodeTester iComponents);
 }

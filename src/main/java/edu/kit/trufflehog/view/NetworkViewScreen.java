@@ -8,18 +8,8 @@ import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.IEdgeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
-import edu.kit.trufflehog.view.graph.FXVisualizationViewer;
-import edu.kit.trufflehog.view.graph.control.FXDefaultModalGraphMouse;
-import edu.kit.trufflehog.view.graph.control.FXModalGraphMouse;
-import edu.kit.trufflehog.view.graph.decorators.FXEdgeShape;
-import edu.kit.trufflehog.view.graph.renderers.FXRenderer;
-import edu.kit.trufflehog.view.graph.renderers.FXVertexLabelRenderer;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
@@ -33,7 +23,6 @@ import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
-import edu.uci.ics.jung.visualization.util.Caching;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -45,12 +34,14 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.RenderingHints;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -109,7 +100,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
                     final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
                     node.getComponent(ViewComponent.class).animate();
-                    refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
+                    //refresher.setCycleCount(node.getComponent(ViewComponent.class).getRenderer().animationTime());
                     repaint();
                     refresher.playFromStart();
 
@@ -117,7 +108,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 
                     final IConnection connection = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
                     connection.getComponent(ViewComponent.class).animate();
-                    refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
+                    //refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
                     repaint();
                     refresher.playFromStart();
                 }
@@ -403,7 +394,9 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
             final int currentSize = statComp.getCommunicationCount();
             final long maxSize = viewPort.getMaxThroughput();
             final double relation = (double) currentSize / (maxSize == 0 ? 1 : (double) maxSize);
-            return viewComponent.getRenderer().getShape(relation);
+            //return viewComponent.getRenderer().getShape(relation);
+
+			throw new UnsupportedOperationException("not implemented");
         });
 
 		//jungView.getRenderContext().setArrowPlacementTolerance(0.1f);
@@ -481,17 +474,6 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
 		jungView.addKeyListener(l);
 	}
 
-	public void setEdgeToolTipTransformer(Transformer<IConnection, String> edgeToolTipTransformer) {
-		jungView.setEdgeToolTipTransformer(edgeToolTipTransformer);
-	}
-
-	public void setMouseEventToolTipTransformer(Transformer<MouseEvent, String> mouseEventToolTipTransformer) {
-		jungView.setMouseEventToolTipTransformer(mouseEventToolTipTransformer);
-	}
-
-	public void setVertexToolTipTransformer(Transformer<INode, String> vertexToolTipTransformer) {
-		jungView.setVertexToolTipTransformer(vertexToolTipTransformer);
-	}
 
 	public String getToolTipText(MouseEvent event) {
 		return jungView.getToolTipText(event);

@@ -14,6 +14,8 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
     private final INode src;
     private final INode dest;
 
+    private IComposition parent = null;
+
     private final int hashcode;
 
     public NetworkConnection(INode networkNodeSrc, INode networkNodeDest, IComponent... components) {
@@ -73,6 +75,16 @@ public class NetworkConnection extends AbstractComposition implements IConnectio
     @Override
     public boolean isMutable() {
         return true;
+    }
+
+    @Override
+    public void setParent(IComposition parent) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public IComposition getParent() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
 

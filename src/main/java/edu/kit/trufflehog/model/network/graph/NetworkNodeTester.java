@@ -4,20 +4,18 @@ import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 
-import java.io.Serializable;
-
 /**
  * <p>
  *     Node in the graph to represent a device in the network. Stores important device data and logs.
  * </p>
  */
-public class NetworkNode extends AbstractComposition implements Serializable, INode {
+public class NetworkNodeTester extends AbstractComposition implements INode {
 
 
 	private final IAddress address;
 	private final int hashcode;
 
-    public NetworkNode(IAddress address, IComponent... components) {
+    public NetworkNodeTester(IAddress address, IComponent... components) {
         super();
 
         this.address = address;
@@ -63,10 +61,10 @@ public class NetworkNode extends AbstractComposition implements Serializable, IN
 	@Override
 	public boolean equals(Object o) {
 
-		if (!(o instanceof NetworkNode)) {
+		if (!(o instanceof INode)) {
 			return false;
 		}
-		final NetworkNode other = (NetworkNode) o;
+		final INode other = (INode) o;
 		return getAddress().equals(other.getAddress());
 	}
 

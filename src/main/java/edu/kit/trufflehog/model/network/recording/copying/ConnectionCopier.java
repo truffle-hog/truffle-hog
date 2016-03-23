@@ -19,6 +19,7 @@ package edu.kit.trufflehog.model.network.recording.copying;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
+import edu.kit.trufflehog.model.network.graph.NetworkNodeTester;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
@@ -95,5 +96,11 @@ public class ConnectionCopier implements IComponentVisitor<IConnection> {
             }
         });
         return copy;
+    }
+
+    // TODO DELETE
+    @Override
+    public IConnection visit(NetworkNodeTester iComponents) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 }

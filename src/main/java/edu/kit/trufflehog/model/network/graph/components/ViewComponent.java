@@ -17,6 +17,7 @@
 package edu.kit.trufflehog.model.network.graph.components;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 
 /**
@@ -31,20 +32,18 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 public class ViewComponent extends AbstractComponent implements IComponent {
 
     private final IRenderer renderer;
+    private IComposition parent;
 
     public ViewComponent(IRenderer renderer) {
-        if (renderer == null) throw new NullPointerException("renderer must not be null!");
         this.renderer = renderer;
     }
 
-    public IRenderer getRenderer() {
-
-        return renderer;
+    public void animate() {
+        renderer.animate();
     }
 
-    public void animate() {
-
-        renderer.animate();
+    public IRenderer getRenderer() {
+        return renderer;
     }
 
     @Override
@@ -64,18 +63,20 @@ public class ViewComponent extends AbstractComponent implements IComponent {
     }
 
     @Override
+    public void setParent(IComposition parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public IComposition getParent() {
+        return parent;
+    }
+
+    @Override
     public boolean update(IComponent instance, IUpdater updater) {
 
         if (instance == null) throw new NullPointerException("instance must not be null!");
         if (updater == null) throw new NullPointerException("updater must not be null!");
         return updater.update(this, instance);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-
-        // TODO check if more equals checking necessary
-        return o instanceof ViewComponent && ((ViewComponent) o).getRenderer().equals(this.getRenderer());
-
     }
 }

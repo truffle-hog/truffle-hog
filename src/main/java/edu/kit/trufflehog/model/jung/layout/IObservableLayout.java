@@ -11,36 +11,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.kit.trufflehog.model.network.graph;
+package edu.kit.trufflehog.model.jung.layout;
 
-import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
-import edu.kit.trufflehog.util.Updatable;
-
-import java.io.Serializable;
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 
 /**
  * \brief
  * \details
- * \date 04.03.16
+ * \date 22.03.16
  * \copyright GNU Public License
+ *
  * @author Jan Hermes
  * @version 0.0.1
  */
-public interface IComponent extends Updatable<IComponent>, Serializable {
+public interface IObservableLayout<V, E> extends Layout<V, E> {
 
-    /**
-     * @return the name of this component
-     */
-    String name();
-
-    <T> T accept(IComponentVisitor<T> visitor);
-
-    boolean isMutable();
-
-    void setParent(IComposition parent);
-
-    IComposition getParent();
+    ObservableUpdatableGraph<V, E> getObservableGraph();
 }

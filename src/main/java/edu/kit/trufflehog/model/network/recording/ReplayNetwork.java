@@ -1,13 +1,15 @@
 package edu.kit.trufflehog.model.network.recording;
 
+import com.google.common.base.Function;
+import edu.kit.trufflehog.model.filter.IFilter;
+import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.IAddress;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.INetworkReadingPort;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
-import edu.kit.trufflehog.model.filter.IFilter;
-import edu.kit.trufflehog.model.network.*;
+import edu.kit.trufflehog.model.network.NetworkVisitor;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -15,6 +17,7 @@ import edu.kit.trufflehog.util.ICopyCreator;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -113,6 +116,11 @@ public class ReplayNetwork implements INetwork {
         }
 
         @Override
+        public ObservableLayout<INode, IConnection> getDelegate() {
+            throw new UnsupportedOperationException("Operation not implemented yet");
+        }
+
+        @Override
         public int getMaxConnectionSize() {
             return maxConnectionSize.get();
         }
@@ -165,9 +173,8 @@ public class ReplayNetwork implements INetwork {
         }
 
         @Override
-        synchronized
-        public void setInitializer(Transformer<INode, Point2D> transformer) {
-            delegate.setInitializer(transformer);
+        public void setInitializer(Function<INode, Point2D> initializer) {
+            throw new UnsupportedOperationException("Operation not implemented yet");
         }
 
         @Override
@@ -217,12 +224,6 @@ public class ReplayNetwork implements INetwork {
         synchronized
         public void setLocation(INode iNode, Point2D point2D) {
             delegate.setLocation(iNode, point2D);
-        }
-
-        @Override
-        synchronized
-        public Point2D transform(INode iNode) {
-            return delegate.transform(iNode);
         }
 
         synchronized
@@ -340,6 +341,16 @@ public class ReplayNetwork implements INetwork {
         public boolean isMutable() {
             return false;
         }
+
+/*        @Override
+        public ObservableGraph<INode, IConnection> getObservableGraph() {
+            throw new UnsupportedOperationException("Operation not implemented yet");
+        }*/
+
+        @Override
+        public Point2D apply(INode input) {
+            throw new UnsupportedOperationException("Operation not implemented yet");
+        }
     }
 
     /**
@@ -391,6 +402,11 @@ public class ReplayNetwork implements INetwork {
                 filter.check(node);
             }*/
             //nothing to do here
+        }
+
+        @Override
+        public ObservableUpdatableGraph<INode, IConnection> getGraph() {
+            throw new UnsupportedOperationException("Operation not implemented yet");
         }
 
         @Override

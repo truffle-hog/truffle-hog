@@ -1,6 +1,7 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
@@ -77,6 +78,16 @@ public class PacketDataLoggingComponent extends AbstractComponent implements ICo
     @Override
     public boolean isMutable() {
         return true;
+    }
+
+    @Override
+    public void setParent(IComposition parent) {
+        throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public IComposition getParent() {
+        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override

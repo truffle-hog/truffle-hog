@@ -108,9 +108,10 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
     @Override
     public boolean update(MulticastEdgeRenderer multicastEdgeRenderer, IRenderer instance) {
 
-        multicastEdgeRenderer.setStrokeWidth(5f);
+        // TODO implement
+/*        multicastEdgeRenderer.setStrokeWidth(5f);
         multicastEdgeRenderer.setMultiplier(1.05f);
-        multicastEdgeRenderer.setOpacity(170);
+        multicastEdgeRenderer.setOpacity(170);*/
 
         //multicastEdgeRenderer.setLastUpdate(Instant.now().toEpochMilli());
         return true;
@@ -171,7 +172,9 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
             return false;
         }
         final ViewComponent other = (ViewComponent) instance;
-        return viewComponent.getRenderer().update(other.getRenderer(), this);
+
+        // FIXME correct updating
+        return true;
     }
 
     @Override

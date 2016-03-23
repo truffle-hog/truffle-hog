@@ -17,19 +17,24 @@
 
 package edu.kit.trufflehog.model.network;
 
-import edu.kit.trufflehog.model.network.graph.CircleLayoutFactory;
+import com.google.common.base.Function;
+import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
 import edu.kit.trufflehog.util.ICopyCreator;
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
-import javafx.beans.property.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import org.apache.commons.collections15.Transformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,7 +56,7 @@ public class NetworkViewPort implements INetworkViewPort {
 
     private static final Logger logger = LogManager.getLogger(NetworkViewPort.class);
 
-    private Layout<INode, IConnection> delegate;
+    private ObservableLayout<INode, IConnection> delegate;
     private final ObservableUpdatableGraph<INode, IConnection> graphDelegate;
     private Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> layoutFactory;
 
@@ -65,9 +70,13 @@ public class NetworkViewPort implements INetworkViewPort {
 
         this.graphDelegate = delegate;
 
-        this.delegate = new FRLayout<>(this.graphDelegate);
+        this.delegate = new ObservableLayout<>(new FRLayout<>(this.graphDelegate));
         this.layoutFactory = new FRLayoutFactory();
 
+    }
+
+    public ObservableLayout<INode, IConnection> getDelegate() {
+        return delegate;
     }
 
     @Override
@@ -76,8 +85,8 @@ public class NetworkViewPort implements INetworkViewPort {
     }
 
     @Override
-    public void setInitializer(Transformer<INode, Point2D> initializer) {
-        delegate.setInitializer(initializer);
+    public void setInitializer(Function<INode, Point2D> initializer) {
+        this.delegate.setInitializer(initializer);
     }
 
     @Override
@@ -119,12 +128,6 @@ public class NetworkViewPort implements INetworkViewPort {
     public void setLocation(INode iNode, Point2D location) {
         delegate.setLocation(iNode, location);
     }
-
-    @Override
-    public Point2D transform(INode iNode) {
-        return delegate.transform(iNode);
-    }
-
 
     @Override
     public int getMaxConnectionSize() {
@@ -208,7 +211,8 @@ public class NetworkViewPort implements INetworkViewPort {
     @Override
     public void refreshLayout() {
 
-        delegate = layoutFactory.transform(delegate.getGraph());
+        throw new UnsupportedOperationException("not implemented . now is in FXVisualizationViewer");
+        //delegate = layoutFactory.transform(delegate.getGraph());
     }
 
     @Override
@@ -249,4 +253,13 @@ public class NetworkViewPort implements INetworkViewPort {
     }
 
 
+/*    @Override
+    public ObservableUpdatableGraph<INode, IConnection> getObservableGraph() {
+        return graphDelegate;
+    }*/
+
+    @Override
+    public Point2D apply(INode input) {
+        return delegate.apply(input);
+    }
 }
