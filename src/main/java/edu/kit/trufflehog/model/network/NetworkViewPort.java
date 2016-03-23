@@ -17,7 +17,6 @@
 
 package edu.kit.trufflehog.model.network;
 
-import com.google.common.base.Function;
 import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;
@@ -85,7 +84,7 @@ public class NetworkViewPort implements INetworkViewPort {
     }
 
     @Override
-    public void setInitializer(Function<INode, Point2D> initializer) {
+    public void setInitializer(Transformer<INode, Point2D> initializer) {
         this.delegate.setInitializer(initializer);
     }
 
@@ -259,7 +258,7 @@ public class NetworkViewPort implements INetworkViewPort {
     }*/
 
     @Override
-    public Point2D apply(INode input) {
-        return delegate.apply(input);
+    public Point2D transform(INode input) {
+        return delegate.transform(input);
     }
 }

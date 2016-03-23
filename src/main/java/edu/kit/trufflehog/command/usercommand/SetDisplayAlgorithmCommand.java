@@ -1,8 +1,8 @@
 package edu.kit.trufflehog.command.usercommand;
 
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import org.apache.commons.collections15.Transformer;

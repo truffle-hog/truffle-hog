@@ -20,8 +20,8 @@ package edu.kit.trufflehog.presenter.nativebuilders.osx;
 import edu.kit.trufflehog.presenter.nativebuilders.NativeBuilder;
 import org.apache.logging.log4j.LogManager;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Image;
 import java.io.File;
 import java.net.URL;
 

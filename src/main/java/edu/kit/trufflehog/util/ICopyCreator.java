@@ -24,8 +24,15 @@ import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
-import edu.kit.trufflehog.model.network.graph.components.edge.*;
-import edu.kit.trufflehog.model.network.graph.components.node.*;
+import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.edge.StaticRenderer;
+import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.model.network.recording.NetworkCopy;
 import edu.kit.trufflehog.model.network.recording.NetworkViewCopy;
 

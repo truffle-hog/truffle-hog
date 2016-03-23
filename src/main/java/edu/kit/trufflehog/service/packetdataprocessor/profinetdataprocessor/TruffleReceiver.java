@@ -1,9 +1,9 @@
 package edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor;
 
 import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
+import edu.kit.trufflehog.command.trufflecommand.ReceiverErrorCommand;
 import edu.kit.trufflehog.util.INotifier;
 import edu.kit.trufflehog.util.Notifier;
-import edu.kit.trufflehog.command.trufflecommand.ReceiverErrorCommand;
 
 /**
  * <p>

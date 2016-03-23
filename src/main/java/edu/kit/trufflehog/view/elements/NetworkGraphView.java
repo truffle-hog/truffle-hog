@@ -19,9 +19,9 @@ package edu.kit.trufflehog.view.elements;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
+import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -36,7 +36,7 @@ import org.apache.commons.collections15.Transformer;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.util.Map;
 

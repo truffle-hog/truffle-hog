@@ -2,7 +2,6 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.view.controllers.BorderPaneController;
 import edu.kit.trufflehog.viewmodel.GeneralStatisticsViewModel;
-import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;

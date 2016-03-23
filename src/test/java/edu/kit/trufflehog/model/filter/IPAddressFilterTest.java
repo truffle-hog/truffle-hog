@@ -4,8 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.LinkedList;
 
 /**
  * <p>

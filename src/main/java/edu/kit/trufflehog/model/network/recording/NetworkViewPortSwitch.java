@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.model.network.recording;
 
-import com.google.common.base.Function;
 import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
@@ -164,7 +163,7 @@ public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
     }
 
     @Override
-    public void setInitializer(Function<INode, Point2D> initializer) {
+    public void setInitializer(Transformer<INode, Point2D> initializer) {
         setInitializer(initializer);
     }
     @Override
@@ -225,7 +224,7 @@ public class NetworkViewPortSwitch implements INetworkViewPortSwitch {
     }*/
 
     @Override
-    public Point2D apply(INode input) {
-        return getActiveViewPort().apply(input);
+    public Point2D transform(INode input) {
+        return getActiveViewPort().transform(input);
     }
 }

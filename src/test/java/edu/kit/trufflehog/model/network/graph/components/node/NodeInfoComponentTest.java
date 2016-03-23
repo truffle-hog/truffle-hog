@@ -1,13 +1,10 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.network.MacAddress;
-import edu.kit.trufflehog.model.network.graph.INode;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * <p>

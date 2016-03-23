@@ -10,7 +10,7 @@ import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * <p>

@@ -5,7 +5,6 @@ import edu.kit.trufflehog.util.IListener;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * <p>

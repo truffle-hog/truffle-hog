@@ -91,7 +91,7 @@ public class ObservableLayout<V extends IComposition, E extends IComposition> ex
     }
 
     @Override
-    public Point2D apply(V input) {
+    public Point2D transform(V input) {
         return super.transform(input);
     }
 }

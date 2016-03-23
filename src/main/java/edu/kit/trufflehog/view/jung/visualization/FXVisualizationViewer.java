@@ -265,7 +265,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
             this.layout = new ObservableLayout<>(new FRLayout<>(this.layout.getObservableGraph()));
             layout.setSize(new Dimension(2000,2000));
 
-            this.layout.getGraph().getVertices().forEach(v -> System.out.println(layout.apply(v)));
+            this.layout.getGraph().getVertices().forEach(v -> System.out.println(layout.transform(v)));
 
             this.repaint();
 

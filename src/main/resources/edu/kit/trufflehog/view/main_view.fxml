@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import java.net.URL?>
-
 <!--
   ~ This file is part of TruffleHog.
   ~
@@ -20,6 +17,8 @@
   ~ along with TruffleHog.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
+<?import javafx.scene.layout.BorderPane?>
+<?import java.net.URL?>
 <fx:root type="BorderPane" styleClass="background" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@main_view.css"/>

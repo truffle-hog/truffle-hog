@@ -1,0 +1,3 @@
+[submodule "jung"]
+	path = jung
+	url = https://github.com/JanSurft/jung

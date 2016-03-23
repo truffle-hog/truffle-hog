@@ -1,6 +1,5 @@
 package edu.kit.trufflehog.model.network.recording;
 
-import com.google.common.base.Function;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.IAddress;
@@ -173,7 +172,7 @@ public class ReplayNetwork implements INetwork {
         }
 
         @Override
-        public void setInitializer(Function<INode, Point2D> initializer) {
+        public void setInitializer(Transformer<INode, Point2D> initializer) {
             throw new UnsupportedOperationException("Operation not implemented yet");
         }
 
@@ -348,7 +347,7 @@ public class ReplayNetwork implements INetwork {
         }*/
 
         @Override
-        public Point2D apply(INode input) {
+        public Point2D transform(INode input) {
             throw new UnsupportedOperationException("Operation not implemented yet");
         }
     }

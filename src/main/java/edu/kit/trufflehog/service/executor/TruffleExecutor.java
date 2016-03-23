@@ -5,8 +5,6 @@ import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.util.IListener;
 import javafx.application.Platform;
 
-import java.util.Deque;
-import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 

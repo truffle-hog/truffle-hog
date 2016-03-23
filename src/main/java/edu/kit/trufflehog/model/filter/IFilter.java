@@ -20,7 +20,7 @@ package edu.kit.trufflehog.model.filter;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * <p>

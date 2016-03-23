@@ -1,6 +1,12 @@
 package edu.kit.trufflehog.command.usercommand;
 
-import edu.kit.trufflehog.model.filter.*;
+import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.IFilter;
+import edu.kit.trufflehog.model.filter.IPAddressFilter;
+import edu.kit.trufflehog.model.filter.InvalidFilterRule;
+import edu.kit.trufflehog.model.filter.MACAddressFilter;
+import edu.kit.trufflehog.model.filter.MacroFilter;
+import edu.kit.trufflehog.model.filter.NameRegexFilter;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
 
 import java.util.HashMap;

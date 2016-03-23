@@ -4,8 +4,6 @@ import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * \brief
  * \details

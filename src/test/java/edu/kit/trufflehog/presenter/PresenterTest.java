@@ -3,8 +3,6 @@ package edu.kit.trufflehog.presenter;
 import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * <p>
