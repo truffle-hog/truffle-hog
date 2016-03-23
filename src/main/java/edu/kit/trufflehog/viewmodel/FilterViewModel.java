@@ -303,7 +303,7 @@ public class FilterViewModel {
         // Split and remove any unwanted characters
         rules = rules.replaceAll("\n", "").replaceAll("\r", "");
         String[] ruleArray = rules.split(";");
-        for (int i = 0; i < rules.length(); i++) {
+        for (int i = 0; i < ruleArray.length; i++) {
             ruleArray[i] = ruleArray[i].trim();
         }
 
