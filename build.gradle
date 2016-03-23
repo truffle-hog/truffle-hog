@@ -6,14 +6,14 @@ apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'application'
 
-/*configurations.all {
+configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}*/
+}
 
 allprojects {
     repositories {
         jcenter()
-       // maven { url "https://jitpack.io" }
+       maven { url "https://jitpack.io" }
     }
 }
 
@@ -65,7 +65,8 @@ dependencies {
 
     // modified jung2
   //  compile 'com.github.JanSurft:jung2:26831d3428'
-
+ //   compile 'com.github.JanSurft:jung:-SNAPSHOT'
+    compile 'com.github.JanSurft:jung2:26831d3428'
     // general
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.logging.log4j:log4j-core:2.5'
@@ -86,10 +87,7 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'colt:colt:1.2.0'
 
-  //  compile 'net.sf.jung:jung2:2.0.1'
-  // compile 'net.sf.jung:jung-graph-impl:2.0.1'
-  //  compile 'net.sf.jung:jung-visualization:2.0.1'
-  //  compile 'com.apple:AppleJavaExtensions:1.4' // because we all want to be nice to Julian
+    compile 'com.apple:AppleJavaExtensions:1.4' // because we all want to be nice to Julian
 
     //compile 'org.springframework:org.springframework.core:2.5.4.A'
 
@@ -101,9 +99,6 @@ dependencies {
     testCompile 'org.apache.commons:commons-lang3:3.4'
     testCompile 'org.xerial:sqlite-jdbc:3.8.11.2'
     testCompile 'colt:colt:1.2.0'
-//    testCompile 'net.sf.jung:jung2:2.0.1'
-  //  testCompile 'net.sf.jung:jung-graph-impl:2.0.1'
-   // testCompile 'net.sf.jung:jung-visualization:2.0.1'
     testCompile 'org.apache.logging.log4j:log4j-core:2.5'
     testCompile 'org.apache.logging.log4j:log4j-api:2.5'
 

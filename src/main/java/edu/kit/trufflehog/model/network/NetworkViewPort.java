@@ -17,6 +17,7 @@
 
 package edu.kit.trufflehog.model.network;
 
+
 import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.graph.FRLayoutFactory;
 import edu.kit.trufflehog.model.network.graph.IConnection;

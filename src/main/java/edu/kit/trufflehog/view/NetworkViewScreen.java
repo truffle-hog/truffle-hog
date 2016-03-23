@@ -13,7 +13,6 @@ import edu.kit.trufflehog.view.controllers.NetworkGraphViewController;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationModel;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -95,7 +94,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
         port.addGraphEventListener(e -> {
 
             Platform.runLater(() -> {
-
+/*
                 if (e.getType() == GraphEvent.Type.VERTEX_ADDED || e.getType() == GraphEvent.Type.VERTEX_CHANGED) {
 
                     final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
@@ -111,7 +110,7 @@ public class NetworkViewScreen extends NetworkGraphViewController implements Ite
                     //refresher.setCycleCount(connection.getComponent(ViewComponent.class).getRenderer().animationTime());
                     repaint();
                     refresher.playFromStart();
-                }
+                }*/
             });
         });
 

@@ -1,10 +1,10 @@
 package edu.kit.trufflehog.model.network;
 
-import edu.kit.trufflehog.model.jung.graph.ObservableUpdatableGraph;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.recording.NetworkCopy;
 import edu.kit.trufflehog.util.ICopyCreator;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 
 /**
  * Created by jan on 22.02.16.
