@@ -52,23 +52,19 @@ public class NodeGestures {
         return onMouseDraggedEventHandler;
     }
 
-    private EventHandler<MouseEvent> onMousePressedEventHandler = new EventHandler<MouseEvent>() {
+    private EventHandler<MouseEvent> onMousePressedEventHandler = event -> {
 
-        public void handle(MouseEvent event) {
+        // left mouse button => dragging
+        if( !event.isPrimaryButtonDown())
+            return;
 
-            // left mouse button => dragging
-            if( !event.isPrimaryButtonDown())
-                return;
+        nodeDragContext.mouseAnchorX = event.getSceneX();
+        nodeDragContext.mouseAnchorY = event.getSceneY();
 
-            nodeDragContext.mouseAnchorX = event.getSceneX();
-            nodeDragContext.mouseAnchorY = event.getSceneY();
+        Node node = (Node) event.getSource();
 
-            Node node = (Node) event.getSource();
-
-            nodeDragContext.translateAnchorX = node.getTranslateX();
-            nodeDragContext.translateAnchorY = node.getTranslateY();
-
-        }
+        nodeDragContext.translateAnchorX = node.getLayoutX();
+        nodeDragContext.translateAnchorY = node.getLayoutY();
 
     };
 
@@ -83,8 +79,8 @@ public class NodeGestures {
 
             Node node = (Node) event.getSource();
 
-            node.setTranslateX(nodeDragContext.translateAnchorX + (( event.getSceneX() - nodeDragContext.mouseAnchorX) / scale));
-            node.setTranslateY(nodeDragContext.translateAnchorY + (( event.getSceneY() - nodeDragContext.mouseAnchorY) / scale));
+            node.setLayoutX(nodeDragContext.translateAnchorX + (( event.getSceneX() - nodeDragContext.mouseAnchorX) / scale));
+            node.setLayoutY(nodeDragContext.translateAnchorY + (( event.getSceneY() - nodeDragContext.mouseAnchorY) / scale));
 
             event.consume();
 

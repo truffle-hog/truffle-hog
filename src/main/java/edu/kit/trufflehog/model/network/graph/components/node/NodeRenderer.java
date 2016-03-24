@@ -49,6 +49,7 @@ public class NodeRenderer implements IRenderer {
         shape.fillProperty().bind(fillPaintProperty);
         shape.strokeProperty().bind(strokePaintProperty);
         shape.setStrokeWidth(6);
+        //new java.awt.Color(0x47F4CB);
 
     }
 

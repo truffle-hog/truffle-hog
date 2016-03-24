@@ -79,6 +79,8 @@ public class MyBindings {
             this.lhs = property1;
             this.rhs = property2;
 
+            lhs.set(rhs.get() + offset.get());
+
             rhs.addListener(this);
             lhs.addListener(this);
             offset.addListener(this);

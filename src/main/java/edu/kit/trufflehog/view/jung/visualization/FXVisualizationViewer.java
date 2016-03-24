@@ -49,6 +49,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Shape;
 import org.apache.logging.log4j.LogManager;
@@ -92,6 +93,41 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         this.port = port;
         // create canvas
         this.setStyle("-fx-background-color: #213245");
+
+        for (double divide = .25; divide < 1; divide += .25) {
+            final Line line = new Line(0, 200, this.getWidth(), this.getHeight());
+            line.setFill(null);
+            line.setStroke(Color.web("0x385172"));
+            line.setStrokeWidth(1.3);
+            line.getStrokeDashArray().addAll(5d, 10d);
+
+            line.startYProperty().bind(this.heightProperty().multiply(divide));
+
+            line.endXProperty().bind(this.widthProperty());
+            line.endYProperty().bind(this.heightProperty().multiply(divide));
+
+            this.getChildren().add(line);
+        }
+
+        for (double divide = .25; divide < 1; divide += .25) {
+            final Line line = new Line(0, 0, this.getWidth(), this.getHeight());
+            line.setFill(null);
+            line.setStroke(Color.web("0x385172"));
+            line.setStrokeWidth(1.3);
+            line.getStrokeDashArray().addAll(5d, 10d);
+
+            line.startXProperty().bind(this.widthProperty().multiply(divide));
+
+            line.endXProperty().bind(this.widthProperty().multiply(divide));
+            line.endYProperty().bind(this.heightProperty());
+
+            this.getChildren().add(line);
+        }
+
+
+
+
+        //this.setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream("icon.png")), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, null, new BackgroundSize())));
 
         canvas = new PannableCanvas();
 
@@ -157,8 +193,8 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             // TODO check or do something with this (generify the getShape command?)
             final Circle destCircle = (Circle) pair.getFirst().getComponent(ViewComponent.class).getRenderer().getShape();
             final Shape shape = edge.getComponent(ViewComponent.class).getRenderer().getShape();
-            shape.translateXProperty().bind(destCircle.translateXProperty());
-            shape.translateYProperty().bind(destCircle.translateYProperty());
+            shape.layoutXProperty().bind(destCircle.layoutXProperty());
+            shape.layoutYProperty().bind(destCircle.layoutYProperty());
             canvas.getChildren().add(shape);
             shape.setPickOnBounds(false);
             shape.setMouseTransparent(true);
@@ -171,10 +207,10 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         final Shape destShape = pair.getSecond().getComponent(ViewComponent.class).getRenderer().getShape();
 
         // the positions of the shapes
-        final DoubleProperty srcX = srcShape.translateXProperty();
-        final DoubleProperty srcY = srcShape.translateYProperty();
-        final DoubleProperty destX = destShape.translateXProperty();
-        final DoubleProperty destY = destShape.translateYProperty();
+        final DoubleProperty srcX = srcShape.layoutXProperty();
+        final DoubleProperty srcY = srcShape.layoutYProperty();
+        final DoubleProperty destX = destShape.layoutXProperty();
+        final DoubleProperty destY = destShape.layoutYProperty();
 
 
         // the direction vector from source to destination (deltaX, deltaY)
@@ -202,9 +238,9 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
         final IEdgeRenderer edgeRenderer = (IEdgeRenderer) edge.getComponent(ViewComponent.class).getRenderer();
 
-        canvas.getChildren().add(edgeRenderer.getArrowShape());
-        edgeRenderer.getArrowShape().translateXProperty().bind(realDestX);
-        edgeRenderer.getArrowShape().translateYProperty().bind(realDestY);
+
+        edgeRenderer.getArrowShape().layoutXProperty().bind(realDestX);
+        edgeRenderer.getArrowShape().layoutYProperty().bind(realDestY);
 
         final QuadCurve curve = edgeRenderer.getLine();
         curve.setCacheHint(CacheHint.SPEED);
@@ -246,7 +282,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         curve.setFill(null);
 
 
-
+        canvas.getChildren().add(edgeRenderer.getArrowShape());
         // add the edge to the canvas
         canvas.getChildren().add(curve);
     }
@@ -290,8 +326,8 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         nodeShape.scaleXProperty().bind(nodeSize);
         nodeShape.scaleYProperty().bind(nodeSize);
 
-        nodeShape.setTranslateX(layout.transform(vertex).getX());
-        nodeShape.setTranslateY(layout.transform(vertex).getY());
+        nodeShape.setLayoutX(layout.transform(vertex).getX());
+        nodeShape.setLayoutY(layout.transform(vertex).getY());
 
         ///////////
         // LABEL //
@@ -307,18 +343,19 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
 
 
-        //labelX.bind(nodeShape.translateXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
-        //labelY.bind(nodeShape.translateYProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty())));
+        //labelX.bind(nodeShape.layoutXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
+        //labelY.bind(nodeShape.layoutYProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty())));
 
-        //nodeLabel.translateXProperty().bindBidirectional(labelX);
-        //nodeLabel.translateYProperty().bindBidirectional(labelY);
+        //nodeLabel.layoutXProperty().bindBidirectional(labelX);
+        //nodeLabel.layoutYProperty().bindBidirectional(labelY);
 
-        //nodeLabel.translateXProperty().bind(nodeShape.translateXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
+        //nodeLabel.layoutXProperty().bind(nodeShape.layoutXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
 
         nodeLabel.textFillProperty().bind(new SimpleObjectProperty<>(Color.WHITE));
 
-        MyBindings.bindBidirectional(nodeLabel.translateXProperty(), nodeShape.translateXProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty()));
-        MyBindings.bindBidirectional(nodeLabel.translateYProperty(), nodeShape.translateYProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty()));
+        MyBindings.bindBidirectional(nodeLabel.layoutXProperty(), nodeShape.layoutXProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty()));
+        MyBindings.bindBidirectional(nodeLabel.layoutYProperty(), nodeShape.layoutYProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty()));
+
 
         NodeInfoComponent nic = vertex.getComponent(NodeInfoComponent.class);
         if (nic != null) {
@@ -331,7 +368,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         nodeLabel.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
         nodeLabel.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
-        canvas.getChildren().addAll(nodeShape, nodeLabel);
+        canvas.getChildren().addAll(nodeLabel, nodeShape);
     }
 
     synchronized
@@ -506,8 +543,8 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
             //System.out.println(layout.transform(v));
 
-           vc.getRenderer().getShape().setTranslateX(layout.transform(v).getX());
-           vc.getRenderer().getShape().setTranslateY(layout.transform(v).getY());
+           vc.getRenderer().getShape().setLayoutX(layout.transform(v).getX());
+           vc.getRenderer().getShape().setLayoutY(layout.transform(v).getY());
 
         });
 

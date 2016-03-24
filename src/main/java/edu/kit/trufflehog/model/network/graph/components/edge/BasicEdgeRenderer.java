@@ -219,7 +219,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
                 edgeWidthMultiplierProperty.set(edgeWidthPickedMultiplier);
                 currentArrowFill = arrowFillPicked;
                 currentEdgeStrokePaint = colorPicked;
-                currentAnimationEndColor = Color.BLUE;
+                currentAnimationEndColor = Color.YELLOW;
             });
 
         } else {

@@ -42,7 +42,7 @@ public class MulticastEdgeRenderer implements IRenderer {
             @Override
             protected void interpolate(double frac) {
 
-                circle.setRadius(frac * 10000);
+                circle.setRadius(frac * 1000);
                 circle.setOpacity(1 - frac);
 
             }
