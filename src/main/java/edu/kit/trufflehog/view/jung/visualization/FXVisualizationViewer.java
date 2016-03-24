@@ -61,6 +61,8 @@ import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * \brief
@@ -373,9 +375,11 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     synchronized
     public void refreshLayout() {
-        Platform.runLater(() -> {
 
-            this.layout = new ObservableLayout<>(new FRLayout2<>(this.layout.getObservableGraph()));
+            FRLayout2<V, E> l = new FRLayout2<>(this.layout.getObservableGraph());
+            l.setMaxIterations((int) (this.getWidth() / canvas.getScale()));
+           // l.setMaxIterations(700);
+            this.layout = new ObservableLayout<>(l);
                //TODO make the dimension changeable from settings menu?
 
            // logger.debug(canvas.getScale() + " " + this.getWidth() + " " + this.getHeight());
@@ -383,9 +387,20 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             //layout.setSize(new Dimension(600, 600));
             layout.setSize(new Dimension((int) (this.getWidth() / (2 * canvas.getScale())), (int) (this.getHeight() / (2 * canvas.getScale()))));
 
-            this.repaint();
+            //layout.set
+
+            final Executor layouter = Executors.newSingleThreadExecutor();
+
+        layouter.execute(() -> {
+
+            while (!layout.done()) {
+                layout.step();
+                Platform.runLater(this::repaint);
+            }
 
         });
+
+
 
     }
 

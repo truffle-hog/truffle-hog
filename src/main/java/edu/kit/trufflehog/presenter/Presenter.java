@@ -27,6 +27,7 @@ import edu.kit.trufflehog.view.jung.visualization.SceneGestures;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
+import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -160,7 +161,9 @@ public class Presenter {
 
         // create a Graph
 
-        final Graph<INode, IConnection> graph = new DirectedSparseGraph<>();
+
+        // TODO check if synchronized is really needed
+        final Graph<INode, IConnection> graph = Graphs.synchronizedDirectedGraph(new DirectedSparseGraph<>());
 
         final ObservableUpdatableGraph<INode, IConnection> og = new ObservableUpdatableGraph<>(graph, new LiveUpdater());
 
