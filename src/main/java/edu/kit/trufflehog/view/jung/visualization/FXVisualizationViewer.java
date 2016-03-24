@@ -377,7 +377,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     public void refreshLayout() {
 
             FRLayout2<V, E> l = new FRLayout2<>(this.layout.getObservableGraph());
-            l.setMaxIterations((int) (this.getWidth() / canvas.getScale()));
+            l.setMaxIterations(layout.getGraph().getEdgeCount() * (int) (this.getWidth() / canvas.getScale()));
            // l.setMaxIterations(700);
             this.layout = new ObservableLayout<>(l);
                //TODO make the dimension changeable from settings menu?
