@@ -249,7 +249,22 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
 
         // make the edge clickable
-        curve.setOnMouseClicked(e -> edge.getComponent(ViewComponent.class).getRenderer().togglePicked());
+        curve.setOnMouseClicked(e -> {
+
+            logger.debug(edge.getSrc().getComponent(NodeInfoComponent.class).toString() + " --[" + edge.getComponent(EdgeStatisticsComponent.class).getTraffic() +
+                    "]-->" + edge.getDest().getComponent(NodeInfoComponent.class).toString());
+
+            edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
+        });
+
+        edgeRenderer.getArrowShape().setOnMouseClicked(e -> {
+
+            logger.debug(edge.getSrc().getComponent(NodeInfoComponent.class).toString() + " --[" + edge.getComponent(EdgeStatisticsComponent.class).getTraffic() +
+            "]-->" + edge.getDest().getComponent(NodeInfoComponent.class).toString());
+
+            edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
+
+        });
 
         //get the edge size binding by dividing the total trffic with the local traffic
         DoubleBinding edgeSize = MyBindings.divideIntToDouble(edge.getComponent(EdgeStatisticsComponent.class).getTrafficProperty(), port.getMaxConnectionSizeProperty()).multiply(8).add(2);
@@ -376,20 +391,19 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     synchronized
     public void refreshLayout() {
 
-            FRLayout2<V, E> l = new FRLayout2<>(this.layout.getObservableGraph());
+      //  logger.debug("refresh");
+        final FRLayout2<V, E> l = new FRLayout2<>(this.layout.getObservableGraph());
             l.setMaxIterations(layout.getGraph().getEdgeCount() * (int) (this.getWidth() / canvas.getScale()));
            // l.setMaxIterations(700);
-            this.layout = new ObservableLayout<>(l);
+        this.layout = new ObservableLayout<>(l);
                //TODO make the dimension changeable from settings menu?
 
            // logger.debug(canvas.getScale() + " " + this.getWidth() + " " + this.getHeight());
-
-            //layout.setSize(new Dimension(600, 600));
-            layout.setSize(new Dimension((int) (this.getWidth() / (2 * canvas.getScale())), (int) (this.getHeight() / (2 * canvas.getScale()))));
+        layout.setSize(new Dimension((int) (this.getWidth() / (2 * canvas.getScale())), (int) (this.getHeight() / (2 * canvas.getScale()))));
 
             //layout.set
 
-            final Executor layouter = Executors.newSingleThreadExecutor();
+        final Executor layouter = Executors.newSingleThreadExecutor();
 
         layouter.execute(() -> {
 
