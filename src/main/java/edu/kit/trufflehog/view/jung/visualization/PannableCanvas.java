@@ -20,6 +20,8 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -38,6 +40,8 @@ public class PannableCanvas extends Pane {
 
     public PannableCanvas() {
         setPrefSize(600, 600);
+
+        //this.setVisible(false);
         //setStyle("-fx-background-color: lightgrey; -fx-border-color: blue;");
 
         // add scale transform

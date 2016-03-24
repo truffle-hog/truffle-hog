@@ -18,7 +18,8 @@ package edu.kit.trufflehog.view.jung.visualization;
 
 import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
-import edu.kit.trufflehog.model.network.graph.IComposition;
+import edu.kit.trufflehog.model.network.graph.IConnection;
+import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.IEdgeRenderer;
@@ -69,7 +70,7 @@ import java.util.Map;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class FXVisualizationViewer<V extends IComposition, E extends IComposition> extends Pane implements VisualizationServer<V, E> {
+public class FXVisualizationViewer<V extends INode, E extends IConnection> extends Pane implements VisualizationServer<V, E> {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -151,6 +152,20 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
         final Pair<V> pair = this.layout.getGraph().getEndpoints(edge);
 
+        if (pair.getSecond().getAddress().isMulticast()) {
+
+            // TODO check or do something with this (generify the getShape command?)
+            final Circle destCircle = (Circle) pair.getFirst().getComponent(ViewComponent.class).getRenderer().getShape();
+            final Shape shape = edge.getComponent(ViewComponent.class).getRenderer().getShape();
+            shape.translateXProperty().bind(destCircle.translateXProperty());
+            shape.translateYProperty().bind(destCircle.translateYProperty());
+            canvas.getChildren().add(shape);
+            shape.setPickOnBounds(false);
+            shape.setMouseTransparent(true);
+            return;
+
+        }
+
         // source and destination shape
         final Shape srcShape = pair.getFirst().getComponent(ViewComponent.class).getRenderer().getShape();
         final Shape destShape = pair.getSecond().getComponent(ViewComponent.class).getRenderer().getShape();
@@ -200,7 +215,7 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
         //get the edge size binding by dividing the total trffic with the local traffic
         DoubleBinding edgeSize = MyBindings.divideIntToDouble(edge.getComponent(EdgeStatisticsComponent.class).getTrafficProperty(), port.getMaxConnectionSizeProperty()).multiply(8).add(2);
-        curve.strokeWidthProperty().bind(edgeSize);
+        curve.strokeWidthProperty().bind(edgeSize.multiply(edgeRenderer.edgeWidthMultiplierProperty()));
 
 
         // bind the ending to the real destionaion point
@@ -238,6 +253,10 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
     synchronized
     private void initVertex(V vertex) {
+
+        if (vertex.getAddress().isMulticast()) {
+            return;
+        }
 
         final Shape nodeShape = vertex.getComponent(ViewComponent.class).getRenderer().getShape();
         nodeShape.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
@@ -335,7 +354,10 @@ public class FXVisualizationViewer<V extends IComposition, E extends ICompositio
 
             this.layout = new ObservableLayout<>(new CircleLayout<>(this.layout.getObservableGraph()));
                //TODO make the dimension changeable from settings menu?
-            layout.setSize(new Dimension(1000, 1000));
+
+           // logger.debug(canvas.getScale() + " " + this.getWidth() + " " + this.getHeight());
+
+            layout.setSize(new Dimension((int) (this.getWidth() / canvas.getScale()), (int) (this.getHeight() / canvas.getScale())));
 
             this.repaint();
 

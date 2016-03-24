@@ -17,9 +17,8 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
+import javafx.beans.property.DoubleProperty;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Shape;
 
@@ -59,4 +58,6 @@ public interface IEdgeRenderer extends IRenderer {
     void setArrowFillUnpicked(Color arrowFillUnpicked);
 
     Shape getArrowShape();
+
+    DoubleProperty edgeWidthMultiplierProperty();
 }

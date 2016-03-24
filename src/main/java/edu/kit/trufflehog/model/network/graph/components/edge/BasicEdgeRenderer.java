@@ -6,10 +6,14 @@ import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.animation.Animation;
 import javafx.animation.Transition;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.QuadCurve;
+import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +34,11 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     private Color colorUnpicked = Color.web("0xffffff3a");
     private Color colorPicked = Color.web("0x6CFF82");
 
+    private final double edgeWidthPickedMultiplier = 2;
+    private final double edgeWidthUnpickedMultiplier = 1;
+
+    private final DoubleProperty edgeWidthMultiplierProperty = new SimpleDoubleProperty(edgeWidthUnpickedMultiplier);
+
     private QuadCurve line = new QuadCurve();
 
     private Color arrowFillPicked = Color.web("0x6CFF82");
@@ -43,6 +52,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
     private Color currentArrowFill = arrowFillUnpicked;
     private Color currentEdgeStrokePaint = colorUnpicked;
+    private Color currentAnimationEndColor = Color.WHITE;
 
     private double currentBrightness = 0.5f;
 
@@ -72,8 +82,8 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
             }
             protected void interpolate(double frac) {
 
-                arrowStrokePaintProperty.set(currentEdgeStrokePaint.interpolate(Color.WHITE, frac));
-                arrowHeadFilleProperty.set(currentArrowFill.interpolate(Color.WHITE, frac));
+                arrowStrokePaintProperty.set(currentEdgeStrokePaint.interpolate(currentAnimationEndColor, frac));
+                arrowHeadFilleProperty.set(currentArrowFill.interpolate(currentAnimationEndColor, frac));
             }
         };
         animator.setCycleCount(2);
@@ -206,8 +216,10 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
                 arrowStrokePaintProperty.set(colorPicked);
                 arrowHeadFilleProperty.set(arrowFillPicked);
+                edgeWidthMultiplierProperty.set(edgeWidthPickedMultiplier);
                 currentArrowFill = arrowFillPicked;
                 currentEdgeStrokePaint = colorPicked;
+                currentAnimationEndColor = Color.BLUE;
             });
 
         } else {
@@ -215,8 +227,10 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
                 arrowStrokePaintProperty.set(colorUnpicked);
                 arrowHeadFilleProperty.set(arrowFillUnpicked);
+                edgeWidthMultiplierProperty.set(edgeWidthUnpickedMultiplier);
                 currentArrowFill = arrowFillUnpicked;
                 currentEdgeStrokePaint = colorUnpicked;
+                currentAnimationEndColor = Color.WHITE;
 
             });
         }
@@ -286,5 +300,10 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     @Override
     public Shape getArrowShape() {
         return arrowShape;
+    }
+
+    @Override
+    public DoubleProperty edgeWidthMultiplierProperty() {
+        return edgeWidthMultiplierProperty;
     }
 }

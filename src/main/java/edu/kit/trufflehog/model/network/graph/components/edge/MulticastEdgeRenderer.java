@@ -3,6 +3,11 @@ package edu.kit.trufflehog.model.network.graph.components.edge;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
+import javafx.animation.Animation;
+import javafx.animation.Transition;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 /**
  * This Component of a node will handle how a node is displayed in the graph
@@ -14,9 +19,43 @@ import edu.kit.trufflehog.util.ICopyCreator;
  * //TODO FIX GETTER!!!
  */
 public class MulticastEdgeRenderer implements IRenderer {
+
+    private final Circle circle = new Circle(1);
+
+    private final Animation animator;
+
+    private final long animationTime = 500;
+
+    public MulticastEdgeRenderer() {
+
+        circle.setFill(Color.WHITE);
+        circle.setVisible(false);
+
+
+
+        animator = new Transition() {
+
+            {
+                setCycleDuration(Duration.millis(animationTime));
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+
+                circle.setRadius(frac * 10000);
+                circle.setOpacity(1 - frac);
+
+            }
+        };
+        animator.setCycleCount(2);
+        animator.setOnFinished(e -> {
+            circle.setVisible(false);
+        });
+    }
+
     @Override
     public javafx.scene.shape.Shape getShape() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
+        return circle;
     }
 
     @Override
@@ -46,7 +85,10 @@ public class MulticastEdgeRenderer implements IRenderer {
 
     @Override
     public void animate() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
+
+        circle.setVisible(true);
+        animator.play();
+
     }
 
     @Override
