@@ -26,7 +26,7 @@ import edu.kit.trufflehog.model.network.graph.components.edge.IEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.util.bindings.MyBindings;
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout2;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.event.GraphEvent;
@@ -290,8 +290,8 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         nodeShape.scaleXProperty().bind(nodeSize);
         nodeShape.scaleYProperty().bind(nodeSize);
 
-        nodeShape.setTranslateX(layout.transform(vertex).getX() / canvas.getScale());
-        nodeShape.setTranslateY(layout.transform(vertex).getY() / canvas.getScale());
+        nodeShape.setTranslateX(layout.transform(vertex).getX());
+        nodeShape.setTranslateY(layout.transform(vertex).getY());
 
         ///////////
         // LABEL //
@@ -334,30 +334,17 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         canvas.getChildren().addAll(nodeShape, nodeLabel);
     }
 
-
-    public double getScale() {
-        return myScale.get();
-    }
-
-    public void setScale( double scale) {
-        myScale.set(scale);
-    }
-
-    public void setPivot( double x, double y) {
-        setTranslateX(getTranslateX()-x);
-        setTranslateY(getTranslateY()-y);
-    }
-
     synchronized
     public void refreshLayout() {
         Platform.runLater(() -> {
 
-            this.layout = new ObservableLayout<>(new CircleLayout<>(this.layout.getObservableGraph()));
+            this.layout = new ObservableLayout<>(new FRLayout2<>(this.layout.getObservableGraph()));
                //TODO make the dimension changeable from settings menu?
 
            // logger.debug(canvas.getScale() + " " + this.getWidth() + " " + this.getHeight());
 
-            layout.setSize(new Dimension((int) (this.getWidth() / canvas.getScale()), (int) (this.getHeight() / canvas.getScale())));
+            //layout.setSize(new Dimension(600, 600));
+            layout.setSize(new Dimension((int) (this.getWidth() / (2 * canvas.getScale())), (int) (this.getHeight() / (2 * canvas.getScale()))));
 
             this.repaint();
 
@@ -519,8 +506,8 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
             //System.out.println(layout.transform(v));
 
-           vc.getRenderer().getShape().setTranslateX(layout.transform(v).getX() / myScale.get());
-           vc.getRenderer().getShape().setTranslateY(layout.transform(v).getY() / myScale.get());
+           vc.getRenderer().getShape().setTranslateX(layout.transform(v).getX());
+           vc.getRenderer().getShape().setTranslateY(layout.transform(v).getY());
 
         });
 

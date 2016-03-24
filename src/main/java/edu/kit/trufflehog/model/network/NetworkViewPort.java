@@ -71,6 +71,7 @@ public class NetworkViewPort implements INetworkViewPort {
         this.graphDelegate = delegate;
 
         this.delegate = new ObservableLayout<>(new FRLayout<>(this.graphDelegate));
+        this.delegate.setSize(new Dimension(600,600));
         this.layoutFactory = new FRLayoutFactory();
 
     }

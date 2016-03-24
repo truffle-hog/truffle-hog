@@ -38,16 +38,30 @@ public class PannableCanvas extends Pane {
 
     DoubleProperty myScale = new SimpleDoubleProperty(1.0);
 
+    final Pane paneTest;
+
     public PannableCanvas() {
         setPrefSize(600, 600);
 
+        this.setBackground(new Background(new BackgroundFill(null, null, null)));
         //this.setVisible(false);
         //setStyle("-fx-background-color: lightgrey; -fx-border-color: blue;");
+
+        addGrid();
+        paneTest = new Pane();
+        paneTest.setPrefSize(600, 600);
+        paneTest.setBackground(new Background(new BackgroundFill(null, null, null)));
 
         // add scale transform
         scaleXProperty().bind(myScale);
         scaleYProperty().bind(myScale);
+
+        //paneTest.scaleXProperty().bind(myScale);
+      //  paneTest.scaleYProperty().bind(myScale);
+
     }
+
+
 
     /**
      * Add a grid to the canvas, send it to back

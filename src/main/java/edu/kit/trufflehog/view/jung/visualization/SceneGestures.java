@@ -106,7 +106,6 @@ public class SceneGestures {
             else
                 scale *= delta;
 
-            scale = clamp( scale, MIN_SCALE, MAX_SCALE);
 
             double f = (scale / oldScale) - 1;
 
