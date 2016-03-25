@@ -21,6 +21,7 @@ import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.view.ViewSwitcher;
 import edu.kit.trufflehog.view.jung.visualization.FXVisualizationViewer;
 import edu.kit.trufflehog.view.jung.visualization.SceneGestures;
@@ -201,8 +202,8 @@ public class Presenter {
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-        //truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
-       truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
+        truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
+      // truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
 
 
 
