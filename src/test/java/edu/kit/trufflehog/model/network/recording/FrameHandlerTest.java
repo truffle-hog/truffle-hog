@@ -1,7 +1,7 @@
 package edu.kit.trufflehog.model.network.recording;
 
 import edu.kit.trufflehog.model.network.INetwork;
-import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
+//import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
 import org.junit.Test;
 
 /**
@@ -18,12 +18,12 @@ public class FrameHandlerTest {
     @Test
     public void testHandle() throws Exception {
 
-        final INetwork replayNetwork = new ReplayNetwork(new ConcurrentDirectedSparseGraph<>());
+        //final INetwork replayNetwork = new ReplayNetwork(new ConcurrentDirectedSparseGraph<>());
         final INetworkTape playTape = new NetworkTape(5);
 
 
 
-        final FrameHandler handler = new FrameHandler(playTape, replayNetwork);
+        //final FrameHandler handler = new FrameHandler(playTape, replayNetwork);
 
 
     }
