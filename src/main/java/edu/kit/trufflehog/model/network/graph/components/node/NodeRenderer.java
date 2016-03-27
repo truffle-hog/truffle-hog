@@ -92,20 +92,19 @@ public class NodeRenderer implements IRenderer {
 
         if (isPicked) {
 
-            isPicked = false;
+            isPicked(false);
         } else {
-            isPicked = true;
+            isPicked(true);
         }
 
-        isPicked(isPicked);
+
 
     }
 
     @Override
     public void isPicked(boolean b) {
+        isPicked = b;
         if (b) {
-
-
 
             Platform.runLater(() -> {
 

@@ -13,8 +13,8 @@ root {
 }
 
 .background {
-    -fx-background-color: #282C34;
-    -fx-opacity: 85%;
+    -fx-background-color: transparent;
+    -fx-opacity: 100%;
     -fx-background-radius: 2;
 }
 
@@ -41,14 +41,22 @@ root {
 
 .table-view {
 
-    -fx-base: #282C34;
+    -fx-base: #47F4CB;
     -fx-opacity: 85%;
     /*-fx-base: #1d1d1d;*/
-    -fx-control-inner-background: #282C34;
-    -fx-background-color: #282C34;
+    -fx-control-inner-background: #47F4CB;
+    -fx-background-color: #47F4CB;
     -fx-table-cell-border-color: transparent;
     -fx-table-header-border-color: transparent;
     -fx-padding: 5;
+}
+
+.tree-table-row-cell {
+    -fx-background: transparent;
+}
+
+.tree-table-view {
+    -fx-background-color: transparent;
 }
 
 .table-view .column-header-background {

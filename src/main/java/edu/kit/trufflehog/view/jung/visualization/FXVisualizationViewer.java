@@ -16,16 +16,23 @@
  */
 package edu.kit.trufflehog.view.jung.visualization;
 
+import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.IEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
+import edu.kit.trufflehog.util.IListener;
+import edu.kit.trufflehog.util.INotifier;
 import edu.kit.trufflehog.util.bindings.MyBindings;
+import edu.kit.trufflehog.view.controllers.IViewController;
+import edu.kit.trufflehog.view.controllers.ViewControllerNotifier;
 import edu.uci.ics.jung.algorithms.layout.FRLayout2;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -45,13 +52,16 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.CacheHint;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Shape;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,6 +70,9 @@ import javax.swing.event.ChangeListener;
 import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -73,7 +86,7 @@ import java.util.concurrent.Executors;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class FXVisualizationViewer<V extends INode, E extends IConnection> extends Pane implements VisualizationServer<V, E> {
+public class FXVisualizationViewer<V extends INode, E extends IConnection> extends AnchorPane implements VisualizationServer<V, E>, IViewController<GraphInteraction> {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -83,6 +96,15 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     private final PannableCanvas canvas;
     private final NodeGestures nodeGestures;
     private final CanvasGestures canvasGestures;
+
+    private final Collection<V> selectedNodes = new HashSet<>();
+    private final Collection<E> selectedEdges = new HashSet<>();
+
+    private final INotifier<IUserCommand> viewControllerNotifier = new ViewControllerNotifier();
+
+    /** The commands that are mapped to their interactions. **/
+    private final Map<GraphInteraction, IUserCommand> interactionMap =
+            new EnumMap<>(GraphInteraction.class);
 
     private ObservableLayout<V, E> layout;
 
@@ -132,6 +154,26 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         //this.setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream("icon.png")), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, null, new BackgroundSize())));
 
         canvas = new PannableCanvas();
+
+        this.setOnMouseClicked(e -> {
+
+            if (e.getButton() != MouseButton.PRIMARY) {
+                return;
+            }
+
+            if (selectedNodes.isEmpty() && selectedEdges.isEmpty()) {
+                return;
+            }
+
+            selectedNodes.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
+            selectedEdges.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
+            selectedNodes.clear();
+            selectedEdges.clear();
+
+            onSelectionChanged();
+        });
+
+
 
         canvasGestures = new CanvasGestures(canvas);
 
@@ -251,6 +293,10 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         // make the edge clickable
         curve.setOnMouseClicked(e -> {
 
+            if (e.getButton() != MouseButton.PRIMARY) {
+                return;
+            }
+
             logger.debug(edge.getSrc().getComponent(NodeInfoComponent.class).toString() + " --[" + edge.getComponent(EdgeStatisticsComponent.class).getTraffic() +
                     "]-->" + edge.getDest().getComponent(NodeInfoComponent.class).toString());
 
@@ -259,10 +305,15 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
         edgeRenderer.getArrowShape().setOnMouseClicked(e -> {
 
+            if (e.getButton() != MouseButton.PRIMARY) {
+                return;
+            }
+
             logger.debug(edge.getSrc().getComponent(NodeInfoComponent.class).toString() + " --[" + edge.getComponent(EdgeStatisticsComponent.class).getTraffic() +
             "]-->" + edge.getDest().getComponent(NodeInfoComponent.class).toString());
 
             edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
+
 
         });
 
@@ -317,21 +368,18 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
         nodeShape.setOnMouseClicked(e -> {
 
-            vertex.getComponent(ViewComponent.class).getRenderer().togglePicked();
-
-/*            final IUserCommand selectionCommand = interactionMap.get(GraphInteraction.SELECTION);
-
-            if (selectionCommand == null) {
-                logger.warn("There is no command registered to: " + GraphInteraction.SELECTION);
+            if (e.getButton() != MouseButton.PRIMARY) {
                 return;
             }
 
-            selectionCommand.setSelection(new ImmutablePair<>(new HashSet<>(getPickedVertexState().getPicked()), new HashSet<>(getPickedEdgeState().getPicked())));
+            final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
 
-            notifyListeners(selectionCommand);
-
-          */  logger.debug(vertex.getComponent(NodeInfoComponent.class).toString());
-
+            if (!renderer.picked()) {
+                selectedNodes.add(vertex);
+                renderer.isPicked(true);
+                onSelectionChanged();
+            }
+            e.consume();
         });
         //nodeShape.setCache(false);
         //nodeShape.setCacheHint(CacheHint.);
@@ -417,6 +465,8 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
 
     }
+
+
 
     @Override
     public void setDoubleBuffered(boolean b) {
@@ -582,5 +632,43 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     public PannableCanvas getCanvas() {
         return canvas;
+    }
+
+    private void onSelectionChanged() {
+
+        final IUserCommand selectionCommand = interactionMap.get(GraphInteraction.SELECTION);
+
+        if (selectionCommand == null) {
+            logger.warn("There is no command registered to: " + GraphInteraction.SELECTION);
+            return;
+        }
+
+        selectionCommand.setSelection(new ImmutablePair<>(new HashSet<>(selectedNodes), new HashSet<>(selectedEdges)));
+
+        notifyListeners(selectionCommand);
+
+    }
+
+
+
+    @Override
+    public final boolean addListener(final IListener<IUserCommand> listener) {
+
+        return viewControllerNotifier.addListener(listener);
+    }
+
+    @Override
+    public final boolean removeListener(final IListener<IUserCommand> listener) {
+        return viewControllerNotifier.removeListener(listener);
+    }
+
+    @Override
+    public final void notifyListeners(final IUserCommand message) {
+        viewControllerNotifier.notifyListeners(message);
+    }
+
+    @Override
+    public void addCommand(GraphInteraction interaction, IUserCommand command) {
+        interactionMap.put(interaction, command);
     }
 }

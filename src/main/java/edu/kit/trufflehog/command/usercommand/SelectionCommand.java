@@ -23,6 +23,7 @@ import edu.kit.trufflehog.model.network.graph.components.ComponentInfoCollector;
 import edu.kit.trufflehog.model.network.graph.components.ComponentInfoVisitor;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
+import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.TreeItem;
@@ -73,6 +74,7 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
     public <S extends Pair<Set<INode>, Set<IConnection>>> void setSelection(S selection) {
 
         selected = selection;
+        logger.debug(selected);
     }
 
     private void updateNodeStatistics(Set<INode> nodes) {
@@ -84,7 +86,7 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
             final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infos = nodes.iterator().next().stream().collect(collector);
             logger.debug(infos);
             infos.setExpanded(true);
-            statisticsViewModel.setSelectionValues(infos);
+            Platform.runLater(() -> statisticsViewModel.setSelectionValues(infos));
 
         } else {
 
@@ -104,7 +106,8 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
             final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infos = connections.iterator().next().stream().collect(collector);
             logger.debug(infos);
             infos.setExpanded(true);
-            statisticsViewModel.setSelectionValues(infos);
+
+            Platform.runLater(() -> statisticsViewModel.setSelectionValues(infos));
 
         } else {
 

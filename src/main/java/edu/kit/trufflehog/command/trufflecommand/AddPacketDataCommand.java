@@ -22,6 +22,7 @@ import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.Random;
 
 
@@ -128,7 +129,6 @@ public class AddPacketDataCommand implements ITruffleCommand {
             writingPort.writeNode(destNode);
             writingPort.writeConnection(connection);
         });
-
     }
 
 /*    *//** Returns an ImageIcon, or null if the path was invalid. *//*

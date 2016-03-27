@@ -58,9 +58,9 @@ public class TruffleCrook extends TruffleReceiver {
 
         try {
             return Truffle.buildTruffle(addresses[a1],
-                    addresses[a2],
+                    addresses[0],
                     addresses[a1],
-                    addresses[a2],
+                    addresses[0],
                     null,
                     0,
                     0,

@@ -5,7 +5,10 @@ import edu.kit.trufflehog.model.network.InvalidIPAddress;
 import edu.kit.trufflehog.model.network.InvalidMACAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +22,8 @@ import java.util.Map;
  * @version 1.1
  */
 public class Truffle implements IPacketData {
+
+    private final static Logger logger = LogManager.getLogger();
 
     private final Map<Class<?>, HashMap<String, Object>> attributes = new HashMap<>();
 

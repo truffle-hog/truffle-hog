@@ -11,5 +11,5 @@ import edu.kit.trufflehog.util.Notifier;
  *     interface, but calls the functionality on this wrapped instance.
  * </p>
  */
-class ViewControllerNotifier extends Notifier<IUserCommand> {
+public class ViewControllerNotifier extends Notifier<IUserCommand> {
 }

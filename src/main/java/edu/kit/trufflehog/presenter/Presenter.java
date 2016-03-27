@@ -1,5 +1,7 @@
 package edu.kit.trufflehog.presenter;
 
+import edu.kit.trufflehog.command.usercommand.SelectionCommand;
+import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.MacroFilter;
@@ -22,29 +24,39 @@ import edu.kit.trufflehog.service.executor.CommandExecutor;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
+import edu.kit.trufflehog.view.GeneralStatisticsViewController;
+import edu.kit.trufflehog.view.StatisticsViewController;
 import edu.kit.trufflehog.view.ViewSwitcher;
 import edu.kit.trufflehog.view.jung.visualization.FXVisualizationViewer;
 import edu.kit.trufflehog.view.jung.visualization.SceneGestures;
+import edu.kit.trufflehog.viewmodel.GeneralStatisticsViewModel;
+import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
 import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -143,6 +155,51 @@ public class Presenter {
 
 
 
+        final StatisticsViewModel statisticsViewModel = new StatisticsViewModel();
+        viewer.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statisticsViewModel));
+        final StatisticsViewController statisticsViewController = new StatisticsViewController(statisticsViewModel);
+        viewer.getChildren().add(statisticsViewController);
+        AnchorPane.setTopAnchor(statisticsViewController, 10d);
+        AnchorPane.setRightAnchor(statisticsViewController, 10d);
+
+        final GeneralStatisticsViewModel generalStatisticsViewModel = new GeneralStatisticsViewModel();
+        final GeneralStatisticsViewController generalStatisticsViewController = new GeneralStatisticsViewController(generalStatisticsViewModel);
+        viewer.getChildren().add(generalStatisticsViewController);
+
+        StringProperty timeProperty = new SimpleStringProperty("");
+        StringProperty throughputStringProperty = new SimpleStringProperty();
+        throughputStringProperty.bindBidirectional(viewPortSwitch.getThroughputProperty(), new DecimalFormat("0.00"));
+
+        generalStatisticsViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Population", viewPortSwitch.getPopulationProperty())));
+        generalStatisticsViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Packages per second", throughputStringProperty)));
+        generalStatisticsViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Running", timeProperty)));
+        //generalStatisticsOverlay.setVisible(true);
+
+        //TODO improve this!
+        viewPortSwitch.getViewTimeProperty().addListener((observable, oldValue, newValue) -> {
+            StringBuilder sb = new StringBuilder();
+            long ms = newValue.longValue();
+            long hours = TimeUnit.MILLISECONDS.toHours(ms);
+            ms -= TimeUnit.HOURS.toMillis(hours);
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(ms);
+            ms -= TimeUnit.MINUTES.toMillis(minutes);
+            long seconds = TimeUnit.MILLISECONDS.toSeconds(ms);
+
+            sb.append(hours);
+            sb.append("h ");
+            sb.append(minutes);
+            sb.append("m ");
+            sb.append(seconds);
+            sb.append("s");
+
+            timeProperty.setValue(sb.toString());
+        });
+
+        AnchorPane.setBottomAnchor(generalStatisticsViewController, 10d);
+        AnchorPane.setRightAnchor(generalStatisticsViewController, 10d);
+
+        viewer.addListener(commandExecutor.asUserCommandListener());
+
         primaryStage.setScene(scene);
         primaryStage.show();
         try {
@@ -154,6 +211,15 @@ public class Presenter {
         truffleReceiver.connect();
 /*        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
                 new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));*/
+    }
+
+    /**
+     * <p>
+     *     Builds the node statistics overlay.
+     * </p>
+     */
+    private void addNodeStatisticsOverlay() {
+
     }
 
     private void initNetwork() {
@@ -202,8 +268,8 @@ public class Presenter {
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-        truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
-      // truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
+       truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
+       //truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
 
 
 
@@ -233,6 +299,7 @@ public class Presenter {
      * This method shuts down any services that are still running properly.
      */
     public void finish() {
+
         // Exit the view
         Platform.exit();
 
