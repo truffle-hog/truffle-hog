@@ -91,11 +91,12 @@ abstract class ConfigDataModel<T> {
                 }
             } catch (IOException e) {
                 logger.error("Error writing to output stream", e);
+                return false;
             }
         } catch (IOException e) {
             logger.error("Error reading from input stream", e);
+            return false;
         }
-
         return true;
     }
 }
