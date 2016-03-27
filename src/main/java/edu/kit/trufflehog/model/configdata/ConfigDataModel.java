@@ -30,7 +30,7 @@ import java.io.*;
  *     type.
  * </p>
  * <p>
- *     When extendin this class and there is no need for the class type, still implement the
+ *     When extending this class and there is no need for the class type, still implement the
  *     {@link ConfigDataModel#get(Class classType, String key)} method and ignore the additional parameter. Others
  *     can call on the {@link ConfigDataModel#get(String key)} method and your method will still be executed.
  * </p>
