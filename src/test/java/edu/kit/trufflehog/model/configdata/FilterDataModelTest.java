@@ -355,12 +355,12 @@ public class FilterDataModelTest {
 
         int limit = (int) (Math.random() * 100);
         for (int i = 0; i < limit; i++) {
-            int ruleSize = (int) (Math.random() * 1000);igno
+            int ruleSize = (int) (Math.random() * 1000);
             rules.add(randomString(ruleSize));
         }
 
         // Generate color;
-        int color_r = (int) (Math.random() * 255);
+        int color_r = (int) (Math.random() * 255);fuf
         int color_g = (int) (Math.random() * 255);
         int color_b = (int) (Math.random() * 255);
         int color_a = (int) (Math.random() * 255);
