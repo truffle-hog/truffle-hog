@@ -360,7 +360,7 @@ public class FilterDataModelTest {
         }
 
         // Generate color;
-        int color_r = (int) (Math.random() * 255);fuf
+        int color_r = (int) (Math.random() * 255);
         int color_g = (int) (Math.random() * 255);
         int color_b = (int) (Math.random() * 255);
         int color_a = (int) (Math.random() * 255);
