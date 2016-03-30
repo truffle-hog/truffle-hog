@@ -4,8 +4,8 @@ import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
+import javafx.scene.paint.Color;
 
-import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;

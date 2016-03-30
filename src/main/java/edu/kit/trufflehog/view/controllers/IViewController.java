@@ -12,7 +12,7 @@ import edu.kit.trufflehog.util.INotifier;
  * <p>
  *     {@code IViewControllers} always provide a specified range of
  *     interactions that can be invoked. By using this abstraction a view
- *     controller only needs to know the interactions it can perform, and
+ *     controllers only needs to know the interactions it can perform, and
  *     does not have any idea of the underlying commands that are mapped to
  *     these interactions by the
  *     {@link edu.kit.trufflehog.presenter.Presenter}.
@@ -21,11 +21,11 @@ import edu.kit.trufflehog.util.INotifier;
  *     Every IViewController is also integrated into the notification
  *     framework of this application by implementing the
  *     {@link INotifier} interface. Meaning if
- *     interactions are invoked on a view controller, the commands mapped to
+ *     interactions are invoked on a view controllers, the commands mapped to
  *     these interactions are sent to all listeners.
  * </p>
  *
- * @param <I> The type of interactions this view controller can invoke.
+ * @param <I> The type of interactions this view controllers can invoke.
  *           Typically implemented by a specific enumeration.
  */
 public interface IViewController<I extends IInteraction> extends INotifier<IUserCommand> {

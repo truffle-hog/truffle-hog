@@ -1,12 +1,13 @@
 package edu.kit.trufflehog.presenter;
 
-import edu.kit.trufflehog.command.usercommand.SelectionCommand;
+import edu.kit.trufflehog.command.usercommand.*;
+import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.interaction.GraphInteraction;
+import edu.kit.trufflehog.interaction.ToolbarViewInteraction;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.MacroFilter;
 import edu.kit.trufflehog.model.network.INetwork;
-import edu.kit.trufflehog.model.network.INetworkViewPort;
 import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -21,14 +22,12 @@ import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
-import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
-import edu.kit.trufflehog.view.GeneralStatisticsViewController;
-import edu.kit.trufflehog.view.StatisticsViewController;
-import edu.kit.trufflehog.view.ViewSwitcher;
+import edu.kit.trufflehog.view.*;
 import edu.kit.trufflehog.view.jung.visualization.FXVisualizationViewer;
 import edu.kit.trufflehog.view.jung.visualization.SceneGestures;
+import edu.kit.trufflehog.viewmodel.FilterViewModel;
 import edu.kit.trufflehog.viewmodel.GeneralStatisticsViewModel;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
@@ -38,6 +37,7 @@ import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
@@ -46,13 +46,12 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -72,14 +71,14 @@ public class Presenter {
     private final FileSystem fileSystem;
     private final ScheduledExecutorService executorService;
     private final Stage primaryStage;
-    private ViewBuilder viewBuilder;
     private TruffleReceiver truffleReceiver;
-    private Map<String, INetworkViewPort> viewPortMap;
     private INetworkViewPortSwitch viewPortSwitch;
     private INetworkDevice networkDevice;
     private INetwork liveNetwork;
     private INetworkWritingPortSwitch writingPortSwitch;
     private final MacroFilter macroFilter = new MacroFilter();
+
+    private FilterViewModel filterViewModel;
 
     private final CommandExecutor commandExecutor = new CommandExecutor();
 
@@ -90,7 +89,6 @@ public class Presenter {
      */
     public Presenter(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.viewPortMap = new HashMap<>();
 
         if (this.primaryStage == null) {
             throw new NullPointerException("primary stage should not be null");
@@ -110,10 +108,38 @@ public class Presenter {
 
        // primaryStage.setOnCloseRequest(event -> finish());
 
+
+    }
+
+
+    /**
+     * <p>
+     *     Present TruffleHog. Create all necessary objects, register them with each other, bind them, pass them the
+     *     resources they need ect.
+     * </p>
+     */
+    public void run() {
+
+        initModel();
+        initServices();
+        initDatabase();
+        initGUI();
+
+        //ObservableLayout<INode, IConnection> layouts = new ObservableLayout<>(new FRLayout<>(sgv.g));
+        //layouts.setSize(new Dimension(300,300)); // sets the initial size of the space
+
+
+
+       // truffleReceiver.connect();
+
+
         primaryStage.setOnCloseRequest(e -> {
+
+            //viewer.setCache(false);
+
             Platform.exit();
 
-            ExecutorService service = Executors.newSingleThreadExecutor();
+            //final ExecutorService service = Executors.newSingleThreadExecutor();
             // Close all databases and other resources accessing the hard drive that need to be closed.
             configData.close();
 
@@ -125,22 +151,27 @@ public class Presenter {
             // Kill all threads and the thread pool with it
             LoggedScheduledExecutor.getInstance().shutdownNow();
 
+            System.gc();
             // Shut down the system
             System.exit(0);
         });
+
+/*        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
+                new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));*/
     }
 
-    /**
-     * <p>
-     *     Present TruffleHog. Create all necessary objects, register them with each other, bind them, pass them the
-     *     resources they need ect.
-     * </p>
-     */
-    public void present() {
+    private void initModel() {
+
         initNetwork();
 
-        //ObservableLayout<INode, IConnection> layouts = new ObservableLayout<>(new FRLayout<>(sgv.g));
-        //layouts.setSize(new Dimension(300,300)); // sets the initial size of the space
+        filterViewModel = new FilterViewModel(configData);
+    }
+
+    private void initServices() {
+
+    }
+
+    private void initGUI() {
 
         final FXVisualizationViewer<INode, IConnection> viewer = new FXVisualizationViewer<>(liveNetwork.getViewPort().getDelegate(), liveNetwork.getViewPort());
         SceneGestures sceneGestures = new SceneGestures(viewer.getCanvas());
@@ -153,7 +184,26 @@ public class Presenter {
         scene.addEventFilter( MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
         scene.addEventFilter( ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
 
+        final FilterEditingMenuViewController filterEditingMenuViewController = new FilterEditingMenuViewController(configData, filterViewModel);
+        filterEditingMenuViewController.setVisible(false);
+        viewer.getChildren().add(filterEditingMenuViewController);
+        AnchorPane.setRightAnchor(filterEditingMenuViewController, 0d);
+        filterEditingMenuViewController.addCommand(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
+        filterEditingMenuViewController.addListener(commandExecutor.asUserCommandListener());
 
+        final FilterOverlayView filterOverlayView = new FilterOverlayView(configData.getAllLoadedFilters(), filterEditingMenuViewController);
+        filterOverlayView.setVisible(false);
+        viewer.getChildren().add(filterOverlayView);
+        AnchorPane.setLeftAnchor(filterOverlayView, 0d);
+
+
+
+        final ToolbarView toolbarView = new ToolbarView(filterOverlayView);
+        toolbarView.addCommand(ToolbarViewInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
+        toolbarView.addCommand(ToolbarViewInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
+        viewer.getChildren().add(toolbarView);
+        AnchorPane.setBottomAnchor(toolbarView, 5d);
+        AnchorPane.setLeftAnchor(toolbarView, 5d);
 
         final StatisticsViewModel statisticsViewModel = new StatisticsViewModel();
         viewer.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statisticsViewModel));
@@ -166,6 +216,7 @@ public class Presenter {
         final GeneralStatisticsViewController generalStatisticsViewController = new GeneralStatisticsViewController(generalStatisticsViewModel);
         viewer.getChildren().add(generalStatisticsViewController);
 
+        // FIXME This part is a bit verbose!!! _____________ START
         StringProperty timeProperty = new SimpleStringProperty("");
         StringProperty throughputStringProperty = new SimpleStringProperty();
         throughputStringProperty.bindBidirectional(viewPortSwitch.getThroughputProperty(), new DecimalFormat("0.00"));
@@ -194,11 +245,13 @@ public class Presenter {
 
             timeProperty.setValue(sb.toString());
         });
-
         AnchorPane.setBottomAnchor(generalStatisticsViewController, 10d);
         AnchorPane.setRightAnchor(generalStatisticsViewController, 10d);
 
+        // FIXME This part is a bit verbose!!! _____________ END
+
         viewer.addListener(commandExecutor.asUserCommandListener());
+
 
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -208,17 +261,11 @@ public class Presenter {
             e.printStackTrace();
         }
 
-        truffleReceiver.connect();
-/*        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
-                new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));*/
     }
 
-    /**
-     * <p>
-     *     Builds the node statistics overlay.
-     * </p>
-     */
-    private void addNodeStatisticsOverlay() {
+    private void initDatabase() {
+
+
 
     }
 
@@ -236,10 +283,6 @@ public class Presenter {
 
         // TODO Ctor injection with the Ports that are within the networks
         liveNetwork = new LiveNetwork(og);
-
-        // TODO Add real thing too, perhaps I misunderstood the viewport, need to talk to somebody in person ( - Julian)
-        viewPortMap.put(ViewSwitcher.PROFINET_VIEW, liveNetwork.getViewPort());
-
 
         /*
         // initialize the replay network that will be written on by a networkTape if the device plays a replay
@@ -270,9 +313,6 @@ public class Presenter {
         // TODO register the truffleReceiver somewhere so we can start or stop it.
        truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
        //truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
-
-
-
 
 
         //this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
@@ -317,7 +357,7 @@ public class Presenter {
         LoggedScheduledExecutor.getInstance().shutdownNow();
 
         // Shut down the system
-        System.exit(0);
+       // System.exit(0);
     }
 
     //TODO remove someday but for now leave as reference

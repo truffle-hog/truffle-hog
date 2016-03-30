@@ -11,7 +11,7 @@ import javafx.stage.Stage;
  * <p>
  *     This class is designed as being the main window for the application.
  *     Every view that is placed on a scene that should be shown in the main
- *     window has to be placed into this window controller.
+ *     window has to be placed into this window controllers.
  * </p>
  */
 public final class RootWindowController implements IWindowController {

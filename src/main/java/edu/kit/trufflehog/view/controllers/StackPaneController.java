@@ -7,19 +7,17 @@ import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.INotifier;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
-import java.util.Map;
 
 
 /**
  * <p>
- *      The basic abstraction for AnchorPane controllers. This is the super class of the
- *      {@link AnchorPaneInteractionController} and it does not have an {@link IInteraction} because it does not
- *      interact with the model.
+ *      The basic abstraction for StackPane controllers.
  * </p>
  */
-public class AnchorPaneController<I extends  IInteraction> extends AnchorPane implements IViewController<I> {
+public abstract class StackPaneController<I extends IInteraction> extends StackPane implements IViewController<I> {
 
     /**
      * <p>
@@ -28,8 +26,6 @@ public class AnchorPaneController<I extends  IInteraction> extends AnchorPane im
      */
     private final INotifier<IUserCommand> viewControllerNotifier;
 
-    private final Map<I, IUserCommand> interactionMap;
-
     /**
      * <p>
      *     Creates a new AnchorPaneController based on the given fxml file.
@@ -37,9 +33,7 @@ public class AnchorPaneController<I extends  IInteraction> extends AnchorPane im
      *
      * @param fxmlFile The fxml file to create the AnchorPaneController from.
      */
-    public AnchorPaneController(String fxmlFile, Map<I, IUserCommand> interactionMap) {
-
-        this.interactionMap = interactionMap;
+    public StackPaneController(String fxmlFile) {
 
         viewControllerNotifier = new ViewControllerNotifier(fxmlFile, this);
     }
@@ -57,14 +51,5 @@ public class AnchorPaneController<I extends  IInteraction> extends AnchorPane im
     @Override
     public void notifyListeners(IUserCommand message) {
         viewControllerNotifier.notifyListeners(message);
-    }
-
-    @Override
-    public void addCommand(I interaction, IUserCommand command) {
-        interactionMap.put(interaction, command);
-    }
-
-    public IUserCommand getCommand(I interaction) {
-        return interactionMap.get(interaction);
     }
 }

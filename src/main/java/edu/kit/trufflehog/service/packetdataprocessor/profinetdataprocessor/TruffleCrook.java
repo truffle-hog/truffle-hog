@@ -13,7 +13,7 @@ public class TruffleCrook extends TruffleReceiver {
     private final IFilter filter;
 
     private long[] addresses;
-    private int maxAddresses = 20;
+    private int maxAddresses = 100;
 
     public TruffleCrook(INetworkWritingPort writingPort, IFilter filter) {
         networkWritingPort = writingPort;
@@ -58,9 +58,9 @@ public class TruffleCrook extends TruffleReceiver {
 
         try {
             return Truffle.buildTruffle(addresses[a1],
-                    addresses[0],
+                    addresses[a2],
                     addresses[a1],
-                    addresses[0],
+                    addresses[a2],
                     null,
                     0,
                     0,

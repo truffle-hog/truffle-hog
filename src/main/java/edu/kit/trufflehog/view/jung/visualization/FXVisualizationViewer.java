@@ -30,6 +30,7 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.util.IListener;
 import edu.kit.trufflehog.util.INotifier;
+import edu.kit.trufflehog.util.Notifier;
 import edu.kit.trufflehog.util.bindings.MyBindings;
 import edu.kit.trufflehog.view.controllers.IViewController;
 import edu.kit.trufflehog.view.controllers.ViewControllerNotifier;
@@ -100,7 +101,12 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     private final Collection<V> selectedNodes = new HashSet<>();
     private final Collection<E> selectedEdges = new HashSet<>();
 
-    private final INotifier<IUserCommand> viewControllerNotifier = new ViewControllerNotifier();
+    private final INotifier<IUserCommand> viewControllerNotifier = new Notifier<IUserCommand>() {
+        @Override
+        public boolean addListener(IListener<IUserCommand> listener) {
+            return super.addListener(listener);
+        }
+    };
 
     /** The commands that are mapped to their interactions. **/
     private final Map<GraphInteraction, IUserCommand> interactionMap =

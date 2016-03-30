@@ -20,12 +20,7 @@ package edu.kit.trufflehog.model.configdata;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.file.Files;
+import java.io.*;
 
 /**
  * <p>
@@ -35,7 +30,7 @@ import java.nio.file.Files;
  *     type.
  * </p>
  * <p>
- *     When extendin this class and there is no need for the class type, still implement the
+ *     When extending this class and there is no need for the class type, still implement the
  *     {@link ConfigDataModel#get(Class classType, String key)} method and ignore the additional parameter. Others
  *     can call on the {@link ConfigDataModel#get(String key)} method and your method will still be executed.
  * </p>
@@ -84,32 +79,22 @@ abstract class ConfigDataModel<T> {
      */
     boolean copyFromResources(final String fileName, final File targetFile) {
         // Set file path to the default file in resources
-        ClassLoader classLoader = getClass().getClassLoader();
-        String filePath = "edu" + File.separator + "kit" + File.separator + "trufflehog" + File.separator + "config"
-                + File.separator + fileName;
+        final String filePath = File.separator + "edu" + File.separator + "kit" + File.separator + "trufflehog" +
+                File.separator + "config" + File.separator + fileName;
 
         // Get the file from the resources
-        File resourceFile = null;
-        URL url = classLoader.getResource(filePath);
-        if (url != null) {
-
-            // Decode from URL style to get rid of illegal characters in string like %20 etc.
-            try {
-                resourceFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                logger.error("Unable to decode URL to string", e);
-            }
-        } else {
-            logger.error("Unable to get file from resources");
-        }
-
-        // Copy the file to data/config
-        try {
-            if (resourceFile != null) {
-                Files.copy(resourceFile.getCanonicalFile().toPath(), targetFile.getCanonicalFile().toPath());
+        try (InputStream inputStream = this.getClass().getResourceAsStream((filePath))) {
+            try (OutputStream outputStream = new FileOutputStream(targetFile)) {
+                int c;
+                while ((c = inputStream.read()) != -1) {
+                    outputStream.write(c);
+                }
+            } catch (IOException e) {
+                logger.error("Error writing to output stream", e);
+                return false;
             }
         } catch (IOException e) {
-            logger.error("Unable to copy " + fileName + " from resources to target file: " + targetFile.getName(), e);
+            logger.error("Error reading from input stream", e);
             return false;
         }
         return true;
