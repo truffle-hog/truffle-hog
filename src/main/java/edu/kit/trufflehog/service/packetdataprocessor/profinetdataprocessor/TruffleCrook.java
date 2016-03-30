@@ -11,6 +11,7 @@ import edu.kit.trufflehog.model.network.INetworkWritingPort;
 public class TruffleCrook extends TruffleReceiver {
     private final INetworkWritingPort networkWritingPort;
     private final IFilter filter;
+    private boolean running = false;
 
     private long[] addresses;
     private int maxAddresses = 100;
@@ -23,12 +24,12 @@ public class TruffleCrook extends TruffleReceiver {
 
     @Override
     public void connect() {
-
+        running = true;
     }
 
     @Override
     public void disconnect() {
-
+        running = false;
     }
 
     @Override
@@ -37,6 +38,9 @@ public class TruffleCrook extends TruffleReceiver {
             synchronized (this) {
                 try {
                     Thread.sleep(10);
+                    while (!running) {
+                        wait();
+                    }
 
                     final Truffle truffle = getTruffle();
 
