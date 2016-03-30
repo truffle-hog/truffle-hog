@@ -49,14 +49,13 @@ public final class ToolbarView extends ToolBarViewController<ToolbarViewInteract
 
     public void onToggleConnect() {
 
-        if (connectButton.isSelected()) {
+        if (!connectButton.isSelected()) {
 
             notifyListeners(getCommand(ToolbarViewInteraction.DISCONNECT));
 
         } else {
 
             notifyListeners(getCommand(ToolbarViewInteraction.CONNECT));
-
         }
     }
 
