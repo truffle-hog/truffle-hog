@@ -79,11 +79,9 @@ abstract class ConfigDataModel<T> {
      */
     boolean copyFromResources(final String fileName, final File targetFile) {
         // Set file path to the default file in resources
-        final String filePath = File.separator + "edu" + File.separator + "kit" + File.separator + "trufflehog" +
-                File.separator + "config" + File.separator + fileName;
 
         // Get the file from the resources
-        try (InputStream inputStream = this.getClass().getResourceAsStream((filePath))) {
+        try (InputStream inputStream = this.getClass().getResourceAsStream((fileName))) {
             try (OutputStream outputStream = new FileOutputStream(targetFile)) {
                 int c;
                 while ((c = inputStream.read()) != -1) {

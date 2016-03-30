@@ -22,6 +22,7 @@ import edu.kit.trufflehog.model.network.recording.NetworkViewPortSwitch;
 import edu.kit.trufflehog.model.network.recording.NetworkWritingPortSwitch;
 import edu.kit.trufflehog.service.NodeStatisticsUpdater;
 import edu.kit.trufflehog.service.executor.CommandExecutor;
+import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleCrook;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.TruffleReceiver;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.view.*;
@@ -196,14 +197,13 @@ public class Presenter {
         viewer.getChildren().add(filterOverlayView);
         AnchorPane.setLeftAnchor(filterOverlayView, 0d);
 
-
-
         final ToolbarView toolbarView = new ToolbarView(filterOverlayView);
         toolbarView.addCommand(ToolbarViewInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
         toolbarView.addCommand(ToolbarViewInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
         viewer.getChildren().add(toolbarView);
         AnchorPane.setBottomAnchor(toolbarView, 5d);
         AnchorPane.setLeftAnchor(toolbarView, 5d);
+        toolbarView.addListener(commandExecutor.asUserCommandListener());
 
         final StatisticsViewModel statisticsViewModel = new StatisticsViewModel();
         viewer.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statisticsViewModel));

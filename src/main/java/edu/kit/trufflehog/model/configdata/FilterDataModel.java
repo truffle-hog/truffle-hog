@@ -335,12 +335,14 @@ class FilterDataModel {
      * @return The base64 string representing the FilterInput object.
      */
     private String toBase64(FilterInput filterInput) {
+
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(outputStream);
             oos.writeObject(filterInput);
             oos.close();
             return Base64.getEncoder().encodeToString(outputStream.toByteArray());
+
         } catch(IOException e) {
             logger.error("Unable to serialize filter input into a base64 string", e);
             return null;
@@ -357,13 +359,16 @@ class FilterDataModel {
      * @return The original FilterInput object represented by the given base64 string.
      */
     private FilterInput fromBase64(String string) {
+
         try {
             byte[] data = Base64.getDecoder().decode(string);
             ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
             FilterInput filterInput = (FilterInput) objectInputStream.readObject();
             objectInputStream.close();
             return filterInput;
+
         } catch (IOException | ClassNotFoundException e) {
+
             logger.error("Unable to convert received string into FilterInput object", e);
             return null;
         }

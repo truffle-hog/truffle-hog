@@ -29,10 +29,6 @@ import java.util.Map;
  */
 public final class ToolbarView extends ToolBarViewController<ToolbarViewInteraction> {
 
-    /** The commands that are mapped to their interactions. **/
-    private final Map<ToolbarViewInteraction, IUserCommand> interactionMap =
-            new EnumMap<>(ToolbarViewInteraction.class);
-
     @FXML
     private ToggleButton connectButton;
 
@@ -55,11 +51,11 @@ public final class ToolbarView extends ToolBarViewController<ToolbarViewInteract
 
         if (connectButton.isSelected()) {
 
-            notifyListeners(interactionMap.get(ToolbarViewInteraction.DISCONNECT));
+            notifyListeners(getCommand(ToolbarViewInteraction.DISCONNECT));
 
         } else {
 
-            notifyListeners(interactionMap.get(ToolbarViewInteraction.CONNECT));
+            notifyListeners(getCommand(ToolbarViewInteraction.CONNECT));
 
         }
     }
