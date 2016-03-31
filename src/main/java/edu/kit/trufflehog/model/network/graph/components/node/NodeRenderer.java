@@ -1,9 +1,11 @@
 package edu.kit.trufflehog.model.network.graph.components.node;
 
+import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
 import javafx.application.Platform;
+import javafx.beans.binding.When;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
@@ -39,6 +41,7 @@ public class NodeRenderer implements IRenderer {
     private ObjectProperty<Paint> strokePaintProperty = new SimpleObjectProperty<>(drawUnpicked);
     private boolean isPicked;
 
+    private IComposition parent;
     /**
      * <p>
      *     Creates a component using default values.
@@ -52,6 +55,8 @@ public class NodeRenderer implements IRenderer {
         //new java.awt.Color(0x47F4CB);
 
     }
+
+
 
     /**
      * <p>
@@ -68,6 +73,17 @@ public class NodeRenderer implements IRenderer {
         this.shape = shape;
         this.colorPicked = colorPicked;
         this.colorUnpicked = colorUnpicked;
+    }
+
+    @Override
+    public void setParent(IComposition parent) {
+        this.parent = parent;
+
+        final FilterPropertiesComponent fpc = parent.getComponent(FilterPropertiesComponent.class);
+
+        shape.fillProperty().unbind();
+
+        shape.fillProperty().bind(new When(fpc.hasColorProperty()).then(fpc.activeColorProperty()).otherwise(colorPicked));
     }
 
     @Override

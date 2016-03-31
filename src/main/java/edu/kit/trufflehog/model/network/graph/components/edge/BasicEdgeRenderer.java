@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
+import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
@@ -173,6 +174,12 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     @Override
     public void animate() {
         animator.play();
+    }
+
+    @Override
+    public void setParent(IComposition parent) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override

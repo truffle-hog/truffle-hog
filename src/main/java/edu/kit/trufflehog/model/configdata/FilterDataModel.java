@@ -19,17 +19,24 @@ package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.FilterOrigin;
 import edu.kit.trufflehog.model.filter.IFilter;
+import edu.kit.trufflehog.model.filter.SelectionModel;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
+import edu.kit.trufflehog.util.javafx.FxUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.sql.*;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -126,13 +133,17 @@ class FilterDataModel {
 
                     // Iterate through all found entries in the database and add them to the map
                     while (rs.next()) {
-                        String base64String = rs.getString("filter");
-                        FilterInput filterInput = fromBase64(base64String);
-                        if (filterInput != null) {
-                            loadedFilters.add(filterInput);
-                        } else {
-                            logger.error("Found null filter input object while loading from database, skipping");
-                        }
+                        final String name = rs.getString("ID");
+                        final SelectionModel selectionModel = SelectionModel.valueOf(rs.getString("SELECTION_MODEL"));
+                        final FilterOrigin filterOrigin = FilterOrigin.valueOf(rs.getString("FILTER_ORIGIN"));
+                        final List<String> rules = Arrays.asList(rs.getString("RULES").split(","));
+                        final Color color = Color.web(rs.getString("COLOR"));
+                        final boolean authorized = rs.getBoolean("AUTHORIZED");
+                        final int priority = rs.getInt("PRIORITY");
+
+                        final FilterInput filterInput = new FilterInput(name, selectionModel, filterOrigin, rules, color, authorized, priority);
+
+                        loadedFilters.add(filterInput);
                     }
                 }
             } catch (SQLException e) {
@@ -242,19 +253,18 @@ class FilterDataModel {
             return false;
         }
 
-        // Convert filterInput object into base64 string representation
-        String filterBase64 = toBase64(filterInput);
-        if (filterBase64 == null) {
-            logger.error("Unable to add filter to database, base64 string is null");
-            return false;
-        }
-
         // Add the base64 string into the database
         synchronized (this) {
             // We use the try-with-resource statements here from Java 7
             try (Statement statement = connection.createStatement()) {
-                String sql = "INSERT INTO FILTERS(ID,FILTER) " + "VALUES('" + filterInput.getName() + "','"
-                        + filterBase64 + "');";
+                String sql = "INSERT INTO FILTERS(ID,SELECTION_MODEL,FILTER_ORIGIN,RULES,COLOR,AUTHORIZED,PRIORITY) " + "VALUES("
+                        + "'" + filterInput.getName() + "',"
+                        + "'" + filterInput.getSelectionModel().name() + "',"
+                        + "'" + filterInput.getOrigin().name() + "',"
+                        + "'" + filterInput.getRules().stream().collect(Collectors.joining(",")) + "',"
+                        + "'" + FxUtils.toRGBCode(filterInput.getColor()) + "',"
+                        + "" + (filterInput.isLegal() ? "1" : "0") + ","
+                        + "" + filterInput.getPriority() + ");";
 
                 statement.executeUpdate(sql);
                 connection.commit();
@@ -328,54 +338,6 @@ class FilterDataModel {
 
     /**
      * <p>
-     *     Converts a {@link FilterInput} object into a base64 string, which is how it will be stored into the database.
-     * </p>
-     *
-     * @param filterInput The {@link FilterInput} that should be converted into a base64 string.
-     * @return The base64 string representing the FilterInput object.
-     */
-    private String toBase64(FilterInput filterInput) {
-
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(outputStream);
-            oos.writeObject(filterInput);
-            oos.close();
-            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
-
-        } catch(IOException e) {
-            logger.error("Unable to serialize filter input into a base64 string", e);
-            return null;
-        }
-    }
-
-    /**
-     * <p>
-     *     Converts a base64 string into a {@link FilterInput} object, so that the object can be recreated from the
-     *     database.
-     * </p>
-     *
-     * @param string The base64 string that should be converted back into a {@link FilterInput} object.
-     * @return The original FilterInput object represented by the given base64 string.
-     */
-    private FilterInput fromBase64(String string) {
-
-        try {
-            byte[] data = Base64.getDecoder().decode(string);
-            ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
-            FilterInput filterInput = (FilterInput) objectInputStream.readObject();
-            objectInputStream.close();
-            return filterInput;
-
-        } catch (IOException | ClassNotFoundException e) {
-
-            logger.error("Unable to convert received string into FilterInput object", e);
-            return null;
-        }
-    }
-
-    /**
-     * <p>
      *     Creates a new sqlite database with an ID and a FILTER column. This is where the filters will be saved.
      * </p>
      */
@@ -387,7 +349,12 @@ class FilterDataModel {
 
             String sql = "CREATE TABLE FILTERS" +
                     "(ID        TEXT    NOT NULL," +
-                    " FILTER    TEXT    NOT NULL)";
+                    " SELECTION_MODEL    TEXT    NOT NULL," +
+                    " FILTER_ORIGIN      TEXT    NOT NULL," +
+                    " RULES              TEXT    NOT NULL," +
+                    " COLOR              TEXT    NOT NULL," +
+                    " AUTHORIZED         INTEGER NOT NULL," +
+                    " PRIORITY           INTEGER NOT NULL)";
             statement.executeUpdate(sql);
             connection.commit();
 

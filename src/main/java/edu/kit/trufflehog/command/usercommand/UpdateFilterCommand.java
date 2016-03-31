@@ -2,6 +2,8 @@ package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.filter.*;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +17,9 @@ import java.util.Map;
  * @version 1.0
  */
 public class UpdateFilterCommand implements IUserCommand<FilterInput> {
+
+    private static final Logger logger = LogManager.getLogger();
+
     private final MacroFilter macroFilter;
     private final INetworkIOPort nwp;
     private FilterInput filterInput;
@@ -41,7 +46,9 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
 
     @Override
     public void execute() {
+
         if (filterInput != null) {
+
             if (filterMap.get(filterInput) != null) {
                 macroFilter.removeFilter(filterMap.get(filterInput));
                 filterMap.remove(filterInput);
@@ -69,9 +76,11 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
                         break;
                 }
             } catch (InvalidFilterRule invalidFilterRule) {
+                logger.warn(invalidFilterRule);
                 //TODO do some error handling and notify user maybe?
             }
 
+            logger.debug("adding filter to filtermap, macrofilter, and apply the new filter");
             filterMap.put(filterInput, filter);
             macroFilter.addFilter(filter);
             nwp.applyFilter(filter);

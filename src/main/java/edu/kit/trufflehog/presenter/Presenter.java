@@ -196,6 +196,9 @@ public class Presenter {
         filterOverlayView.setVisible(false);
         viewer.getChildren().add(filterOverlayView);
         AnchorPane.setLeftAnchor(filterOverlayView, 0d);
+        filterOverlayView.addCommand(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
+        filterOverlayView.addCommand(FilterInteraction.UPDATE, new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
+        filterOverlayView.addListener(commandExecutor.asUserCommandListener());
 
         final ToolbarView toolbarView = new ToolbarView(filterOverlayView);
         toolbarView.addCommand(ToolbarViewInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));

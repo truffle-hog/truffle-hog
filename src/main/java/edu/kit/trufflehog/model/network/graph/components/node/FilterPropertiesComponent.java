@@ -9,7 +9,13 @@ import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * <p>
@@ -20,8 +26,21 @@ import javafx.scene.paint.Color;
  */
 public class FilterPropertiesComponent implements IComponent {
 
+    private final Logger logger = LogManager.getLogger();
+
     private final TreeMultimap<IFilter, Color> filterColors = TreeMultimap.create(Ordering.natural(), Ordering.arbitrary());
 
+    public boolean getHasColor() {
+        return hasColor.get();
+    }
+
+    public BooleanProperty hasColorProperty() {
+        return hasColor;
+    }
+
+    private final BooleanProperty hasColor = new SimpleBooleanProperty(false);
+
+    private final ObjectProperty<Color> activeColor = new SimpleObjectProperty<>(null);
     /**
      * <p>
      *     This method maps the specified color to the filter. The colors are ordered by the filters priority.
@@ -33,6 +52,10 @@ public class FilterPropertiesComponent implements IComponent {
      */
     synchronized public void addFilterColor(IFilter filter, Color color) {
         filterColors.put(filter, color);
+
+        activeColor.set(getFilterColor());
+        hasColor.set(true);
+        logger.debug("adding filter color: " + color);
     }
 
     /**
@@ -43,6 +66,10 @@ public class FilterPropertiesComponent implements IComponent {
      */
     synchronized public void addFilterColors(Multimap<IFilter, Color> newFilterColors) {
         filterColors.putAll(newFilterColors);
+
+        activeColor.set(getFilterColor());
+        hasColor.set(true);
+        logger.debug("add filter colors: " + newFilterColors);
     }
 
     /**
@@ -53,6 +80,12 @@ public class FilterPropertiesComponent implements IComponent {
      */
     synchronized public void removeFilterColor(final IFilter filter) {
         filterColors.remove(filter, filter.getFilterColor());
+
+        activeColor.set(getFilterColor());
+
+        hasColor.set(!filterColors.isEmpty());
+
+        logger.debug("remove filter color: " + filter);
     }
 
     /**
@@ -68,6 +101,14 @@ public class FilterPropertiesComponent implements IComponent {
         }
 
         return filterColors.get(filterColors.keySet().last()).first();
+    }
+
+    public Color getActiveColor() {
+        return activeColor.get();
+    }
+
+    public ObjectProperty<Color> activeColorProperty() {
+        return activeColor;
     }
 
     /**

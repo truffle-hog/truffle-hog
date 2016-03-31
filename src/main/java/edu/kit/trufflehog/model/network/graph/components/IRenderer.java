@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.network.graph.components;
 
+import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.util.DeepCopyable;
 import edu.kit.trufflehog.util.Updatable;
 import javafx.scene.paint.Color;
@@ -23,6 +24,8 @@ public interface IRenderer extends DeepCopyable<IRenderer>, Updatable<IRenderer>
     void setShape(Shape shape);
 
     void animate();
+
+    void setParent(IComposition parent);
 
     Color getDrawUnpicked();
 

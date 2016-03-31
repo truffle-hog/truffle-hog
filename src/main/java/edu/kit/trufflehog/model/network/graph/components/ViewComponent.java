@@ -35,7 +35,9 @@ public class ViewComponent extends AbstractComponent implements IComponent {
     private IComposition parent;
 
     public ViewComponent(IRenderer renderer) {
+
         this.renderer = renderer;
+
     }
 
     public void animate() {
@@ -64,7 +66,9 @@ public class ViewComponent extends AbstractComponent implements IComponent {
 
     @Override
     public void setParent(IComposition parent) {
+
         this.parent = parent;
+        renderer.setParent(this.parent);
     }
 
     @Override

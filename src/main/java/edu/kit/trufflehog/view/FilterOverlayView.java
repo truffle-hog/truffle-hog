@@ -216,7 +216,7 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
      */
     private void setUpActiveColumn(TableView<FilterInput> tableView) {
         // Set up active column
-        TableColumn<FilterInput, Boolean> activeColumn = new TableColumn<>("Active");
+        final TableColumn<FilterInput, Boolean> activeColumn = new TableColumn<>("Active");
         activeColumn.setMinWidth(50);
         activeColumn.setPrefWidth(50);
         tableView.getColumns().add(activeColumn);
@@ -227,7 +227,7 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
             final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
 
             checkBoxTableCell.setSelectedStateCallback(index -> {
-                FilterInput input = (FilterInput) tableView.getItems().get(index);
+                final FilterInput input = tableView.getItems().get(index);
                 input.getActiveProperty().addListener(l -> {
                     notifyUpdateCommand(input);
                 });
@@ -367,13 +367,18 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
             if (!data.isEmpty() && filterInput != null) {
 
                 // Update model
-                IUserCommand updateGraphFilterCommand = interactionMap.get(FilterInteraction.REMOVE);
+                final IUserCommand updateGraphFilterCommand = interactionMap.get(FilterInteraction.REMOVE);
+
                 if (updateGraphFilterCommand != null) {
+
                     filterInput.setDeleted();
                     updateGraphFilterCommand.setSelection(filterInput);
                     notifyListeners(updateGraphFilterCommand);
+                    logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
+                } else {
+                    logger.warn("no remove command mapped");
                 }
-                logger.debug("Removed FilterInput: " + filterInput.getName() + " from table view and database.");
+
             }
         });
         removeButton.setScaleX(0.5);
@@ -397,10 +402,13 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
     }
 
     public void notifyUpdateCommand(FilterInput filterInput) {
-        if (interactionMap.get(FilterInteraction.UPDATE) != null) {
-            IUserCommand command = interactionMap.get(FilterInteraction.UPDATE);
+
+        final IUserCommand command = interactionMap.get(FilterInteraction.UPDATE);
+
+        if (command != null) {
+            logger.debug("update command of filterinput");
             command.setSelection(filterInput);
-            notifyListeners(interactionMap.get(FilterInteraction.UPDATE));
+            notifyListeners(command);
         }
     }
 
