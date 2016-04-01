@@ -515,7 +515,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     @Override
     public Layout<V, E> getGraphLayout() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
+        return layout;
     }
 
 
@@ -675,6 +675,22 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     @Override
     public void addCommand(GraphInteraction interaction, IUserCommand command) {
         interactionMap.put(interaction, command);
+    }
+
+    public void selectAllNodes() {
+
+        getGraphLayout().getGraph().getVertices().stream().forEach(vertex -> {
+
+            final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
+
+            if (!renderer.picked()) {
+                selectedNodes.add(vertex);
+                Platform.runLater(() -> {
+                    renderer.isPicked(true);
+                });
+            }
+        });
+        onSelectionChanged();
     }
 
     private static class MyPickedState<T> implements PickedState<T> {
