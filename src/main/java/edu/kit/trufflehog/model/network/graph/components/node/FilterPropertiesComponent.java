@@ -8,6 +8,7 @@ import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -24,7 +25,7 @@ import org.apache.logging.log4j.Logger;
  * @author Mark Giraud
  * @version 1.0
  */
-public class FilterPropertiesComponent implements IComponent {
+public class FilterPropertiesComponent extends AbstractComponent implements IComponent {
 
     private final Logger logger = LogManager.getLogger();
 
@@ -67,9 +68,13 @@ public class FilterPropertiesComponent implements IComponent {
     synchronized public void addFilterColors(Multimap<IFilter, Color> newFilterColors) {
         filterColors.putAll(newFilterColors);
 
-        activeColor.set(getFilterColor());
-        hasColor.set(true);
-        logger.debug("add filter colors: " + newFilterColors);
+        if (!newFilterColors.isEmpty()) {
+
+            activeColor.set(getFilterColor());
+            hasColor.set(true);
+            logger.debug("add filter colors: " + newFilterColors);
+
+        }
     }
 
     /**
@@ -132,16 +137,6 @@ public class FilterPropertiesComponent implements IComponent {
     @Override
     public boolean isMutable() {
         return true;
-    }
-
-    @Override
-    public void setParent(IComposition parent) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public IComposition getParent() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override

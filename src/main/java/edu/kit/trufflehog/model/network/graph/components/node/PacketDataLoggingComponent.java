@@ -24,6 +24,7 @@ public class PacketDataLoggingComponent extends AbstractComponent implements ICo
     private final ObservableList<IPacketData> dataList;
     private final ListProperty dataProperty;
 
+    private IComposition parent = null;
     /**
      * <p>
      *     Creates and initializes the component.
@@ -78,16 +79,6 @@ public class PacketDataLoggingComponent extends AbstractComponent implements ICo
     @Override
     public boolean isMutable() {
         return true;
-    }
-
-    @Override
-    public void setParent(IComposition parent) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public IComposition getParent() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override

@@ -31,6 +31,9 @@ import edu.kit.trufflehog.util.ICopyCreator;
  * @version 0.0.1
  */
 public class StaticRenderer implements IRenderer {
+
+    private IComposition parent = null;
+
     @Override
     public javafx.scene.shape.Shape getShape() {
         throw new UnsupportedOperationException("Operation not implemented yet");
@@ -68,8 +71,7 @@ public class StaticRenderer implements IRenderer {
 
     @Override
     public void setParent(IComposition parent) {
-        //TODO implement this method
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.parent = parent;
     }
 
     @Override

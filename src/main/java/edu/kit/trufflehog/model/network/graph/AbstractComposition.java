@@ -34,6 +34,7 @@ public abstract class AbstractComposition implements IComposition {
             T castedExisting = (T) existing;
             return castedExisting;
         }
+        component.setParent(this);
         components.put(component.getClass(), component);
 
         //logger.debug(components);

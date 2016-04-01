@@ -69,6 +69,8 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     private Shape arrowShape = new Circle(16);
     private boolean isPicked = false;
 
+    private IComposition parent;
+
     public BasicEdgeRenderer() {
 
        // line.setStroke(colorUnpicked);
@@ -178,8 +180,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
     @Override
     public void setParent(IComposition parent) {
-        //TODO implement this method
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.parent = parent;
     }
 
     @Override
