@@ -21,8 +21,8 @@ import javafx.scene.shape.Rectangle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -36,7 +36,7 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
 
     private final ObservableList<FilterInput> data;
     private final FilterEditingMenuViewController filterEditingMenu;
-    private final TableView tableView;
+    private final PickedState<INode> pickedState;
 
     /**
      * <p>
@@ -48,19 +48,18 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
      * @param filterEditingMenu The filter edit menu through which filters can be created and updated.
      */
     public FilterOverlayView(final ObservableList<FilterInput> data,
-                                       final FilterEditingMenuViewController filterEditingMenu) {
+                                       final FilterEditingMenuViewController filterEditingMenu, final PickedState<INode> pickedState) {
 
         super("filter_menu_overlay.fxml", new EnumMap<>(FilterInteraction.class));
 
-        //this.pickedState = pickedState;
+        this.pickedState = pickedState;
         this.filterEditingMenu = filterEditingMenu;
         this.data = data;
 
         //this.filterEditingMenu.setVisible(false);
 
         // Build the table view and the filter menu
-        tableView = setUpTableView();
-        BorderPane borderPane = setUpMenu(tableView);
+        BorderPane borderPane = setUpMenu(setUpTableView());
 
         // Add menu to overlay
         this.getChildren().add(borderPane);
@@ -84,7 +83,7 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
      *
      * @return The created TableView.
      */
-    private TableView setUpTableView() {
+    private TableView<FilterInput> setUpTableView() {
         // Set up table view
         final TableView<FilterInput> tableView = new TableView<>();
         tableView.setEditable(true);
@@ -319,13 +318,11 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
 
         selectionButton.setOnAction(actionEvent -> {
 
-            throw new UnsupportedOperationException("not working yet");
-
-/*            final Set<INode> selected = new HashSet<>(pickedState.getPicked());
+            final Set<INode> selected = new HashSet<>(pickedState.getPicked());
             final List<String> filterStringList = selected.stream()
                     .map(node -> node.getAddress().toString())
                     .collect(Collectors.toList());
-            filterEditingMenu.showMenu(filterStringList);*/
+            filterEditingMenu.showMenu(filterStringList);
         });
 
         return selectionButton;

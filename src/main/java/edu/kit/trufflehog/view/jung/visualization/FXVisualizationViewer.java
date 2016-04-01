@@ -70,11 +70,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Dimension;
 import java.awt.RenderingHints;
+import java.awt.event.ItemListener;
 import java.awt.geom.Point2D;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -93,13 +91,14 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     private final DoubleProperty myScale = new SimpleDoubleProperty(1.0);
 
-
     private final PannableCanvas canvas;
     private final NodeGestures nodeGestures;
     private final CanvasGestures canvasGestures;
 
-    private final Collection<V> selectedNodes = new HashSet<>();
-    private final Collection<E> selectedEdges = new HashSet<>();
+    private final Set<V> selectedNodes = new HashSet<>();
+    private final Set<E> selectedEdges = new HashSet<>();
+
+    private final PickedState<V> pickedNodes = new MyPickedState<>(selectedNodes);
 
     private final INotifier<IUserCommand> viewControllerNotifier = new Notifier<IUserCommand>() {
         @Override
@@ -572,7 +571,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     @Override
     public PickedState<V> getPickedVertexState() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
+       return pickedNodes;
     }
 
     @Override
@@ -676,5 +675,56 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     @Override
     public void addCommand(GraphInteraction interaction, IUserCommand command) {
         interactionMap.put(interaction, command);
+    }
+
+    private static class MyPickedState<T> implements PickedState<T> {
+
+        private final Set<T> pickedNodes;
+
+        public MyPickedState(Set<T> selectedNodes) {
+
+            this.pickedNodes = selectedNodes;
+        }
+
+        @Override
+        public boolean pick(T v, boolean b) {
+            //TODO implement this method
+            throw new UnsupportedOperationException("Not implemented yet");
+        }
+
+        @Override
+        public void clear() {
+            //TODO implement this method
+            throw new UnsupportedOperationException("Not implemented yet");
+        }
+
+        @Override
+        public Set<T> getPicked() {
+            return pickedNodes;
+        }
+
+        @Override
+        public boolean isPicked(T v) {
+            //TODO implement this method
+            throw new UnsupportedOperationException("Not implemented yet");
+        }
+
+        @Override
+        public Object[] getSelectedObjects() {
+            //TODO implement this method
+            throw new UnsupportedOperationException("Not implemented yet");
+        }
+
+        @Override
+        public void addItemListener(ItemListener l) {
+            //TODO implement this method
+            throw new UnsupportedOperationException("Not implemented yet");
+        }
+
+        @Override
+        public void removeItemListener(ItemListener l) {
+            //TODO implement this method
+            throw new UnsupportedOperationException("Not implemented yet");
+        }
     }
 }
