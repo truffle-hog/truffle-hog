@@ -32,6 +32,6 @@ public class IPAddressFilterTest {
 
 
         FilterInput filterInput = new FilterInput("test", SelectionModel.SELECTION, FilterOrigin.IP, rules,
-                new Color(0x0), true, 1);
+                new javafx.scene.paint.Color(0.0, 0.0, 0.0, 0.0), true, 1);
     }
 }
