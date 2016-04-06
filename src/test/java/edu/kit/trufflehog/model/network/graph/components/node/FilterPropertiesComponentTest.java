@@ -2,12 +2,11 @@ package edu.kit.trufflehog.model.network.graph.components.node;
 
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.filter.IPAddressFilter;
+import javafx.scene.paint.Color;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import java.awt.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -23,12 +22,12 @@ public class FilterPropertiesComponentTest {
 
     @Test
     public void addFilterColor() throws Exception {
-        Color color = Color.cyan;
+        Color color = Color.CYAN;
         FilterPropertiesComponent component = new FilterPropertiesComponent();
         IFilter filter = Mockito.mock(IPAddressFilter.class);
         component.addFilterColor(filter, color);
 
-        assertTrue(component.getFilterColor().getRGB() == Color.cyan.getRGB());
+        assertTrue(component.getFilterColor().getBlue() == Color.CYAN.getBlue());
         assertEquals(1, component.getFilterColors().size());
     }
 
@@ -38,16 +37,16 @@ public class FilterPropertiesComponentTest {
         IFilter filter1 = Mockito.mock(IPAddressFilter.class);
         IFilter filter2 = Mockito.mock(IPAddressFilter.class);
         IFilter filter3 = Mockito.mock(IPAddressFilter.class);
-        Color color1 = Color.cyan;
-        Color color2 = Color.magenta;
-        Color color3 = Color.green;
+        Color color1 = Color.CYAN;
+        Color color2 = Color.MAGENTA;
+        Color color3 = Color.GREEN;
 
         component.addFilterColor(filter1, color1);
         component.addFilterColor(filter2, color2);
         component.addFilterColor(filter3, color3);
 
         assertEquals(3, component.getFilterColors().size());
-        assertTrue(component.getFilterColors().containsEntry(filter1, Color.cyan));
+        assertTrue(component.getFilterColors().containsEntry(filter1, Color.CYAN));
         assertTrue(component.getFilterColors().containsEntry(filter2, color2));
         assertTrue(component.getFilterColors().containsEntry(filter3, color3));
     }
@@ -56,9 +55,9 @@ public class FilterPropertiesComponentTest {
     public void removeFilterColor() throws Exception {
         FilterPropertiesComponent component = new FilterPropertiesComponent();
         IFilter filter1 = Mockito.mock(IPAddressFilter.class);
-        when(filter1.getFilterColor()).thenReturn(Color.cyan);
+        when(filter1.getFilterColor()).thenReturn(Color.CYAN);
 
-        component.addFilterColor(filter1, Color.cyan);
+        component.addFilterColor(filter1, Color.CYAN);
 
         assertEquals(1, component.getFilterColors().size());
 

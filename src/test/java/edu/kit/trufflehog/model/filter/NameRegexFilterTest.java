@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 import org.mockito.Mockito;
 
-import java.awt.*;
+import javafx.scene.paint.Color;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class NameRegexFilterTest {
 
         List<String> rules = new LinkedList<>();
         rules.add(".*bla.*");
-        FilterInput input = new FilterInput("test", SelectionModel.SELECTION, FilterOrigin.NAME, rules, Color.cyan, false, 0);
+        FilterInput input = new FilterInput("test", SelectionModel.SELECTION, FilterOrigin.NAME, rules, Color.CYAN, false, 0);
 
         boolean testPassed = true;
 
@@ -42,7 +42,7 @@ public class NameRegexFilterTest {
             NameRegexFilter filter = new NameRegexFilter(port, input);
             if (propertiesComponent.getFilterColor() != null) testPassed = false;
             filter.check(node);
-            if (propertiesComponent.getFilterColor() != Color.cyan) testPassed = false;
+            if (propertiesComponent.getFilterColor() != Color.CYAN) testPassed = false;
         } catch (Exception e) {
             testPassed = false;
         }
@@ -69,7 +69,7 @@ public class NameRegexFilterTest {
 
         List<String> rules = new LinkedList<>();
         rules.add(".*bla.*");
-        FilterInput input = new FilterInput("test", SelectionModel.SELECTION, FilterOrigin.NAME, rules, Color.cyan, false, 0);
+        FilterInput input = new FilterInput("test", SelectionModel.SELECTION, FilterOrigin.NAME, rules, Color.CYAN, false, 0);
 
         boolean testPassed = true;
 
