@@ -14,7 +14,13 @@ import javafx.beans.property.SimpleLongProperty;
 import java.time.Instant;
 
 /**
- * Created by jan on 23.02.16.
+ * \brief
+ * \details
+ * \date 23.02.16
+ * \copyright GNU Public License
+ *
+ * @author Jan Hermes
+ * @version 0.0.1
  */
 public class EdgeStatisticsComponent extends AbstractComponent implements IComponent {
 
@@ -58,15 +64,6 @@ public class EdgeStatisticsComponent extends AbstractComponent implements ICompo
         return true;
     }
 
-    @Override
-    public void setParent(IComposition parent) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public IComposition getParent() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
 
     public long getLastUpdateTime() {
         return lastUpdateTime.get();

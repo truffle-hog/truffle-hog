@@ -16,6 +16,7 @@
  */
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
+import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
@@ -30,6 +31,9 @@ import edu.kit.trufflehog.util.ICopyCreator;
  * @version 0.0.1
  */
 public class StaticRenderer implements IRenderer {
+
+    private IComposition parent = null;
+
     @Override
     public javafx.scene.shape.Shape getShape() {
         throw new UnsupportedOperationException("Operation not implemented yet");
@@ -63,6 +67,11 @@ public class StaticRenderer implements IRenderer {
     @Override
     public void animate() {
         throw new UnsupportedOperationException("Operation not implemented yet");
+    }
+
+    @Override
+    public void setParent(IComposition parent) {
+        this.parent = parent;
     }
 
     @Override

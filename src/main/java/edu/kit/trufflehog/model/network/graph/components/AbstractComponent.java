@@ -17,6 +17,7 @@
 package edu.kit.trufflehog.model.network.graph.components;
 
 import edu.kit.trufflehog.model.network.graph.IComponent;
+import edu.kit.trufflehog.model.network.graph.IComposition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,5 +33,17 @@ import org.apache.logging.log4j.Logger;
 public abstract class AbstractComponent implements IComponent {
 
     private static final Logger logger = LogManager.getLogger(AbstractComponent.class);
+
+    private IComposition parent = null;
+
+    @Override
+    public void setParent(IComposition parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public IComposition getParent() {
+        return parent;
+    }
 
 }

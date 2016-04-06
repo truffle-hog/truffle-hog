@@ -1,0 +1,12 @@
+root {
+    display: block;
+}
+.background {
+    -fx-background-color: rgba(0, 17, 61, 0.0);
+}
+.button {
+    -fx-background-color: transparent;
+    -fx-opacity: 87%;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}

@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.model.network.graph.components.edge;
 
+import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.IRenderer;
 import edu.kit.trufflehog.util.ICopyCreator;
@@ -67,6 +68,8 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     private int animationTime = 500;
     private Shape arrowShape = new Circle(16);
     private boolean isPicked = false;
+
+    private IComposition parent;
 
     public BasicEdgeRenderer() {
 
@@ -173,6 +176,11 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     @Override
     public void animate() {
         animator.play();
+    }
+
+    @Override
+    public void setParent(IComposition parent) {
+        this.parent = parent;
     }
 
     @Override

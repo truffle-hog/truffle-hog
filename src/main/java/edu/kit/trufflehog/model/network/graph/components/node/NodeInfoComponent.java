@@ -5,6 +5,7 @@ import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IComposition;
 import edu.kit.trufflehog.model.network.graph.IUpdater;
+import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.util.bindings.MyBindings;
 import javafx.beans.binding.Bindings;
@@ -23,11 +24,13 @@ import javafx.beans.property.StringProperty;
  * @author Mark Giraud
  * @version 0.1
  */
-public class NodeInfoComponent implements IComponent {
+public class NodeInfoComponent extends AbstractComponent implements IComponent {
 
     private final StringProperty deviceNameProperty = new SimpleStringProperty();
     private final ObjectProperty<IPAddress> ipAddressProperty = new SimpleObjectProperty<>();
     private final ReadOnlyObjectWrapper<MacAddress> macAddressProperty;
+
+    private IComposition parent;
 
     public NodeInfoComponent(MacAddress macAddress) {
         this.macAddressProperty = new ReadOnlyObjectWrapper<>(macAddress);
@@ -129,16 +132,6 @@ public class NodeInfoComponent implements IComponent {
     @Override
     public boolean isMutable() {
         return true;
-    }
-
-    @Override
-    public void setParent(IComposition parent) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public IComposition getParent() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override

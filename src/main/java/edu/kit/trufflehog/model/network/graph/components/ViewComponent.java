@@ -32,10 +32,11 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 public class ViewComponent extends AbstractComponent implements IComponent {
 
     private final IRenderer renderer;
-    private IComposition parent;
 
     public ViewComponent(IRenderer renderer) {
+
         this.renderer = renderer;
+
     }
 
     public void animate() {
@@ -64,12 +65,9 @@ public class ViewComponent extends AbstractComponent implements IComponent {
 
     @Override
     public void setParent(IComposition parent) {
-        this.parent = parent;
-    }
 
-    @Override
-    public IComposition getParent() {
-        return parent;
+        super.setParent(parent);
+        renderer.setParent(parent);
     }
 
     @Override

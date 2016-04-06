@@ -28,6 +28,8 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
 
     private final IntegerProperty outgoingCount;
 
+    private IComposition parent = null;
+
     public NodeStatisticsComponent(int initialOutgoing, int initialIngoing) {
 
         ingoingCount = new SimpleIntegerProperty(initialIngoing);
@@ -135,16 +137,6 @@ public class NodeStatisticsComponent extends AbstractComponent implements ICompo
     @Override
     public boolean isMutable() {
         return true;
-    }
-
-    @Override
-    public void setParent(IComposition parent) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public IComposition getParent() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override

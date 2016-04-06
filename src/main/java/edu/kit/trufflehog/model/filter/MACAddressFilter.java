@@ -6,8 +6,8 @@ import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
+import javafx.scene.paint.Color;
 
-import java.awt.Color;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;

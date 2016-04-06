@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * <p>
  *     The command queue manager makes it possible for multiple command queues to be managed so that only once an
- *     element is present in one of the queues the calling thread is notified and can fetch the element.
+ *     element is run in one of the queues the calling thread is notified and can fetch the element.
  *     Essentially the CommandQueueManager is a BlockingQueue of CommandQueues.
  * </p>
  * <p>

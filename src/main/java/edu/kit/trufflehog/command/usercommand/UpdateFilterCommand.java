@@ -1,13 +1,9 @@
 package edu.kit.trufflehog.command.usercommand;
 
-import edu.kit.trufflehog.model.filter.FilterInput;
-import edu.kit.trufflehog.model.filter.IFilter;
-import edu.kit.trufflehog.model.filter.IPAddressFilter;
-import edu.kit.trufflehog.model.filter.InvalidFilterRule;
-import edu.kit.trufflehog.model.filter.MACAddressFilter;
-import edu.kit.trufflehog.model.filter.MacroFilter;
-import edu.kit.trufflehog.model.filter.NameRegexFilter;
+import edu.kit.trufflehog.model.filter.*;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +17,9 @@ import java.util.Map;
  * @version 1.0
  */
 public class UpdateFilterCommand implements IUserCommand<FilterInput> {
+
+    private static final Logger logger = LogManager.getLogger();
+
     private final MacroFilter macroFilter;
     private final INetworkIOPort nwp;
     private FilterInput filterInput;
@@ -32,12 +31,13 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
      *     Constructs the update filter command. This command always needs a network io port to apply the newly added
      *     filters and pass the port to the constructed filter, which needs the port to clean up, when it is removed.
      * </p>
+     *
      * @param nwp the network port that is used to access the network
      * @param macroFilter the macro filter to add all sub filters to.
      */
     public UpdateFilterCommand(final INetworkIOPort nwp, final MacroFilter macroFilter) {
         if(macroFilter == null)
-            throw new NullPointerException("macroFilter must not be null!");
+            throw new NullPointerException("macroFilter should not be null!");
 
         this.macroFilter = macroFilter;
         this.nwp = nwp;
@@ -76,9 +76,11 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
                         break;
                 }
             } catch (InvalidFilterRule invalidFilterRule) {
+                logger.warn(invalidFilterRule);
                 //TODO do some error handling and notify user maybe?
             }
 
+            logger.debug("adding filter to filtermap, macrofilter, and apply the new filter");
             filterMap.put(filterInput, filter);
             macroFilter.addFilter(filter);
             nwp.applyFilter(filter);

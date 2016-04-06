@@ -3,7 +3,10 @@ package edu.kit.trufflehog.model.network.graph;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
 import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.NetworkIOPort;
-//import edu.kit.trufflehog.model.network.graph.jungconcurrent.ConcurrentDirectedSparseGraph;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
+import edu.uci.ics.jung.graph.util.Graphs;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +22,10 @@ public class NetworkIOPortTest {
     @Before
     public void setUp() throws Exception {
 
-        //port = new NetworkIOPort(new ConcurrentDirectedSparseGraph<>());
+        final Graph<INode, IConnection> graph = Graphs.synchronizedDirectedGraph(new DirectedSparseGraph<>());
+        final ObservableUpdatableGraph<INode, IConnection> og = new ObservableUpdatableGraph<>(graph, new LiveUpdater());
+
+        port = new NetworkIOPort(og);
 
     }
 

@@ -19,27 +19,24 @@ package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.FilterOrigin;
 import edu.kit.trufflehog.model.filter.IFilter;
+import edu.kit.trufflehog.model.filter.SelectionModel;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
+import edu.kit.trufflehog.util.javafx.FxUtils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.*;
+import java.sql.*;
+import java.util.Arrays;
 import java.util.Base64;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -55,11 +52,11 @@ import java.util.concurrent.ExecutorService;
  * @author Julian Brendl
  * @version 1.0
  */
-class FilterDataModel extends ConfigDataModel<FilterInput> {
+class FilterDataModel {
     private static final Logger logger = LogManager.getLogger();
 
     private final ExecutorService executorService;
-    private final Map<String, FilterInput> loadedFilters;
+    private final ObservableList<FilterInput> loadedFilters;
     private final Connection connection;
 
     private static final String DATABASE_NAME = "filters.sql";
@@ -73,10 +70,7 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      */
     public FilterDataModel(FileSystem fileSystem) {
         this.executorService = LoggedScheduledExecutor.getInstance();
-
-        // Not sure why this map has to be concurrent, but in the unit tests I got concurrent hash map exceptions when
-        // it was not. Perhaps the database library is asynchronous, though I am not sure how that would affect this map.
-        this.loadedFilters = new ConcurrentHashMap<>();
+        this.loadedFilters = FXCollections.observableArrayList();
 
         // Get database file
         File databaseFile;
@@ -139,13 +133,17 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
 
                     // Iterate through all found entries in the database and add them to the map
                     while (rs.next()) {
-                        String base64String = rs.getString("filter");
-                        FilterInput filterInput = fromBase64(base64String);
-                        if (filterInput != null) {
-                            loadedFilters.put(filterInput.getName(), filterInput);
-                        } else {
-                            logger.error("Found null filter input object while loading from database, skipping");
-                        }
+                        final String name = rs.getString("ID");
+                        final SelectionModel selectionModel = SelectionModel.valueOf(rs.getString("SELECTION_MODEL"));
+                        final FilterOrigin filterOrigin = FilterOrigin.valueOf(rs.getString("FILTER_ORIGIN"));
+                        final List<String> rules = Arrays.asList(rs.getString("RULES").split(","));
+                        final Color color = Color.web(rs.getString("COLOR"));
+                        final boolean authorized = rs.getBoolean("AUTHORIZED");
+                        final int priority = rs.getInt("PRIORITY");
+
+                        final FilterInput filterInput = new FilterInput(name, selectionModel, filterOrigin, rules, color, authorized, priority);
+
+                        loadedFilters.add(filterInput);
                     }
                 }
             } catch (SQLException e) {
@@ -156,12 +154,13 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
 
     /**
      * <p>
-     *     Closes the connection to the data base on force. For more information see
+     *     Closes the connection to the data base by force and cleans up any remaining things.
      * </p>
      */
     public void close() {
         try {
             connection.close();
+            loadedFilters.clear();
         } catch (SQLException e) {
             logger.error("Unable to close filter database correctly. Data might be lost.", e);
         }
@@ -213,7 +212,19 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      * @param filterInput The {@link FilterInput} to add to the database.
      */
     public void addFilterToDatabaseAsynchronous(final FilterInput filterInput) {
-        executorService.submit(() -> addFilterToDataBaseSynchronous(filterInput));
+        executorService.submit(() -> {
+            if (!isDuplicate(filterInput) && addFilterToDataBaseSynchronous(filterInput)) {
+                loadedFilters.add(filterInput);
+            }
+        });
+    }
+
+    private synchronized boolean isDuplicate(final FilterInput filterInput) {
+        FilterInput duplicate = loadedFilters.stream()
+                .filter(filter -> filter.getName().equals(filterInput.getName()))
+                .findFirst()
+                .orElse(null);
+        return duplicate != null;
     }
 
     /**
@@ -229,42 +240,42 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      *
      * @param filterInput The {@link FilterInput} to add to the database.
      */
-    private void addFilterToDataBaseSynchronous(FilterInput filterInput) {
+    private boolean addFilterToDataBaseSynchronous(FilterInput filterInput) {
         // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to add filter to database, connection is null");
-            return;
+            return false;
         }
 
         // Make sure the given filter input is not null
         if (filterInput == null) {
             logger.error("Unable to add filter to database, filter input is null");
-            return;
-        }
-
-        // Convert filterInput object into base64 string representation
-        String filterBase64 = toBase64(filterInput);
-        if (filterBase64 == null) {
-            logger.error("Unable to add filter to database, base64 string is null");
-            return;
+            return false;
         }
 
         // Add the base64 string into the database
         synchronized (this) {
             // We use the try-with-resource statements here from Java 7
             try (Statement statement = connection.createStatement()) {
-                String sql = "INSERT INTO FILTERS(ID,FILTER) " + "VALUES('" + filterInput.getName() + "','"
-                        + filterBase64 + "');";
+                String sql = "INSERT INTO FILTERS(ID,SELECTION_MODEL,FILTER_ORIGIN,RULES,COLOR,AUTHORIZED,PRIORITY) " + "VALUES("
+                        + "'" + filterInput.getName() + "',"
+                        + "'" + filterInput.getSelectionModel().name() + "',"
+                        + "'" + filterInput.getOrigin().name() + "',"
+                        + "'" + filterInput.getRules().stream().collect(Collectors.joining(",")) + "',"
+                        + "'" + FxUtils.toRGBCode(filterInput.getColor()) + "',"
+                        + "" + (filterInput.isLegal() ? "1" : "0") + ","
+                        + "" + filterInput.getPriority() + ");";
 
                 statement.executeUpdate(sql);
                 connection.commit();
 
-                // Only update the map if the database query was successful
-                loadedFilters.put(filterInput.getName(), filterInput);
+                return true;
             } catch (SQLException e) {
                 logger.error("Unable to add a filter to the database", e);
             }
         }
+
+        return false;
     }
 
     /**
@@ -278,7 +289,11 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      * @param filterInput The {@link FilterInput} to remove from the database.
      */
     public void removeFilterFromDatabaseAsynchronous(FilterInput filterInput) {
-        executorService.submit(() -> removeFilterFromDatabaseSynchronous(filterInput));
+        executorService.submit(() -> {
+            if (removeFilterFromDatabaseSynchronous(filterInput)) {
+                loadedFilters.remove(filterInput);
+            }
+        });
     }
 
     /**
@@ -291,17 +306,17 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      *
      * @param filterInput The {@link FilterInput} to remove from the database.
      */
-    private void removeFilterFromDatabaseSynchronous(FilterInput filterInput) {
+    private boolean removeFilterFromDatabaseSynchronous(FilterInput filterInput) {
         // Make sure connection is not null
         if (connection == null) {
             logger.error("Unable to remove filter from database, connection is null");
-            return;
+            return false;
         }
 
         // Make sure the given filter input is not null
         if (filterInput == null) {
             logger.error("Unable to add filter to database, filter input is null");
-            return;
+            return false;
         }
 
         // Remove the filterInput from the database
@@ -312,55 +327,13 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
                         + "';");
                 connection.commit();
 
-                // Only update the map if the database query was successful
-                loadedFilters.remove(filterInput.getName());
+               return true;
             } catch (SQLException e) {
                 logger.error("Unable to remove filter input " + filterInput.getName() + " from database", e);
             }
         }
-    }
 
-    /**
-     * <p>
-     *     Converts a {@link FilterInput} object into a base64 string, which is how it will be stored into the database.
-     * </p>
-     *
-     * @param filterInput The {@link FilterInput} that should be converted into a base64 string.
-     * @return The base64 string representing the FilterInput object.
-     */
-    private String toBase64(FilterInput filterInput) {
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(outputStream);
-            oos.writeObject(filterInput);
-            oos.close();
-            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
-        } catch(IOException e) {
-            logger.error("Unable to serialize filter input into a base64 string", e);
-            return null;
-        }
-    }
-
-    /**
-     * <p>
-     *     Converts a base64 string into a {@link FilterInput} object, so that the object can be recreated from the
-     *     database.
-     * </p>
-     *
-     * @param string The base64 string that should be converted back into a {@link FilterInput} object.
-     * @return The original FilterInput object represented by the given base64 string.
-     */
-    private FilterInput fromBase64(String string) {
-        try {
-            byte[] data = Base64.getDecoder().decode(string);
-            ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
-            FilterInput filterInput = (FilterInput) objectInputStream.readObject();
-            objectInputStream.close();
-            return filterInput;
-        } catch (IOException | ClassNotFoundException e) {
-            logger.error("Unable to convert received string into FilterInput object", e);
-            return null;
-        }
+        return true;
     }
 
     /**
@@ -376,7 +349,12 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
 
             String sql = "CREATE TABLE FILTERS" +
                     "(ID        TEXT    NOT NULL," +
-                    " FILTER    TEXT    NOT NULL)";
+                    " SELECTION_MODEL    TEXT    NOT NULL," +
+                    " FILTER_ORIGIN      TEXT    NOT NULL," +
+                    " RULES              TEXT    NOT NULL," +
+                    " COLOR              TEXT    NOT NULL," +
+                    " AUTHORIZED         INTEGER NOT NULL," +
+                    " PRIORITY           INTEGER NOT NULL)";
             statement.executeUpdate(sql);
             connection.commit();
 
@@ -390,15 +368,13 @@ class FilterDataModel extends ConfigDataModel<FilterInput> {
      * <p>
      *     Gets all loaded {@link FilterInput} objects. If none have been loaded yet, none are returned.
      * </p>
+     * <p>
+     *     This method converts the interface FilterInput into the class FilterInput
+     * </p>
      *
      * @return The list of loaded {@link FilterInput} objects.
      */
-    public Map<String, FilterInput> getAllFilters() {
+    public ObservableList<FilterInput> getAllFilters() {
         return loadedFilters;
-    }
-
-    @Override
-    public FilterInput get(Class classType, String key) {
-        return loadedFilters.get(key);
     }
 }

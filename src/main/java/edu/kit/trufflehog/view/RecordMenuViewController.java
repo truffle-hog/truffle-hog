@@ -2,6 +2,7 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.command.usercommand.StartRecordCommand;
+import edu.kit.trufflehog.interaction.RecordInteraction;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkTape;
@@ -12,6 +13,8 @@ import edu.kit.trufflehog.view.elements.TimerField;
 import javafx.application.Platform;
 import javafx.scene.layout.AnchorPane;
 
+import java.util.EnumMap;
+
 
 /**
  * <p>
@@ -21,7 +24,7 @@ import javafx.scene.layout.AnchorPane;
  * @author Julian Brendl
  * @version 1.0
  */
-public class RecordMenuViewController extends AnchorPaneController {
+public class RecordMenuViewController extends AnchorPaneController<RecordInteraction> {
     private boolean pressed = false;
 
     /**
@@ -32,7 +35,8 @@ public class RecordMenuViewController extends AnchorPaneController {
      * @param fxmlFile The fxml file to create the AnchorPaneController from.
      */
     public RecordMenuViewController(String fxmlFile, INetworkDevice networkDevice, INetwork liveNetwork) {
-        super(fxmlFile);
+
+        super(fxmlFile, new EnumMap<>(RecordInteraction.class));
 
         final GlowImageButton button = new GlowImageButton("record-circle.png");
         final TimerField timerField = new TimerField();

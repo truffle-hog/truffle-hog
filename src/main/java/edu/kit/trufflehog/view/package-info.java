@@ -14,7 +14,7 @@
  *     <li>
  *         The views that are places into the windows. Views are showing
  *         buttons, menus, toolbars etc. as well as the graph visualization.
- *         Every view controller class implements the
+ *         Every view controllers class implements the
  *         {@link edu.kit.trufflehog.view.controllers.IViewController}
  *         interface. {@code IViewControllers}
  *     </li>

@@ -85,7 +85,7 @@ public class PropertiesDataModelTest {
 
     /**
      * <p>
-     *     Tests whether the property file is copied correctly if it was not present before.
+     *     Tests whether the property file is copied correctly if it was not run before.
      * </p>
      *
      * @throws Exception Passes any errors that occurred during the test on

@@ -19,7 +19,7 @@ public interface IWindowController {
 
 	/**
      * <p>
-     *     Sets the scene to be displayed by the window controller.
+     *     Sets the scene to be displayed by the window controllers.
      * </p>
      *
 	 * @param scene the scene to be displayed

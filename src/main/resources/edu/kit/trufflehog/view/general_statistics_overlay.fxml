@@ -35,7 +35,7 @@
   -->
 
 <?import java.net.URL?>
-<fx:root opacity="0.95" prefHeight="100.0" prefWidth="250.0" styleClass="background" type="GridPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="100.0" prefWidth="250.0" styleClass="background" type="GridPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
 
     <stylesheets>
     <URL value="@statistics_overlay.css" />
