@@ -21,17 +21,15 @@ import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
 import edu.kit.trufflehog.model.filter.FilterOrigin;
 import edu.kit.trufflehog.model.filter.SelectionModel;
+import javafx.collections.ObservableList;
+import javafx.scene.paint.Color;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Color;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -107,11 +105,13 @@ public class FilterDataModelTest {
         Thread.sleep(1000);
 
         // Retrieve them
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        ObservableList<FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        Map<String, FilterInput> filterInputMap = new HashMap<>();
+        filterInputFromDB.stream().forEach(fIn -> filterInputMap.put(fIn.getName(), fIn));
 
         // Make sure we could retrieve them all correctly
         for (FilterInput filterInput : filterInputs) {
-            assertEquals(true, filterInputFromDB.containsKey(filterInput.getName()));
+            assertEquals(true, filterInputMap.containsKey(filterInput.getName()));
         }
 
         // Update them
@@ -130,7 +130,7 @@ public class FilterDataModelTest {
 
         // Make sure we could retrieve them all correctly
         for (FilterInput filterInput : updatedFilterInputs) {
-            assertEquals(true, filterInputFromDB.containsKey(filterInput.getName()));
+            assertEquals(true, filterInputMap.containsKey(filterInput.getName()));
         }
     }
 
@@ -160,11 +160,13 @@ public class FilterDataModelTest {
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        ObservableList<FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        Map<String, FilterInput> filterInputMap = new HashMap<>();
+        filterInputFromDB.stream().forEach(fIn -> filterInputMap.put(fIn.getName(), fIn));
 
         // Make sure we could retrieve them all correctly
         for (FilterInput filterInput : filterInputs) {
-            assertEquals(true, filterInputFromDB.containsKey(filterInput.getName()));
+            assertEquals(true, filterInputMap.containsKey(filterInput.getName()));
         }
     }
 
@@ -194,15 +196,19 @@ public class FilterDataModelTest {
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        ObservableList<FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+
+        Map<String, FilterInput> filterInputMap = new HashMap<>();
+
+        filterInputFromDB.stream().forEach(fIn -> filterInputMap.put(fIn.getName(), fIn));
 
         // Make sure we could retrieve them all correctly
         for (FilterInput filterInput : filterInputs) {
-            assertEquals(true, filterInputFromDB.containsKey(filterInput.getName()));
+            assertEquals(true, filterInputMap.containsKey(filterInput.getName()));
         }
 
         // Delete them
-        filterInputFromDB.forEach((name, value) -> filterDataModel.removeFilterFromDatabaseAsynchronous(value));
+        filterInputFromDB.forEach((value) -> filterDataModel.removeFilterFromDatabaseAsynchronous(value));
 
         // Wait for all threads to finish
         Thread.sleep(5000);
@@ -234,10 +240,13 @@ public class FilterDataModelTest {
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        ObservableList<FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        Map<String, FilterInput> filterInputMap = new HashMap<>();
+
+        filterInputFromDB.stream().forEach(fIn -> filterInputMap.put(fIn.getName(), fIn));
 
         assertEquals(1, filterInputFromDB.size());
-        assertEquals(true, filterInputFromDB.containsKey(filterInput.getName()));
+        assertEquals(true, filterInputMap.containsKey(filterInput.getName()));
     }
 
     /**
@@ -257,34 +266,9 @@ public class FilterDataModelTest {
 
         // Retrieve them
         filterDataModel = new FilterDataModel(fileSystem);
-        Map<String, FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
+        ObservableList<FilterInput> filterInputFromDB = filterDataModel.getAllFilters();
 
         assertEquals(0, filterInputFromDB.size());
-    }
-
-    /**
-     * <p>
-     *     Adds a randomly generated filterInput into the database and retrieves it with the get method to test if it
-     *     works properly.
-     * </p>
-     *
-     * @throws Exception Passes any errors that occurred during the test on
-     */
-    @Test
-    public void testGet() throws Exception {
-        FilterInput filterInput = generateRandomFilterInput();
-        filterDataModel.addFilterToDatabaseAsynchronous(filterInput);
-
-        // Wait for all threads to finish
-        Thread.sleep(1000);
-
-        // Retrieve them
-        filterDataModel = new FilterDataModel(fileSystem);
-
-        // Make sure they are equal
-        assertEquals(filterInput.getName(), filterDataModel.get(null, filterInput.getName()).getName());
-        assertEquals(filterInput.getRules(), filterDataModel.get(null, filterInput.getName()).getRules());
-        assertEquals(filterInput.getColor(), filterDataModel.get(null, filterInput.getName()).getColor());
     }
 
     /**
@@ -308,10 +292,10 @@ public class FilterDataModelTest {
         }
 
         // Generate color;
-        int color_r = (int) (Math.random() * 255);
-        int color_g = (int) (Math.random() * 255);
-        int color_b = (int) (Math.random() * 255);
-        int color_a = (int) (Math.random() * 255);
+        double color_r = Math.random();
+        double color_g = Math.random();
+        double color_b = Math.random();
+        double color_a = Math.random();
         Color color = new Color(color_r, color_g, color_b, color_a);
 
         int priority = (int) (Math.random() * 1000);
