@@ -174,7 +174,7 @@ public class Presenter {
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-        // TODO remove this awefull workaround catching an ERROR :o
+        // TODO remove this awful workaround catching an ERROR :o
         try {
             truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
         } catch (UnsatisfiedLinkError e) {
