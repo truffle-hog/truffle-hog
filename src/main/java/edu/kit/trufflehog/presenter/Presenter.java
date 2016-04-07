@@ -174,8 +174,12 @@ public class Presenter {
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
         // TODO register the truffleReceiver somewhere so we can start or stop it.
-        truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
-        //truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
+        // TODO remove this awefull workaround catching an ERROR :o
+        try {
+            truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
+        } catch (UnsatisfiedLinkError e) {
+            truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
+        }
 
 
         //this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
