@@ -9,6 +9,7 @@ import edu.kit.trufflehog.view.controllers.IViewController;
 import edu.kit.trufflehog.view.controllers.ToolBarViewController;
 import edu.kit.trufflehog.view.controllers.ViewControllerNotifier;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -47,7 +48,8 @@ public final class ToolbarView extends ToolBarViewController<ToolbarViewInteract
         this.filterOverlayView.visibleProperty().bind(filterButton.selectedProperty());
     }
 
-    public void onToggleConnect() {
+    @FXML
+    private void onToggleConnect(ActionEvent event) {
 
         if (!connectButton.isSelected()) {
 
@@ -59,6 +61,7 @@ public final class ToolbarView extends ToolBarViewController<ToolbarViewInteract
         }
     }
 
+    @FXML
     public void onToggleFilter() {
 
 /*        if (filterButton.isSelected()) {
@@ -80,6 +83,7 @@ public final class ToolbarView extends ToolBarViewController<ToolbarViewInteract
 
     }
 
+    @FXML
     public void onToggleSettings() {
 
     }

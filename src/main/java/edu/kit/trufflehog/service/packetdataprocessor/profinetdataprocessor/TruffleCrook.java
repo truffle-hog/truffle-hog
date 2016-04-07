@@ -24,7 +24,10 @@ public class TruffleCrook extends TruffleReceiver {
 
     @Override
     public void connect() {
-        running = true;
+        synchronized (this) {
+            running = true;
+            this.notifyAll();
+        }
     }
 
     @Override
