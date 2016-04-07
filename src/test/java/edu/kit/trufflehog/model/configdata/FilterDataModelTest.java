@@ -324,10 +324,10 @@ public class FilterDataModelTest {
         }
 
         // Generate color;
-        int color_r = (int) (Math.random() * 255);
-        int color_g = (int) (Math.random() * 255);
-        int color_b = (int) (Math.random() * 255);
-        int color_a = (int) (Math.random() * 255);
+        double color_r = Math.random();
+        double color_g = Math.random();
+        double color_b = Math.random();
+        double color_a = Math.random();
         Color color = new Color(color_r, color_g, color_b, color_a);
 
         int priority = (int) (Math.random() * 1000);
