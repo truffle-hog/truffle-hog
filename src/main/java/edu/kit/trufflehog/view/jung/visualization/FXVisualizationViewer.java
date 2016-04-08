@@ -155,7 +155,6 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
 
 
-
         //this.setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream("icon.png")), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, null, new BackgroundSize())));
 
         canvas = new PannableCanvas();
@@ -322,7 +321,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
         });
 
-        //get the edge size binding by dividing the total trffic with the local traffic
+        //get the edge size binding by dividing the total traffic with the local traffic
         DoubleBinding edgeSize = MyBindings.divideIntToDouble(edge.getComponent(EdgeStatisticsComponent.class).getTrafficProperty(), port.getMaxConnectionSizeProperty()).multiply(8).add(2);
         curve.strokeWidthProperty().bind(edgeSize.multiply(edgeRenderer.edgeWidthMultiplierProperty()));
 

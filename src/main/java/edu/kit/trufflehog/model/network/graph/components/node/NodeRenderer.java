@@ -29,13 +29,13 @@ public class NodeRenderer implements IRenderer {
 //    private Icon iconPicked = null;
 
 
-    private Color colorPicked = Color.web("0x4089BF90");
-    private Color colorUnpicked = Color.web("0x4089BF43");// = new Color(0x4089BFa0, true);
+    private Color colorPicked = Color.web("0x4089BF");
+    private Color colorUnpicked = Color.web("0x4089BF");// = new Color(0x4089BFa0, true);
 
     private Shape shape = new Circle(50); // = new Ellipse2D.Double(-30, -30, 60, 60);
 
-    private Color drawPicked = Color.web("0xC6E9FF90");
-    private Color drawUnpicked = Color.web("0x4089BF10");
+    private Color drawPicked = Color.web("0xC6E9FF");
+    private Color drawUnpicked = Color.web("0x4089BF");
 
     private ObjectProperty<Paint> fillPaintProperty = new SimpleObjectProperty<>(colorUnpicked);
     private ObjectProperty<Paint> strokePaintProperty = new SimpleObjectProperty<>(drawUnpicked);

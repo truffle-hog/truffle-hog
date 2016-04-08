@@ -32,7 +32,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private Color colorUnpicked = Color.web("0xffffff3a");
+    private Color colorUnpicked = Color.web("0xffffff");
     private Color colorPicked = Color.web("0x6CFF82");
 
     private final double edgeWidthPickedMultiplier = 2;
@@ -43,7 +43,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     private QuadCurve line = new QuadCurve();
 
     private Color arrowFillPicked = Color.web("0x6CFF82");
-    private Color arrowFillUnpicked = Color.web("0xffffffa0");
+    private Color arrowFillUnpicked = Color.web("0xffffff");
 
     private Color arrowDrawPicked = null;
     private Color arrowDrawUnpicked = null;
@@ -58,7 +58,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     private double currentBrightness = 0.5f;
 
     private ObjectProperty<Color> arrowStrokePaintProperty = new SimpleObjectProperty<>(colorUnpicked);
-    private ObjectProperty<Color> arrowHeadFilleProperty = new SimpleObjectProperty<>(arrowFillUnpicked);
+    private ObjectProperty<Color> arrowHeadFillProperty = new SimpleObjectProperty<>(arrowFillUnpicked);
 
     // TODO Delete??
     private Shape shape = null;
@@ -75,7 +75,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
        // line.setStroke(colorUnpicked);
         line.strokeProperty().bind(arrowStrokePaintProperty);
-        arrowShape.fillProperty().bind(arrowHeadFilleProperty);
+        arrowShape.fillProperty().bind(arrowHeadFillProperty);
 
         //animator = new StrokeTransition(Duration.millis(animationTime), arrowStrokePaintProperty, Color.WHITE);
 
@@ -86,7 +86,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
             protected void interpolate(double frac) {
 
                 arrowStrokePaintProperty.set(currentEdgeStrokePaint.interpolate(currentAnimationEndColor, frac));
-                arrowHeadFilleProperty.set(currentArrowFill.interpolate(currentAnimationEndColor, frac));
+                arrowHeadFillProperty.set(currentArrowFill.interpolate(currentAnimationEndColor, frac));
             }
         };
         animator.setCycleCount(2);
@@ -223,7 +223,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
             Platform.runLater(() -> {
 
                 arrowStrokePaintProperty.set(colorPicked);
-                arrowHeadFilleProperty.set(arrowFillPicked);
+                arrowHeadFillProperty.set(arrowFillPicked);
                 edgeWidthMultiplierProperty.set(edgeWidthPickedMultiplier);
                 currentArrowFill = arrowFillPicked;
                 currentEdgeStrokePaint = colorPicked;
@@ -234,7 +234,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
             Platform.runLater(() -> {
 
                 arrowStrokePaintProperty.set(colorUnpicked);
-                arrowHeadFilleProperty.set(arrowFillUnpicked);
+                arrowHeadFillProperty.set(arrowFillUnpicked);
                 edgeWidthMultiplierProperty.set(edgeWidthUnpickedMultiplier);
                 currentArrowFill = arrowFillUnpicked;
                 currentEdgeStrokePaint = colorUnpicked;
