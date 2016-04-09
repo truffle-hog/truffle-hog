@@ -12,17 +12,12 @@ import edu.kit.trufflehog.model.network.graph.components.ViewComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.BasicEdgeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.edge.EdgeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.edge.MulticastEdgeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.*;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.util.Random;
 
 
@@ -54,6 +49,9 @@ public class AddPacketDataCommand implements ITruffleCommand {
      */
 
     public AddPacketDataCommand(INetworkWritingPort writingPort, IPacketData packet, IFilter filter) {
+        if (writingPort == null) throw new NullPointerException("WritingPort should not be null");
+        if (filter == null) throw new NullPointerException("Filter should not be null");
+        if (data == null) throw new NullPointerException("DataPacket should not be null");
         this.writingPort = writingPort;
         this.filter = filter;
         this.data = packet;
