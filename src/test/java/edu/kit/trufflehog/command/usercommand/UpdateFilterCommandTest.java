@@ -52,13 +52,18 @@ public class UpdateFilterCommandTest {
     }
 
     @Test
-    public void updateFilterNullTest() {
+    public void updateFilterCommandTest_selectingNullFilterShouldWork () {
         try {
             ufc.setSelection(null);
         } catch (NullPointerException e) {
             fail();
         }
         assertTrue(true);
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void updateFilterCommandTest_NullInitialization () {
+        ufc = new UpdateFilterCommand(null, null);
     }
 
     @Test

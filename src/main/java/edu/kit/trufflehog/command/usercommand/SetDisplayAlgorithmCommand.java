@@ -26,6 +26,8 @@ public class SetDisplayAlgorithmCommand implements IUserCommand<Void> {
      * @param viewPort {@link INetworkViewPort} implementation managing the graph layouts
      */
     public SetDisplayAlgorithmCommand(final Transformer<Graph<INode, IConnection>, Layout<INode, IConnection>> factory, final INetworkViewPort viewPort) {
+        if (factory == null) throw new NullPointerException("Factory should not be null");
+        if (viewPort == null) throw new NullPointerException("ViewPort should not be null");
         layoutFactory = factory;
         this.viewPort = viewPort;
     }

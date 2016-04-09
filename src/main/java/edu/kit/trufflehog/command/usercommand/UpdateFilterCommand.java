@@ -36,9 +36,8 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
      * @param macroFilter the macro filter to add all sub filters to.
      */
     public UpdateFilterCommand(final INetworkIOPort nwp, final MacroFilter macroFilter) {
-        if(macroFilter == null)
-            throw new NullPointerException("macroFilter should not be null!");
-
+        if(macroFilter == null) throw new NullPointerException("macroFilter should not be null!");
+        if (nwp == null) throw new NullPointerException("NetworkIOPort should not be null");
         this.macroFilter = macroFilter;
         this.nwp = nwp;
         this.filterInput = null;
