@@ -6,6 +6,7 @@ import edu.kit.trufflehog.model.network.recording.INetworkTape;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -29,7 +30,7 @@ public class StartRecordCommandTest {
         network = mock(INetwork.class);
         networkTape = mock(INetworkTape.class);
         src = new StartRecordCommand(networkDevice, network, networkTape);
-        when(networkTape.getFrameRate()).thenReturn(42);
+
     }
 
     @After
@@ -40,8 +41,25 @@ public class StartRecordCommandTest {
     }
 
     @Test
-    public void startRecordTest() {
+    public void startRecordTest_42FrameRate() {
+        when(networkTape.getFrameRate()).thenReturn(42);
         src.execute();
         verify(networkDevice, times(1)).record(network, networkTape, 42);
     }
+
+    @Test
+    public void startRecordTest_0FrameRate() {
+        when(networkTape.getFrameRate()).thenReturn((0));
+        src.execute();
+        verify(networkDevice, times(1)).record(network, networkTape, 0);
+    }
+
+    @Test
+    public void startRecordTest_negativeFrameRate() {
+        when(networkTape.getFrameRate()).thenReturn(-1);
+        src.execute();
+        verify(networkDevice, times(1)).record(network, networkTape, -1);
+        //TODO test for negative framerate??
+    }
+
 }
