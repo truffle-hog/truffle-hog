@@ -40,7 +40,6 @@ public class SetDisplayAlgorithmCommandTest {
     @Test (expected = NullPointerException.class)
     public void setDisplayAlgorithmTest_NullParam() {
         sdac = new SetDisplayAlgorithmCommand(null, null);
-        sdac.execute();
     }
 
     @Test
