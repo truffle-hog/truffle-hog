@@ -47,19 +47,4 @@ public class StartRecordCommandTest {
         verify(networkDevice, times(1)).record(network, networkTape, 42);
     }
 
-    @Test
-    public void startRecordTest_0FrameRate() {
-        when(networkTape.getFrameRate()).thenReturn((0));
-        src.execute();
-        verify(networkDevice, times(1)).record(network, networkTape, 0);
-    }
-
-    @Test
-    public void startRecordTest_negativeFrameRate() {
-        when(networkTape.getFrameRate()).thenReturn(-1);
-        src.execute();
-        verify(networkDevice, times(1)).record(network, networkTape, -1);
-        //TODO test for negative framerate??
-    }
-
 }

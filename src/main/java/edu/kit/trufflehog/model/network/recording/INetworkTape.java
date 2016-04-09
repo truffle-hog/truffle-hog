@@ -52,7 +52,7 @@ public interface INetworkTape {
     IntegerProperty getFrameCountProperty();
 
     /**
-     * @return The Framerate this network tape was recorded with
+     * @return The Framerate this network tape was recorded with, cannot be below 1.
      */
     int getFrameRate();
 

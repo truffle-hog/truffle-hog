@@ -33,7 +33,11 @@ public class NetworkTape implements INetworkTape {
     private final IntegerProperty frameCountProperty = new SimpleIntegerProperty(0);
 
     public NetworkTape(int frameRate) {
-        this.frameRate = frameRate;
+        if (frameRate > 0) {
+            this.frameRate = frameRate;
+        } else {
+            throw new IllegalAccessError("No negative framerates for recording please");
+        }
     }
 
 
