@@ -24,6 +24,7 @@ public class AddPacketDataCommandTest {
     private INetworkWritingPort writingPort;
     private IFilter filter;
     private IPacketData data;
+    private AddPacketDataCommand apdc;
 
     @Before
     public void setup() throws Exception {
@@ -36,17 +37,18 @@ public class AddPacketDataCommandTest {
         when(data.getAttribute(String.class, "deviceName")).thenReturn("device1");
         when(data.getAttribute(IPAddress.class, "sourceIPAddress")).thenReturn(new IPAddress(42L));
         when(data.getAttribute(Boolean.class, "isResponse")).thenReturn(true);
+        apdc = new AddPacketDataCommand(writingPort, data, filter);
     }
     @After
     public void teardown() {
         writingPort = null;
         filter = null;
         data = null;
+        apdc = null;
     }
 
     @Test
-    public void addOnePacketTest() {
-        AddPacketDataCommand apdc = new AddPacketDataCommand(writingPort, data, filter);
+    public void addPacketCommandTest_AddOnePacketRunFine() {
         apdc.execute();
         verify(writingPort, times(2)).writeNode(any(INode.class));
         verify(writingPort, times(1)).writeConnection(any(IConnection.class));
@@ -54,9 +56,13 @@ public class AddPacketDataCommandTest {
     }
 
     @Test
-    public void toStringTest() {
-        AddPacketDataCommand apdc = new AddPacketDataCommand(writingPort, data, filter);
+    public void addPacketCommandtoStringTest() {
         apdc.toString();
         assertEquals("dataString", apdc.toString());
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void addPacketCommandTest_ParamNullErroring () {
+        apdc = new AddPacketDataCommand(null, null, null);
     }
 }

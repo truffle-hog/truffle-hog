@@ -51,7 +51,7 @@ public class AddPacketDataCommand implements ITruffleCommand {
     public AddPacketDataCommand(INetworkWritingPort writingPort, IPacketData packet, IFilter filter) {
         if (writingPort == null) throw new NullPointerException("WritingPort should not be null");
         if (filter == null) throw new NullPointerException("Filter should not be null");
-        if (data == null) throw new NullPointerException("DataPacket should not be null");
+        if (packet == null) throw new NullPointerException("DataPacket should not be null");
         this.writingPort = writingPort;
         this.filter = filter;
         this.data = packet;
