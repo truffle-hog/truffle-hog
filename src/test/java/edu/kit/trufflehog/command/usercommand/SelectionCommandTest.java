@@ -40,7 +40,7 @@ public class SelectionCommandTest {
     public void setup() {
         svm = mock(StatisticsViewModel.class);
         sc = new SelectionCommand(svm);
-        infos = mock(TreeItem.class);
+        infos = new TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>();
     }
 
     @After
@@ -60,10 +60,16 @@ public class SelectionCommandTest {
     public void SelectionCommandTest_onlyConnectionsSelected() {
         edges = new HashSet<>();
         IConnection testEdge = mock(IConnection.class);
-        edges.add(testEdge);//TODO not running yet
-        when(testEdge.stream()).thenReturn(any(Stream.class));
-        when(any(IConnection.class).stream().collect(any(Collector.class))).thenReturn(any());
+        edges.add(testEdge);
+        nodes = new HashSet<>();
+
+        Stream stream = mock(Stream.class);
+        when(testEdge.stream()).thenReturn(stream);
+        when(testEdge.stream().collect(any(Collector.class))).thenReturn(infos);
+
         selection = new ImmutablePair<>(nodes, edges);
+        sc.setSelection(selection);
+        sc.execute();//TODO not running yet
         verify(infos, times(1)).setExpanded(true);
         //TODO test platform runlater
     }
