@@ -65,14 +65,14 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
             TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> collector = new ComponentInfoCollector(this.infoVisitor);
 
     public SelectionCommand(StatisticsViewModel statisticsViewModel) {
-
+        if(statisticsViewModel == null) throw new NullPointerException("StatisticsViewModel should not be null");
         this.statisticsViewModel = statisticsViewModel;
     }
 
     @Override
     synchronized
     public <S extends Pair<Set<INode>, Set<IConnection>>> void setSelection(S selection) {
-
+        if (selection == null) throw new NullPointerException("Selection must not be null");
         selected = selection;
         logger.debug(selected);
     }
@@ -90,7 +90,7 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
 
         } else {
 
-
+        //TODO calculate statistics for multiple selected nodes?
 
         }
 
@@ -111,7 +111,7 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
 
         } else {
 
-
+        //TODO calculate statistics for multiple selected connections?
 
         }
 
