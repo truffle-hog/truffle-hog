@@ -1,16 +1,21 @@
 package edu.kit.trufflehog.command.trufflecommand;
 
 
+import de.saxsys.javafx.test.JfxRunner;
+import de.saxsys.javafx.test.TestInJfxThread;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.*;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truffle;
+import org.controlsfx.tools.Platform;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import java.util.concurrent.Semaphore;
 import java.util.logging.Filter;
 
 import static org.junit.Assert.assertEquals;
@@ -19,6 +24,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by Valentin Kiechle on 12.02.2016.
  */
+@RunWith(JfxRunner.class)
 public class AddPacketDataCommandTest {
 
     private INetworkWritingPort writingPort;
@@ -28,7 +34,7 @@ public class AddPacketDataCommandTest {
 
     @Before
     public void setup() throws Exception {
-        writingPort = mock(NetworkIOPort.class);
+        writingPort = mock(INetworkWritingPort.class);
         filter = mock(IFilter.class);
         data = mock(Truffle.class);
         when(data.toString()).thenReturn("dataString");

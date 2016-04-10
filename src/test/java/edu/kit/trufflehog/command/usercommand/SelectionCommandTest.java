@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.command.usercommand;
 
+import de.saxsys.javafx.test.TestInJfxThread;
 import edu.kit.trufflehog.model.network.graph.IComponent;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import java.util.HashSet;
@@ -22,10 +24,12 @@ import java.util.stream.Stream;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
+import de.saxsys.javafx.test.JfxRunner;
 
 /**
  * Created by Valentin Kiechle on 10.04.2016.
  */
+@RunWith(JfxRunner.class)
 public class SelectionCommandTest {
 
     private StatisticsViewModel svm;
@@ -41,6 +45,7 @@ public class SelectionCommandTest {
         svm = mock(StatisticsViewModel.class);
         sc = new SelectionCommand(svm);
         infos = new TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>();
+        // when(svm.setSelectionValues(infos)).
     }
 
     @After
@@ -70,7 +75,7 @@ public class SelectionCommandTest {
         selection = new ImmutablePair<>(nodes, edges);
         sc.setSelection(selection);
         sc.execute();//TODO not running yet
-        verify(infos, times(1)).setExpanded(true);
+        verify(svm, times(1)).setSelectionValues(infos);
         //TODO test platform runlater
     }
 

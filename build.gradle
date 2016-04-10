@@ -94,6 +94,7 @@ dependencies {
     //org="org.springframework" name="org.springframework.core" rev="2.5.4.A" conf="compile->runtime"
 
     // test
+    testCompile 'de.saxsys:jfx-testrunner:1.0'
     testCompile 'org.apache.commons:commons-collections4:4.1'
     testCompile 'commons-io:commons-io:2.4'
     testCompile 'org.apache.commons:commons-lang3:3.4'
