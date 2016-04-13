@@ -7,6 +7,8 @@ import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.model.network.graph.components.node.FilterPropertiesComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import org.junit.Test;
+
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +24,7 @@ import java.util.List;
  */
 public class NameRegexFilterTest {
     @Test
-    public void check() {
+    public void check() throws Exception{
         NetworkIOPort port = Mockito.mock(NetworkIOPort.class);
         INode node = new NetworkNode(new MacAddress(123));
         NodeInfoComponent infoComponent = new NodeInfoComponent(new MacAddress(123));
@@ -38,21 +40,17 @@ public class NameRegexFilterTest {
 
         boolean testPassed = true;
 
-        try {
-            NameRegexFilter filter = new NameRegexFilter(port, input);
-            if (propertiesComponent.getFilterColor() != null) testPassed = false;
-            filter.check(node);
-            if (propertiesComponent.getFilterColor() != Color.CYAN) testPassed = false;
-        } catch (Exception e) {
-            testPassed = false;
-        }
+        NameRegexFilter filter = new NameRegexFilter(port, input);
+        if (propertiesComponent.getFilterColor() != null) testPassed = false;
+        filter.check(node);
+        if (!propertiesComponent.getFilterColor().equals(Color.CYAN)) testPassed = false;
 
         assertTrue(testPassed);
     }
 
 
     @Test
-    public void clear() {
+    public void clear() throws Exception{
         NetworkIOPort port = Mockito.mock(NetworkIOPort.class);
         INode node = new NetworkNode(new MacAddress(123));
         List<INode> nodeList = new LinkedList<>();
@@ -71,19 +69,11 @@ public class NameRegexFilterTest {
         rules.add(".*bla.*");
         FilterInput input = new FilterInput("test", SelectionModel.SELECTION, FilterOrigin.NAME, rules, Color.CYAN, false, 0);
 
-        boolean testPassed = true;
+        NameRegexFilter filter = new NameRegexFilter(port, input);
 
-        try {
-            NameRegexFilter filter = new NameRegexFilter(port, input);
+        filter.check(node);
+        filter.clear();
 
-            filter.check(node);
-            filter.clear();
-
-            if (propertiesComponent.getFilterColor() != null) testPassed = false;
-        } catch (Exception e) {
-            testPassed = false;
-        }
-
-        assertTrue(testPassed);
+        assertNull(propertiesComponent.getFilterColor());
     }
 }

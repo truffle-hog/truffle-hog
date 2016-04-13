@@ -206,12 +206,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     @Override
     public void togglePicked() {
 
-        if (isPicked) {
-            isPicked = false;
-
-        } else {
-            isPicked = true;
-        }
+        isPicked = !isPicked;
         isPicked(isPicked);
     }
 
@@ -246,7 +241,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
     @Override
     public boolean picked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
+        return isPicked;
     }
 
     @Override
