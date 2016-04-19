@@ -157,6 +157,10 @@ public class Truffle implements IPacketData {
         return (T) attributeMap.get(attributeIdentifier);
     }
 
+    /**
+     * This toString method is for debug purposes only.
+     * @return debug information about this object
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

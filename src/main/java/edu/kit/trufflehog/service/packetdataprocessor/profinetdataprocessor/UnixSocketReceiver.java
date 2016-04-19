@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
  * </p>
  *
  * @author Mark Giraud
- * @version 0.1
+ * @version 1.0
  */
 public class UnixSocketReceiver extends TruffleReceiver {
 

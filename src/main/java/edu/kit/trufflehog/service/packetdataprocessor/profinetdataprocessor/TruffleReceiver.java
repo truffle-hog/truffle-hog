@@ -13,7 +13,7 @@ import edu.kit.trufflehog.util.Notifier;
  *     The class generalises the different types of inter-process communication.
  * </p>
  * <p>
- *     Possible implementations: {@link UnixSocketReceiver}, {@link MessageQueueReceiver}
+ *     Possible implementations: {@link UnixSocketReceiver}
  * </p>
  *
  * @author Mark Giraud

@@ -51,7 +51,7 @@ public class NodeStatisticsUpdater implements Runnable {
                 updateGraphStatistics();
                 Thread.sleep(interval);
             } catch (InterruptedException e) {
-
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -85,7 +85,7 @@ public class NodeStatisticsUpdater implements Runnable {
                 cOld = cNew;
             }
 
-            if (cNew != null && cOld != null) {
+            if (cNew != null) {
                 double delta = (cNew.getCommunicationCount() - cOld.getCommunicationCount());
                 double tOld = cOld.getThroughput();
 
@@ -95,7 +95,10 @@ public class NodeStatisticsUpdater implements Runnable {
             }
 
             IComponentVisitor<IComponent> copier = new ComponentCopier();
-            NodeStatisticsComponent n2 = (NodeStatisticsComponent)cNew.accept(copier);
+            NodeStatisticsComponent n2 = null;
+            if (cNew != null) {
+                n2 = (NodeStatisticsComponent)cNew.accept(copier);
+            }
             if (lastNodes.get(i.getAddress()) != null) {
                 lastNodes.replace(i.getAddress(), n2);
             } else {
