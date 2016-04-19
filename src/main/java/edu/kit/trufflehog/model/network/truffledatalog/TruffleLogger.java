@@ -11,6 +11,8 @@ import java.util.List;
  *     instance that it uses to save a Truffle when it receives a new one. This way received packet data can be shown
  *     by the view.
  * </p>
+ *
+ * //TODO IMPLEMENT?
  */
 public class TruffleLogger {
 
@@ -39,5 +41,6 @@ public class TruffleLogger {
      * @param truffle The truffle to save to the hard drive.
      */
     public void log(Truffle truffle) {
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 }

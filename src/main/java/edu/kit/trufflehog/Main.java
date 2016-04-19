@@ -34,8 +34,6 @@ import java.util.concurrent.Executors;
 public class Main extends Application {
 	private Presenter presenter;
 
-	public static ExecutorService THE_EXECUTOR = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-
 	/**
 	 * <p>
 	 *     The main method of TruffleHog.

@@ -13,7 +13,4 @@ public class InvalidMACAddress extends IllegalArgumentException {
         super("The provided address value is in wrong format: " + Long.toHexString(value));
     }
 
-    public InvalidMACAddress(String msg) {
-        super(msg);
-    }
 }

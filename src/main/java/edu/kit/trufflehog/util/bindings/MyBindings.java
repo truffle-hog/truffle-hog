@@ -36,6 +36,9 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Jan Hermes
  * @version 0.0.1
+ *
+ * //TODO rename?
+ * //TODO document!
  */
 public class MyBindings {
 

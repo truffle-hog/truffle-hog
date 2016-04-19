@@ -74,10 +74,10 @@ public class GeneralStatisticsViewModel {
             valueProperty = property;
         }
 
+        @SuppressWarnings("unchecked")
         public StringEntry(String name, String value) {
 
             keyProperty = new SimpleStringProperty(name);
-            // FIXME do the suprressiong of warning... because we know its a property here... so safely cast it to that
             valueProperty = (T) new SimpleStringProperty(value);
         }
 

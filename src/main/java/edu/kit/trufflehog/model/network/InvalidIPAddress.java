@@ -12,7 +12,4 @@ public class InvalidIPAddress extends IllegalArgumentException {
         super("The provided address value is in wrong format: " + value);
     }
 
-    public InvalidIPAddress(String msg) {
-        super(msg);
-    }
 }
