@@ -162,6 +162,14 @@ public class FilterInput implements Serializable {
         this.legal = legal;
         this.priority = priority;
         this.deleted = false;
+
+        nameProperty = new SimpleStringProperty(name);
+        selectionModelProperty = new SimpleStringProperty(selectionModel.toString());
+        originProperty = new SimpleStringProperty(origin.toString());
+        colorProperty = new SimpleObjectProperty<>(color);
+        legalProperty = new SimpleBooleanProperty(legal);
+        activeProperty = new SimpleBooleanProperty(active);
+        priorityProperty = new SimpleIntegerProperty(priority);
     }
 
     /**
@@ -394,13 +402,6 @@ public class FilterInput implements Serializable {
      * @param configData The {@link ConfigData} object used to update this filter to the database.
      */
     public void load(ConfigData configData) {
-        // Instantiate property objects
-        nameProperty = new SimpleStringProperty(name);
-        colorProperty = new SimpleObjectProperty<>(color);
-        priorityProperty = new SimpleIntegerProperty(priority);
-        legalProperty = new SimpleBooleanProperty(legal);
-        activeProperty = new SimpleBooleanProperty(active);
-
         // Make the selection model look nicer on screen
         if (selectionModel.equals(SelectionModel.SELECTION)) {
             selectionModelProperty = new SimpleStringProperty(configData.getProperty("SELECTION_LABEL"));
