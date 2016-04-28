@@ -12,6 +12,7 @@ import edu.kit.trufflehog.model.network.LiveNetwork;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
@@ -38,21 +39,26 @@ import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.TreeItem;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.DecimalFormat;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -210,16 +216,42 @@ public class Presenter {
         scene.addEventFilter( MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
         scene.addEventFilter( ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
 
+        final PacketDataViewController packetDataController = new PacketDataViewController(FXCollections.observableArrayList());
+        packetDataController.setVisible(false);
+        viewer.getChildren().add(packetDataController);
+        AnchorPane.setLeftAnchor(packetDataController, 0d);
 
         final StatisticsViewModel statisticsViewModel = new StatisticsViewModel();
         final StatisticsViewController statisticsViewController = new StatisticsViewController(statisticsViewModel);
+        final ContextMenu contextMenu = new ContextMenu();
+        final MenuItem getPackageItem = new MenuItem("Get Packages");
+        //FIXME: make more beautiful
+        getPackageItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                packetDataController.setVisible(true);
+                PacketDataLoggingComponent component = new PacketDataLoggingComponent();
+                for (INode node:viewer.getPickedVertexState().getPicked()) {
+                    component = node.getComponent(PacketDataLoggingComponent.class);
+                    packetDataController.update(component);
+                }
+
+                component.getObservablePacketsProperty().addListener(new ListChangeListener() {
+                    @Override
+                    public void onChanged(Change c) {
+                        c.next();
+                        packetDataController.addEntries(c.getAddedSubList());
+                    }
+                });
+            }
+        });
+        contextMenu.getItems().add(getPackageItem);
         viewer.getChildren().add(statisticsViewController);
         AnchorPane.setTopAnchor(statisticsViewController, 10d);
         AnchorPane.setRightAnchor(statisticsViewController, 10d);
         viewer.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statisticsViewModel));
+        viewer.addCommand(GraphInteraction.SELECTION_CONTEXTMENU, new SelectionContextMenuCommand(viewer, contextMenu));
         viewer.addListener(commandExecutor.asUserCommandListener());
-
-
 
         final FilterEditingMenuViewController filterEditingMenuViewController = new FilterEditingMenuViewController(configData, filterViewModel);
         filterEditingMenuViewController.setVisible(false);

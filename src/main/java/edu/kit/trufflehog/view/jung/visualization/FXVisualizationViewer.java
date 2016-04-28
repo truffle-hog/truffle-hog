@@ -17,6 +17,7 @@
 package edu.kit.trufflehog.view.jung.visualization;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.command.usercommand.SelectionContextMenuCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
@@ -175,6 +176,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             selectedEdges.clear();
 
             onSelectionChanged();
+            onSelectionContextMenu(0, 0);
         });
 
 
@@ -372,16 +374,31 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
         nodeShape.setOnMouseClicked(e -> {
 
-            if (e.getButton() != MouseButton.PRIMARY) {
-                return;
-            }
+            if (e.getButton() == MouseButton.PRIMARY) {
+                final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
 
-            final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
+                if (!renderer.picked()) {
+                    selectedNodes.add(vertex);
+                    renderer.isPicked(true);
+                    onSelectionChanged();
+                }
 
-            if (!renderer.picked()) {
-                selectedNodes.add(vertex);
-                renderer.isPicked(true);
-                onSelectionChanged();
+            } else if (e.getButton() == MouseButton.SECONDARY) {
+                final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
+
+                if (!renderer.picked()) {
+                    selectedNodes.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
+                    selectedEdges.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
+                    selectedNodes.clear();
+                    selectedEdges.clear();
+
+                    selectedNodes.add(vertex);
+                    renderer.isPicked(true);
+                    onSelectionChanged();
+                    onSelectionContextMenu(e.getScreenX(), e.getScreenY());
+                }
+
+
             }
             e.consume();
         });
@@ -651,6 +668,21 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
         notifyListeners(selectionCommand);
 
+    }
+
+    private void onSelectionContextMenu(double posX, double posY) {
+        //FIXME: make this adequate
+        final SelectionContextMenuCommand cmCommand = (SelectionContextMenuCommand)interactionMap.get(GraphInteraction.SELECTION_CONTEXTMENU);
+
+        if (cmCommand == null) {
+            logger.warn("There is no command registered to: " + GraphInteraction.SELECTION_CONTEXTMENU);
+            return;
+        }
+        cmCommand.setSelection(new ImmutablePair<>(new HashSet<>(selectedNodes), new HashSet<>(selectedEdges)));
+        cmCommand.setPosX(posX);
+        cmCommand.setPosY(posY);
+
+        notifyListeners(cmCommand);
     }
 
 
