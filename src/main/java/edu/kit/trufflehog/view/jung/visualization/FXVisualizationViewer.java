@@ -386,19 +386,15 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             } else if (e.getButton() == MouseButton.SECONDARY) {
                 final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
 
-                if (!renderer.picked()) {
-                    selectedNodes.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
-                    selectedEdges.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
-                    selectedNodes.clear();
-                    selectedEdges.clear();
+                selectedNodes.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
+                selectedEdges.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
+                selectedNodes.clear();
+                selectedEdges.clear();
 
-                    selectedNodes.add(vertex);
-                    renderer.isPicked(true);
-                    onSelectionChanged();
-                    onSelectionContextMenu(e.getScreenX(), e.getScreenY());
-                }
-
-
+                selectedNodes.add(vertex);
+                renderer.isPicked(true);
+                onSelectionChanged();
+                onSelectionContextMenu(e.getScreenX(), e.getScreenY());
             }
             e.consume();
         });

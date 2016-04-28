@@ -19,13 +19,13 @@ package edu.kit.trufflehog.model.filter;
 
 /**
  * <p>
- *     The FilterOrigin enum defines the criteria on which a filter can be based on. For example, IP means the filter
+ *     The FilterType enum defines the criteria on which a filter can be based on. For example, IP means the filter
  *     filters by the IP address.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public enum FilterOrigin {
+public enum FilterType {
     IP,MAC,NAME
 }

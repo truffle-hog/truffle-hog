@@ -33,7 +33,7 @@ public class NameRegexFilter implements IFilter {
         if (filterInput == null)
             throw new NullPointerException("filterInput must not be null!");
 
-        if (filterInput.getOrigin() != FilterOrigin.NAME)
+        if (filterInput.getType() != FilterType.NAME)
             throw new InvalidFilterRule("The filter input contains invalid filter rules. This filter can only handle name rules");
 
         this.networkIOPort = networkIOPort;

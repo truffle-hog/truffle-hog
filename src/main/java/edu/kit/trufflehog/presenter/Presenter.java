@@ -3,9 +3,11 @@ package edu.kit.trufflehog.presenter;
 import edu.kit.trufflehog.command.usercommand.*;
 import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.interaction.GraphInteraction;
-import edu.kit.trufflehog.interaction.ToolbarViewInteraction;
+import edu.kit.trufflehog.interaction.ToolbarInteraction;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
+import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.filter.MacroFilter;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.LiveNetwork;
@@ -41,24 +43,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -253,24 +249,27 @@ public class Presenter {
         viewer.addCommand(GraphInteraction.SELECTION_CONTEXTMENU, new SelectionContextMenuCommand(viewer, contextMenu));
         viewer.addListener(commandExecutor.asUserCommandListener());
 
-        final FilterEditingMenuViewController filterEditingMenuViewController = new FilterEditingMenuViewController(configData, filterViewModel);
-        filterEditingMenuViewController.setVisible(false);
-        viewer.getChildren().add(filterEditingMenuViewController);
-        AnchorPane.setRightAnchor(filterEditingMenuViewController, 0d);
-        filterEditingMenuViewController.addCommand(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
-        filterEditingMenuViewController.addListener(commandExecutor.asUserCommandListener());
+        // need to create a hashmap for filterinputs and filters for the session... maybe there will be another solution sometime
+        final Map<FilterInput, IFilter> filterMap = new HashMap<>();
 
-        final FilterOverlayView filterOverlayView = new FilterOverlayView(configData.getAllLoadedFilters(), filterEditingMenuViewController, viewer.getPickedVertexState());
+        final FilterEditingMenuView filterEditingMenuView = new FilterEditingMenuView(configData, filterViewModel);
+        filterEditingMenuView.setVisible(false);
+        AnchorPane.setRightAnchor(filterEditingMenuView, 0d);
+        filterEditingMenuView.addCommand(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
+        filterEditingMenuView.addListener(commandExecutor.asUserCommandListener());
+
+        final FilterOverlayView filterOverlayView = new FilterOverlayView(configData.getAllLoadedFilters(), filterEditingMenuView, viewer.getPickedVertexState());
         filterOverlayView.setVisible(false);
         viewer.getChildren().add(filterOverlayView);
+        viewer.getChildren().add(filterEditingMenuView);
         AnchorPane.setLeftAnchor(filterOverlayView, 0d);
-        filterOverlayView.addCommand(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
-        filterOverlayView.addCommand(FilterInteraction.UPDATE, new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
+        filterOverlayView.addCommand(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
+        filterOverlayView.addCommand(FilterInteraction.UPDATE, new UpdateFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
         filterOverlayView.addListener(commandExecutor.asUserCommandListener());
 
         final ToolbarView toolbarView = new ToolbarView(filterOverlayView);
-        toolbarView.addCommand(ToolbarViewInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
-        toolbarView.addCommand(ToolbarViewInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
+        toolbarView.addCommand(ToolbarInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
+        toolbarView.addCommand(ToolbarInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
         viewer.getChildren().add(toolbarView);
         AnchorPane.setBottomAnchor(toolbarView, 5d);
         AnchorPane.setLeftAnchor(toolbarView, 5d);

@@ -39,22 +39,14 @@ public class GeneralStatisticsViewController extends BorderPaneController {
 
         this.statViewModel = statModel;
 
-        //keyColumn = new TreeTableColumn<>("Key");
-        //valueColumn = new TreeTableColumn<>("Value");
-
-        //keyColumn.setMinWidth(100);
         keyColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<GeneralStatisticsViewModel.IEntry<StringProperty, ? extends Property>, String> param) ->
                 param.getValue().getValue().getKeyProperty());
 
-        //valueColumn.setMinWidth(100);
         valueColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<GeneralStatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> param) ->
                 param.getValue().getValue().getValueProperty());
-
-        //this.visibleProperty().bind(statViewModel.getInfoListProperty().emptyProperty().not());
 
         infoTable.setRoot(statViewModel.getRootItem());
         infoTable.getColumns().setAll(keyColumn, valueColumn);
         infoTable.setShowRoot(false);
-        //infoTable.setEditable(true);
     }
 }

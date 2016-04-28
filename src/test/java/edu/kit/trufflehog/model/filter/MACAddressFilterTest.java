@@ -47,9 +47,9 @@ public class MACAddressFilterTest {
     @Test
     public void compareTo_low_priority_filter_is_less_than_high_priority_filter() throws Exception {
         IFilter lowPrio = new MACAddressFilter(networkIOPortMock, new FilterInput("lowPrio", SelectionModel.SELECTION,
-                FilterOrigin.MAC, new LinkedList<>(), null, true, 0));
+                FilterType.MAC, new LinkedList<>(), null, true, 0));
         IFilter highPrio = new MACAddressFilter(networkIOPortMock, new FilterInput("highPrio", SelectionModel.SELECTION,
-                FilterOrigin.MAC, new LinkedList<>(), null, true, 10));
+                FilterType.MAC, new LinkedList<>(), null, true, 10));
 
         assertTrue("lowPrio should be less than highPrio", lowPrio.compareTo(highPrio) < 0);
         assertTrue("highPrio should be greater than lowPrio", highPrio.compareTo(lowPrio) > 0);

@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Color;
 import java.util.LinkedList;
 
 /**
@@ -31,7 +30,7 @@ public class IPAddressFilterTest {
         java.util.List<String> rules = new LinkedList<>();
 
 
-        FilterInput filterInput = new FilterInput("test", SelectionModel.SELECTION, FilterOrigin.IP, rules,
+        FilterInput filterInput = new FilterInput("test", SelectionModel.SELECTION, FilterType.IP, rules,
                 new javafx.scene.paint.Color(0.0, 0.0, 0.0, 0.0), true, 1);
     }
 }

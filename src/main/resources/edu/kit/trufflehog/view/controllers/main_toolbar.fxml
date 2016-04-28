@@ -39,8 +39,8 @@
 
 <fx:root prefHeight="10.0" prefWidth="300.0" styleClass="background" stylesheets="@main_toolbar.css" type="ToolBar" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
    <items>
-      <ToggleButton fx:id="connectButton" mnemonicParsing="false" onAction="#onToggleConnect" text="Connect" />
-      <ToggleButton fx:id="filterButton" mnemonicParsing="false" onAction="#onToggleFilter" text="Filter" />
-      <ToggleButton fx:id="settingsButton" mnemonicParsing="false" onAction="#onToggleSettings" text="Settings" />
+      <ToggleButton fx:id="connectButton" styleClass="connect-toggle" mnemonicParsing="false" onAction="#onToggleConnect" />
+      <ToggleButton fx:id="filterButton" styleClass="filter-toggle" mnemonicParsing="false" />
+      <!--ToggleButton fx:id="settingsButton" mnemonicParsing="false" onAction="#onToggleSettings" text="Settings" /-->
    </items>
 </fx:root>

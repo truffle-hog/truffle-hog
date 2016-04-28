@@ -19,7 +19,7 @@ package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
-import edu.kit.trufflehog.model.filter.FilterOrigin;
+import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.filter.SelectionModel;
 import edu.kit.trufflehog.presenter.LoggedScheduledExecutor;
@@ -33,7 +33,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.*;
 import java.sql.*;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
@@ -135,13 +134,13 @@ class FilterDataModel {
                     while (rs.next()) {
                         final String name = rs.getString("ID");
                         final SelectionModel selectionModel = SelectionModel.valueOf(rs.getString("SELECTION_MODEL"));
-                        final FilterOrigin filterOrigin = FilterOrigin.valueOf(rs.getString("FILTER_ORIGIN"));
+                        final FilterType filterType = FilterType.valueOf(rs.getString("FILTER_ORIGIN"));
                         final List<String> rules = Arrays.asList(rs.getString("RULES").split(","));
                         final Color color = Color.web(rs.getString("COLOR"));
                         final boolean authorized = rs.getBoolean("AUTHORIZED");
                         final int priority = rs.getInt("PRIORITY");
 
-                        final FilterInput filterInput = new FilterInput(name, selectionModel, filterOrigin, rules, color, authorized, priority);
+                        final FilterInput filterInput = new FilterInput(name, selectionModel, filterType, rules, color, authorized, priority);
 
                         loadedFilters.add(filterInput);
                     }
@@ -260,7 +259,7 @@ class FilterDataModel {
                 String sql = "INSERT INTO FILTERS(ID,SELECTION_MODEL,FILTER_ORIGIN,RULES,COLOR,AUTHORIZED,PRIORITY) " + "VALUES("
                         + "'" + filterInput.getName() + "',"
                         + "'" + filterInput.getSelectionModel().name() + "',"
-                        + "'" + filterInput.getOrigin().name() + "',"
+                        + "'" + filterInput.getType().name() + "',"
                         + "'" + filterInput.getRules().stream().collect(Collectors.joining(",")) + "',"
                         + "'" + FxUtils.toRGBCode(filterInput.getColor()) + "',"
                         + "" + (filterInput.isLegal() ? "1" : "0") + ","

@@ -10,3 +10,20 @@ root {
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 }
+
+.toggle-button {
+    -fx-background-color: transparent;
+
+}
+
+.connect-toggle {
+    -fx-graphic: url('../elements/access-point-disconnected.png');
+}
+
+.connect-toggle:selected {
+    -fx-graphic: url('../elements/access-point-connected.png');
+}
+
+.filter-toggle {
+    -fx-graphic: url('../elements/filter.png');
+}
