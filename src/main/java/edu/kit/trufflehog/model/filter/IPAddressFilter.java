@@ -53,7 +53,7 @@ public class IPAddressFilter implements IFilter {
         if (filterInput == null)
             throw new NullPointerException("filterInput must not be null!");
 
-        if (filterInput.getOrigin() != FilterOrigin.IP)
+        if (filterInput.getType() != FilterType.IP)
             throw new InvalidFilterRule("The filter input contains invalid filter rules. This filter can only handle ip rules");
 
         this.networkIOPort = networkIOPort;

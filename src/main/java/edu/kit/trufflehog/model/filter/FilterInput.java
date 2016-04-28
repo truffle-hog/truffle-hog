@@ -48,7 +48,7 @@ import java.util.List;
  *             inverse selection.
  *         </li>
  *         <li>
- *             Origin: The origin of the filter. A filter can originate from an IP Address, from a MAC Address, or
+ *             Origin: The filterType of the filter. A filter can originate from an IP Address, from a MAC Address, or
  *             from the current selection. This indicates upon what criteria the filter filters.
  *         </li>
  *         <li>
@@ -81,7 +81,7 @@ public class FilterInput implements Serializable {
     // Serializable variables
     private String name;
     private SelectionModel selectionModel;
-    private FilterOrigin origin;
+    private FilterType filterType;
     private List<String> rules;
     private Color color;
     private boolean legal;
@@ -94,7 +94,7 @@ public class FilterInput implements Serializable {
     // Property variables for table view
     private transient StringProperty nameProperty;
     private transient StringProperty selectionModelProperty;
-    private transient StringProperty originProperty;
+    private transient StringProperty filterTypeProperty;
     private transient ObjectProperty<Color> colorProperty;
     private transient BooleanProperty legalProperty;
     private transient BooleanProperty activeProperty;
@@ -116,7 +116,7 @@ public class FilterInput implements Serializable {
      *             an inverse selection.
      *         </li>
      *         <li>
-     *             Origin: The origin of the filter. A filter can originate from an IP Address, from a MAC Address, or
+     *             Origin: The filterType of the filter. A filter can originate from an IP Address, from a MAC Address, or
      *             from the current selection. This indicates upon what criteria the filter filters.
      *         </li>
      *         <li>
@@ -142,20 +142,20 @@ public class FilterInput implements Serializable {
      *
      * @param name The name of this filter.
      * @param selectionModel The selection model of this filter (inverse selection vs selection).
-     * @param origin The origin of this filter.
+     * @param filterType The filterType of this filter.
      * @param rules The rules that define this filter.
      * @param color The color that a node should become if it matches with the filter.
      */
     public FilterInput(final String name,
                        final SelectionModel selectionModel,
-                       final FilterOrigin origin,
+                       final FilterType filterType,
                        final List<String> rules,
                        final Color color,
                        final boolean legal,
                        final int priority) {
         this.name = name;
         this.selectionModel = selectionModel;
-        this.origin = origin;
+        this.filterType = filterType;
         this.rules = rules;
         this.color = color;
         this.active = false;
@@ -165,7 +165,7 @@ public class FilterInput implements Serializable {
 
         nameProperty = new SimpleStringProperty(name);
         selectionModelProperty = new SimpleStringProperty(selectionModel.toString());
-        originProperty = new SimpleStringProperty(origin.toString());
+        filterTypeProperty = new SimpleStringProperty(filterType.toString());
         colorProperty = new SimpleObjectProperty<>(color);
         legalProperty = new SimpleBooleanProperty(legal);
         activeProperty = new SimpleBooleanProperty(active);
@@ -230,26 +230,26 @@ public class FilterInput implements Serializable {
 
     /**
      * <p>
-     *     Gets the origin of the filter. A filter can originate from an IP Address, from a MAC Address, or from the
-     *     current selection. This indicates upon what criteria the filter filters.
+     *     Gets the filterType of the filter. A filtertype can be IP Address, MAC Address or name.
+     *     This indicates upon what criteria the filter filters.
      * </p>
      *
-     * @return The origin of this filter.
+     * @return The filterType of this filter.
      */
-    public FilterOrigin getOrigin() {
-        return origin;
+    public FilterType getType() {
+        return filterType;
     }
 
     /**
      * <p>
-     *     Gets the origin property of the filter. A filter can originate from an IP Address, from a MAC Address, or
-     *     from the current selection. This indicates upon what criteria the filter filters.
+     *     Gets the filterType property of the filter. A filtertype can be IP Address, MAC Address or name.
+     *     This indicates upon what criteria the filter filters.
      * </p>
      *
-     * @return The origin property of this filter.
+     * @return The filterType property of this filter.
      */
-    public StringProperty getOriginProperty() {
-        return originProperty;
+    public StringProperty getFilterTypeProperty() {
+        return filterTypeProperty;
     }
 
     /**
@@ -409,11 +409,11 @@ public class FilterInput implements Serializable {
             selectionModelProperty = new SimpleStringProperty(configData.getProperty("INVERSE_SELECTION_LABEL"));
         }
 
-        // Make the origin look nicer on screen
-        if (origin.equals(FilterOrigin.NAME)) {
-            originProperty = new SimpleStringProperty(configData.getProperty("NAME_LABEL"));
+        // Make the filterType look nicer on screen
+        if (filterType.equals(FilterType.NAME)) {
+            filterTypeProperty = new SimpleStringProperty(configData.getProperty("NAME_LABEL"));
         } else {
-            originProperty = new SimpleStringProperty(origin.name());
+            filterTypeProperty = new SimpleStringProperty(filterType.name());
         }
 
         bind(configData);
@@ -446,18 +446,18 @@ public class FilterInput implements Serializable {
             logger.debug("Updated type for FilterInput: " + name + " to table view and database.");
         });
 
-        // Bind origin to database update function
-        originProperty.addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals(FilterOrigin.IP.name())) {
-                origin = FilterOrigin.IP;
-            } else if (newValue.equals(FilterOrigin.MAC.name())) {
-                origin = FilterOrigin.MAC;
+        // Bind filterType to database update function
+        filterTypeProperty.addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(FilterType.IP.name())) {
+                filterType = FilterType.IP;
+            } else if (newValue.equals(FilterType.MAC.name())) {
+                filterType = FilterType.MAC;
             } else {
-                origin = FilterOrigin.NAME;
+                filterType = FilterType.NAME;
             }
 
             configData.updateFilterInput(this);
-            logger.debug("Updated origin for FilterInput: " + name + " to table view and database.");
+            logger.debug("Updated filterType for FilterInput: " + name + " to table view and database.");
         });
 
         // Bind color to database update function

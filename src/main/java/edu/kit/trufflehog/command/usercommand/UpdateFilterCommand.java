@@ -1,5 +1,6 @@
 package edu.kit.trufflehog.command.usercommand;
 
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.*;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
 import org.apache.logging.log4j.LogManager;
@@ -22,9 +23,10 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
 
     private final MacroFilter macroFilter;
     private final INetworkIOPort nwp;
+    private final ConfigData configData;
     private FilterInput filterInput;
 
-    private final Map<FilterInput, IFilter> filterMap = new HashMap<>();
+    private final Map<FilterInput, IFilter> filterMap;
 
     /**
      * <p>
@@ -35,10 +37,15 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
      * @param nwp the network port that is used to access the network
      * @param macroFilter the macro filter to add all sub filters to.
      */
-    public UpdateFilterCommand(final INetworkIOPort nwp, final MacroFilter macroFilter) {
+    public UpdateFilterCommand(final ConfigData configData, final INetworkIOPort nwp, final MacroFilter macroFilter, final Map<FilterInput, IFilter> filterMap)
+    {
         if(macroFilter == null) throw new NullPointerException("macroFilter should not be null!");
         if (nwp == null) throw new NullPointerException("NetworkIOPort should not be null");
+        if (filterMap == null) throw new NullPointerException("filtermap must not be null");
+
+        this.filterMap = filterMap;
         this.macroFilter = macroFilter;
+        this.configData = configData;
         this.nwp = nwp;
         this.filterInput = null;
     }
@@ -60,7 +67,7 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
             IFilter filter = null;
 
             try {
-                switch (filterInput.getOrigin()) {
+                switch (filterInput.getType()) {
                     case MAC:
                         filter = new MACAddressFilter(nwp, filterInput);
                         break;

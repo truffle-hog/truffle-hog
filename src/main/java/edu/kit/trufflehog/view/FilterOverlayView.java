@@ -160,7 +160,7 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
         originColumn.setMinWidth(90);
         originColumn.setPrefWidth(90);
         tableView.getColumns().add(originColumn);
-        originColumn.setCellValueFactory(p -> p.getValue().getOriginProperty());
+        originColumn.setCellValueFactory(p -> p.getValue().getFilterTypeProperty());
     }
 
     /**

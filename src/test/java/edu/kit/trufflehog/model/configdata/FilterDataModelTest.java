@@ -19,7 +19,7 @@ package edu.kit.trufflehog.model.configdata;
 
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.filter.FilterInput;
-import edu.kit.trufflehog.model.filter.FilterOrigin;
+import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.model.filter.SelectionModel;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
@@ -301,7 +301,7 @@ public class FilterDataModelTest {
         int priority = (int) (Math.random() * 1000);
 
         // Generate FilterInput object
-        return new FilterInput(name, SelectionModel.SELECTION, FilterOrigin.IP, rules, color, true, priority);
+        return new FilterInput(name, SelectionModel.SELECTION, FilterType.IP, rules, color, true, priority);
     }
 
     /**
@@ -332,7 +332,7 @@ public class FilterDataModelTest {
 
         int priority = (int) (Math.random() * 1000);
 
-        return new FilterInput(filterInput.getName(), SelectionModel.SELECTION, FilterOrigin.MAC, rules, color,
+        return new FilterInput(filterInput.getName(), SelectionModel.SELECTION, FilterType.MAC, rules, color,
                 false, priority);
     }
 

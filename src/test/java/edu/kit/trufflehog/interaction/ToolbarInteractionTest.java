@@ -5,17 +5,17 @@ import static org.junit.Assert.assertNotNull;
 
 
 /**
- * ToolbarViewInteractionTest class
+ * ToolbarInteractionTest class
  */
-public class ToolbarViewInteractionTest {
+public class ToolbarInteractionTest {
 
     /**
      * Checks if ToolbarViewInteractions are available and not arbitrarily modified.
      */
     @Test
     public void testAvailability() {
-        assertNotNull(ToolbarViewInteraction.CONNECT);
-        assertNotNull(ToolbarViewInteraction.DISCONNECT);
+        assertNotNull(ToolbarInteraction.CONNECT);
+        assertNotNull(ToolbarInteraction.DISCONNECT);
     }
 
 

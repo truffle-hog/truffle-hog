@@ -19,10 +19,9 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
-import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.configdata.IConfig;
 import edu.kit.trufflehog.model.filter.FilterInput;
-import edu.kit.trufflehog.model.filter.FilterOrigin;
+import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.model.filter.SelectionModel;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.viewmodel.FilterViewModel;
@@ -33,7 +32,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
@@ -43,12 +41,8 @@ import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import java.util.stream.IntStream;
 
 /**
@@ -222,9 +216,9 @@ public class FilterEditingMenuView extends AnchorPaneController<FilterInteractio
             colorPicker.setValue(filterInput.getColor());
 
             // Display origin type correctly
-            if (filterInput.getOrigin().equals(FilterOrigin.IP)) {
+            if (filterInput.getType().equals(FilterType.IP)) {
                 filterByComboBox.setValue(IP_LABEL);
-            } else if (filterInput.getOrigin().equals(FilterOrigin.MAC)) {
+            } else if (filterInput.getType().equals(FilterType.MAC)) {
                 filterByComboBox.setValue(MAC_LABEL);
             } else {
                 filterByComboBox.setValue(NAME_LABEL);

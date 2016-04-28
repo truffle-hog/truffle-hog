@@ -2,7 +2,7 @@ package edu.kit.trufflehog.viewmodel;
 
 import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.FilterInput;
-import edu.kit.trufflehog.model.filter.FilterOrigin;
+import edu.kit.trufflehog.model.filter.FilterType;
 import edu.kit.trufflehog.model.filter.SelectionModel;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -101,8 +101,8 @@ public class FilterViewModel {
         }
 
         // Update origin
-        if (!filterInputUpdated.getOrigin().equals(oldFilterInput.getOrigin())) {
-            oldFilterInput.getOriginProperty().setValue(filterInputUpdated.getOriginProperty().getValue());
+        if (!filterInputUpdated.getType().equals(oldFilterInput.getType())) {
+            oldFilterInput.getFilterTypeProperty().setValue(filterInputUpdated.getFilterTypeProperty().getValue());
         }
 
         // Update priority
@@ -231,19 +231,19 @@ public class FilterViewModel {
         }
 
         // Find the right filter origin
-        FilterOrigin filterOrigin;
+        FilterType filterType;
         if (filterOriginString.equals(configData.getProperty("IP_LABEL"))) {
-            filterOrigin = FilterOrigin.IP;
+            filterType = FilterType.IP;
         } else if (filterOriginString.equals(configData.getProperty("MAC_LABEL"))) {
-            filterOrigin = FilterOrigin.MAC;
+            filterType = FilterType.MAC;
         } else if (filterOriginString.equals(configData.getProperty("NAME_LABEL"))) {
-            filterOrigin = FilterOrigin.NAME;
+            filterType = FilterType.NAME;
         } else {
-            filterOrigin = null;
+            filterType = null;
         }
 
         // We should never get here but just for good measure
-        if (filterOrigin == null) {
+        if (filterType == null) {
             errorText.setText(configData.getProperty("ORIGIN_ERROR"));
             return null;
         }
@@ -263,12 +263,12 @@ public class FilterViewModel {
         }
 
         // Check if rules are valid
-        List<String> ruleList = processRules(rules, filterOrigin);
+        List<String> ruleList = processRules(rules, filterType);
         if (ruleList == null) {
             return null;
         }
 
-        FilterInput filterInput = new FilterInput(name, selectionModel, filterOrigin, ruleList, color, authorized, priority);
+        FilterInput filterInput = new FilterInput(name, selectionModel, filterType, ruleList, color, authorized, priority);
         filterInput.load(configData); // Binds properties to database
 
         return filterInput;
@@ -281,10 +281,10 @@ public class FilterViewModel {
      * </p>
      *
      * @param rules The rules string from the menu that the user entered.
-     * @param filterOrigin The origin type of the filter. In other words whether the filter filters by IP or MAC.
+     * @param filterType The origin type of the filter. In other words whether the filter filters by IP or MAC.
      * @return A list of parsed and valid rules, or null if a rule was not valid.
      */
-    private List<String> processRules(String rules, FilterOrigin filterOrigin) {
+    private List<String> processRules(String rules, FilterType filterType) {
         if (rules.equals("")) {
             errorText.setText(configData.getProperty("MISSING_RULE_ERROR"));
             return null;
@@ -312,18 +312,18 @@ public class FilterViewModel {
 
         // Set patterns according to MAC or IP
         Pattern pattern = null;
-        if (filterOrigin.equals(FilterOrigin.IP)) {
+        if (filterType.equals(FilterType.IP)) {
             pattern = Pattern.compile(ipRegex);
-        } else if (filterOrigin.equals(FilterOrigin.MAC)) {
+        } else if (filterType.equals(FilterType.MAC)) {
             pattern = Pattern.compile(macRegex);
         }
 
         // Check each rule to see whether it matches its regex
         for (String rule : ruleList) {
-            if (filterOrigin.equals(FilterOrigin.IP) || filterOrigin.equals(FilterOrigin.MAC)) {
+            if (filterType.equals(FilterType.IP) || filterType.equals(FilterType.MAC)) {
                 assert pattern != null;
                 if (!pattern.matcher(rule).matches()) {
-                    if (filterOrigin.equals(FilterOrigin.IP)) {
+                    if (filterType.equals(FilterType.IP)) {
                         errorText.setText(configData.getProperty("INVALID_IP_RULE"));
                     } else {
                         errorText.setText(configData.getProperty("INVALID_MAC_RULE"));

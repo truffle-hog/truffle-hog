@@ -43,7 +43,7 @@ public class MACAddressFilter implements IFilter {
         if (filterInput == null)
             throw new NullPointerException("filterInput must not be null!");
 
-        if (filterInput.getOrigin() != FilterOrigin.MAC)
+        if (filterInput.getType() != FilterType.MAC)
             throw new InvalidFilterRule("The filter input contains invalid filter rules. This filter can only handle mac rules");
 
         this.networkIOPort = networkIOPort;

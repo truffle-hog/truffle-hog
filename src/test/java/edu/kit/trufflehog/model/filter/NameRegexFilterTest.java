@@ -36,7 +36,7 @@ public class NameRegexFilterTest {
 
         List<String> rules = new LinkedList<>();
         rules.add(".*bla.*");
-        FilterInput input = new FilterInput("test", SelectionModel.SELECTION, FilterOrigin.NAME, rules, Color.CYAN, false, 0);
+        FilterInput input = new FilterInput("test", SelectionModel.SELECTION, FilterType.NAME, rules, Color.CYAN, false, 0);
 
         boolean testPassed = true;
 
@@ -67,7 +67,7 @@ public class NameRegexFilterTest {
 
         List<String> rules = new LinkedList<>();
         rules.add(".*bla.*");
-        FilterInput input = new FilterInput("test", SelectionModel.SELECTION, FilterOrigin.NAME, rules, Color.CYAN, false, 0);
+        FilterInput input = new FilterInput("test", SelectionModel.SELECTION, FilterType.NAME, rules, Color.CYAN, false, 0);
 
         NameRegexFilter filter = new NameRegexFilter(port, input);
 

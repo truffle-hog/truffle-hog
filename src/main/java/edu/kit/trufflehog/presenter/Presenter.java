@@ -3,9 +3,11 @@ package edu.kit.trufflehog.presenter;
 import edu.kit.trufflehog.command.usercommand.*;
 import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.interaction.GraphInteraction;
-import edu.kit.trufflehog.interaction.ToolbarViewInteraction;
+import edu.kit.trufflehog.interaction.ToolbarInteraction;
 import edu.kit.trufflehog.model.FileSystem;
 import edu.kit.trufflehog.model.configdata.ConfigData;
+import edu.kit.trufflehog.model.filter.FilterInput;
+import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.filter.MacroFilter;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.LiveNetwork;
@@ -51,6 +53,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -218,11 +222,14 @@ public class Presenter {
         viewer.addListener(commandExecutor.asUserCommandListener());
 
 
+        // need to create a hashmap for filterinputs and filters for the session... maybe there will be another solution somtime
+        final Map<FilterInput, IFilter> filterMap = new HashMap<>();
+
 
         final FilterEditingMenuView filterEditingMenuView = new FilterEditingMenuView(configData, filterViewModel);
         filterEditingMenuView.setVisible(false);
         AnchorPane.setRightAnchor(filterEditingMenuView, 0d);
-        filterEditingMenuView.addCommand(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
+        filterEditingMenuView.addCommand(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
         filterEditingMenuView.addListener(commandExecutor.asUserCommandListener());
 
         final FilterOverlayView filterOverlayView = new FilterOverlayView(configData.getAllLoadedFilters(), filterEditingMenuView, viewer.getPickedVertexState());
@@ -230,13 +237,13 @@ public class Presenter {
         viewer.getChildren().add(filterOverlayView);
         viewer.getChildren().add(filterEditingMenuView);
         AnchorPane.setLeftAnchor(filterOverlayView, 0d);
-        filterOverlayView.addCommand(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
-        filterOverlayView.addCommand(FilterInteraction.UPDATE, new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
+        filterOverlayView.addCommand(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
+        filterOverlayView.addCommand(FilterInteraction.UPDATE, new UpdateFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
         filterOverlayView.addListener(commandExecutor.asUserCommandListener());
 
         final ToolbarView toolbarView = new ToolbarView(filterOverlayView);
-        toolbarView.addCommand(ToolbarViewInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
-        toolbarView.addCommand(ToolbarViewInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
+        toolbarView.addCommand(ToolbarInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
+        toolbarView.addCommand(ToolbarInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
         viewer.getChildren().add(toolbarView);
         AnchorPane.setBottomAnchor(toolbarView, 5d);
         AnchorPane.setLeftAnchor(toolbarView, 5d);

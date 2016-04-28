@@ -2,13 +2,9 @@ package edu.kit.trufflehog.command.usercommand;
 
 import edu.kit.trufflehog.model.filter.*;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
-import edu.kit.trufflehog.model.network.MacAddress;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -68,7 +64,7 @@ public class UpdateFilterCommandTest {
 
     @Test
     public void updateMACFilterCommandTest() {
-        when(filterInput.getOrigin()).thenReturn(FilterOrigin.MAC);
+        when(filterInput.getType()).thenReturn(FilterType.MAC);
         ufc.execute();
         verify(nwp, times(1)).applyFilter(any(MACAddressFilter.class));
         verify(macroFilter, times(1)).addFilter(any(MACAddressFilter.class));
@@ -76,7 +72,7 @@ public class UpdateFilterCommandTest {
 
     @Test
     public void updateIPFilterCommandTest() {
-        when(filterInput.getOrigin()).thenReturn(FilterOrigin.IP);
+        when(filterInput.getType()).thenReturn(FilterType.IP);
         ufc.execute();
         verify(nwp, times(1)).applyFilter(any(IPAddressFilter.class));
         verify(macroFilter, times(1)).addFilter(any(IPAddressFilter.class));
@@ -84,7 +80,7 @@ public class UpdateFilterCommandTest {
 
     @Test
     public void updateNameRegexFilterCommandTest() {
-        when(filterInput.getOrigin()).thenReturn(FilterOrigin.NAME);
+        when(filterInput.getType()).thenReturn(FilterType.NAME);
         ufc.execute();
         verify(nwp, times(1)).applyFilter(any(NameRegexFilter.class));
         verify(macroFilter, times(1)).addFilter(any(NameRegexFilter.class));
@@ -92,9 +88,9 @@ public class UpdateFilterCommandTest {
 
     @Test
     public void updateOldExistingFilterTest() {
-        when(filterInput.getOrigin()).thenReturn(FilterOrigin.NAME);
+        when(filterInput.getType()).thenReturn(FilterType.NAME);
         ufc.execute();
-        when(filterInput.getOrigin()).thenReturn(FilterOrigin.IP);
+        when(filterInput.getType()).thenReturn(FilterType.IP);
         ufc.execute();
         verify(nwp, times(2)).applyFilter(any(IPAddressFilter.class));
         verify(macroFilter, times(2)).addFilter(any(IPAddressFilter.class));

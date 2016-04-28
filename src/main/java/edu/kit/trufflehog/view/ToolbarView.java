@@ -1,26 +1,13 @@
 package edu.kit.trufflehog.view;
 
 
-import edu.kit.trufflehog.command.usercommand.IUserCommand;
-import edu.kit.trufflehog.interaction.GraphInteraction;
-import edu.kit.trufflehog.interaction.StartViewInteraction;
-import edu.kit.trufflehog.interaction.ToolbarViewInteraction;
-import edu.kit.trufflehog.view.controllers.IViewController;
+import edu.kit.trufflehog.interaction.ToolbarInteraction;
 import edu.kit.trufflehog.view.controllers.ToolBarViewController;
-import edu.kit.trufflehog.view.controllers.ViewControllerNotifier;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToolBar;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.IOException;
 import java.util.EnumMap;
-import java.util.Map;
 
 /**
  * <p>
@@ -28,7 +15,7 @@ import java.util.Map;
  *     directly accessed by the user during the running program.
  * </p>
  */
-public final class ToolbarView extends ToolBarViewController<ToolbarViewInteraction> {
+public final class ToolbarView extends ToolBarViewController<ToolbarInteraction> {
 
     @FXML
     private ToggleButton connectButton;
@@ -39,7 +26,7 @@ public final class ToolbarView extends ToolBarViewController<ToolbarViewInteract
     private final FilterOverlayView filterOverlayView;
 
     public ToolbarView(FilterOverlayView filterOverlayView) {
-        super("main_toolbar.fxml", new EnumMap<>(ToolbarViewInteraction.class));
+        super("main_toolbar.fxml", new EnumMap<>(ToolbarInteraction.class));
 
         this.filterOverlayView = filterOverlayView;
         this.filterOverlayView.visibleProperty().bind(filterButton.selectedProperty());
@@ -50,11 +37,11 @@ public final class ToolbarView extends ToolBarViewController<ToolbarViewInteract
 
         if (!connectButton.isSelected()) {
 
-            notifyListeners(getCommand(ToolbarViewInteraction.DISCONNECT));
+            notifyListeners(getCommand(ToolbarInteraction.DISCONNECT));
 
         } else {
 
-            notifyListeners(getCommand(ToolbarViewInteraction.CONNECT));
+            notifyListeners(getCommand(ToolbarInteraction.CONNECT));
         }
     }
 
