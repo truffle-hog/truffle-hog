@@ -34,9 +34,6 @@ public final class ToolbarView extends ToolBarViewController<ToolbarViewInteract
     private ToggleButton connectButton;
 
     @FXML
-    private ToggleButton settingsButton;
-
-    @FXML
     private ToggleButton filterButton;
 
     private final FilterOverlayView filterOverlayView;
@@ -61,30 +58,4 @@ public final class ToolbarView extends ToolBarViewController<ToolbarViewInteract
         }
     }
 
-    @FXML
-    public void onToggleFilter() {
-
-/*        if (filterButton.isSelected()) {
-
-            Platform.runLater(() -> {
-
-                filterOverlayView.setVisible(true);
-            });
-        } else {
-
-            Platform.runLater(() -> {
-
-                filterOverlayView.setVisible(false);
-            });
-        }*/
-
-
-
-
-    }
-
-    @FXML
-    public void onToggleSettings() {
-
-    }
 }

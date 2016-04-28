@@ -35,7 +35,7 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
     private static final Logger logger = LogManager.getLogger();
 
     private final ObservableList<FilterInput> data;
-    private final FilterEditingMenuViewController filterEditingMenu;
+    private final FilterEditingMenuView filterEditingMenu;
     private final PickedState<INode> pickedState;
 
     /**
@@ -48,7 +48,7 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
      * @param filterEditingMenu The filter edit menu through which filters can be created and updated.
      */
     public FilterOverlayView(final ObservableList<FilterInput> data,
-                                       final FilterEditingMenuViewController filterEditingMenu, final PickedState<INode> pickedState) {
+                             final FilterEditingMenuView filterEditingMenu, final PickedState<INode> pickedState) {
 
         super("filter_menu_overlay.fxml", new EnumMap<>(FilterInteraction.class));
 

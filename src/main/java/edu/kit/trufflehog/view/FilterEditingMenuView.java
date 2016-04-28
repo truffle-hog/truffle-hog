@@ -53,7 +53,7 @@ import java.util.stream.IntStream;
 
 /**
  * <p>
- *     The FilterEditingMenuViewController is an overlay that slides in from the top center, similar to menus that ask you
+ *     The FilterEditingMenuView is an overlay that slides in from the top center, similar to menus that ask you
  *     if you are really sure that you want to quit the app. It has a show and a hide method, both of which trigger the
  *     respective animations. It is used to add new Filters or update existing ones.
  * </p>
@@ -61,7 +61,7 @@ import java.util.stream.IntStream;
  * @author Julian Brendl
  * @version 1.0
  */
-public class FilterEditingMenuViewController extends AnchorPaneController<FilterInteraction> {
+public class FilterEditingMenuView extends AnchorPaneController<FilterInteraction> {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -112,15 +112,15 @@ public class FilterEditingMenuViewController extends AnchorPaneController<Filter
 
     /**
      * <p>
-     *     Creates a new FilterEditingMenuViewController. Through the FilterEditingMenuViewController you can add or
+     *     Creates a new FilterEditingMenuView. Through the FilterEditingMenuView you can add or
      *     edit filters.
      * </p>
      *
      * @param config The config object that is used to access configuration data from the configuration files.
      * @param filterViewModel The object that is used to create a new {@link FilterInput} object.
      */
-    public FilterEditingMenuViewController(final IConfig config,
-                                           final FilterViewModel filterViewModel) {
+    public FilterEditingMenuView(final IConfig config,
+                                 final FilterViewModel filterViewModel) {
 
         super("filter_edit_menu_overlay.fxml", new EnumMap<>(FilterInteraction.class));
 
@@ -199,7 +199,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController<Filter
 
     /**
      * <p>
-     *     Shows the menu: starts the slide in animation. This method will out the form with the data of the given
+     *     Shows the menu: starts the slide in animation. This method fills out the form with the data of the given
      *     filter input, and should thus only be called if a filter input should be edited.
      * </p>
      *
@@ -291,6 +291,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController<Filter
      * </p>
      */
     private void addFilter() {
+
         final String name = nameTextField.getText();
         final String selectionModelString = selectionComboBox.getValue();
         final String filterOriginString = filterByComboBox.getValue();
@@ -299,7 +300,7 @@ public class FilterEditingMenuViewController extends AnchorPaneController<Filter
         final String rules = rulesTextArea.getText();
         final boolean authorized = authorizedCheckBox.isSelected();
 
-        FilterInput filterInput = filterViewModel.createFilterInput(name, selectionModelString, filterOriginString,
+        final FilterInput filterInput = filterViewModel.createFilterInput(name, selectionModelString, filterOriginString,
                 color, priorityText, rules, authorized);
 
         if (filterInput != null) {

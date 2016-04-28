@@ -38,7 +38,6 @@ import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
@@ -47,7 +46,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -221,16 +219,16 @@ public class Presenter {
 
 
 
-        final FilterEditingMenuViewController filterEditingMenuViewController = new FilterEditingMenuViewController(configData, filterViewModel);
-        filterEditingMenuViewController.setVisible(false);
-        viewer.getChildren().add(filterEditingMenuViewController);
-        AnchorPane.setRightAnchor(filterEditingMenuViewController, 0d);
-        filterEditingMenuViewController.addCommand(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
-        filterEditingMenuViewController.addListener(commandExecutor.asUserCommandListener());
+        final FilterEditingMenuView filterEditingMenuView = new FilterEditingMenuView(configData, filterViewModel);
+        filterEditingMenuView.setVisible(false);
+        AnchorPane.setRightAnchor(filterEditingMenuView, 0d);
+        filterEditingMenuView.addCommand(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
+        filterEditingMenuView.addListener(commandExecutor.asUserCommandListener());
 
-        final FilterOverlayView filterOverlayView = new FilterOverlayView(configData.getAllLoadedFilters(), filterEditingMenuViewController, viewer.getPickedVertexState());
+        final FilterOverlayView filterOverlayView = new FilterOverlayView(configData.getAllLoadedFilters(), filterEditingMenuView, viewer.getPickedVertexState());
         filterOverlayView.setVisible(false);
         viewer.getChildren().add(filterOverlayView);
+        viewer.getChildren().add(filterEditingMenuView);
         AnchorPane.setLeftAnchor(filterOverlayView, 0d);
         filterOverlayView.addCommand(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter));
         filterOverlayView.addCommand(FilterInteraction.UPDATE, new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));
