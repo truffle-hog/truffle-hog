@@ -47,22 +47,31 @@ class RectangleSelectionController {
             }
         });*/
 
-        mouseDraggedEventHandler = event -> {
+        mouseDraggedEventHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
 
-            performDrag(root, event);
-            event.consume();
+                performDrag(root, event);
+                event.consume();
+            }
         };
 
-        mousePressedHandler = event -> {
+        mousePressedHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
 
-            performDragBegin(root, event);
-            event.consume();
+                performDragBegin(root, event);
+                event.consume();
+            }
         };
 
-        mouseReleasedHandler = event -> {
+        mouseReleasedHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
 
-            performDragEnd(root, event);
-            event.consume();
+                performDragEnd(root, event);
+                event.consume();
+            }
         };
     }
 
