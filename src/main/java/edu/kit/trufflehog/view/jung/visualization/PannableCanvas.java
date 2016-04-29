@@ -18,6 +18,7 @@ package edu.kit.trufflehog.view.jung.visualization;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Background;
@@ -38,19 +39,19 @@ public class PannableCanvas extends Pane {
 
     DoubleProperty myScale = new SimpleDoubleProperty(1.0);
 
-    final Pane paneTest;
+//    final Pane paneTest;
 
     public PannableCanvas() {
-        setPrefSize(600, 600);
+       setPrefSize(600, 600);
 
         this.setBackground(new Background(new BackgroundFill(null, null, null)));
         //this.setVisible(false);
         //setStyle("-fx-background-color: lightgrey; -fx-border-color: blue;");
 
-        addGrid();
-        paneTest = new Pane();
-        paneTest.setPrefSize(600, 600);
-        paneTest.setBackground(new Background(new BackgroundFill(null, null, null)));
+        //addGrid();
+//        paneTest = new Pane();
+//        paneTest.setPrefSize(600, 600);
+//        paneTest.setBackground(new Background(new BackgroundFill(null, null, null)));
 
         // add scale transform
         scaleXProperty().bind(myScale);
@@ -103,7 +104,7 @@ public class PannableCanvas extends Pane {
     }
 
     public void setPivot( double x, double y) {
-        setTranslateX(getTranslateX()-x);
-        setTranslateY(getTranslateY()-y);
+        setTranslateX(getTranslateX() - x);
+        setTranslateY(getTranslateY() - y);
     }
 }

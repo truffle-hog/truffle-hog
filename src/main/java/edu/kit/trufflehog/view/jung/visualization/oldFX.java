@@ -83,11 +83,15 @@ import java.util.concurrent.Executors;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class FXVisualizationViewer<V extends INode, E extends IConnection> extends AnchorPane implements VisualizationServer<V, E>, IViewController<GraphInteraction> {
+public class oldFX<V extends INode, E extends IConnection> extends AnchorPane implements VisualizationServer<V, E>, IViewController<GraphInteraction> {
 
     private static final Logger logger = LogManager.getLogger();
 
     private final DoubleProperty myScale = new SimpleDoubleProperty(1.0);
+
+    private final PannableCanvas canvas;
+    private final NodeGestures nodeGestures;
+    private final CanvasGestures canvasGestures;
 
     private final Set<V> selectedNodes = new HashSet<>();
     private final Set<E> selectedEdges = new HashSet<>();
@@ -102,6 +106,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     private double nodeY;
     private double mouseX;
     private double mouseY;
+
 
 
     private final PickedState<V> pickedNodes = new MyPickedState<>(selectedNodes);
@@ -121,16 +126,12 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     private INetworkViewPort port;
 
-    private PannableCanvas canvas;
+    public oldFX(final ObservableLayout<V, E> layout, INetworkViewPort port) {
 
-    public FXVisualizationViewer(final ObservableLayout<V, E> layout, INetworkViewPort port) {
 
-        scaleXProperty().bind(myScale);
-        scaleYProperty().bind(myScale);
 
         this.port = port;
         // create canvas
-        canvas = new PannableCanvas();
         this.setStyle("-fx-background-color: #213245");
 
         for (double divide = .25; divide < 1; divide += .25) {
@@ -163,9 +164,15 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             this.getChildren().add(line);
         }
 
-        this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 
-            if (event.getButton() != MouseButton.PRIMARY) {
+
+        //this.setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream("icon.png")), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, null, new BackgroundSize())));
+
+        canvas = new PannableCanvas();
+
+ /*       this.setOnMouseClicked(e -> {
+
+            if (e.getButton() != MouseButton.PRIMARY) {
                 return;
             }
 
@@ -173,20 +180,36 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
                 return;
             }
 
-            selectedNodes.forEach(v -> Platform.runLater(() -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false)));
-            selectedEdges.forEach(e -> Platform.runLater(() -> e.getComponent(ViewComponent.class).getRenderer().isPicked(false)));
-
+            selectedNodes.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
+            selectedEdges.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
             selectedNodes.clear();
             selectedEdges.clear();
 
             onSelectionChanged();
+        });*/
 
-            event.consume();
+        this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton() != MouseButton.PRIMARY) {
+                    return;
+                }
+
+                if (selectedNodes.isEmpty() && selectedEdges.isEmpty()) {
+                    return;
+                }
+
+                selectedNodes.forEach(v -> Platform.runLater(() -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false)));
+                selectedEdges.forEach(e -> Platform.runLater(() -> e.getComponent(ViewComponent.class).getRenderer().isPicked(false)));
+
+                selectedNodes.clear();
+                selectedEdges.clear();
+
+                onSelectionChanged();
+            }
         });
 
         final Rectangle rectangle = new Rectangle();
-        rectangle.setFill(null);
-        rectangle.setStroke(Color.WHITE);
 
         this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
 
@@ -198,7 +221,9 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             firstX = event.getSceneX();
             firstY = event.getSceneY();
 
-            this.getChildren().add(rectangle);
+            canvas.getChildren().add(rectangle);
+
+            // NodeUtil.addToParent(root, rectangle);
 
             rectangle.setWidth(0);
             rectangle.setHeight(0);
@@ -237,15 +262,13 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             rectangle.setWidth(width / parentScaleX);
             rectangle.setHeight(height / parentScaleY);
 
-            event.consume();
-
         });
 
         this.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
 
             //onSelectionChanged();
 
-            this.getChildren().remove(rectangle);
+            canvas.getChildren().remove(rectangle);
 
             getGraphLayout().getGraph().getVertices().stream().forEach(vertex -> {
 
@@ -262,10 +285,12 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
                 }
             });
             onSelectionChanged();
-
-            event.consume();
         });
 
+        canvasGestures = new CanvasGestures(canvas);
+
+      //  canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, canvasGestures.getOnMousePressedEventHandler());
+      //  canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, canvasGestures.getOnMouseDraggedEventHandler());
 
         // TODO make canvas transparent
         //canvas.setStyle("-fx-background-color: #1d1d1d");
@@ -275,6 +300,9 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         canvas.setTranslateX(100);
         canvas.setTranslateY(100);
 
+        nodeGestures = new NodeGestures( canvas);
+
+        this.getChildren().add(canvas);
         this.layout = layout;
 
         //this.layout.getGraph().getVertices().forEach(v -> Platform.runLater(() -> this.initVertex(v)));
@@ -306,7 +334,6 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             //});
         });
 
-        this.getChildren().add(canvas);
 
     }
 
@@ -323,7 +350,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             final Shape shape = edge.getComponent(ViewComponent.class).getRenderer().getShape();
             shape.layoutXProperty().bind(destCircle.layoutXProperty());
             shape.layoutYProperty().bind(destCircle.layoutYProperty());
-            canvas.getChildren().add(shape);
+            this.getChildren().add(shape);
             shape.setPickOnBounds(false);
             shape.setMouseTransparent(true);
             return;
@@ -384,10 +411,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             logger.debug(edge.getSrc().getComponent(NodeInfoComponent.class).toString() + " --[" + edge.getComponent(EdgeStatisticsComponent.class).getTraffic() +
                     "]-->" + edge.getDest().getComponent(NodeInfoComponent.class).toString());
 
-            edge.getComponent(ViewComponent.class).getRenderer().isPicked(true);
-            selectedEdges.add(edge);
-
-            e.consume();
+            edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
         });
 
         edgeRenderer.getArrowShape().setOnMouseClicked(e -> {
@@ -401,7 +425,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
             edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
 
-            e.consume();
+
         });
 
         //get the edge size binding by dividing the total traffic with the local traffic
@@ -437,9 +461,9 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         curve.setFill(null);
 
 
-        canvas.getChildren().add(edgeRenderer.getArrowShape());
+        this.getChildren().add(edgeRenderer.getArrowShape());
         // add the edge to the canvas
-        canvas.getChildren().add(curve);
+        this.getChildren().add(curve);
     }
 
     synchronized
@@ -451,6 +475,26 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
         final Shape nodeShape = vertex.getComponent(ViewComponent.class).getRenderer().getShape();
 
+
+
+        //nodeShape.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        //nodeShape.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+
+        nodeShape.setOnMouseClicked(e -> {
+
+            if (e.getButton() != MouseButton.PRIMARY) {
+                return;
+            }
+
+            final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
+
+            if (!renderer.picked()) {
+                selectedNodes.add(vertex);
+                renderer.isPicked(true);
+                onSelectionChanged();
+            }
+            e.consume();
+        });
         //nodeShape.setCache(false);
         //nodeShape.setCacheHint(CacheHint.);
 
@@ -500,9 +544,10 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         nodeLabel.scaleXProperty().bind(Bindings.divide(1, canvas.scaleXProperty()));
         nodeLabel.scaleYProperty().bind(Bindings.divide(1, canvas.scaleYProperty()));
 
+        //nodeLabel.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        //nodeLabel.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
         canvas.getChildren().addAll(nodeLabel, nodeShape);
-
 
         nodeShape.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
 
@@ -518,7 +563,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             nodeX = nodeShape.getLayoutX() * parentScaleX;
             nodeY = nodeShape.getLayoutY() * parentScaleY;
 
-            //nodeShape.toFront();
+            nodeShape.toFront();
             event.consume();
         });
 
@@ -547,67 +592,6 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             mouseX = event.getSceneX();
             mouseY = event.getSceneY();
             event.consume();
-        });
-
-        nodeLabel.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-
-            final double parentScaleX = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMxx();
-            final double parentScaleY = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMyy();
-
-            // record the current mouse X and Y position on Node
-            mouseX = event.getSceneX();
-            mouseY = event.getSceneY();
-
-            nodeX = nodeLabel.getLayoutX() * parentScaleX;
-            nodeY = nodeLabel.getLayoutY() * parentScaleY;
-
-            nodeLabel.toFront();
-            event.consume();
-        });
-
-        nodeLabel.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-
-            final double parentScaleX = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMxx();
-            final double parentScaleY = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMyy();
-
-            // Get the exact moved X and Y
-
-            double offsetX = event.getSceneX() - mouseX;
-            double offsetY = event.getSceneY() - mouseY;
-
-            nodeX += offsetX;
-            nodeY += offsetY;
-
-            double scaledX = nodeX * 1 / parentScaleX;
-            double scaledY = nodeY * 1 / parentScaleY;
-
-            nodeLabel.setLayoutX(scaledX);
-            nodeLabel.setLayoutY(scaledY);
-
-            // again set current Mouse x AND y position
-            mouseX = event.getSceneX();
-            mouseY = event.getSceneY();
-            event.consume();
-        });
-
-        nodeShape.setOnMouseClicked(e -> {
-
-            if (e.getButton() != MouseButton.PRIMARY) {
-                return;
-            }
-
-            final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
-
-            if (!renderer.picked()) {
-                selectedNodes.add(vertex);
-                renderer.isPicked(true);
-                onSelectionChanged();
-            }
-            e.consume();
         });
     }
 
@@ -799,9 +783,9 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     }
 
-    //public PannableCanvas getCanvas() {
-    //    return canvas;
-    //}
+    public PannableCanvas getCanvas() {
+        return canvas;
+    }
 
     private void onSelectionChanged() {
 
@@ -856,11 +840,6 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         });
         onSelectionChanged();
     }
-
-    public PannableCanvas getCanvas() {
-        return canvas;
-    }
-
 
     private static class MyPickedState<T> implements PickedState<T> {
 

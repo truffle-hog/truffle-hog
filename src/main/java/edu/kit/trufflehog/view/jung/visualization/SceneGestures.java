@@ -65,8 +65,8 @@ public class SceneGestures {
             sceneDragContext.mouseAnchorX = event.getSceneX();
             sceneDragContext.mouseAnchorY = event.getSceneY();
 
-            sceneDragContext.translateAnchorX = canvas.getTranslateX();
-            sceneDragContext.translateAnchorY = canvas.getTranslateY();
+            sceneDragContext.translateAnchorX = canvas.getLayoutX();
+            sceneDragContext.translateAnchorY = canvas.getLayoutY();
 
         }
     };
@@ -78,8 +78,8 @@ public class SceneGestures {
             if( !event.isSecondaryButtonDown())
                 return;
 
-            canvas.setTranslateX(sceneDragContext.translateAnchorX + event.getSceneX() - sceneDragContext.mouseAnchorX);
-            canvas.setTranslateY(sceneDragContext.translateAnchorY + event.getSceneY() - sceneDragContext.mouseAnchorY);
+            canvas.setLayoutX(sceneDragContext.translateAnchorX + event.getSceneX() - sceneDragContext.mouseAnchorX);
+            canvas.setLayoutY(sceneDragContext.translateAnchorY + event.getSceneY() - sceneDragContext.mouseAnchorY);
 
             event.consume();
         }
