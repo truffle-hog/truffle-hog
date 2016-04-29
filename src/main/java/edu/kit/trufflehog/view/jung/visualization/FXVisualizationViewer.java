@@ -102,12 +102,6 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     private double secondX;
     private double secondY;
 
-    private double nodeX;
-    private double nodeY;
-    private double mouseX;
-    private double mouseY;
-
-
 
     private final PickedState<V> pickedNodes = new MyPickedState<>(selectedNodes);
 
@@ -461,9 +455,9 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         curve.setFill(null);
 
 
-        this.getChildren().add(edgeRenderer.getArrowShape());
+        canvas.getChildren().add(edgeRenderer.getArrowShape());
         // add the edge to the canvas
-        this.getChildren().add(curve);
+        canvas.getChildren().add(curve);
     }
 
     synchronized
@@ -474,27 +468,9 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         }
 
         final Shape nodeShape = vertex.getComponent(ViewComponent.class).getRenderer().getShape();
+        nodeShape.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        nodeShape.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
-
-
-        //nodeShape.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-        //nodeShape.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
-
-        nodeShape.setOnMouseClicked(e -> {
-
-            if (e.getButton() != MouseButton.PRIMARY) {
-                return;
-            }
-
-            final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
-
-            if (!renderer.picked()) {
-                selectedNodes.add(vertex);
-                renderer.isPicked(true);
-                onSelectionChanged();
-            }
-            e.consume();
-        });
         //nodeShape.setCache(false);
         //nodeShape.setCacheHint(CacheHint.);
 
@@ -544,55 +520,10 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         nodeLabel.scaleXProperty().bind(Bindings.divide(1, canvas.scaleXProperty()));
         nodeLabel.scaleYProperty().bind(Bindings.divide(1, canvas.scaleYProperty()));
 
-        //nodeLabel.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-        //nodeLabel.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+        nodeLabel.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        nodeLabel.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
         canvas.getChildren().addAll(nodeLabel, nodeShape);
-
-        nodeShape.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-
-            final double parentScaleX = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMxx();
-            final double parentScaleY = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMyy();
-
-            // record the current mouse X and Y position on Node
-            mouseX = event.getSceneX();
-            mouseY = event.getSceneY();
-
-            nodeX = nodeShape.getLayoutX() * parentScaleX;
-            nodeY = nodeShape.getLayoutY() * parentScaleY;
-
-            nodeShape.toFront();
-            event.consume();
-        });
-
-        nodeShape.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-
-            final double parentScaleX = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMxx();
-            final double parentScaleY = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMyy();
-
-            // Get the exact moved X and Y
-
-            double offsetX = event.getSceneX() - mouseX;
-            double offsetY = event.getSceneY() - mouseY;
-
-            nodeX += offsetX;
-            nodeY += offsetY;
-
-            double scaledX = nodeX * 1 / parentScaleX;
-            double scaledY = nodeY * 1 / parentScaleY;
-
-            nodeShape.setLayoutX(scaledX);
-            nodeShape.setLayoutY(scaledY);
-
-            // again set current Mouse x AND y position
-            mouseX = event.getSceneX();
-            mouseY = event.getSceneY();
-            event.consume();
-        });
     }
 
     synchronized
