@@ -69,7 +69,6 @@ public class SceneGestures {
             sceneDragContext.translateAnchorY = canvas.getTranslateY();
 
         }
-
     };
 
     private EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {

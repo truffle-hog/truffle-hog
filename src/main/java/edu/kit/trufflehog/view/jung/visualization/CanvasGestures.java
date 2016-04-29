@@ -29,6 +29,7 @@ import javafx.scene.input.MouseEvent;
  * @version 0.0.1
  */
 public class CanvasGestures {
+    
     private EventHandler<? super MouseEvent> onMousePressedEventHandler;
     private EventHandler<? super MouseEvent> onMouseDraggedEventHandler;
     private EventHandler<? super MouseEvent> onMouseReleasedEventHandler;

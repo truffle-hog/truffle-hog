@@ -51,6 +51,7 @@ import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.EventHandler;
 import javafx.scene.CacheHint;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
@@ -58,10 +59,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.QuadCurve;
-import javafx.scene.shape.Shape;
+import javafx.scene.shape.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -97,6 +95,19 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     private final Set<V> selectedNodes = new HashSet<>();
     private final Set<E> selectedEdges = new HashSet<>();
+
+
+    private double firstY;
+    private double firstX;
+    private double secondX;
+    private double secondY;
+
+    private double nodeX;
+    private double nodeY;
+    private double mouseX;
+    private double mouseY;
+
+
 
     private final PickedState<V> pickedNodes = new MyPickedState<>(selectedNodes);
 
@@ -159,7 +170,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
         canvas = new PannableCanvas();
 
-        this.setOnMouseClicked(e -> {
+ /*       this.setOnMouseClicked(e -> {
 
             if (e.getButton() != MouseButton.PRIMARY) {
                 return;
@@ -175,9 +186,106 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             selectedEdges.clear();
 
             onSelectionChanged();
+        });*/
+
+        this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton() != MouseButton.PRIMARY) {
+                    return;
+                }
+
+                if (selectedNodes.isEmpty() && selectedEdges.isEmpty()) {
+                    return;
+                }
+
+                selectedNodes.forEach(v -> Platform.runLater(() -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false)));
+                selectedEdges.forEach(e -> Platform.runLater(() -> e.getComponent(ViewComponent.class).getRenderer().isPicked(false)));
+
+                selectedNodes.clear();
+                selectedEdges.clear();
+
+                onSelectionChanged();
+            }
         });
 
+        final Rectangle rectangle = new Rectangle();
 
+        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+
+            if (rectangle.getParent() != null) {
+                return;
+            }
+
+            // record the current mouse X and Y position on Node
+            firstX = event.getSceneX();
+            firstY = event.getSceneY();
+
+            canvas.getChildren().add(rectangle);
+
+            // NodeUtil.addToParent(root, rectangle);
+
+            rectangle.setWidth(0);
+            rectangle.setHeight(0);
+
+            rectangle.setX(firstX);
+            rectangle.setY(firstY);
+
+            rectangle.toFront();
+            event.consume();
+        });
+
+        this.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+
+            final double parentScaleX = this.
+                    localToSceneTransformProperty().getValue().getMxx();
+            final double parentScaleY = this.
+                    localToSceneTransformProperty().getValue().getMyy();
+
+            secondX = event.getSceneX();
+            secondY = event.getSceneY();
+
+            firstX = Math.max(firstX, 0);
+            firstY = Math.max(firstY, 0);
+
+            secondX = Math.max(secondX, 0);
+            secondY = Math.max(secondY, 0);
+
+            double x = Math.min(firstX, secondX);
+            double y = Math.min(firstY, secondY);
+
+            double width = Math.abs(secondX - firstX);
+            double height = Math.abs(secondY - firstY);
+
+            rectangle.setX(x / parentScaleX);
+            rectangle.setY(y / parentScaleY);
+            rectangle.setWidth(width / parentScaleX);
+            rectangle.setHeight(height / parentScaleY);
+
+        });
+
+        this.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+
+            //onSelectionChanged();
+
+            canvas.getChildren().remove(rectangle);
+
+            getGraphLayout().getGraph().getVertices().stream().forEach(vertex -> {
+
+                final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
+
+                if (rectangle.intersects(renderer.getShape().getBoundsInParent())) {
+
+                    if (!renderer.picked()) {
+                        selectedNodes.add(vertex);
+                        Platform.runLater(() -> {
+                            renderer.isPicked(true);
+                        });
+                    }
+                }
+            });
+            onSelectionChanged();
+        });
 
         canvasGestures = new CanvasGestures(canvas);
 
@@ -192,7 +300,6 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         canvas.setTranslateX(100);
         canvas.setTranslateY(100);
 
-        // create sample nodes which can be dragged
         nodeGestures = new NodeGestures( canvas);
 
         this.getChildren().add(canvas);
@@ -243,7 +350,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             final Shape shape = edge.getComponent(ViewComponent.class).getRenderer().getShape();
             shape.layoutXProperty().bind(destCircle.layoutXProperty());
             shape.layoutYProperty().bind(destCircle.layoutYProperty());
-            canvas.getChildren().add(shape);
+            this.getChildren().add(shape);
             shape.setPickOnBounds(false);
             shape.setMouseTransparent(true);
             return;
@@ -354,9 +461,9 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         curve.setFill(null);
 
 
-        canvas.getChildren().add(edgeRenderer.getArrowShape());
+        this.getChildren().add(edgeRenderer.getArrowShape());
         // add the edge to the canvas
-        canvas.getChildren().add(curve);
+        this.getChildren().add(curve);
     }
 
     synchronized
@@ -367,8 +474,11 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         }
 
         final Shape nodeShape = vertex.getComponent(ViewComponent.class).getRenderer().getShape();
-        nodeShape.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-        nodeShape.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+
+
+
+        //nodeShape.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        //nodeShape.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
         nodeShape.setOnMouseClicked(e -> {
 
@@ -434,40 +544,79 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         nodeLabel.scaleXProperty().bind(Bindings.divide(1, canvas.scaleXProperty()));
         nodeLabel.scaleYProperty().bind(Bindings.divide(1, canvas.scaleYProperty()));
 
-        nodeLabel.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-        nodeLabel.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+        //nodeLabel.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        //nodeLabel.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
         canvas.getChildren().addAll(nodeLabel, nodeShape);
+
+        nodeShape.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+
+            final double parentScaleX = nodeShape.getParent().
+                    localToSceneTransformProperty().getValue().getMxx();
+            final double parentScaleY = nodeShape.getParent().
+                    localToSceneTransformProperty().getValue().getMyy();
+
+            // record the current mouse X and Y position on Node
+            mouseX = event.getSceneX();
+            mouseY = event.getSceneY();
+
+            nodeX = nodeShape.getLayoutX() * parentScaleX;
+            nodeY = nodeShape.getLayoutY() * parentScaleY;
+
+            nodeShape.toFront();
+            event.consume();
+        });
+
+        nodeShape.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+
+            final double parentScaleX = nodeShape.getParent().
+                    localToSceneTransformProperty().getValue().getMxx();
+            final double parentScaleY = nodeShape.getParent().
+                    localToSceneTransformProperty().getValue().getMyy();
+
+            // Get the exact moved X and Y
+
+            double offsetX = event.getSceneX() - mouseX;
+            double offsetY = event.getSceneY() - mouseY;
+
+            nodeX += offsetX;
+            nodeY += offsetY;
+
+            double scaledX = nodeX * 1 / parentScaleX;
+            double scaledY = nodeY * 1 / parentScaleY;
+
+            nodeShape.setLayoutX(scaledX);
+            nodeShape.setLayoutY(scaledY);
+
+            // again set current Mouse x AND y position
+            mouseX = event.getSceneX();
+            mouseY = event.getSceneY();
+            event.consume();
+        });
     }
 
     synchronized
     public void refreshLayout() {
 
-      //  logger.debug("refresh");
+        //  logger.debug("refresh");
         final FRLayout2<V, E> l = new FRLayout2<>(this.layout.getObservableGraph());
             l.setMaxIterations(layout.getGraph().getEdgeCount() * (int) (this.getWidth() / canvas.getScale()));
-           // l.setMaxIterations(700);
+        // l.setMaxIterations(700);
         this.layout = new ObservableLayout<>(l);
-               //TODO make the dimension changeable from settings menu?
+        //TODO make the dimension changeable from settings menu?
 
-           // logger.debug(canvas.getScale() + " " + this.getWidth() + " " + this.getHeight());
+        // logger.debug(canvas.getScale() + " " + this.getWidth() + " " + this.getHeight());
         layout.setSize(new Dimension((int) (this.getWidth() / (2 * canvas.getScale())), (int) (this.getHeight() / (2 * canvas.getScale()))));
 
-            //layout.set
-
+        //layout.set
         final Executor layouter = Executors.newSingleThreadExecutor();
-
         layouter.execute(() -> {
 
             while (!layout.done()) {
                 layout.step();
                 Platform.runLater(this::repaint);
             }
-
         });
-
-
-
     }
 
 
