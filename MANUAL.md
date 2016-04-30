@@ -11,7 +11,7 @@ The manual is loosely seperated into three sections. *Setup* describes the initi
 
 ### Things you see
 
-- In the **Center** you can see the graph with nodes representing network participants, edges representing established connections between the participants and MAC-addresses (as names) associated to one node.
+- In the **Center** you can see the graph with nodes representing network participants, edges representing established connections between the participants and MAC-addresses or hostnames associated to one node.
 - In the **Lower left corner** there is a toolbar providing the most basic functionality of the program. It includes (left to right) starting inter-process communication with Snort (a.k.a. connect) and the filter menu (see section below).
 - In the **lower right corner** there is an overlay showing pretty self-explanatory basic information about the current network graph.
 - In the **upper right corner (as long at least one node is selected)** one finds another overlay containing information on the *currently selected* nodes. Attention! This information is far more advanced and aimed at professionals looking for a more in-depth view on what is going on the ether.
