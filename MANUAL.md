@@ -9,6 +9,11 @@ The manual is loosely seperated into three sections. *Setup* describes the initi
 
 ## Basics
 
+### Things you see
+
+### Navigation
+Very easy! Just drag and drop nodes and use your mouse wheel to move around the whole graph.
+
 ### Key combinations
 - `CTRL+X` algorithmically positions the nodes of the graph according to the current zoom level to *look nice*. If it does not, try to zoom out a bit, there might not be enough place on your current zoom level to work on.
 - `CTRL+A` selects all nodes (see section Filters below).
