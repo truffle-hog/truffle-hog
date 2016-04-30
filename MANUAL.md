@@ -11,9 +11,9 @@ The manual is loosely seperated into three sections. *Setup* describes the initi
 
 ### Things you see
 
-**In the lower left corner** there is a toolbar providing the most basic functionality of the program. It includes (left to right) starting interprocess communication with Snort (a.k.a. connect) and the filter menu (see section below).
-**In the lower right corner** there is an overlay showing pretty self-explanatory basic information about the current network graph.
-**In the upper right corner (as long at least one node is selected)** one finds another overlay containing information on the *currently selected* nodes. Attention! This information is far more advanced and aimed at professionals looking for a more in-depth view on what is going on the ether. 
+- **In the lower left corner** there is a toolbar providing the most basic functionality of the program. It includes (left to right) starting interprocess communication with Snort (a.k.a. connect) and the filter menu (see section below).
+- **In the lower right corner** there is an overlay showing pretty self-explanatory basic information about the current network graph.
+- **In the upper right corner (as long at least one node is selected)** one finds another overlay containing information on the *currently selected* nodes. Attention! This information is far more advanced and aimed at professionals looking for a more in-depth view on what is going on the ether.
 
 ### Navigation
 Very easy! Just drag and drop nodes and use your mouse wheel to move around the whole graph.
