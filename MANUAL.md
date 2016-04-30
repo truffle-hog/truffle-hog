@@ -9,4 +9,9 @@ The manual is loosely seperated into three sections. *Setup* describes the initi
 
 ## Basics
 
+### Key combinations
+- `Strg+x` algorithmically positions the nodes of the graph according to the current zoom level to *look nice*. If it does not, try to zoom out a bit, there might not be enough place on your current zoom level to work on.
+- `Strg+a` selects all nodes (according to section Filters below).
+- `Strg+q` closes the program properly just like clicking the `X` on the window decoration. 
+
 ## Filters
