@@ -9,6 +9,8 @@ import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -28,6 +30,9 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
     private ObservableList<Packet> data;
     private TableView<Packet> tableView;
     private TableColumn<Packet, String> nameColumn;
+
+    private PacketDataLoggingComponent pdlComponent;
+    private ListChangeListener pdlComponentListener;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -113,8 +118,8 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
         nameColumn.setCellValueFactory(param -> param.getValue().getDataProperty());
     }
 
-    public void update(List<IPacketData> entries){
-        if (entries == null) throw new NullPointerException("component must not be null!");
+    private void update(List<IPacketData> entries){
+        if (entries == null) throw new NullPointerException("entries must not be null!");
         tableView.getItems().clear();
         int i = 0;
         for (IPacketData packetData:entries) {
@@ -122,11 +127,11 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
         }
     }
 
-    public void addEntry(IPacketData entry) {
-        data.add(new Packet(entry.toString()));
+    private void addEntry(IPacketData entry) {
+        data.add(new Packet(packetDataToString(entry)));
     }
 
-    public void addEntries(List<IPacketData> entries) {
+    private void addEntries(List<IPacketData> entries) {
         for (IPacketData packetData:entries) {
             data.add(new Packet(packetDataToString(packetData)));
         }
@@ -136,20 +141,6 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
         if (packetData == null) return "";
         StringBuilder sb = new StringBuilder();
 
-        /*                    x  final long srcMACAddr,
-                              x  final long dstMACAddr,
-                              x  final long srcIPAddr,
-                              x  final long dstIPAddr,
-                              x  final String nameOfStation,
-                              x  final int etherType,
-                              x  final int serviceID,
-                              x  final String serviceIDName,
-                              x  final int serviceType,
-                              x  final String serviceTypeName,
-                              x  final long xid,
-                              x  final int responseDelay,
-                              x  final int isResponse
-        */
         Long timeOfArrival = packetData.getAttribute(Long.class, "timeOfArrival");
         MacAddress srcMacAddress = packetData.getAttribute(MacAddress.class, "sourceMacAddress");
         MacAddress destMacAddress = packetData.getAttribute(MacAddress.class, "destMacAddress");
@@ -238,6 +229,24 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
         nameColumn.setText(name);
     }
 
+    public void register(PacketDataLoggingComponent loggingComponent) {
+        //TODO: change to multiple components (to observe multiple nodes) if needed
+
+        if (loggingComponent == null) throw new NullPointerException("loggingComponent must not be null!");
+
+        if (pdlComponent != null) {
+            pdlComponent.getObservablePacketsProperty().removeListener(pdlComponentListener);
+        }
+        pdlComponent = loggingComponent;
+
+        update(pdlComponent.getObservablePackets());
+        pdlComponentListener = c -> {
+            c.next();
+            addEntries(c.getAddedSubList());
+        };
+        pdlComponent.getObservablePacketsProperty().addListener(pdlComponentListener);
+    }
+
     /**
      * <p>
      * Sets up the button to close this window
@@ -251,6 +260,11 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
         closeButton.setScaleY(0.9);
 
         closeButton.setOnMouseClicked(event -> packetDataViewController.setVisible(false));
+
+        if (pdlComponent != null) {
+            pdlComponent.getObservablePacketsProperty().removeListener(pdlComponentListener);
+            pdlComponent = null;
+        }
 
         return closeButton;
     }

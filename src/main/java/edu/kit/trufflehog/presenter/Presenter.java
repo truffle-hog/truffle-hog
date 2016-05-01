@@ -225,7 +225,8 @@ public class Presenter {
         final StatisticsViewController statisticsViewController = new StatisticsViewController(statisticsViewModel);
         final ContextMenu contextMenu = new ContextMenu();
         final MenuItem getPackageItem = new MenuItem("Get Packages");
-        //FIXME: make more beautiful
+
+        //TODO: make more beautiful, add possibility of multiple node selection (if needed)
         getPackageItem.setOnAction(event -> {
             packetDataController.setVisible(true);
             PacketDataLoggingComponent loggingComponent = null;
@@ -239,31 +240,27 @@ public class Presenter {
                 }
             }
 
-            final NodeInfoComponent infoComponent = new NodeInfoComponent(new MacAddress(12));
+            final NodeInfoComponent infoComponent = tempInfoComponent;
             if (loggingComponent != null) {
-                packetDataController.update(loggingComponent.getObservablePackets());
+                packetDataController.register(loggingComponent);
 
-                loggingComponent.getObservablePacketsProperty().addListener((ListChangeListener) c -> {
-                    c.next();
-                    packetDataController.addEntries(c.getAddedSubList());
-                    if (infoComponent != null) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("Node: ");
-                        if (infoComponent.getDeviceName() != null) sb.append(infoComponent.getDeviceName());
-                        if (infoComponent.getMacAddress() != null) {
-                            sb.append(" ");
-                            sb.append(infoComponent.getMacAddress().toString());
-                        }
-                        if (infoComponent.getIPAddress() != null) {
-                            sb.append(" ");
-                            sb.append(infoComponent.getIPAddress().toString());
-                        }
-
-                        packetDataController.setName(sb.toString());
-                    } else {
-                        packetDataController.setName("Node: no info");
+                if (infoComponent != null) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Node: ");
+                    if (infoComponent.getDeviceName() != null) sb.append(infoComponent.getDeviceName());
+                    if (infoComponent.getMacAddress() != null) {
+                        sb.append(" ");
+                        sb.append(infoComponent.getMacAddress().toString());
                     }
-                });
+                    if (infoComponent.getIPAddress() != null) {
+                        sb.append(" ");
+                        sb.append(infoComponent.getIPAddress().toString());
+                    }
+
+                    packetDataController.setName(sb.toString());
+                } else {
+                    packetDataController.setName("Node: no info");
+                }
             }
         });
         contextMenu.getItems().add(getPackageItem);
