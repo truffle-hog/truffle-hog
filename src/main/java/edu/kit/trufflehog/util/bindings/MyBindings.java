@@ -63,7 +63,7 @@ public class MyBindings {
         return new Pow2Binding(value);
     }
 
-    public static void bindBidirectional(DoubleProperty doubleProperty, DoubleProperty doubleProperty1, DoubleBinding multiply) {
+    public static void bindBidirectionalWithOffset(DoubleProperty doubleProperty, DoubleProperty doubleProperty1, DoubleBinding multiply) {
 
         new BidirectionalDoubleOffsetBinding(doubleProperty, doubleProperty1, multiply);
 

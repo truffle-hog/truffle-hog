@@ -143,27 +143,6 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     }
 
     @Override
-    public Color getColorUnpicked() {
-
-        return colorUnpicked;
-    }
-
-    @Override
-    public Color getColorPicked() {
-       return colorPicked;
-    }
-
-    @Override
-    public void setColorUnpicked(Color colorUnpicked) {
-
-        if (colorUnpicked == null) {
-            throw new NullPointerException("colorUnpicked must not be null!");
-        }
-
-        this.colorUnpicked = colorUnpicked;
-    }
-
-    @Override
     public void setShape(Shape shape) {
 
         if (shape == null) {
@@ -181,67 +160,6 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     @Override
     public void setParent(IComposition parent) {
         this.parent = parent;
-    }
-
-    @Override
-    public Color getDrawUnpicked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void setDrawUnpicked(Color drawUnpicked) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public Color getDrawPicked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void setDrawPicked(Color drawPicked) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void togglePicked() {
-
-        isPicked = !isPicked;
-        isPicked(isPicked);
-    }
-
-    @Override
-    public void isPicked(boolean b) {
-
-        if (b) {
-
-            Platform.runLater(() -> {
-
-                arrowStrokePaintProperty.set(colorPicked);
-                arrowHeadFillProperty.set(arrowFillPicked);
-                edgeWidthMultiplierProperty.set(edgeWidthPickedMultiplier);
-                currentArrowFill = arrowFillPicked;
-                currentEdgeStrokePaint = colorPicked;
-                currentAnimationEndColor = Color.YELLOW;
-            });
-
-        } else {
-            Platform.runLater(() -> {
-
-                arrowStrokePaintProperty.set(colorUnpicked);
-                arrowHeadFillProperty.set(arrowFillUnpicked);
-                edgeWidthMultiplierProperty.set(edgeWidthUnpickedMultiplier);
-                currentArrowFill = arrowFillUnpicked;
-                currentEdgeStrokePaint = colorUnpicked;
-                currentAnimationEndColor = Color.WHITE;
-
-            });
-        }
-    }
-
-    @Override
-    public boolean picked() {
-        return isPicked;
     }
 
     @Override

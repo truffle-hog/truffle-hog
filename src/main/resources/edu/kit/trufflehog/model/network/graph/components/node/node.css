@@ -1,0 +1,8 @@
+.picked {
+    fx-stroke: WHITE;
+    fx-stroke-width: 2;
+}
+
+.unpicked {
+    fx-stroke: null;
+}

@@ -100,8 +100,6 @@ public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection>
         final MulticastEdgeRenderer comp = (MulticastEdgeRenderer) instance;
 
         multicastEdgeRendererComponent.setShape(comp.getShape());
-        multicastEdgeRendererComponent.setColorUnpicked(comp.getColorUnpicked());
-        multicastEdgeRendererComponent.setColorPicked(comp.getColorPicked());
         //multicastEdgeRendererComponent.setLastUpdate(comp.getLastUpdate());
         return true;
     }
@@ -115,8 +113,6 @@ public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection>
         final BasicEdgeRenderer comp = (BasicEdgeRenderer) instance;
 
         basicEdgeRendererComponent.setShape(comp.getShape());
-        basicEdgeRendererComponent.setColorUnpicked(comp.getColorUnpicked());
-        basicEdgeRendererComponent.setColorPicked(comp.getColorPicked());
         basicEdgeRendererComponent.setCurrentBrightness(comp.getCurrentBrightness());
 
         return true;
@@ -161,8 +157,6 @@ public class ReplayUpdater implements IUpdater, GraphUpdater<INode, IConnection>
     @Override
     public boolean update(StaticRenderer component, IRenderer instance) {
 
-        component.setColorPicked(instance.getColorPicked());
-        component.setColorUnpicked(instance.getColorUnpicked());
         component.setShape(instance.getShape());
         return true;
     }

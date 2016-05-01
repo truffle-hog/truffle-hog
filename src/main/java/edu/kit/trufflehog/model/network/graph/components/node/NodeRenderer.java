@@ -52,8 +52,6 @@ public class NodeRenderer implements IRenderer {
         shape.fillProperty().bind(fillPaintProperty);
         shape.strokeProperty().bind(strokePaintProperty);
         shape.setStrokeWidth(6);
-        //new java.awt.Color(0x47F4CB);
-
     }
 
 
@@ -81,66 +79,14 @@ public class NodeRenderer implements IRenderer {
 
         final FilterPropertiesComponent fpc = parent.getComponent(FilterPropertiesComponent.class);
 
-        shape.fillProperty().unbind();
+        // TODO maybe make this more error prone
+        if (fpc != null) {
 
-        shape.fillProperty().bind(new When(fpc.hasColorProperty()).then(fpc.activeColorProperty()).otherwise(colorPicked));
-    }
+            shape.fillProperty().unbind();
 
-    @Override
-    public Color getDrawUnpicked() {
-        return drawUnpicked;
-    }
-    @Override
-    public void setDrawUnpicked(Color drawUnpicked) {
-        this.drawUnpicked = drawUnpicked;
-    }
-    @Override
-    public Color getDrawPicked() {
-        return drawPicked;
-    }
-    @Override
-    public void setDrawPicked(Color drawPicked) {
-        this.drawPicked = drawPicked;
-    }
+            shape.fillProperty().bind(new When(fpc.hasColorProperty()).then(fpc.activeColorProperty()).otherwise(colorPicked));
 
-    @Override
-    public void togglePicked() {
-
-        if (isPicked) {
-
-            isPicked(false);
-        } else {
-            isPicked(true);
         }
-
-
-
-    }
-
-    @Override
-    public void isPicked(boolean b) {
-        isPicked = b;
-        if (b) {
-
-            Platform.runLater(() -> {
-
-                fillPaintProperty.set(colorPicked);
-                strokePaintProperty.set(drawPicked);
-            });
-
-        } else {
-            Platform.runLater(() -> {
-
-                fillPaintProperty.set(colorUnpicked);
-                strokePaintProperty.set(drawUnpicked);
-
-            });
-        }
-    }
-
-    @Override
-    public boolean picked() {
-        return isPicked;
     }
 
 

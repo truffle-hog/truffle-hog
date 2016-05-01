@@ -26,6 +26,8 @@ package edu.kit.trufflehog.view.jung.visualization;
  * @version 0.0.1
  */
 
+import edu.kit.trufflehog.model.filter.SelectionModel;
+import edu.kit.trufflehog.model.network.graph.INode;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -44,11 +46,27 @@ public class NodeGestures {
 
     }
 
-    public EventHandler<MouseEvent> getOnMousePressedEventHandler() {
-        return onMousePressedEventHandler;
+    public EventHandler<MouseEvent> getOnMousePressedEventHandler(INode n) {
+
+        return event -> {
+
+            // left mouse button => dragging
+            if( !event.isPrimaryButtonDown())
+                return;
+
+            nodeDragContext.mouseAnchorX = event.getSceneX();
+            nodeDragContext.mouseAnchorY = event.getSceneY();
+
+            Node node = (Node) event.getSource();
+
+            nodeDragContext.translateAnchorX = node.getLayoutX();
+            nodeDragContext.translateAnchorY = node.getLayoutY();
+
+        };
+
     }
 
-    public EventHandler<MouseEvent> getOnMouseDraggedEventHandler() {
+    public EventHandler<MouseEvent> getOnMouseDraggedEventHandler(INode n) {
         return onMouseDraggedEventHandler;
     }
 

@@ -33,7 +33,6 @@ import edu.kit.trufflehog.util.INotifier;
 import edu.kit.trufflehog.util.Notifier;
 import edu.kit.trufflehog.util.bindings.MyBindings;
 import edu.kit.trufflehog.view.controllers.IViewController;
-import edu.kit.trufflehog.view.controllers.ViewControllerNotifier;
 import edu.uci.ics.jung.algorithms.layout.FRLayout2;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -57,7 +56,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -84,6 +82,204 @@ import java.util.concurrent.Executors;
  * @version 0.0.1
  */
 public class oldFX<V extends INode, E extends IConnection> extends AnchorPane implements VisualizationServer<V, E>, IViewController<GraphInteraction> {
+    @Override
+    public void addCommand(GraphInteraction interaction, IUserCommand command) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean addListener(IListener<IUserCommand> listener) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean removeListener(IListener<IUserCommand> listener) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void notifyListeners(IUserCommand message) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void setDoubleBuffered(boolean doubleBuffered) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public boolean isDoubleBuffered() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public VisualizationModel<V, E> getModel() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void setModel(VisualizationModel<V, E> model) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void setRenderer(Renderer<V, E> r) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Renderer<V, E> getRenderer() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void setGraphLayout(Layout<V, E> layout) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Layout<V, E> getGraphLayout() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Map<RenderingHints.Key, Object> getRenderingHints() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void setRenderingHints(Map<RenderingHints.Key, Object> renderingHints) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void addPreRenderPaintable(Paintable paintable) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void removePreRenderPaintable(Paintable paintable) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void addPostRenderPaintable(Paintable paintable) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void removePostRenderPaintable(Paintable paintable) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void addChangeListener(ChangeListener l) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void removeChangeListener(ChangeListener l) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public ChangeListener[] getChangeListeners() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void fireStateChanged() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public PickedState<V> getPickedVertexState() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public PickedState<E> getPickedEdgeState() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void setPickedVertexState(PickedState<V> pickedVertexState) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void setPickedEdgeState(PickedState<E> pickedEdgeState) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public GraphElementAccessor<V, E> getPickSupport() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void setPickSupport(GraphElementAccessor<V, E> pickSupport) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Point2D getCenter() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public RenderContext<V, E> getRenderContext() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void setRenderContext(RenderContext<V, E> renderContext) {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void repaint() {
+        //TODO implement this method
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+/*
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -118,7 +314,9 @@ public class oldFX<V extends INode, E extends IConnection> extends AnchorPane im
         }
     };
 
-    /** The commands that are mapped to their interactions. **/
+    */
+/** The commands that are mapped to their interactions. **//*
+
     private final Map<GraphInteraction, IUserCommand> interactionMap =
             new EnumMap<>(GraphInteraction.class);
 
@@ -170,7 +368,8 @@ public class oldFX<V extends INode, E extends IConnection> extends AnchorPane im
 
         canvas = new PannableCanvas();
 
- /*       this.setOnMouseClicked(e -> {
+ */
+/*       this.setOnMouseClicked(e -> {
 
             if (e.getButton() != MouseButton.PRIMARY) {
                 return;
@@ -186,7 +385,8 @@ public class oldFX<V extends INode, E extends IConnection> extends AnchorPane im
             selectedEdges.clear();
 
             onSelectionChanged();
-        });*/
+        });*//*
+
 
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -517,23 +717,25 @@ public class oldFX<V extends INode, E extends IConnection> extends AnchorPane im
         // cast the shapes to circles (because right now i know they are circles) //TODO make this for arbitrary shapes
         final Circle nodeCircle = (Circle) nodeShape;
 
+*/
 /*        final DoubleProperty labelX = new SimpleDoubleProperty();
-        final DoubleProperty labelY = new SimpleDoubleProperty();*/
+        final DoubleProperty labelY = new SimpleDoubleProperty();*//*
+
 
 
 
         //labelX.bind(nodeShape.layoutXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
         //labelY.bind(nodeShape.layoutYProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty())));
 
-        //nodeLabel.layoutXProperty().bindBidirectional(labelX);
-        //nodeLabel.layoutYProperty().bindBidirectional(labelY);
+        //nodeLabel.layoutXProperty().bindBidirectionalWithOffset(labelX);
+        //nodeLabel.layoutYProperty().bindBidirectionalWithOffset(labelY);
 
         //nodeLabel.layoutXProperty().bind(nodeShape.layoutXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
 
         nodeLabel.textFillProperty().bind(new SimpleObjectProperty<>(Color.WHITE));
 
-        MyBindings.bindBidirectional(nodeLabel.layoutXProperty(), nodeShape.layoutXProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty()));
-        MyBindings.bindBidirectional(nodeLabel.layoutYProperty(), nodeShape.layoutYProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty()));
+        MyBindings.bindBidirectionalWithOffset(nodeLabel.layoutXProperty(), nodeShape.layoutXProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty()));
+        MyBindings.bindBidirectionalWithOffset(nodeLabel.layoutYProperty(), nodeShape.layoutYProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty()));
 
 
         NodeInfoComponent nic = vertex.getComponent(NodeInfoComponent.class);
@@ -891,4 +1093,5 @@ public class oldFX<V extends INode, E extends IConnection> extends AnchorPane im
             throw new UnsupportedOperationException("Not implemented yet");
         }
     }
+*/
 }

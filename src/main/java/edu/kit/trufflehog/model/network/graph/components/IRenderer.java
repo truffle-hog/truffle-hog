@@ -13,31 +13,10 @@ public interface IRenderer extends DeepCopyable<IRenderer>, Updatable<IRenderer>
 
     Shape getShape();
 
-    Color getColorUnpicked();
-
-    Color getColorPicked();
-
-    void setColorPicked(Color colorPicked);
-
-    void setColorUnpicked(Color colorUnpicked);
-
     void setShape(Shape shape);
 
     void animate();
 
     void setParent(IComposition parent);
 
-    Color getDrawUnpicked();
-
-    void setDrawUnpicked(Color drawUnpicked);
-
-    Color getDrawPicked();
-
-    void setDrawPicked(Color drawPicked);
-
-    void togglePicked();
-
-    void isPicked(boolean b);
-
-    boolean picked();
 }

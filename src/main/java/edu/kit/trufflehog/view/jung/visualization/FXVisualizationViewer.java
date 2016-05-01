@@ -52,15 +52,12 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
 import javafx.scene.CacheHint;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -86,7 +83,7 @@ import java.util.concurrent.Executors;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class FXVisualizationViewer<V extends INode, E extends IConnection> extends AnchorPane implements VisualizationServer<V, E>, IViewController<GraphInteraction> {
+public class FXVisualizationViewer extends AnchorPane implements VisualizationServer<INode, IConnection>, IViewController<GraphInteraction> {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -94,14 +91,15 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     private final PannableCanvas canvas;
     private final NodeGestures nodeGestures;
-    private final CanvasGestures canvasGestures;
 
-    private final Set<V> selectedNodes = new HashSet<>();
+    private final DragMouseGestures dragMouseGestures = new DragMouseGestures();
 
-    private final Set<Node> selectionModel = new HashSet<>();
+    private final Set<INode> selectedNodes = new HashSet<>();
+
+    private final SelectionModel selectionModel = new SelectionModel();
 
 
-    private final Set<E> selectedEdges = new HashSet<>();
+    private final Set<IConnection> selectedEdges = new HashSet<>();
 
     private double firstY;
     private double firstX;
@@ -113,7 +111,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     private double mouseX;
     private double mouseY;
 
-    private final PickedState<V> pickedNodes = new MyPickedState<>(selectedNodes);
+    private final PickedState<INode> pickedNodes = new MyPickedState<>(selectedNodes);
 
     private final INotifier<IUserCommand> viewControllerNotifier = new Notifier<IUserCommand>() {
         @Override
@@ -126,11 +124,11 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     private final Map<GraphInteraction, IUserCommand> interactionMap =
             new EnumMap<>(GraphInteraction.class);
 
-    private ObservableLayout<V, E> layout;
+    private ObservableLayout<INode, IConnection> layout;
 
     private INetworkViewPort port;
 
-    public FXVisualizationViewer(final ObservableLayout<V, E> layout, INetworkViewPort port) {
+    public FXVisualizationViewer(final ObservableLayout<INode, IConnection> layout, INetworkViewPort port) {
 
 
 
@@ -168,37 +166,10 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             this.getChildren().add(line);
         }
 
-
-
-        //this.setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream("icon.png")), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, null, new BackgroundSize())));
-
         canvas = new PannableCanvas();
 
-/*        this.setOnMouseClicked(e -> {
+        //new RubberBandSelection(canvas);
 
-            if (e.getButton() != MouseButton.PRIMARY) {
-                return;
-            }
-
-            if (selectedNodes.isEmpty() && selectedEdges.isEmpty()) {
-                return;
-            }
-
-            selectedNodes.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
-            selectedEdges.forEach(v -> v.getComponent(ViewComponent.class).getRenderer().isPicked(false));
-            selectedNodes.clear();
-            selectedEdges.clear();
-            //selectedNodesGroup.getChildren().removeAll(selectedNodes);
-
-            onSelectionChanged();
-        });*/
-
-
-
-        canvasGestures = new CanvasGestures(canvas);
-
-      //  canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, canvasGestures.getOnMousePressedEventHandler());
-      //  canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, canvasGestures.getOnMouseDraggedEventHandler());
 
         // TODO make canvas transparent
         //canvas.setStyle("-fx-background-color: #1d1d1d");
@@ -209,7 +180,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         canvas.setTranslateY(100);
 
         // create sample nodes which can be dragged
-        nodeGestures = new NodeGestures( canvas);
+        nodeGestures = new NodeGestures();
 
         this.getChildren().add(canvas);
         this.layout = layout;
@@ -223,12 +194,12 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
                 switch (e.getType()) {
                     case VERTEX_ADDED:
-                        final V node = ((GraphEvent.Vertex<V, E>) e).getVertex();
+                        final INode node = ((GraphEvent.Vertex<INode, IConnection>) e).getVertex();
                         Platform.runLater(() -> initVertex(node));
                         break;
 
                     case EDGE_ADDED:
-                        final E edge = ((GraphEvent.Edge<V, E>) e).getEdge();
+                        final IConnection edge = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
                         Platform.runLater(() -> initEdge(edge));
                         break;
 
@@ -236,7 +207,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
                         break;
 
                     case EDGE_CHANGED:
-                        final E changedEdge = ((GraphEvent.Edge<V, E>) e).getEdge();
+                        final IConnection changedEdge = ((GraphEvent.Edge<INode, IConnection>) e).getEdge();
                         Platform.runLater(() -> changedEdge.getComponent(ViewComponent.class).getRenderer().animate());
                         break;
                 }
@@ -248,9 +219,9 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     // TODO check if synch is needed
     synchronized
-    private void initEdge(E edge) {
+    private void initEdge(IConnection edge) {
 
-        final Pair<V> pair = this.layout.getGraph().getEndpoints(edge);
+        final Pair<INode> pair = this.layout.getGraph().getEndpoints(edge);
 
         if (pair.getSecond().getAddress().isMulticast()) {
 
@@ -320,7 +291,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             logger.debug(edge.getSrc().getComponent(NodeInfoComponent.class).toString() + " --[" + edge.getComponent(EdgeStatisticsComponent.class).getTraffic() +
                     "]-->" + edge.getDest().getComponent(NodeInfoComponent.class).toString());
 
-            edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
+//            edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
         });
 
         edgeRenderer.getArrowShape().setOnMouseClicked(e -> {
@@ -332,7 +303,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             logger.debug(edge.getSrc().getComponent(NodeInfoComponent.class).toString() + " --[" + edge.getComponent(EdgeStatisticsComponent.class).getTraffic() +
             "]-->" + edge.getDest().getComponent(NodeInfoComponent.class).toString());
 
-            edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
+//            edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
 
 
         });
@@ -376,7 +347,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     }
 
     synchronized
-    private void initVertex(V vertex) {
+    private void initVertex(INode vertex) {
 
         if (vertex.getAddress().isMulticast()) {
             return;
@@ -388,19 +359,6 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         //nodeShape.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
         //nodeShape.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
-        nodeShape.setOnMouseClicked(e -> {
-
-            if (e.getButton() != MouseButton.PRIMARY) {
-                return;
-            }
-
-            if (!renderer.picked()) {
-                selectedNodes.add(vertex);
-                renderer.isPicked(true);
-                onSelectionChanged();
-            }
-            e.consume();
-        });
         //nodeShape.setCache(false);
         //nodeShape.setCacheHint(CacheHint.);
 
@@ -431,15 +389,15 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         //labelX.bind(nodeShape.layoutXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
         //labelY.bind(nodeShape.layoutYProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty())));
 
-        //nodeLabel.layoutXProperty().bindBidirectional(labelX);
-        //nodeLabel.layoutYProperty().bindBidirectional(labelY);
+        //nodeLabel.layoutXProperty().bindBidirectionalWithOffset(labelX);
+        //nodeLabel.layoutYProperty().bindBidirectionalWithOffset(labelY);
 
         //nodeLabel.layoutXProperty().bind(nodeShape.layoutXProperty().add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
 
         nodeLabel.textFillProperty().bind(new SimpleObjectProperty<>(Color.WHITE));
 
-        MyBindings.bindBidirectional(nodeLabel.layoutXProperty(), nodeShape.layoutXProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty()));
-        MyBindings.bindBidirectional(nodeLabel.layoutYProperty(), nodeShape.layoutYProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty()));
+        MyBindings.bindBidirectionalWithOffset(nodeLabel.layoutXProperty(), nodeShape.layoutXProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty()));
+        MyBindings.bindBidirectionalWithOffset(nodeLabel.layoutYProperty(), nodeShape.layoutYProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty()));
 
 
         NodeInfoComponent nic = vertex.getComponent(NodeInfoComponent.class);
@@ -450,67 +408,20 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
         nodeLabel.scaleXProperty().bind(Bindings.divide(1, canvas.scaleXProperty()));
         nodeLabel.scaleYProperty().bind(Bindings.divide(1, canvas.scaleYProperty()));
 
-        nodeLabel.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-        nodeLabel.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+        nodeLabel.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler(vertex));
+        nodeLabel.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler(vertex));
+
+        nodeShape.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler(vertex));
+        nodeShape.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler(vertex));
 
         canvas.getChildren().addAll(nodeLabel, nodeShape);
-
-        nodeShape.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-
-            if (!renderer.picked()) {
-                return;
-            }
-
-            final double parentScaleX = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMxx();
-            final double parentScaleY = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMyy();
-
-            // record the current mouse X and Y position on Node
-            mouseX = event.getSceneX();
-            mouseY = event.getSceneY();
-
-            nodeX = nodeShape.getLayoutX() * parentScaleX;
-            nodeY = nodeShape.getLayoutY() * parentScaleY;
-
-            nodeShape.toFront();
-            event.consume();
-        });
-
-        nodeShape.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-
-            if (!renderer.picked()) {
-                return;
-            }
-
-            final double parentScaleX = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMxx();
-            final double parentScaleY = nodeShape.getParent().
-                    localToSceneTransformProperty().getValue().getMyy();
-
-            // Get the exact moved X and Y
-
-            double offsetX = event.getSceneX() - mouseX;
-            double offsetY = event.getSceneY() - mouseY;
-
-            nodeX += offsetX;
-            nodeY += offsetY;
-
-            double scaledX = nodeX * 1 / parentScaleX;
-            double scaledY = nodeY * 1 / parentScaleY;
-
-            // again set current Mouse x AND y position
-            mouseX = event.getSceneX();
-            mouseY = event.getSceneY();
-            event.consume();
-        });
     }
 
     synchronized
     public void refreshLayout() {
 
       //  logger.debug("refresh");
-        final FRLayout2<V, E> l = new FRLayout2<>(this.layout.getObservableGraph());
+        final FRLayout2<INode, IConnection> l = new FRLayout2<>(this.layout.getObservableGraph());
             l.setMaxIterations(layout.getGraph().getEdgeCount() * (int) (this.getWidth() / canvas.getScale()));
            // l.setMaxIterations(700);
         this.layout = new ObservableLayout<>(l);
@@ -549,12 +460,12 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     }
 
     @Override
-    public VisualizationModel<V, E> getModel() {
+    public VisualizationModel<INode, IConnection> getModel() {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
-    public void setModel(VisualizationModel<V, E> visualizationModel) {
+    public void setModel(VisualizationModel<INode, IConnection> visualizationModel) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
@@ -564,22 +475,22 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     }
 
     @Override
-    public void setRenderer(Renderer<V, E> renderer) {
+    public void setRenderer(Renderer<INode, IConnection> renderer) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
-    public Renderer<V, E> getRenderer() {
+    public Renderer<INode, IConnection> getRenderer() {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
-    public void setGraphLayout(Layout<V, E> layout) {
+    public void setGraphLayout(Layout<INode, IConnection> layout) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
-    public Layout<V, E> getGraphLayout() {
+    public Layout<INode, IConnection> getGraphLayout() {
         return layout;
     }
 
@@ -635,32 +546,32 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     }
 
     @Override
-    public PickedState<V> getPickedVertexState() {
+    public PickedState<INode> getPickedVertexState() {
        return pickedNodes;
     }
 
     @Override
-    public PickedState<E> getPickedEdgeState() {
+    public PickedState<IConnection> getPickedEdgeState() {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
-    public void setPickedVertexState(PickedState<V> pickedState) {
+    public void setPickedVertexState(PickedState<INode> pickedState) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
-    public void setPickedEdgeState(PickedState<E> pickedState) {
+    public void setPickedEdgeState(PickedState<IConnection> pickedState) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
-    public GraphElementAccessor<V, E> getPickSupport() {
+    public GraphElementAccessor<INode, IConnection> getPickSupport() {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
-    public void setPickSupport(GraphElementAccessor<V, E> graphElementAccessor) {
+    public void setPickSupport(GraphElementAccessor<INode, IConnection> graphElementAccessor) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
@@ -670,12 +581,12 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
     }
 
     @Override
-    public RenderContext<V, E> getRenderContext() {
+    public RenderContext<INode, IConnection> getRenderContext() {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
-    public void setRenderContext(RenderContext<V, E> renderContext) {
+    public void setRenderContext(RenderContext<INode, IConnection> renderContext) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
@@ -746,14 +657,15 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
         getGraphLayout().getGraph().getVertices().stream().forEach(vertex -> {
 
-            final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
+
+            /*final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
 
             if (!renderer.picked()) {
                 selectedNodes.add(vertex);
                 Platform.runLater(() -> {
                     renderer.isPicked(true);
                 });
-            }
+            }*/
         });
         onSelectionChanged();
     }
@@ -826,45 +738,72 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
     }*/
 
-/*    private class SelectionModel {
+    private class SelectionModel {
 
-        Set<Node> selection = new HashSet<>();
+        private final Set<Node> selection = new HashSet<>();
 
-        public void add( Node node) {
+        private final Set<INode> selectedVertices = new HashSet<>();
 
-            if( !node.getStyleClass().contains("highlight")) {
-                node.getStyleClass().add( "highlight");
-            }
+        public Set<INode> getSelectedVertices() {
 
-            selection.add( node);
+            return selectedVertices;
         }
 
-        public void remove( Node node) {
-            node.getStyleClass().remove( "highlight");
-            selection.remove( node);
+        public Set<Node> getSelectedNodes() {
+
+            return selection;
+        }
+
+        public void add(INode v) {
+
+            final IRenderer renderer = v.getComponent(ViewComponent.class).getRenderer();
+
+
+
+            if (!renderer.getShape().getStyleClass().contains("picked")) {
+                renderer.getShape().getStyleClass().add("picked");
+            }
+
+            selection.add(renderer.getShape());
+            selectedVertices.add(v);
+        }
+
+        public void remove(INode v) {
+
+            final IRenderer renderer = v.getComponent(ViewComponent.class).getRenderer();
+
+            renderer.getShape().getStyleClass().remove("picked");
+            selection.remove(renderer.getShape());
+            selectedVertices.remove(v);
         }
 
         public void clear() {
 
-            while( !selection.isEmpty()) {
-                remove( selection.iterator().next());
+
+
+            while (!selectedVertices.isEmpty()) {
+                remove(selectedVertices.iterator().next());
             }
 
         }
 
-        public boolean contains( Node node) {
+        public boolean contains(Node node) {
             return selection.contains(node);
         }
 
+        public boolean contains(INode v) {
+            return selectedVertices.contains(v);
+        }
+
         public int size() {
-            return selection.size();
+            return selectedVertices.size();
         }
 
         public void log() {
-            System.out.println( "Items in model: " + Arrays.asList( selection.toArray()));
+            System.out.println( "Items in model: " + Arrays.asList( selectedVertices.toArray()));
         }
 
-    }*/
+    }
 
     private class DragMouseGestures {
 
@@ -886,19 +825,27 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             public void handle(MouseEvent event) {
 
                 // don't do anything if the user is in the process of adding to the selection model
-                if( event.isControlDown() || event.isShiftDown())
+                if (event.isControlDown() || event.isShiftDown()) {
                     return;
+                }
+
+                // left mouse button => dragging
+                if( !event.isPrimaryButtonDown())
+                    return;
+
+                dragContext.mouseAnchorX = event.getSceneX();
+                dragContext.mouseAnchorY = event.getSceneY();
 
                 Node node = (Node) event.getSource();
 
-                dragContext.x = node.getTranslateX() - event.getSceneX();
-                dragContext.y = node.getTranslateY() - event.getSceneY();
+                dragContext.translateAnchorX = node.getLayoutX();
+                dragContext.translateAnchorY = node.getLayoutY();
 
                 // clear the model if the current node isn't in the selection => new selection
-                if( !selectionModel.contains(node)) {
+  /*              if (!selectionModel.contains(node)) {
                     selectionModel.clear();
-                    selectionModel.add( node);
-                }
+                    selectionModel.add(node);
+                }*/
 
                 // flag that the mouse released handler should consume the event, so it won't bubble up to the pane which has a rubberband selection mouse released handler
                 enabled = true;
@@ -917,10 +864,10 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
                     return;
 
                 // all in selection
-                for( Node node: selectionModel) {
-                    node.setTranslateX( dragContext.x + event.getSceneX());
-                    node.setTranslateY( dragContext.y + event.getSceneY());
-                }
+/*                for (Node node : selectionModel) {
+                    node.setLayoutX(dragContext.x + event.getSceneX());
+                    node.setLayoutY(dragContext.y + event.getSceneY());
+                }*/
 
             }
         };
@@ -934,9 +881,9 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
                 if( enabled) {
 
                     // set node's layout position to current position,remove translate coordinates
-                    for( Node node: selectionModel) {
-                        fixPosition(node);
-                    }
+//                    for( Node node: selectionModel) {
+//                        fixPosition(node);
+//                    }
 
                     enabled = false;
 
@@ -958,13 +905,6 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
 
             node.setTranslateX(0);
             node.setTranslateY(0);
-
-        }
-
-        class DragContext {
-
-            double x;
-            double y;
 
         }
 
@@ -1029,7 +969,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
                     selectionModel.clear();
                 }
 
-                for( Node node: group.getChildren()) {
+/*                for( Node node: group.getChildren()) {
 
                         if( node.getBoundsInParent().intersects( rect.getBoundsInParent())) {
 
@@ -1051,7 +991,7 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
                         }
 
 
-                }
+                }*/
 
                 //selectionModel.log();
 
@@ -1073,8 +1013,8 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             @Override
             public void handle(MouseEvent event) {
 
-                double offsetX = event.getSceneX() - dragContext.mouseAnchorX;
-                double offsetY = event.getSceneY() - dragContext.mouseAnchorY;
+                final double offsetX = event.getSceneX() - dragContext.mouseAnchorX;
+                final double offsetY = event.getSceneY() - dragContext.mouseAnchorY;
 
                 if( offsetX > 0)
                     rect.setWidth( offsetX);
@@ -1095,12 +1035,128 @@ public class FXVisualizationViewer<V extends INode, E extends IConnection> exten
             }
         };
 
-        private final class DragContext {
+//        private final class DragContext {
+//
+//            public double mouseAnchorX;
+//            public double mouseAnchorY;
+//
+//
+//        }
+    }
 
-            public double mouseAnchorX;
-            public double mouseAnchorY;
+    private class NodeGestures {
 
+        private DragContext nodeDragContext = new DragContext();
+
+        private boolean enabled = false;
+
+        public NodeGestures() {
 
         }
+
+        public EventHandler<MouseEvent> getOnMousePressedEventHandler(INode n) {
+
+            return event -> {
+
+                // left mouse button => dragging
+                if( !event.isPrimaryButtonDown()) {
+                    return;
+                }
+
+                // don't do anything if the user is in the process of adding to the selection model
+                if (event.isControlDown() || event.isShiftDown()) {
+
+                    selectionModel.add(n);
+                    return;
+                }
+
+                nodeDragContext.mouseAnchorX = event.getSceneX();
+                nodeDragContext.mouseAnchorY = event.getSceneY();
+
+                final Node node = (Node) event.getSource();
+
+                nodeDragContext.translateAnchorX = node.getLayoutX();
+                nodeDragContext.translateAnchorY = node.getLayoutY();
+
+                // clear the model if the current node isn't in the selection => new selection
+                if (!selectionModel.contains(n)) {
+
+                    selectionModel.clear();
+                    selectionModel.add(n);
+                }
+                selectionModel.log();
+
+                // flag that the mouse released handler should consume the event, so it won't bubble up to the pane which has a rubberband selection mouse released handler
+                enabled = true;
+
+                // prevent rubberband selection handler
+                event.consume();
+            };
+        }
+
+        public EventHandler<MouseEvent> getOnMouseDraggedEventHandler(INode n) {
+
+            return event -> {
+
+                // left mouse button => dragging
+                if( !event.isPrimaryButtonDown()) {
+                    return;
+                }
+
+                if( !enabled)
+                    return;
+
+                double scale = canvas.getScale();
+
+                selectionModel.getSelectedNodes().stream().forEach(node -> {
+                    node.setLayoutX(nodeDragContext.translateAnchorX + (( event.getSceneX() - nodeDragContext.mouseAnchorX) / scale));
+                    node.setLayoutY(nodeDragContext.translateAnchorY + (( event.getSceneY() - nodeDragContext.mouseAnchorY) / scale));
+
+
+                    node.setLayoutX(dragContext.x + event.getSceneX());
+                    node.setLayoutY(dragContext.y + event.getSceneY());
+
+                });
+                event.consume();
+            };
+
+        }
+
+        private EventHandler<MouseEvent> onMousePressedEventHandler = event -> {
+
+            // left mouse button => dragging
+            if( !event.isPrimaryButtonDown())
+                return;
+
+            nodeDragContext.mouseAnchorX = event.getSceneX();
+            nodeDragContext.mouseAnchorY = event.getSceneY();
+
+            Node node = (Node) event.getSource();
+
+            nodeDragContext.translateAnchorX = node.getLayoutX();
+            nodeDragContext.translateAnchorY = node.getLayoutY();
+
+        };
+
+        private EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+
+                // left mouse button => dragging
+                if( !event.isPrimaryButtonDown()) {
+                    return;
+                }
+
+
+                double scale = canvas.getScale();
+
+                Node node = (Node) event.getSource();
+
+                node.setLayoutX(nodeDragContext.translateAnchorX + (( event.getSceneX() - nodeDragContext.mouseAnchorX) / scale));
+                node.setLayoutY(nodeDragContext.translateAnchorY + (( event.getSceneY() - nodeDragContext.mouseAnchorY) / scale));
+
+                event.consume();
+
+            }
+        };
     }
 }

@@ -40,26 +40,6 @@ public class StaticRenderer implements IRenderer {
     }
 
     @Override
-    public javafx.scene.paint.Color getColorUnpicked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public javafx.scene.paint.Color getColorPicked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void setColorPicked(javafx.scene.paint.Color colorPicked) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void setColorUnpicked(javafx.scene.paint.Color colorUnpicked) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
     public void setShape(javafx.scene.shape.Shape shape) {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
@@ -72,41 +52,6 @@ public class StaticRenderer implements IRenderer {
     @Override
     public void setParent(IComposition parent) {
         this.parent = parent;
-    }
-
-    @Override
-    public javafx.scene.paint.Color getDrawUnpicked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void setDrawUnpicked(javafx.scene.paint.Color drawUnpicked) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public javafx.scene.paint.Color getDrawPicked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void setDrawPicked(javafx.scene.paint.Color drawPicked) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void togglePicked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public void isPicked(boolean b) {
-        throw new UnsupportedOperationException("Operation not implemented yet");
-    }
-
-    @Override
-    public boolean picked() {
-        throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
     @Override
