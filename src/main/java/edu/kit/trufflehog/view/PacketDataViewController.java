@@ -2,6 +2,8 @@ package edu.kit.trufflehog.view;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.PacketDataInteraction;
+import edu.kit.trufflehog.model.network.IPAddress;
+import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
@@ -14,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -24,6 +27,8 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
     private final PacketDataViewController packetDataViewController;
     private ObservableList<Packet> data;
     private TableView<Packet> tableView;
+    private TableColumn<Packet, String> nameColumn;
+
     private static final Logger logger = LogManager.getLogger();
 
     public PacketDataViewController(final ObservableList<Packet> data) {
@@ -58,7 +63,7 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
         tableView.setMinWidth(500);
         tableView.setMinHeight(280);
 
-        setUpTypeColumn(tableView);
+        setUpNameColumn(tableView);
 
         tableView.setItems(data);
 
@@ -98,22 +103,22 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
         return borderPane;
     }
 
-    private void setUpTypeColumn(TableView<Packet> tableView) {
-        // Set up type column
-        final TableColumn<Packet, String> typeColumn = new TableColumn<>("Packets");
+    private void setUpNameColumn(TableView<Packet> tableView) {
+        // Set up name column
+        nameColumn = new TableColumn<>("Packets");
         tableView.setEditable(true);
-        typeColumn.setMinWidth(500);
-        typeColumn.setPrefWidth(500);
-        tableView.getColumns().add(typeColumn);
-        typeColumn.setCellValueFactory(param -> param.getValue().getDataProperty());
+        nameColumn.setMinWidth(500);
+        nameColumn.setPrefWidth(500);
+        tableView.getColumns().add(nameColumn);
+        nameColumn.setCellValueFactory(param -> param.getValue().getDataProperty());
     }
 
-    public void update(PacketDataLoggingComponent component){
-        if (component == null) throw new NullPointerException("component must not be null!");
+    public void update(List<IPacketData> entries){
+        if (entries == null) throw new NullPointerException("component must not be null!");
         tableView.getItems().clear();
         int i = 0;
-        for (IPacketData packetData:component.getObservablePackets()) {
-            data.add(0, new Packet(packetData.toString()));
+        for (IPacketData packetData:entries) {
+            data.add(new Packet(packetDataToString(packetData)));
         }
     }
 
@@ -123,8 +128,114 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
 
     public void addEntries(List<IPacketData> entries) {
         for (IPacketData packetData:entries) {
-            data.add(0, new Packet(packetData.toString()));
+            data.add(new Packet(packetDataToString(packetData)));
         }
+    }
+
+    private String packetDataToString(IPacketData packetData) {
+        if (packetData == null) return "";
+        StringBuilder sb = new StringBuilder();
+
+        /*                    x  final long srcMACAddr,
+                              x  final long dstMACAddr,
+                              x  final long srcIPAddr,
+                              x  final long dstIPAddr,
+                              x  final String nameOfStation,
+                              x  final int etherType,
+                              x  final int serviceID,
+                              x  final String serviceIDName,
+                              x  final int serviceType,
+                              x  final String serviceTypeName,
+                              x  final long xid,
+                              x  final int responseDelay,
+                              x  final int isResponse
+        */
+        Long timeOfArrival = packetData.getAttribute(Long.class, "timeOfArrival");
+        MacAddress srcMacAddress = packetData.getAttribute(MacAddress.class, "sourceMacAddress");
+        MacAddress destMacAddress = packetData.getAttribute(MacAddress.class, "destMacAddress");
+        IPAddress srcIPAddress = packetData.getAttribute(IPAddress.class, "sourceIPAddress");
+        IPAddress destIPAddress = packetData.getAttribute(IPAddress.class, "destIPAddress");
+        String nameOfStation = packetData.getAttribute(String.class, "nameOfStation");
+        Short etherType = packetData.getAttribute(Short.class, "etherType");
+        Integer serviceID = packetData.getAttribute(Integer.class, "serviceID");
+        String serviceIDName = packetData.getAttribute(String.class, "serviceIDName");
+        Integer serviceType = packetData.getAttribute(Integer.class, "serviceType");
+        String serviceTypeName = packetData.getAttribute(String.class, "serviceTypeName");
+        Long xid = packetData.getAttribute(Long.class, "xid");
+        Integer responseDelay = packetData.getAttribute(Integer.class, "responseDelay");
+        Integer isResponse = packetData.getAttribute(Integer.class, "isResponse");
+
+        if (timeOfArrival != null) {
+            Date date = new Date(timeOfArrival);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SSS");
+            sb.append("Time: ");
+            sb.append(sdf.format(date));
+        }
+
+        sb.append("\nSource MAC address: ");
+        if (srcMacAddress != null) sb.append(srcMacAddress.toString());
+
+        sb.append("\nSource IP address: ");
+        if (srcIPAddress != null) sb.append(srcIPAddress.toString());
+
+        sb.append("\nDestination MAC address: ");
+        if (destMacAddress != null) sb.append(destMacAddress.toString());
+
+        sb.append("\nDestination IP address: ");
+        if (destIPAddress != null) sb.append(destIPAddress.toString());
+
+        if (nameOfStation != null) {
+            sb.append("\nDevice name: ");
+            sb.append(nameOfStation);
+        }
+
+        if (etherType != null) {
+            sb.append("\nEther type: ");
+            sb.append(etherType.toString());
+        }
+
+        if (serviceID != null) {
+            sb.append("\nService ID: ");
+            sb.append(serviceID.toString());
+        }
+
+        if (serviceIDName != null) {
+            sb.append("\nService ID name: ");
+            sb.append(serviceIDName);
+        }
+
+        if (serviceType != null) {
+            sb.append("\nService type: ");
+            sb.append(serviceType.toString());
+        }
+
+        if (serviceTypeName != null) {
+            sb.append("\nService type name: ");
+            sb.append(serviceTypeName);
+        }
+
+        if (xid != null) {
+            sb.append("\nXID: ");
+            sb.append(xid.toString());
+        }
+
+        if (responseDelay != null) {
+            sb.append("\nResponse delay: ");
+            sb.append(responseDelay.toString());
+        }
+
+        if (isResponse != null) {
+            sb.append("\nIs response: ");
+            sb.append(isResponse.toString());
+        }
+
+        sb.append("\n\n");
+
+        return sb.toString();
+    }
+
+    public void setName(String name) {
+        nameColumn.setText(name);
     }
 
     /**

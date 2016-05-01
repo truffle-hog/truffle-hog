@@ -11,9 +11,11 @@ import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.filter.MacroFilter;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.LiveNetwork;
+import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
@@ -224,21 +226,42 @@ public class Presenter {
         final ContextMenu contextMenu = new ContextMenu();
         final MenuItem getPackageItem = new MenuItem("Get Packages");
         //FIXME: make more beautiful
-        getPackageItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                packetDataController.setVisible(true);
-                PacketDataLoggingComponent component = new PacketDataLoggingComponent();
-                for (INode node:viewer.getPickedVertexState().getPicked()) {
-                    component = node.getComponent(PacketDataLoggingComponent.class);
-                    packetDataController.update(component);
+        getPackageItem.setOnAction(event -> {
+            packetDataController.setVisible(true);
+            PacketDataLoggingComponent loggingComponent = null;
+            NodeInfoComponent tempInfoComponent = null;
+            for (INode node:viewer.getPickedVertexState().getPicked()) {
+                if (loggingComponent == null) {
+                    loggingComponent = node.getComponent(PacketDataLoggingComponent.class);
+                    tempInfoComponent = node.getComponent(NodeInfoComponent.class);
+                } else {
+                    break;
                 }
+            }
 
-                component.getObservablePacketsProperty().addListener(new ListChangeListener() {
-                    @Override
-                    public void onChanged(Change c) {
-                        c.next();
-                        packetDataController.addEntries(c.getAddedSubList());
+            final NodeInfoComponent infoComponent = new NodeInfoComponent(new MacAddress(12));
+            if (loggingComponent != null) {
+                packetDataController.update(loggingComponent.getObservablePackets());
+
+                loggingComponent.getObservablePacketsProperty().addListener((ListChangeListener) c -> {
+                    c.next();
+                    packetDataController.addEntries(c.getAddedSubList());
+                    if (infoComponent != null) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("Node: ");
+                        if (infoComponent.getDeviceName() != null) sb.append(infoComponent.getDeviceName());
+                        if (infoComponent.getMacAddress() != null) {
+                            sb.append(" ");
+                            sb.append(infoComponent.getMacAddress().toString());
+                        }
+                        if (infoComponent.getIPAddress() != null) {
+                            sb.append(" ");
+                            sb.append(infoComponent.getIPAddress().toString());
+                        }
+
+                        packetDataController.setName(sb.toString());
+                    } else {
+                        packetDataController.setName("Node: no info");
                     }
                 });
             }

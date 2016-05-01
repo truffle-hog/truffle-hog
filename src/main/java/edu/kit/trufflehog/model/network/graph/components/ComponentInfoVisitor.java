@@ -103,7 +103,7 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
     public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(PacketDataLoggingComponent component) {
 
         final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
-        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Packets", component.getObservablePacketsProperty())));
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Packets", new SimpleStringProperty("Right click on a node to list packet logs"))));
 
         return root;
     }

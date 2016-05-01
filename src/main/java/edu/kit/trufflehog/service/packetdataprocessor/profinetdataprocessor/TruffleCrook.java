@@ -40,7 +40,7 @@ public class TruffleCrook extends TruffleReceiver {
         while(!Thread.interrupted()) {
             synchronized (this) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(1000);
                     while (!running) {
                         wait();
                     }
