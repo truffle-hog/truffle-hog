@@ -25,3 +25,11 @@ Very easy! Just drag and drop nodes and use your mouse wheel to move around the 
 - `CTRL+Q` closes the program properly just like clicking the `X` on the window decoration would.
 
 ## Filters
+
+Filters define a set of nodes either by MAC-address, IP-address or Regex (applied to the name of nodes). Selected nodes can then be colored and/or marked as "authorized". Filters are also assigned a priority. The filter with the highest priority gets executed last and therefor mask ones with lower priority.
+
+The easiest way to create a filter to a visible set of nodes is selecting them in the graph, then opening the filters menu and clicking the button showing little nodes. A new filter is opened in the filter creation window then and the selected nodes are defined by MAC-address. Assign priority, color and if they should be marked as authorized and you are good to go.
+
+To create more complex filters you can also define nodes by regex (e.g. station-* to match to all clients with a name starting with "station-") or by fixed IP-address or subnet (192.168.1.1/24).
+
+Marking nodes as authorized with filters serves mainly organisational purposes. It helps to also color them green or any other color that symbolizes "ok" for you. Contrary, clients from foreign subnets could be colored red.
