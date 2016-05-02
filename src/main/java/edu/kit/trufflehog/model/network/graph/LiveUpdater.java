@@ -27,6 +27,7 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeRenderer;
 import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
+import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.uci.ics.jung.graph.GraphUpdater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,7 +93,13 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
 
     @Override
     public boolean update(PacketDataLoggingComponent packetDataLoggingComponent, IComponent instance) {
-        return false;
+        if (!packetDataLoggingComponent.equals(instance)) return false;
+        PacketDataLoggingComponent updater = (PacketDataLoggingComponent)instance;
+        for (IPacketData packetData:updater.getObservablePackets()) {
+            packetDataLoggingComponent.addPacket(packetData);
+        }
+
+        return true;
     }
 
     @Override

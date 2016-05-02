@@ -11,9 +11,12 @@ import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.filter.MacroFilter;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.LiveNetwork;
+import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
+import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
@@ -40,19 +43,18 @@ import edu.uci.ics.jung.graph.util.Graphs;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.TreeItem;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -221,20 +223,67 @@ public class Presenter {
         //scene.addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
         //scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
         //scene.addEventFilter(ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
+                primaryStage::close);
 
+        final PacketDataViewController packetDataController = new PacketDataViewController(FXCollections.observableArrayList());
+        packetDataController.setVisible(false);
+        root.getChildren().add(packetDataController);
+        AnchorPane.setLeftAnchor(packetDataController, 0d);
 
         final StatisticsViewModel statisticsViewModel = new StatisticsViewModel();
         final StatisticsViewController statisticsViewController = new StatisticsViewController(statisticsViewModel);
         root.getChildren().add(statisticsViewController);
+        final ContextMenu contextMenu = new ContextMenu();
+        final MenuItem getPackageItem = new MenuItem("Get Packages");
+
+        //TODO: make more beautiful, add possibility of multiple node selection (if needed)
+        getPackageItem.setOnAction(event -> {
+            packetDataController.setVisible(true);
+            PacketDataLoggingComponent loggingComponent = null;
+            NodeInfoComponent tempInfoComponent = null;
+            for (INode node:viewer.getPickedVertexState().getPicked()) {
+                if (loggingComponent == null) {
+                    loggingComponent = node.getComponent(PacketDataLoggingComponent.class);
+                    tempInfoComponent = node.getComponent(NodeInfoComponent.class);
+                } else {
+                    break;
+                }
+            }
+
+            final NodeInfoComponent infoComponent = tempInfoComponent;
+            if (loggingComponent != null) {
+                packetDataController.register(loggingComponent);
+
+                if (infoComponent != null) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Node: ");
+                    if (infoComponent.getDeviceName() != null) sb.append(infoComponent.getDeviceName());
+                    if (infoComponent.getMacAddress() != null) {
+                        sb.append(" ");
+                        sb.append(infoComponent.getMacAddress().toString());
+                    }
+                    if (infoComponent.getIPAddress() != null) {
+                        sb.append(" ");
+                        sb.append(infoComponent.getIPAddress().toString());
+                    }
+
+                    packetDataController.setName(sb.toString());
+                } else {
+                    packetDataController.setName("Node: no info");
+                }
+            }
+        });
+        contextMenu.getItems().add(getPackageItem);
+        viewer.getChildren().add(statisticsViewController);
         AnchorPane.setTopAnchor(statisticsViewController, 10d);
         AnchorPane.setRightAnchor(statisticsViewController, 10d);
         viewer.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statisticsViewModel));
+        viewer.addCommand(GraphInteraction.SELECTION_CONTEXTMENU, new SelectionContextMenuCommand(viewer, contextMenu));
         viewer.addListener(commandExecutor.asUserCommandListener());
 
-
-        // need to create a hashmap for filterinputs and filters for the session... maybe there will be another solution somtime
+        // need to create a hashmap for filterinputs and filters for the session... maybe there will be another solution sometime
         final Map<FilterInput, IFilter> filterMap = new HashMap<>();
-
 
         final FilterEditingMenuView filterEditingMenuView = new FilterEditingMenuView(configData, filterViewModel);
         filterEditingMenuView.setVisible(false);

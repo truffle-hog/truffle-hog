@@ -17,6 +17,7 @@
 package edu.kit.trufflehog.view.jung.visualization;
 
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
+import edu.kit.trufflehog.command.usercommand.SelectionContextMenuCommand;
 import edu.kit.trufflehog.interaction.GraphInteraction;
 import edu.kit.trufflehog.model.jung.layout.ObservableLayout;
 import edu.kit.trufflehog.model.network.INetworkViewPort;
@@ -164,7 +165,6 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         addEventFilter(ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
 
         new RubberBandSelection(this);
-
 
 
 
@@ -358,7 +358,6 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         }
 
         final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
-
         final Shape nodeShape = renderer.getShape();
         //nodeShape.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
         //nodeShape.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
@@ -637,6 +636,21 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
         notifyListeners(selectionCommand);
 
+    }
+
+    private void onSelectionContextMenu(double posX, double posY) {
+        //FIXME: make this adequate
+        final SelectionContextMenuCommand cmCommand = (SelectionContextMenuCommand)interactionMap.get(GraphInteraction.SELECTION_CONTEXTMENU);
+
+        if (cmCommand == null) {
+            logger.warn("There is no command registered to: " + GraphInteraction.SELECTION_CONTEXTMENU);
+            return;
+        }
+        cmCommand.setSelection(new ImmutablePair<>(new HashSet<>(selectedNodes), new HashSet<>(selectedEdges)));
+        cmCommand.setPosX(posX);
+        cmCommand.setPosY(posY);
+
+        notifyListeners(cmCommand);
     }
 
 

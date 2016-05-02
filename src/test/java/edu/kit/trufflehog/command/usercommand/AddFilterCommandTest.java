@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * Created by Valentin Kiechle on 07.04.2016.
+ * TODO: repair tests!
  */
 public class AddFilterCommandTest {
     private MacroFilter macroFilter;
@@ -25,7 +26,7 @@ public class AddFilterCommandTest {
         // TODO change?
 /*        macroFilter = mock(MacroFilter.class);
         nwp = mock(INetworkIOPort.class);
-        ufc = new UpdateFilterCommand(nwp, macroFilter);
+        //ufc = new UpdateFilterCommand(nwp, macroFilter);
         filterInput = mock(FilterInput.class);
         ufc.setSelection(filterInput);
         when(filterInput.isActive()).thenReturn(true);
