@@ -18,11 +18,10 @@ package edu.kit.trufflehog.view.jung.visualization;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 /**
@@ -36,31 +35,36 @@ import javafx.scene.paint.Color;
  */
 public class PannableCanvas extends Pane {
 
-    DoubleProperty myScale = new SimpleDoubleProperty(1.0);
+    //DoubleProperty myScale = new SimpleDoubleProperty(1.0);
 
-    final Pane paneTest;
+    private double myScale = 1.0;
 
-    public PannableCanvas() {
+    private Pane ghost;
+
+    public PannableCanvas(Pane ghost) {
         setPrefSize(600, 600);
+
+        this.ghost = ghost;
+        this.ghost.setPrefSize(600, 600);
+        this.ghost.setMouseTransparent(true);
 
         this.setBackground(new Background(new BackgroundFill(null, null, null)));
         //this.setVisible(false);
         //setStyle("-fx-background-color: lightgrey; -fx-border-color: blue;");
 
-        addGrid();
-        paneTest = new Pane();
-        paneTest.setPrefSize(600, 600);
-        paneTest.setBackground(new Background(new BackgroundFill(null, null, null)));
-
         // add scale transform
-        scaleXProperty().bind(myScale);
-        scaleYProperty().bind(myScale);
+        //scaleXProperty().bind(myScale);
+        //scaleYProperty().bind(myScale);
 
         //paneTest.scaleXProperty().bind(myScale);
       //  paneTest.scaleYProperty().bind(myScale);
 
     }
 
+
+    public Pane getGhost() {
+        return ghost;
+    }
 
 
     /**
@@ -95,15 +99,25 @@ public class PannableCanvas extends Pane {
     }
 
     public double getScale() {
-        return myScale.get();
+
+        return myScale;
     }
 
     public void setScale( double scale) {
-        myScale.set(scale);
+
+        myScale = scale;
+        setScaleX(myScale);
+        setScaleY(myScale);
+        ghost.setScaleX(myScale);
+        ghost.setScaleY(myScale);
     }
 
     public void setPivot( double x, double y) {
-        setTranslateX(getTranslateX()-x);
-        setTranslateY(getTranslateY()-y);
+
+        setTranslateX(getTranslateX() - x);
+        setTranslateY(getTranslateY() - y);
+
+        ghost.setTranslateX(ghost.getTranslateX() - x);
+        ghost.setTranslateY(ghost.getTranslateY() - y);
     }
 }

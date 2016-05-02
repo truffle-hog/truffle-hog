@@ -13,8 +13,8 @@ root {
 }
 
 .background {
-    -fx-background-color: transparent;
-    -fx-opacity: 100%;
+    -fx-background-color: white;
+    -fx-opacity: 70%;
     -fx-background-radius: 2;
 }
 

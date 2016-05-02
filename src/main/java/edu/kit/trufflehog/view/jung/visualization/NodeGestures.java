@@ -90,7 +90,7 @@ public class NodeGestures {
         public void handle(MouseEvent event) {
 
             // left mouse button => dragging
-            if( !event.isPrimaryButtonDown())
+            if (!event.isPrimaryButtonDown())
                 return;
 
             double scale = canvas.getScale();

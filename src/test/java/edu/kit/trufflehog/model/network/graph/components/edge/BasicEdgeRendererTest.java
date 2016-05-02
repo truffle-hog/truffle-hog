@@ -23,12 +23,5 @@ public class BasicEdgeRendererTest {
     @Test
     public void togglePicked() throws Exception {
         BasicEdgeRenderer renderer = new BasicEdgeRenderer();
-        assertFalse(renderer.picked());
-        renderer.togglePicked();
-        assertTrue(renderer.picked());
-        renderer.togglePicked();
-        assertFalse(renderer.picked());
-        renderer.togglePicked();
-        assertTrue(renderer.picked());
     }
 }

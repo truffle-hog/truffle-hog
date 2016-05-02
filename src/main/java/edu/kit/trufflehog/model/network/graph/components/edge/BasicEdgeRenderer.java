@@ -219,6 +219,14 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     }
 
     @Override
+    public void setCurrentFill(Color fill) {
+        currentEdgeStrokePaint = fill;
+        currentArrowFill = fill;
+        arrowHeadFillProperty.set(fill);
+        arrowStrokePaintProperty.set(fill);
+    }
+
+    @Override
     public Shape getArrowShape() {
         return arrowShape;
     }

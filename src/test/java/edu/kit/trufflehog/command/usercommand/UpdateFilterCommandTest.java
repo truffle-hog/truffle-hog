@@ -1,10 +1,13 @@
 package edu.kit.trufflehog.command.usercommand;
 
+import edu.kit.trufflehog.model.configdata.ConfigData;
 import edu.kit.trufflehog.model.filter.*;
 import edu.kit.trufflehog.model.network.INetworkIOPort;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -20,13 +23,22 @@ public class UpdateFilterCommandTest {
     private MacroFilter macroFilter;
     private INetworkIOPort nwp;
     private FilterInput filterInput;
+    private ConfigData configData;
     private UpdateFilterCommand ufc;
+    private Map<FilterInput, IFilter> filterMap;
 
     @Before
     public void setup() {
+
+       // final ConfigData configData, final INetworkIOPort nwp, final MacroFilter macroFilter, final Map<FilterInput, IFilter> filterMap)
+
+        configData = mock(ConfigData.class);
         macroFilter = mock(MacroFilter.class);
         nwp = mock(INetworkIOPort.class);
-        ufc = new UpdateFilterCommand(nwp, macroFilter);
+        filterMap = mock(Map.class);
+
+
+        ufc = new UpdateFilterCommand(configData, nwp, macroFilter, filterMap);
         filterInput = mock(FilterInput.class);
         ufc.setSelection(filterInput);
         when(filterInput.isActive()).thenReturn(true);
@@ -44,8 +56,23 @@ public class UpdateFilterCommandTest {
 
     @Test (expected = NullPointerException.class)
     public void updateNullMacroFilterTest() {
-        ufc = new UpdateFilterCommand(nwp, null);
+
+        ufc = new UpdateFilterCommand(configData, nwp, null, filterMap);
     }
+
+    @Test (expected = NullPointerException.class)
+    public void updateNullConfigDataTest() {
+
+        ufc = new UpdateFilterCommand(null, nwp, macroFilter, filterMap);
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void updateNullFilterMapTest() {
+
+        ufc = new UpdateFilterCommand(configData, nwp, macroFilter, null);
+    }
+
+
 
     @Test
     public void updateFilterCommandTest_selectingNullFilterShouldWork () {
@@ -59,7 +86,8 @@ public class UpdateFilterCommandTest {
 
     @Test (expected = NullPointerException.class)
     public void updateFilterCommandTest_NullInitialization () {
-        ufc = new UpdateFilterCommand(null, null);
+
+        ufc = new UpdateFilterCommand(null, null, null, null);
     }
 
     @Test

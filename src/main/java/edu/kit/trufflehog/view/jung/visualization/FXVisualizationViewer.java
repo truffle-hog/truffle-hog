@@ -56,8 +56,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -83,35 +83,17 @@ import java.util.concurrent.Executors;
  * @author Jan Hermes
  * @version 0.0.1
  */
-public class FXVisualizationViewer extends AnchorPane implements VisualizationServer<INode, IConnection>, IViewController<GraphInteraction> {
+public class FXVisualizationViewer extends Pane implements VisualizationServer<INode, IConnection>, IViewController<GraphInteraction> {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private final DoubleProperty myScale = new SimpleDoubleProperty(1.0);
-
     private final PannableCanvas canvas;
     private final NodeGestures nodeGestures;
-
-    private final DragMouseGestures dragMouseGestures = new DragMouseGestures();
-
-    private final Set<INode> selectedNodes = new HashSet<>();
+    private final EdgeGestures edgeGestures = new EdgeGestures();
 
     private final SelectionModel selectionModel = new SelectionModel();
 
-
-    private final Set<IConnection> selectedEdges = new HashSet<>();
-
-    private double firstY;
-    private double firstX;
-    private double secondX;
-    private double secondY;
-
-    private double nodeX;
-    private double nodeY;
-    private double mouseX;
-    private double mouseY;
-
-    private final PickedState<INode> pickedNodes = new MyPickedState<>(selectedNodes);
+    private final PickedState<INode> pickedNodes = new MyPickedState<>(selectionModel.selectedVertices);
 
     private final INotifier<IUserCommand> viewControllerNotifier = new Notifier<IUserCommand>() {
         @Override
@@ -129,8 +111,6 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
     private INetworkViewPort port;
 
     public FXVisualizationViewer(final ObservableLayout<INode, IConnection> layout, INetworkViewPort port) {
-
-
 
         this.port = port;
         // create canvas
@@ -166,9 +146,26 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
             this.getChildren().add(line);
         }
 
-        canvas = new PannableCanvas();
+        //StackPane spane = new StackPane();
+        //spane.setBackground(new Background(new BackgroundFill(Color.BEIGE, null, null)));
 
-        //new RubberBandSelection(canvas);
+        Pane ghost = new Pane();
+        canvas = new PannableCanvas(ghost);
+
+        Pane parent = new Pane();
+        parent.getChildren().add(ghost);
+        parent.getChildren().add(canvas);
+
+
+        SceneGestures sceneGestures = new SceneGestures(parent, canvas);
+
+        addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
+        addEventFilter(MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
+        addEventFilter(ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
+
+        new RubberBandSelection(this);
+
+
 
 
         // TODO make canvas transparent
@@ -176,13 +173,14 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
 
         // we don't want the canvas on the top/left in this example => just
         // translate it a bit
-        canvas.setTranslateX(100);
-        canvas.setTranslateY(100);
+        //canvas.setTranslateX(100);
+        //canvas.setTranslateY(100);
 
         // create sample nodes which can be dragged
         nodeGestures = new NodeGestures();
+        //this.getChildren().add(spane);
+        this.getChildren().add(parent);
 
-        this.getChildren().add(canvas);
         this.layout = layout;
 
         //this.layout.getGraph().getVertices().forEach(v -> Platform.runLater(() -> this.initVertex(v)));
@@ -242,10 +240,10 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
         final Shape destShape = pair.getSecond().getComponent(ViewComponent.class).getRenderer().getShape();
 
         // the positions of the shapes
-        final DoubleProperty srcX = srcShape.layoutXProperty();
-        final DoubleProperty srcY = srcShape.layoutYProperty();
-        final DoubleProperty destX = destShape.layoutXProperty();
-        final DoubleProperty destY = destShape.layoutYProperty();
+        final DoubleBinding srcX = srcShape.layoutXProperty().add(srcShape.translateXProperty());
+        final DoubleBinding srcY = srcShape.layoutYProperty().add(srcShape.translateYProperty());
+        final DoubleBinding destX = destShape.layoutXProperty().add(destShape.translateXProperty());
+        final DoubleBinding destY = destShape.layoutYProperty().add(destShape.translateYProperty());
 
 
         // the direction vector from source to destination (deltaX, deltaY)
@@ -280,8 +278,12 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
         final QuadCurve curve = edgeRenderer.getLine();
         curve.setCacheHint(CacheHint.SPEED);
 
+        curve.addEventFilter(MouseEvent.MOUSE_PRESSED, edgeGestures.getOnMousePressedEventHandler(edge));
+        curve.addEventFilter(MouseEvent.MOUSE_RELEASED, edgeGestures.getOnMouseReleasedEventHandler(edge));
+        edgeRenderer.getArrowShape().addEventFilter(MouseEvent.MOUSE_PRESSED, edgeGestures.getOnMousePressedEventHandler(edge));
+        edgeRenderer.getArrowShape().addEventFilter(MouseEvent.MOUSE_RELEASED, edgeGestures.getOnMouseReleasedEventHandler(edge));
 
-        // make the edge clickable
+/*        // make the edge clickable
         curve.setOnMouseClicked(e -> {
 
             if (e.getButton() != MouseButton.PRIMARY) {
@@ -306,7 +308,9 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
 //            edge.getComponent(ViewComponent.class).getRenderer().togglePicked();
 
 
-        });
+        });*/
+
+
 
         //get the edge size binding by dividing the total traffic with the local traffic
         DoubleBinding edgeSize = MyBindings.divideIntToDouble(edge.getComponent(EdgeStatisticsComponent.class).getTrafficProperty(), port.getMaxConnectionSizeProperty()).multiply(8).add(2);
@@ -396,9 +400,11 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
 
         nodeLabel.textFillProperty().bind(new SimpleObjectProperty<>(Color.WHITE));
 
-        MyBindings.bindBidirectionalWithOffset(nodeLabel.layoutXProperty(), nodeShape.layoutXProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty()));
-        MyBindings.bindBidirectionalWithOffset(nodeLabel.layoutYProperty(), nodeShape.layoutYProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty()));
+        //MyBindings.bindBidirectionalWithOffset(nodeLabel.layoutXProperty(), nodeShape.layoutXProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty()));
+        //MyBindings.bindBidirectionalWithOffset(nodeLabel.layoutYProperty(), nodeShape.layoutYProperty(), nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty()));
 
+        nodeLabel.layoutXProperty().bind(nodeShape.layoutXProperty().add(nodeShape.translateXProperty()).add(nodeCircle.radiusProperty().multiply(nodeShape.scaleXProperty())));
+        nodeLabel.layoutYProperty().bind(nodeShape.layoutYProperty().add(nodeShape.translateYProperty()).add(nodeCircle.radiusProperty().multiply(nodeShape.scaleYProperty())));
 
         NodeInfoComponent nic = vertex.getComponent(NodeInfoComponent.class);
         if (nic != null) {
@@ -410,9 +416,12 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
 
         nodeLabel.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler(vertex));
         nodeLabel.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler(vertex));
+        nodeLabel.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler(vertex));
 
         nodeShape.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler(vertex));
         nodeShape.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler(vertex));
+        nodeShape.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler(vertex));
+
 
         canvas.getChildren().addAll(nodeLabel, nodeShape);
     }
@@ -624,7 +633,7 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
             return;
         }
 
-        selectionCommand.setSelection(new ImmutablePair<>(new HashSet<>(selectedNodes), new HashSet<>(selectedEdges)));
+        selectionCommand.setSelection(new ImmutablePair<>(new HashSet<>(selectionModel.getSelectedVertices()), new HashSet<>(selectionModel.getSelectedEdges())));
 
         notifyListeners(selectionCommand);
 
@@ -744,9 +753,17 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
 
         private final Set<INode> selectedVertices = new HashSet<>();
 
+        private final Set<IConnection> selectedEdges = new HashSet<>();
+
+        //private final Set<Node> lineSelection = new HashSet<>();
+
         public Set<INode> getSelectedVertices() {
 
             return selectedVertices;
+        }
+
+        public Set<IConnection> getSelectedEdges() {
+            return selectedEdges;
         }
 
         public Set<Node> getSelectedNodes() {
@@ -754,37 +771,79 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
             return selection;
         }
 
+        public void add(IConnection c) {
+
+            IEdgeRenderer renderer = (IEdgeRenderer) c.getComponent(ViewComponent.class).getRenderer();
+
+            renderer.setCurrentFill(renderer.getArrowFillPicked());
+            //renderer.getArrowShape().setFill(renderer.getArrowFillPicked());
+            //renderer.getLine().setFill(renderer.getArrowFillPicked());
+
+            selectedEdges.add(c);
+
+            onSelectionChanged();
+        }
+
         public void add(INode v) {
 
             final IRenderer renderer = v.getComponent(ViewComponent.class).getRenderer();
 
+            renderer.getShape().setStroke(Color.WHITE);
+            //renderer.getShape().setStrokeWidth(3);
 
+            //renderer.getShape().setStyle("fx-stroke: WHITE;");
 
-            if (!renderer.getShape().getStyleClass().contains("picked")) {
-                renderer.getShape().getStyleClass().add("picked");
-            }
+            //if (!renderer.getShape().getStyleClass().contains("picked")) {
+             //   renderer.getShape().getStyleClass().add("picked");
+            //}
 
             selection.add(renderer.getShape());
             selectedVertices.add(v);
+
+            onSelectionChanged();
         }
 
         public void remove(INode v) {
 
             final IRenderer renderer = v.getComponent(ViewComponent.class).getRenderer();
 
-            renderer.getShape().getStyleClass().remove("picked");
+            //renderer.getShape().setStyle("fx-stroke: null;");
+            renderer.getShape().setStroke(null);
+            //renderer.getShape().getStyleClass().remove("picked");
             selection.remove(renderer.getShape());
             selectedVertices.remove(v);
+
+            onSelectionChanged();
+        }
+
+        public void remove(IConnection c) {
+
+            final IEdgeRenderer renderer = (IEdgeRenderer) c.getComponent(ViewComponent.class).getRenderer();
+
+            renderer.setCurrentFill(renderer.getArrowFillUnpicked());
+           // renderer.getLine().setFill(renderer.getArrowFillUnpicked());
+
+            selectedEdges.remove(c);
+
+            onSelectionChanged();
         }
 
         public void clear() {
+            clearVertices();
+            clearEdges();
+        }
 
-
+        public void clearVertices() {
 
             while (!selectedVertices.isEmpty()) {
                 remove(selectedVertices.iterator().next());
             }
+        }
 
+        public void clearEdges() {
+            while (!selectedEdges.isEmpty()) {
+                remove(selectedEdges.iterator().next());
+            }
         }
 
         public boolean contains(Node node) {
@@ -795,117 +854,14 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
             return selectedVertices.contains(v);
         }
 
+        public boolean contains(IConnection c) { return selectedEdges.contains(c); }
+
         public int size() {
             return selectedVertices.size();
         }
 
         public void log() {
             System.out.println( "Items in model: " + Arrays.asList( selectedVertices.toArray()));
-        }
-
-    }
-
-    private class DragMouseGestures {
-
-        final DragContext dragContext = new DragContext();
-
-        private boolean enabled = false;
-
-        public void makeDraggable(final Node node) {
-
-            node.setOnMousePressed(onMousePressedEventHandler);
-            node.setOnMouseDragged(onMouseDraggedEventHandler);
-            node.setOnMouseReleased(onMouseReleasedEventHandler);
-
-        }
-
-        EventHandler<MouseEvent> onMousePressedEventHandler = new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-
-                // don't do anything if the user is in the process of adding to the selection model
-                if (event.isControlDown() || event.isShiftDown()) {
-                    return;
-                }
-
-                // left mouse button => dragging
-                if( !event.isPrimaryButtonDown())
-                    return;
-
-                dragContext.mouseAnchorX = event.getSceneX();
-                dragContext.mouseAnchorY = event.getSceneY();
-
-                Node node = (Node) event.getSource();
-
-                dragContext.translateAnchorX = node.getLayoutX();
-                dragContext.translateAnchorY = node.getLayoutY();
-
-                // clear the model if the current node isn't in the selection => new selection
-  /*              if (!selectionModel.contains(node)) {
-                    selectionModel.clear();
-                    selectionModel.add(node);
-                }*/
-
-                // flag that the mouse released handler should consume the event, so it won't bubble up to the pane which has a rubberband selection mouse released handler
-                enabled = true;
-
-                // prevent rubberband selection handler
-                event.consume();
-            }
-        };
-
-        EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-
-                if( !enabled)
-                    return;
-
-                // all in selection
-/*                for (Node node : selectionModel) {
-                    node.setLayoutX(dragContext.x + event.getSceneX());
-                    node.setLayoutY(dragContext.y + event.getSceneY());
-                }*/
-
-            }
-        };
-
-        EventHandler<MouseEvent> onMouseReleasedEventHandler = new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-
-                // prevent rubberband selection handler
-                if( enabled) {
-
-                    // set node's layout position to current position,remove translate coordinates
-//                    for( Node node: selectionModel) {
-//                        fixPosition(node);
-//                    }
-
-                    enabled = false;
-
-                    event.consume();
-                }
-            }
-        };
-
-        /**
-         * Set node's layout position to current position, remove translate coordinates.
-         * @param node
-         */
-        private void fixPosition( Node node) {
-
-            double x = node.getTranslateX();
-            double y = node.getTranslateY();
-
-            node.relocate(node.getLayoutX() + x, node.getLayoutY() + y);
-
-            node.setTranslateX(0);
-            node.setTranslateY(0);
-
         }
 
     }
@@ -918,12 +874,12 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
         Pane group;
         boolean enabled = false;
 
-        public RubberBandSelection( Pane group) {
+        public RubberBandSelection(Pane group) {
 
             this.group = group;
 
-            rect = new Rectangle( 0,0,0,0);
-            rect.setStroke(Color.BLUE);
+            rect = new Rectangle(0, 0, 0, 0);
+            rect.setStroke(Color.web("0x4089BF"));
             rect.setStrokeWidth(1);
             rect.setStrokeLineCap(StrokeLineCap.ROUND);
             rect.setFill(Color.LIGHTBLUE.deriveColor(0, 1.2, 1, 0.6));
@@ -931,7 +887,6 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
             group.addEventHandler(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
             group.addEventHandler(MouseEvent.MOUSE_DRAGGED, onMouseDraggedEventHandler);
             group.addEventHandler(MouseEvent.MOUSE_RELEASED, onMouseReleasedEventHandler);
-
         }
 
         EventHandler<MouseEvent> onMousePressedEventHandler = new EventHandler<MouseEvent>() {
@@ -941,9 +896,9 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
 
                 // simple flag to prevent multiple handling of this event or we'd get an exception because rect is already on the scene
                 // eg if you drag with left mouse button and while doing that click the right mouse button
-                if( enabled)
+                if(enabled) {
                     return;
-
+                }
                 dragContext.mouseAnchorX = event.getSceneX();
                 dragContext.mouseAnchorY = event.getSceneY();
 
@@ -952,10 +907,8 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
                 rect.setWidth(0);
                 rect.setHeight(0);
 
-                group.getChildren().add( rect);
-
+                group.getChildren().add(rect);
                 event.consume();
-
                 enabled = true;
             }
         };
@@ -968,8 +921,26 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
                 if( !event.isShiftDown() && !event.isControlDown()) {
                     selectionModel.clear();
                 }
+                getGraphLayout().getGraph().getVertices().stream().forEach(vertex -> {
 
-/*                for( Node node: group.getChildren()) {
+                    final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
+
+                    if (rect.localToScene(rect.getBoundsInLocal()).contains(renderer.getShape().localToScene(renderer.getShape().getBoundsInLocal()))) {
+
+                        selectionModel.add(vertex);
+                    }
+/*
+                    if (renderer.getShape().getBoundsInParent().intersects(rect.getBoundsInParent())) {
+
+                        selectionModel.add(vertex);
+                    }*/
+                });
+                /*getGraphLayout().getGraph().getVertices().stream().forEach(vertex -> {
+
+                });
+                onSelectionChanged();
+
+                for( Node node: group.getChildren()) {
 
                         if( node.getBoundsInParent().intersects( rect.getBoundsInParent())) {
 
@@ -1013,25 +984,32 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
             @Override
             public void handle(MouseEvent event) {
 
-                final double offsetX = event.getSceneX() - dragContext.mouseAnchorX;
-                final double offsetY = event.getSceneY() - dragContext.mouseAnchorY;
+                final double parentScaleX = group.
+                        localToSceneTransformProperty().getValue().getMxx();
+                final double parentScaleY = group.
+                        localToSceneTransformProperty().getValue().getMyy();
 
-                if( offsetX > 0)
-                    rect.setWidth( offsetX);
-                else {
-                    rect.setX(event.getSceneX());
-                    rect.setWidth(dragContext.mouseAnchorX - rect.getX());
-                }
+                dragContext.translateAnchorX = event.getSceneX();
+                dragContext.translateAnchorY = event.getSceneY();
 
-                if( offsetY > 0) {
-                    rect.setHeight( offsetY);
-                } else {
-                    rect.setY(event.getSceneY());
-                    rect.setHeight(dragContext.mouseAnchorY - rect.getY());
-                }
+                dragContext.mouseAnchorX = Math.max(dragContext.mouseAnchorX, 0);
+                dragContext.mouseAnchorY = Math.max(dragContext.mouseAnchorY, 0);
+
+                dragContext.translateAnchorX = Math.max(dragContext.translateAnchorX, 0);
+                dragContext.translateAnchorY = Math.max(dragContext.translateAnchorY, 0);
+
+                double x = Math.min(dragContext.mouseAnchorX, dragContext.translateAnchorX);
+                double y = Math.min(dragContext.mouseAnchorY, dragContext.translateAnchorY);
+
+                double width = Math.abs(dragContext.translateAnchorX - dragContext.mouseAnchorX);
+                double height = Math.abs(dragContext.translateAnchorY - dragContext.mouseAnchorY);
+
+                rect.setX(x);
+                rect.setY(y);
+                rect.setWidth(width);
+                rect.setHeight(height);
 
                 event.consume();
-
             }
         };
 
@@ -1044,9 +1022,66 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
 //        }
     }
 
+    private class EdgeGestures {
+
+        private boolean enabled = false;
+
+        public EdgeGestures() {
+
+        }
+
+        public EventHandler<MouseEvent> getOnMousePressedEventHandler(IConnection c) {
+
+            return event -> {
+
+                // left mouse button => dragging
+                if( !event.isPrimaryButtonDown())
+                    return;
+
+                // don't do anything if the user is in the process of adding to the selection model
+                if (event.isControlDown() || event.isShiftDown()) {
+
+                    if (selectionModel.contains(c)) {
+                        selectionModel.remove(c);
+                    } else {
+
+                        selectionModel.add(c);
+                    }
+                    return;
+                }
+                final Node node = (Node) event.getSource();
+
+                // clearVertices the model if the current node isn't in the selection => new selection
+                if (!selectionModel.contains(c)) {
+                    selectionModel.clearEdges();
+                    selectionModel.add(c);
+                }
+                // flag that the mouse released handler should consume the event, so it won't bubble up to the pane which has a rubberband selection mouse released handler
+                enabled = true;
+
+                // prevent rubberband selection handler
+                event.consume();
+            };
+        }
+
+        public EventHandler<MouseEvent> getOnMouseReleasedEventHandler(IConnection n) {
+
+            return event -> {
+
+                // prevent rubberband selection handler
+                if (enabled) {
+
+                    enabled = false;
+                    event.consume();
+                }
+            };
+        }
+
+    }
+
     private class NodeGestures {
 
-        private DragContext nodeDragContext = new DragContext();
+        private DragContext dragContext = new DragContext();
 
         private boolean enabled = false;
 
@@ -1059,33 +1094,30 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
             return event -> {
 
                 // left mouse button => dragging
-                if( !event.isPrimaryButtonDown()) {
+                if( !event.isPrimaryButtonDown())
                     return;
-                }
 
                 // don't do anything if the user is in the process of adding to the selection model
                 if (event.isControlDown() || event.isShiftDown()) {
 
-                    selectionModel.add(n);
+                    if (selectionModel.contains(n)) {
+                        selectionModel.remove(n);
+                    } else {
+
+                        selectionModel.add(n);
+                    }
                     return;
                 }
-
-                nodeDragContext.mouseAnchorX = event.getSceneX();
-                nodeDragContext.mouseAnchorY = event.getSceneY();
-
                 final Node node = (Node) event.getSource();
 
-                nodeDragContext.translateAnchorX = node.getLayoutX();
-                nodeDragContext.translateAnchorY = node.getLayoutY();
+                dragContext.startX = event.getSceneX();
+                dragContext.startY = event.getSceneY();
 
-                // clear the model if the current node isn't in the selection => new selection
+                // clearVertices the model if the current node isn't in the selection => new selection
                 if (!selectionModel.contains(n)) {
-
-                    selectionModel.clear();
+                    selectionModel.clearVertices();
                     selectionModel.add(n);
                 }
-                selectionModel.log();
-
                 // flag that the mouse released handler should consume the event, so it won't bubble up to the pane which has a rubberband selection mouse released handler
                 enabled = true;
 
@@ -1099,64 +1131,42 @@ public class FXVisualizationViewer extends AnchorPane implements VisualizationSe
             return event -> {
 
                 // left mouse button => dragging
-                if( !event.isPrimaryButtonDown()) {
+                if( !event.isPrimaryButtonDown())
+                    return;
+
+                if (!enabled) {
                     return;
                 }
+                // all in selection
+                for (Node node: selectionModel.getSelectedNodes()) {
 
-                if( !enabled)
-                    return;
-
-                double scale = canvas.getScale();
-
-                selectionModel.getSelectedNodes().stream().forEach(node -> {
-                    node.setLayoutX(nodeDragContext.translateAnchorX + (( event.getSceneX() - nodeDragContext.mouseAnchorX) / scale));
-                    node.setLayoutY(nodeDragContext.translateAnchorY + (( event.getSceneY() - nodeDragContext.mouseAnchorY) / scale));
-
-
-                    node.setLayoutX(dragContext.x + event.getSceneX());
-                    node.setLayoutY(dragContext.y + event.getSceneY());
-
-                });
-                event.consume();
+                    node.setTranslateX((event.getSceneX() - dragContext.startX) / canvas.getScale());
+                    node.setTranslateY((event.getSceneY() - dragContext.startY) / canvas.getScale());
+                }
             };
-
         }
 
-        private EventHandler<MouseEvent> onMousePressedEventHandler = event -> {
+        public EventHandler<MouseEvent> getOnMouseReleasedEventHandler(INode n) {
 
-            // left mouse button => dragging
-            if( !event.isPrimaryButtonDown())
-                return;
+            return event -> {
 
-            nodeDragContext.mouseAnchorX = event.getSceneX();
-            nodeDragContext.mouseAnchorY = event.getSceneY();
+                // prevent rubberband selection handler
+                if (enabled) {
 
-            Node node = (Node) event.getSource();
+                    // set node's layout position to current position,remove translate coordinates
+                    //selectionModel.selection.forEach(this::fixPosition);
 
-            nodeDragContext.translateAnchorX = node.getLayoutX();
-            nodeDragContext.translateAnchorY = node.getLayoutY();
+                    selectionModel.getSelectedNodes().stream().forEach(node -> {
 
-        };
-
-        private EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-
-                // left mouse button => dragging
-                if( !event.isPrimaryButtonDown()) {
-                    return;
+                        node.setLayoutX(node.getLayoutX() + node.getTranslateX());
+                        node.setLayoutY(node.getLayoutY() + node.getTranslateY());
+                        node.setTranslateX(0);
+                        node.setTranslateY(0);
+                    });
+                    enabled = false;
+                    event.consume();
                 }
-
-
-                double scale = canvas.getScale();
-
-                Node node = (Node) event.getSource();
-
-                node.setLayoutX(nodeDragContext.translateAnchorX + (( event.getSceneX() - nodeDragContext.mouseAnchorX) / scale));
-                node.setLayoutY(nodeDragContext.translateAnchorY + (( event.getSceneY() - nodeDragContext.mouseAnchorY) / scale));
-
-                event.consume();
-
-            }
-        };
+            };
+        }
     }
 }

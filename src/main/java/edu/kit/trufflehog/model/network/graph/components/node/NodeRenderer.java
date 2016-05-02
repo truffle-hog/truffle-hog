@@ -33,12 +33,8 @@ public class NodeRenderer implements IRenderer {
     private Color colorUnpicked = Color.web("0x4089BF");// = new Color(0x4089BFa0, true);
 
     private Shape shape = new Circle(50); // = new Ellipse2D.Double(-30, -30, 60, 60);
-
-    private Color drawPicked = Color.web("0xC6E9FF");
-    private Color drawUnpicked = Color.web("0x4089BF");
-
     private ObjectProperty<Paint> fillPaintProperty = new SimpleObjectProperty<>(colorUnpicked);
-    private ObjectProperty<Paint> strokePaintProperty = new SimpleObjectProperty<>(drawUnpicked);
+    //private ObjectProperty<Paint> strokePaintProperty = new SimpleObjectProperty<>(drawUnpicked);
     private boolean isPicked;
 
     private IComposition parent;
@@ -49,8 +45,10 @@ public class NodeRenderer implements IRenderer {
      */
     public NodeRenderer() {
 
+       // shape.getStyle
+
         shape.fillProperty().bind(fillPaintProperty);
-        shape.strokeProperty().bind(strokePaintProperty);
+        //shape.strokeProperty().bind(strokePaintProperty);
         shape.setStrokeWidth(6);
     }
 

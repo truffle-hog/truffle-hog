@@ -27,6 +27,12 @@ package edu.kit.trufflehog.view.jung.visualization;
  */
 class DragContext {
 
+    double x;
+    double y;
+
+    double startX;
+    double startY;
+
     double mouseAnchorX;
     double mouseAnchorY;
 

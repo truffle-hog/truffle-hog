@@ -57,6 +57,8 @@ public interface IEdgeRenderer extends IRenderer {
     void setArrowFillPicked(Color arrowFillPicked);
     void setArrowFillUnpicked(Color arrowFillUnpicked);
 
+    void setCurrentFill(Color fill);
+
     Shape getArrowShape();
 
     DoubleProperty edgeWidthMultiplierProperty();

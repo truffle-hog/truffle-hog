@@ -48,6 +48,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -201,21 +202,30 @@ public class Presenter {
 
     private void initGUI() {
 
+        final AnchorPane root = new AnchorPane();
+        final Scene scene = new Scene(root);
+
         final FXVisualizationViewer viewer = new FXVisualizationViewer(liveNetwork.getViewPort().getDelegate(), liveNetwork.getViewPort());
-        //final SceneGestures sceneGestures = new SceneGestures(viewer.getCanvas());
-        final Scene scene = new Scene(viewer);
+        //final SceneGestures sceneGestures = new SceneGestures(viewer, viewer.getCanvas());
+        root.getChildren().add(viewer);
+
+        AnchorPane.setLeftAnchor(viewer, 0d);
+        AnchorPane.setRightAnchor(viewer, 0d);
+        AnchorPane.setBottomAnchor(viewer, 0d);
+        AnchorPane.setTopAnchor(viewer, 0d);
+
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN),
                 viewer::refreshLayout);
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN),
                 viewer::selectAllNodes);
-        //scene.addEventFilter( MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
-        //scene.addEventFilter( MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
-        //scene.addEventFilter( ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
+        //scene.addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
+        //scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
+        //scene.addEventFilter(ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
 
 
         final StatisticsViewModel statisticsViewModel = new StatisticsViewModel();
         final StatisticsViewController statisticsViewController = new StatisticsViewController(statisticsViewModel);
-        viewer.getChildren().add(statisticsViewController);
+        root.getChildren().add(statisticsViewController);
         AnchorPane.setTopAnchor(statisticsViewController, 10d);
         AnchorPane.setRightAnchor(statisticsViewController, 10d);
         viewer.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statisticsViewModel));
@@ -234,8 +244,8 @@ public class Presenter {
 
         final FilterOverlayView filterOverlayView = new FilterOverlayView(configData.getAllLoadedFilters(), filterEditingMenuView, viewer.getPickedVertexState());
         filterOverlayView.setVisible(false);
-        viewer.getChildren().add(filterOverlayView);
-        viewer.getChildren().add(filterEditingMenuView);
+        root.getChildren().add(filterOverlayView);
+        root.getChildren().add(filterEditingMenuView);
         AnchorPane.setLeftAnchor(filterOverlayView, 0d);
         filterOverlayView.addCommand(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
         filterOverlayView.addCommand(FilterInteraction.UPDATE, new UpdateFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
@@ -244,7 +254,7 @@ public class Presenter {
         final ToolbarView toolbarView = new ToolbarView(filterOverlayView);
         toolbarView.addCommand(ToolbarInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));
         toolbarView.addCommand(ToolbarInteraction.DISCONNECT, new DisconnectSPPProfinetCommand(truffleReceiver));
-        viewer.getChildren().add(toolbarView);
+        root.getChildren().add(toolbarView);
         AnchorPane.setBottomAnchor(toolbarView, 5d);
         AnchorPane.setLeftAnchor(toolbarView, 5d);
         toolbarView.addListener(commandExecutor.asUserCommandListener());
@@ -253,7 +263,7 @@ public class Presenter {
 
         final GeneralStatisticsViewModel generalStatisticsViewModel = new GeneralStatisticsViewModel();
         final GeneralStatisticsViewController generalStatisticsViewController = new GeneralStatisticsViewController(generalStatisticsViewModel);
-        viewer.getChildren().add(generalStatisticsViewController);
+        root.getChildren().add(generalStatisticsViewController);
 
         // FIXME This part is a bit verbose!!! _____________ START
         StringProperty timeProperty = new SimpleStringProperty("");

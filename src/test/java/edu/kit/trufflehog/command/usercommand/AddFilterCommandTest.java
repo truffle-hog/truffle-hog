@@ -21,13 +21,15 @@ public class AddFilterCommandTest {
 
     @Before
     public void setup() {
-        macroFilter = mock(MacroFilter.class);
+
+        // TODO change?
+/*        macroFilter = mock(MacroFilter.class);
         nwp = mock(INetworkIOPort.class);
         ufc = new UpdateFilterCommand(nwp, macroFilter);
         filterInput = mock(FilterInput.class);
         ufc.setSelection(filterInput);
         when(filterInput.isActive()).thenReturn(true);
-        when(filterInput.isDeleted()).thenReturn(false);
+        when(filterInput.isDeleted()).thenReturn(false);*/
     }
 
     @After

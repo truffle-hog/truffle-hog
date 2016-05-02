@@ -22,12 +22,6 @@ public class NodeRendererTest {
     @Test
     public void togglePicked() throws Exception {
         NodeRenderer renderer = new NodeRenderer();
-        assertFalse(renderer.picked());
-        renderer.togglePicked();
-        assertTrue(renderer.picked());
-        renderer.togglePicked();
-        assertFalse(renderer.picked());
-        renderer.togglePicked();
-        assertTrue(renderer.picked());
+
     }
 }
