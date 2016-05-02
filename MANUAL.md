@@ -17,7 +17,7 @@ The manual is loosely seperated into three sections. *Setup* describes the initi
 - In the **upper right corner (as long at least one node is selected)** one finds another overlay containing information on the *currently selected* nodes. Attention! This information is far more advanced and aimed at professionals looking for a more in-depth view on what is going on the ether.
 
 ### Navigation
-Very easy! Just drag and drop nodes and use your mouse wheel to move around the whole graph.
+Very easy! Just drag and drop nodes and use your mouse wheel to move around the whole graph. Alternatively, use the right mouse button to move the view around.
 
 ### Key combinations
 - `CTRL+X` algorithmically positions the nodes of the graph according to the current zoom level to *look nice*. If it does not, try to zoom out a bit, there might not be enough place on your current zoom level to work on.
