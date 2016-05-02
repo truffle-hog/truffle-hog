@@ -646,7 +646,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
             logger.warn("There is no command registered to: " + GraphInteraction.SELECTION_CONTEXTMENU);
             return;
         }
-        cmCommand.setSelection(new ImmutablePair<>(new HashSet<>(selectedNodes), new HashSet<>(selectedEdges)));
+        cmCommand.setSelection(new ImmutablePair<>(new HashSet<>(selectionModel.getSelectedVertices()), new HashSet<>(selectionModel.getSelectedEdges())));
         cmCommand.setPosX(posX);
         cmCommand.setPosY(posY);
 
