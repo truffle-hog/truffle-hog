@@ -275,7 +275,6 @@ public class Presenter {
             }
         });
         contextMenu.getItems().add(getPackageItem);
-        viewer.getChildren().add(statisticsViewController);
         AnchorPane.setTopAnchor(statisticsViewController, 10d);
         AnchorPane.setRightAnchor(statisticsViewController, 10d);
         viewer.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statisticsViewModel));

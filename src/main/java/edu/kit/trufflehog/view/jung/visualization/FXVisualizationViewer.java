@@ -375,6 +375,11 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         nodeShape.setLayoutX(layout.transform(vertex).getX());
         nodeShape.setLayoutY(layout.transform(vertex).getY());
 
+        nodeShape.setOnContextMenuRequested(e -> {
+
+            onSelectionContextMenu(e.getSceneX(), e.getSceneY());
+        });
+
         ///////////
         // LABEL //
         ///////////
@@ -815,6 +820,8 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
             selectedVertices.add(v);
 
             onSelectionChanged();
+
+
         }
 
         public void remove(INode v) {
@@ -828,6 +835,8 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
             selectedVertices.remove(v);
 
             onSelectionChanged();
+
+
         }
 
         public void remove(IConnection c) {
