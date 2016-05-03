@@ -54,6 +54,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -92,7 +93,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
     private final NodeGestures nodeGestures;
     private final EdgeGestures edgeGestures = new EdgeGestures();
 
-    private boolean wasRightClicked = false;
+    //private boolean wasRightClicked = false;
 
     private final SelectionModel selectionModel = new SelectionModel();
 
@@ -419,11 +420,12 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         nodeShape.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler(vertex));
         nodeShape.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler(vertex));
         nodeShape.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler(vertex));
-
+        nodeShape.addEventFilter(MouseEvent.MOUSE_CLICKED, nodeGestures.getOnMouseClickedEventHandler(vertex));
 
         canvas.getChildren().addAll(nodeLabel, nodeShape);
     }
 
+    synchronized
     public void refreshLayout() {
 
       //  logger.debug("refresh");
@@ -890,6 +892,8 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         Pane group;
         boolean enabled = false;
 
+        boolean wasPrimary = false;
+
         public RubberBandSelection(Pane group) {
 
             this.group = group;
@@ -909,6 +913,12 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
             @Override
             public void handle(MouseEvent event) {
+
+                if (!event.isPrimaryButtonDown()) {
+                    return;
+                }
+
+                wasPrimary = true;
 
                 // simple flag to prevent multiple handling of this event or we'd get an exception because rect is already on the scene
                 // eg if you drag with left mouse button and while doing that click the right mouse button
@@ -933,6 +943,10 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
             @Override
             public void handle(MouseEvent event) {
+
+                if (!wasPrimary) {
+                    return;
+                }
 
                 if( !event.isShiftDown() && !event.isControlDown()) {
                     selectionModel.clear();
@@ -993,6 +1007,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
                 event.consume();
 
                 enabled = false;
+                wasPrimary = false;
             }
         };
 
@@ -1102,6 +1117,8 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
         private boolean enabled = false;
 
+        private boolean wasRightClick = false;
+
         public NodeGestures() {
 
         }
@@ -1109,6 +1126,13 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         public EventHandler<MouseEvent> getOnMousePressedEventHandler(INode n) {
 
             return event -> {
+
+                if (event.isSecondaryButtonDown()) {
+                    wasRightClick = true;
+                    return;
+                }
+
+                wasRightClick = false;
 
                 // left mouse button => dragging
                 if( event.isPrimaryButtonDown()) {
@@ -1135,8 +1159,6 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
                     }
                     // flag that the mouse released handler should consume the event, so it won't bubble up to the pane which has a rubberband selection mouse released handler
                     enabled = true;
-                } else if(event.isSecondaryButtonDown()) {
-                    wasRightClicked = true;
                 }
                 // prevent rubberband selection handler
                 event.consume();
@@ -1146,6 +1168,8 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         public EventHandler<MouseEvent> getOnMouseDraggedEventHandler(INode n) {
 
             return event -> {
+
+                wasRightClick = false;
 
                 // left mouse button => dragging
                 if( !event.isPrimaryButtonDown())
@@ -1163,12 +1187,32 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
             };
         }
 
+        public EventHandler<MouseEvent> getOnMouseClickedEventHandler(INode n) {
+
+            return event -> {
+
+                if (wasRightClick) {
+
+                    if (selectionModel.contains(n)) {
+
+                        onSelectionContextMenu(event.getScreenX(), event.getScreenY());
+                    }
+
+                    logger.debug("was right");
+                }
+
+                wasRightClick = false;
+
+
+            };
+
+        }
+
         public EventHandler<MouseEvent> getOnMouseReleasedEventHandler(INode n) {
 
             return event -> {
 
                 // prevent rubberband selection handler
-                if (!wasRightClicked) {
                     if (enabled) {
 
                         // set node's layout position to current position,remove translate coordinates
@@ -1184,7 +1228,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
                         enabled = false;
 
                     }
-                } else {
+/*                } else {
                     if (enabled) enabled = false;
                     //selectionModel.clear();
                     if (!selectionModel.contains(n)) selectionModel.add(n);
@@ -1192,7 +1236,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
                     onSelectionContextMenu(event.getScreenX(), event.getScreenY());
 
                     wasRightClicked = false;
-                }
+                }*/
                 event.consume();
             };
         }

@@ -208,6 +208,17 @@ public class Presenter {
         final AnchorPane root = new AnchorPane();
         final Scene scene = new Scene(root);
 
+
+        final ContextMenu contextMenu = new ContextMenu();
+        contextMenu.setAutoHide(true);
+        contextMenu.setHideOnEscape(true);
+        final MenuItem getPackageItem = new MenuItem("Get Packages");
+        final MenuItem addFilterItem = new MenuItem("Add Filter");
+        contextMenu.getItems().add(getPackageItem);
+        contextMenu.getItems().add(addFilterItem);
+
+
+
         final FXVisualizationViewer viewer = new FXVisualizationViewer(liveNetwork.getViewPort().getDelegate(), liveNetwork.getViewPort());
         //final SceneGestures sceneGestures = new SceneGestures(viewer, viewer.getCanvas());
         root.getChildren().add(viewer);
@@ -257,55 +268,9 @@ public class Presenter {
         final StatisticsViewModel statisticsViewModel = new StatisticsViewModel();
         final StatisticsViewController statisticsViewController = new StatisticsViewController(statisticsViewModel, primaryStage);
         root.getChildren().add(statisticsViewController);
-        final ContextMenu contextMenu = new ContextMenu();
-        final MenuItem getPackageItem = new MenuItem("Get Packages");
-        final MenuItem addFilterItem = new MenuItem("Add Filter");
 
-        //TODO: make more beautiful, add possibility of multiple node selection (if needed)
-        getPackageItem.setOnAction(event -> {
-            packetDataController.setVisible(true);
-            PacketDataLoggingComponent loggingComponent = null;
-            NodeInfoComponent tempInfoComponent = null;
-            for (INode node:viewer.getPickedVertexState().getPicked()) {
-                if (loggingComponent == null) {
-                    loggingComponent = node.getComponent(PacketDataLoggingComponent.class);
-                    tempInfoComponent = node.getComponent(NodeInfoComponent.class);
-                } else {
-                    break;
-                }
-            }
 
-            final NodeInfoComponent infoComponent = tempInfoComponent;
-            if (loggingComponent != null) {
-                packetDataController.register(loggingComponent);
 
-                if (infoComponent != null) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Node: ");
-                    if (infoComponent.getDeviceName() != null) sb.append(infoComponent.getDeviceName());
-                    if (infoComponent.getMacAddress() != null) {
-                        sb.append(" ");
-                        sb.append(infoComponent.getMacAddress().toString());
-                    }
-                    if (infoComponent.getIPAddress() != null) {
-                        sb.append(" ");
-                        sb.append(infoComponent.getIPAddress().toString());
-                    }
-
-                    packetDataController.setName(sb.toString());
-                } else {
-                    packetDataController.setName("Node: no info");
-                }
-            }
-        });
-        addFilterItem.setOnAction(event -> {
-            filterEditingMenuView.showMenu(viewer.getPickedVertexState().getPicked().stream()
-                    .map(node -> node.getAddress().toString())
-                    .collect(Collectors.toList()));
-        });
-
-        contextMenu.getItems().add(getPackageItem);
-        contextMenu.getItems().add(addFilterItem);
         AnchorPane.setTopAnchor(statisticsViewController, 10d);
         AnchorPane.setRightAnchor(statisticsViewController, 10d);
         viewer.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statisticsViewModel));
@@ -360,7 +325,58 @@ public class Presenter {
         AnchorPane.setBottomAnchor(generalStatisticsViewController, 10d);
         AnchorPane.setRightAnchor(generalStatisticsViewController, 10d);
 
+
+
+        //TODO: make more beautiful, add possibility of multiple node selection (if needed)
+        getPackageItem.setOnAction(event -> {
+            packetDataController.setVisible(true);
+            PacketDataLoggingComponent loggingComponent = null;
+            NodeInfoComponent tempInfoComponent = null;
+            for (INode node:viewer.getPickedVertexState().getPicked()) {
+                if (loggingComponent == null) {
+                    loggingComponent = node.getComponent(PacketDataLoggingComponent.class);
+                    tempInfoComponent = node.getComponent(NodeInfoComponent.class);
+                } else {
+                    break;
+                }
+            }
+
+            final NodeInfoComponent infoComponent = tempInfoComponent;
+            if (loggingComponent != null) {
+                packetDataController.register(loggingComponent);
+
+                if (infoComponent != null) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Node: ");
+                    if (infoComponent.getDeviceName() != null) sb.append(infoComponent.getDeviceName());
+                    if (infoComponent.getMacAddress() != null) {
+                        sb.append(" ");
+                        sb.append(infoComponent.getMacAddress().toString());
+                    }
+                    if (infoComponent.getIPAddress() != null) {
+                        sb.append(" ");
+                        sb.append(infoComponent.getIPAddress().toString());
+                    }
+
+                    packetDataController.setName(sb.toString());
+                } else {
+                    packetDataController.setName("Node: no info");
+                }
+            }
+        });
+        addFilterItem.setOnAction(event -> {
+            filterEditingMenuView.showMenu(viewer.getPickedVertexState().getPicked().stream()
+                    .map(node -> node.getAddress().toString())
+                    .collect(Collectors.toList()));
+        });
+
+
+
         // FIXME This part is a bit verbose!!! _____________ END
+
+        filterOverlayView.toFront();
+        filterEditingMenuView.toFront();
+
 
 
 
