@@ -32,7 +32,10 @@ import java.util.concurrent.Executors;
  * </p>
  */
 public class Main extends Application {
-	private Presenter presenter;
+	private static Presenter presenter;
+
+	//TODO this is just for testing
+	public static Stage pr;
 
 	/**
 	 * <p>
@@ -63,6 +66,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		buildNative();
 
+		pr = primaryStage;
 
 		// TODO horror
 		primaryStage.setTitle("TruffleHog");

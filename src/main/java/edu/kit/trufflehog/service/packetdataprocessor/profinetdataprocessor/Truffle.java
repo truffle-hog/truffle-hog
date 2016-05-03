@@ -168,7 +168,17 @@ public class Truffle implements IPacketData {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        MacAddress srcMacAddress = getAttribute(MacAddress.class, "sourceMacAddress");
+        attributes.values().stream().forEach(map -> {
+
+            map.entrySet().stream().forEach(entry -> {
+
+                sb.append(entry.getKey()).append(": ").append(entry.getValue()).append('\n');
+
+            });
+
+        });
+
+/*        MacAddress srcMacAddress = getAttribute(MacAddress.class, "sourceMacAddress");
         MacAddress destMacAddress = getAttribute(MacAddress.class, "destMacAddress");
         Short etherType = getAttribute(Short.class, "etherType");
 
@@ -195,7 +205,7 @@ public class Truffle implements IPacketData {
             }
         }
 
-        sb.append("\n\n");
+        sb.append("\n\n");*/
 
         return sb.toString();
     }

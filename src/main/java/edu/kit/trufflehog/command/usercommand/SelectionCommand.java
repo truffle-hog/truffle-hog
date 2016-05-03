@@ -65,19 +65,21 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
             TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>>> collector = new ComponentInfoCollector(this.infoVisitor);
 
     public SelectionCommand(StatisticsViewModel statisticsViewModel) {
-        if(statisticsViewModel == null) throw new NullPointerException("StatisticsViewModel should not be null");
+        if(statisticsViewModel == null) { throw new NullPointerException("StatisticsViewModel should not be null"); }
         this.statisticsViewModel = statisticsViewModel;
     }
 
     @Override
     synchronized
     public <S extends Pair<Set<INode>, Set<IConnection>>> void setSelection(S selection) {
-        if (selection == null) throw new NullPointerException("Selection must not be null");
+        if (selection == null) { throw new NullPointerException("Selection must not be null"); }
         selected = selection;
         logger.debug(selected);
     }
 
     private void updateNodeStatistics(Set<INode> nodes) {
+
+        assert(nodes != null);
 
         //clearStatistics();
 
@@ -99,6 +101,7 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
 
     private void updateConnectionStatistics(Set<IConnection> connections) {
 
+        assert(connections != null);
         //clearStatistics();
 
         if (connections.size() == 1) {
@@ -119,6 +122,9 @@ public class SelectionCommand implements IUserCommand<Pair<Set<INode>, Set<IConn
     }
 
     private void updateMixedStatistics(Set<INode> nodes, Set<IConnection> connections) {
+
+        assert(connections != null);
+        assert(nodes != null);
 
         clearStatistics();
 

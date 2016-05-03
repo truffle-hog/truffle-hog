@@ -22,7 +22,7 @@ import java.util.Collection;
 public class PacketDataLoggingComponent extends AbstractComponent implements IComponent {
 
     private final ObservableList<IPacketData> dataList;
-    private final ListProperty dataProperty;
+    private final ListProperty<IPacketData> dataProperty;
 
     private IComposition parent = null;
     /**

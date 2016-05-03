@@ -16,6 +16,7 @@
  */
 package edu.kit.trufflehog.model.network.graph.components;
 
+import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.model.network.graph.NetworkConnection;
 import edu.kit.trufflehog.model.network.graph.NetworkNode;
 import edu.kit.trufflehog.model.network.graph.NetworkNodeTester;
@@ -32,6 +33,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TreeItem;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.Popup;
 
 import java.text.DecimalFormat;
 
@@ -103,7 +108,20 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
     public TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> visit(PacketDataLoggingComponent component) {
 
         final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> root = new TreeItem<>(new StatisticsViewModel.StringEntry<>(component.name(), ""));
-        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Packets", new SimpleStringProperty("Right click on a node to list packet logs"))));
+
+/*        final Popup popup = new Popup();
+        popup.setX(300);
+        popup.setY(200);
+        popup.getContent().addAll(new Circle(25, 25, 50, Color.AQUAMARINE));
+
+        root.expandedProperty().
+
+        root.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+
+            popup.show(Main.pr);
+        });*/
+
+        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Packets", component.getObservablePacketsProperty())));
 
         return root;
     }
