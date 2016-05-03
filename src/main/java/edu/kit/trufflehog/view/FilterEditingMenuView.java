@@ -171,7 +171,7 @@ public class FilterEditingMenuView extends AnchorPaneController<FilterInteractio
      *     created.
      * </p>
      */
-    void showMenu() {
+    public void showMenu() {
         showMenu((FilterInput) null);
     }
 
@@ -184,7 +184,7 @@ public class FilterEditingMenuView extends AnchorPaneController<FilterInteractio
      * @param filterStringList The list of MAC addresses that should be included in the filter. These will be shown
      *                         in the rules text area.
      */
-    void showMenu(List<String> filterStringList) {
+    public void showMenu(List<String> filterStringList) {
         final String filterString = concatRules(filterStringList);
         rulesTextArea.setText(filterString);
         filterByComboBox.setValue(config.getProperty("MAC_LABEL"));
@@ -199,7 +199,7 @@ public class FilterEditingMenuView extends AnchorPaneController<FilterInteractio
      *
      * @param filterInput The filterInput that should be updated.
      */
-    void showMenu(FilterInput filterInput) {
+    public void showMenu(FilterInput filterInput) {
         if (filterInput != null) {
             updatingFilter = filterInput;
             nameTextField.setText(filterInput.getName());
@@ -260,7 +260,7 @@ public class FilterEditingMenuView extends AnchorPaneController<FilterInteractio
      *     Hides the menu: starts the slide out animation.
      * </p>
      */
-    void hideMenu() {
+    public void hideMenu() {
         transitionHide.play();
         transitionHide.setOnFinished(event -> {
         //    stackPane.setVisible(false);
@@ -377,7 +377,7 @@ public class FilterEditingMenuView extends AnchorPaneController<FilterInteractio
      * </p>
      * @param filterInput The filter to update in the graph.
      */
-    void notifyUpdateCommand(FilterInput filterInput) {
+    public void notifyUpdateCommand(FilterInput filterInput) {
 
         //throw new UnsupportedOperationException("not working yet");
 
