@@ -78,7 +78,7 @@ public class FilterViewModel {
                                     final String rules,
                                     final boolean authorized) {
 
-        FilterInput filterInputUpdated = createFilterInput(name, selectionModelString, filterOriginString,
+        final FilterInput filterInputUpdated = createFilterInput(name, selectionModelString, filterOriginString,
                 color, priorityText, rules, authorized, true);
 
         if (filterInputUpdated == null) {

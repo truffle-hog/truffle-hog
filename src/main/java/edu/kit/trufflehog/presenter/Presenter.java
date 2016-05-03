@@ -232,7 +232,7 @@ public class Presenter {
         AnchorPane.setLeftAnchor(packetDataController, 0d);
 
         final StatisticsViewModel statisticsViewModel = new StatisticsViewModel();
-        final StatisticsViewController statisticsViewController = new StatisticsViewController(statisticsViewModel);
+        final StatisticsViewController statisticsViewController = new StatisticsViewController(statisticsViewModel, primaryStage);
         root.getChildren().add(statisticsViewController);
         final ContextMenu contextMenu = new ContextMenu();
         final MenuItem getPackageItem = new MenuItem("Get Packages");

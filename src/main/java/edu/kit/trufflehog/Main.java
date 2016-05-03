@@ -34,9 +34,6 @@ import java.util.concurrent.Executors;
 public class Main extends Application {
 	private static Presenter presenter;
 
-	//TODO this is just for testing
-	public static Stage pr;
-
 	/**
 	 * <p>
 	 *     The main method of TruffleHog.
@@ -65,8 +62,6 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		buildNative();
-
-		pr = primaryStage;
 
 		// TODO horror
 		primaryStage.setTitle("TruffleHog");

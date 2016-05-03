@@ -32,7 +32,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private Color colorUnpicked = Color.web("0xffffff");
+    private Color colorUnpicked = Color.web("0xaaaaaa");
     private Color colorPicked = Color.web("0x6CFF82");
 
     private final double edgeWidthPickedMultiplier = 2;
@@ -43,7 +43,7 @@ public class BasicEdgeRenderer implements IEdgeRenderer {
     private QuadCurve line = new QuadCurve();
 
     private Color arrowFillPicked = Color.web("0x6CFF82");
-    private Color arrowFillUnpicked = Color.web("0xffffff");
+    private Color arrowFillUnpicked = Color.web("0xaaaaaa");
 
     private Color arrowDrawPicked = null;
     private Color arrowDrawUnpicked = null;

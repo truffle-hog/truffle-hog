@@ -121,7 +121,8 @@ public class ComponentInfoVisitor implements IComponentVisitor<TreeItem<Statisti
             popup.show(Main.pr);
         });*/
 
-        root.getChildren().add(new TreeItem<>(new StatisticsViewModel.StringEntry<>("Packets", component.getObservablePacketsProperty())));
+        final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> info = new TreeItem<>(new StatisticsViewModel.StringEntry<>("Packets", component.getObservablePacketsProperty()));
+        root.getChildren().add(info);
 
         return root;
     }

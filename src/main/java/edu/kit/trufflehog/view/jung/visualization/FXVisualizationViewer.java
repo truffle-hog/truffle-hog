@@ -218,7 +218,6 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
     }
 
     // TODO check if synch is needed
-    synchronized
     private void initEdge(IConnection edge) {
 
         final Pair<INode> pair = this.layout.getGraph().getEndpoints(edge);
@@ -234,7 +233,6 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
             shape.setPickOnBounds(false);
             shape.setMouseTransparent(true);
             return;
-
         }
 
         // source and destination shape
@@ -352,7 +350,6 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         canvas.getChildren().add(curve);
     }
 
-    synchronized
     private void initVertex(INode vertex) {
 
         if (vertex.getAddress().isMulticast()) {
@@ -427,7 +424,6 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         canvas.getChildren().addAll(nodeLabel, nodeShape);
     }
 
-    synchronized
     public void refreshLayout() {
 
       //  logger.debug("refresh");
@@ -945,7 +941,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
                     final IRenderer renderer = vertex.getComponent(ViewComponent.class).getRenderer();
 
-                    if (rect.localToScene(rect.getBoundsInLocal()).contains(renderer.getShape().localToScene(renderer.getShape().getBoundsInLocal()))) {
+                    if (rect.localToScene(rect.getBoundsInLocal()).intersects(renderer.getShape().localToScene(renderer.getShape().getBoundsInLocal()))) {
 
                         selectionModel.add(vertex);
                     }

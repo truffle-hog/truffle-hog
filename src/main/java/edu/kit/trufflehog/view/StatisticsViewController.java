@@ -4,15 +4,16 @@ import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.view.controllers.BorderPaneController;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
+import javafx.util.Callback;
 
 /**
  * <p>
@@ -39,7 +40,7 @@ public class StatisticsViewController extends BorderPaneController {
      * </p>
      *
      */
-    public StatisticsViewController(StatisticsViewModel statModel) {
+    public StatisticsViewController(StatisticsViewModel statModel, Stage primaryStage) {
 
         super("selected_statistics_view.fxml");
 
@@ -56,11 +57,27 @@ public class StatisticsViewController extends BorderPaneController {
         valueColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> param) ->
                 param.getValue().getValue().getValueProperty());
 
+        valueColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object>, ObservableValue<Object>>() {
+            @Override
+            public ObservableValue<Object> call(TreeTableColumn.CellDataFeatures<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> param) {
+
+                if (param.getValue().getValue().getValueProperty() instanceof ListProperty) {
+
+                    return new SimpleObjectProperty<>("Double click to show");
+
+                } else {
+                    return  param.getValue().getValue().getValueProperty();
+                }
+            }
+        });
+
         this.visibleProperty().bind(statViewModel.getInfoListProperty().emptyProperty().not());
 
         infoTable.setRoot(statViewModel.getRootItem());
         infoTable.getColumns().setAll(keyColumn, valueColumn);
         infoTable.setShowRoot(false);
+
+
 
         infoTable.setOnMouseClicked(mouseEvent ->  {
 
@@ -68,6 +85,7 @@ public class StatisticsViewController extends BorderPaneController {
             {
 
                 final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> item = infoTable.getSelectionModel().getSelectedItem();
+
 
                 if (item.getValue().getValueProperty() instanceof ListProperty) {
 
@@ -82,7 +100,7 @@ public class StatisticsViewController extends BorderPaneController {
                     popup.setAutoHide(true);
                     popup.setHideOnEscape(true);
 
-                    popup.show(Main.pr);
+                    popup.show(primaryStage);
                 }
             }
 
