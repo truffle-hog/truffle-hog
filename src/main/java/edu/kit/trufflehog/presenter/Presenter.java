@@ -62,6 +62,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -226,6 +227,28 @@ public class Presenter {
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
                 primaryStage::close);
 
+
+
+        // need to create a hashmap for filterinputs and filters for the session... maybe there will be another solution sometime
+        final Map<FilterInput, IFilter> filterMap = new HashMap<>();
+
+        final FilterEditingMenuView filterEditingMenuView = new FilterEditingMenuView(configData, filterViewModel);
+        filterEditingMenuView.setVisible(false);
+        AnchorPane.setRightAnchor(filterEditingMenuView, 0d);
+        filterEditingMenuView.addCommand(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
+        filterEditingMenuView.addListener(commandExecutor.asUserCommandListener());
+
+        final FilterOverlayView filterOverlayView = new FilterOverlayView(configData.getAllLoadedFilters(), filterEditingMenuView, viewer.getPickedVertexState());
+        filterOverlayView.setVisible(false);
+        root.getChildren().add(filterOverlayView);
+        root.getChildren().add(filterEditingMenuView);
+        AnchorPane.setLeftAnchor(filterOverlayView, 0d);
+        filterOverlayView.addCommand(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
+        filterOverlayView.addCommand(FilterInteraction.UPDATE, new UpdateFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
+        filterOverlayView.addListener(commandExecutor.asUserCommandListener());
+
+
+
         final PacketDataViewController packetDataController = new PacketDataViewController(FXCollections.observableArrayList());
         packetDataController.setVisible(false);
         root.getChildren().add(packetDataController);
@@ -236,6 +259,7 @@ public class Presenter {
         root.getChildren().add(statisticsViewController);
         final ContextMenu contextMenu = new ContextMenu();
         final MenuItem getPackageItem = new MenuItem("Get Packages");
+        final MenuItem addFilterItem = new MenuItem("Add Filter");
 
         //TODO: make more beautiful, add possibility of multiple node selection (if needed)
         getPackageItem.setOnAction(event -> {
@@ -274,30 +298,21 @@ public class Presenter {
                 }
             }
         });
+        addFilterItem.setOnAction(event -> {
+            filterEditingMenuView.showMenu(viewer.getPickedVertexState().getPicked().stream()
+                    .map(node -> node.getAddress().toString())
+                    .collect(Collectors.toList()));
+        });
+
         contextMenu.getItems().add(getPackageItem);
+        contextMenu.getItems().add(addFilterItem);
         AnchorPane.setTopAnchor(statisticsViewController, 10d);
         AnchorPane.setRightAnchor(statisticsViewController, 10d);
         viewer.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statisticsViewModel));
         viewer.addCommand(GraphInteraction.SELECTION_CONTEXTMENU, new SelectionContextMenuCommand(viewer, contextMenu));
         viewer.addListener(commandExecutor.asUserCommandListener());
 
-        // need to create a hashmap for filterinputs and filters for the session... maybe there will be another solution sometime
-        final Map<FilterInput, IFilter> filterMap = new HashMap<>();
 
-        final FilterEditingMenuView filterEditingMenuView = new FilterEditingMenuView(configData, filterViewModel);
-        filterEditingMenuView.setVisible(false);
-        AnchorPane.setRightAnchor(filterEditingMenuView, 0d);
-        filterEditingMenuView.addCommand(FilterInteraction.ADD, new AddFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
-        filterEditingMenuView.addListener(commandExecutor.asUserCommandListener());
-
-        final FilterOverlayView filterOverlayView = new FilterOverlayView(configData.getAllLoadedFilters(), filterEditingMenuView, viewer.getPickedVertexState());
-        filterOverlayView.setVisible(false);
-        root.getChildren().add(filterOverlayView);
-        root.getChildren().add(filterEditingMenuView);
-        AnchorPane.setLeftAnchor(filterOverlayView, 0d);
-        filterOverlayView.addCommand(FilterInteraction.REMOVE, new RemoveFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
-        filterOverlayView.addCommand(FilterInteraction.UPDATE, new UpdateFilterCommand(configData, liveNetwork.getRWPort(), macroFilter, filterMap));
-        filterOverlayView.addListener(commandExecutor.asUserCommandListener());
 
         final ToolbarView toolbarView = new ToolbarView(filterOverlayView);
         toolbarView.addCommand(ToolbarInteraction.CONNECT, new ConnectToSPPProfinetCommand(truffleReceiver));

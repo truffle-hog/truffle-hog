@@ -936,6 +936,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
                 if( !event.isShiftDown() && !event.isControlDown()) {
                     selectionModel.clear();
+                    onSelectionContextMenu(0, 0);
                 }
                 getGraphLayout().getGraph().getVertices().stream().forEach(vertex -> {
 
@@ -1185,8 +1186,8 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
                     }
                 } else {
                     if (enabled) enabled = false;
-                    selectionModel.clear();
-                    selectionModel.add(n);
+                    //selectionModel.clear();
+                    if (!selectionModel.contains(n)) selectionModel.add(n);
 
                     onSelectionContextMenu(event.getScreenX(), event.getScreenY());
 
