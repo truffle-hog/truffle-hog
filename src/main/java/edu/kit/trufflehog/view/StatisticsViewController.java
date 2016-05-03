@@ -77,7 +77,9 @@ public class StatisticsViewController extends BorderPaneController {
         infoTable.getColumns().setAll(keyColumn, valueColumn);
         infoTable.setShowRoot(false);
 
-
+        final Popup popup = new Popup();
+        popup.setAutoHide(true);
+        popup.setHideOnEscape(true);
 
         infoTable.setOnMouseClicked(mouseEvent ->  {
 
@@ -93,13 +95,9 @@ public class StatisticsViewController extends BorderPaneController {
 
                     final ListView<IPacketData> listView = new ListView<>(data);
 
-                    final Popup popup = new Popup();
                     popup.setX(mouseEvent.getScreenX());
                     popup.setY(mouseEvent.getScreenY());
                     popup.getContent().addAll(listView);
-                    popup.setAutoHide(true);
-                    popup.setHideOnEscape(true);
-
                     popup.show(primaryStage);
                 }
             }
