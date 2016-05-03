@@ -92,6 +92,8 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
     private final NodeGestures nodeGestures;
     private final EdgeGestures edgeGestures = new EdgeGestures();
 
+    private boolean wasRightClicked = false;
+
     private final SelectionModel selectionModel = new SelectionModel();
 
     private final PickedState<INode> pickedNodes = new MyPickedState<>(selectionModel.selectedVertices);
@@ -374,11 +376,6 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
         nodeShape.setLayoutX(layout.transform(vertex).getX());
         nodeShape.setLayoutY(layout.transform(vertex).getY());
-
-        nodeShape.setOnContextMenuRequested(e -> {
-
-            onSelectionContextMenu(e.getSceneX(), e.getSceneY());
-        });
 
         ///////////
         // LABEL //
@@ -1117,33 +1114,33 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
             return event -> {
 
                 // left mouse button => dragging
-                if( !event.isPrimaryButtonDown())
-                    return;
+                if( event.isPrimaryButtonDown()) {
+                    // don't do anything if the user is in the process of adding to the selection model
+                    if (event.isControlDown() || event.isShiftDown()) {
 
-                // don't do anything if the user is in the process of adding to the selection model
-                if (event.isControlDown() || event.isShiftDown()) {
+                        if (selectionModel.contains(n)) {
+                            selectionModel.remove(n);
+                        } else {
 
-                    if (selectionModel.contains(n)) {
-                        selectionModel.remove(n);
-                    } else {
+                            selectionModel.add(n);
+                        }
+                        return;
+                    }
+                    final Node node = (Node) event.getSource();
 
+                    dragContext.startX = event.getSceneX();
+                    dragContext.startY = event.getSceneY();
+
+                    // clearVertices the model if the current node isn't in the selection => new selection
+                    if (!selectionModel.contains(n)) {
+                        selectionModel.clearVertices();
                         selectionModel.add(n);
                     }
-                    return;
+                    // flag that the mouse released handler should consume the event, so it won't bubble up to the pane which has a rubberband selection mouse released handler
+                    enabled = true;
+                } else if(event.isSecondaryButtonDown()) {
+                    wasRightClicked = true;
                 }
-                final Node node = (Node) event.getSource();
-
-                dragContext.startX = event.getSceneX();
-                dragContext.startY = event.getSceneY();
-
-                // clearVertices the model if the current node isn't in the selection => new selection
-                if (!selectionModel.contains(n)) {
-                    selectionModel.clearVertices();
-                    selectionModel.add(n);
-                }
-                // flag that the mouse released handler should consume the event, so it won't bubble up to the pane which has a rubberband selection mouse released handler
-                enabled = true;
-
                 // prevent rubberband selection handler
                 event.consume();
             };
@@ -1174,21 +1171,32 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
             return event -> {
 
                 // prevent rubberband selection handler
-                if (enabled) {
+                if (!wasRightClicked) {
+                    if (enabled) {
 
-                    // set node's layout position to current position,remove translate coordinates
-                    //selectionModel.selection.forEach(this::fixPosition);
+                        // set node's layout position to current position,remove translate coordinates
+                        //selectionModel.selection.forEach(this::fixPosition);
 
-                    selectionModel.getSelectedNodes().stream().forEach(node -> {
+                        selectionModel.getSelectedNodes().stream().forEach(node -> {
 
-                        node.setLayoutX(node.getLayoutX() + node.getTranslateX());
-                        node.setLayoutY(node.getLayoutY() + node.getTranslateY());
-                        node.setTranslateX(0);
-                        node.setTranslateY(0);
-                    });
-                    enabled = false;
-                    event.consume();
+                            node.setLayoutX(node.getLayoutX() + node.getTranslateX());
+                            node.setLayoutY(node.getLayoutY() + node.getTranslateY());
+                            node.setTranslateX(0);
+                            node.setTranslateY(0);
+                        });
+                        enabled = false;
+
+                    }
+                } else {
+                    if (enabled) enabled = false;
+                    selectionModel.clear();
+                    selectionModel.add(n);
+
+                    onSelectionContextMenu(event.getScreenX(), event.getScreenY());
+
+                    wasRightClicked = false;
                 }
+                event.consume();
             };
         }
     }
