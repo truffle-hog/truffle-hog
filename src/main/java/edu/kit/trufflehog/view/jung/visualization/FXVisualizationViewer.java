@@ -219,6 +219,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
     }
 
     // TODO check if synch is needed
+    synchronized
     private void initEdge(IConnection edge) {
 
         final Pair<INode> pair = this.layout.getGraph().getEndpoints(edge);
@@ -351,6 +352,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         canvas.getChildren().add(curve);
     }
 
+    synchronized
     private void initVertex(INode vertex) {
 
         if (vertex.getAddress().isMulticast()) {
@@ -789,7 +791,11 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
             IEdgeRenderer renderer = (IEdgeRenderer) c.getComponent(ViewComponent.class).getRenderer();
 
-            renderer.setCurrentFill(renderer.getArrowFillPicked());
+            Platform.runLater(() -> {
+
+
+                renderer.setCurrentFill(renderer.getArrowFillPicked());
+            });
             //renderer.getArrowShape().setFill(renderer.getArrowFillPicked());
             //renderer.getLine().setFill(renderer.getArrowFillPicked());
 
@@ -801,8 +807,11 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         public void add(INode v) {
 
             final IRenderer renderer = v.getComponent(ViewComponent.class).getRenderer();
+            Platform.runLater(() -> {
 
-            renderer.getShape().setStroke(Color.WHITE);
+                renderer.getShape().setStroke(Color.WHITE);
+            });
+
             //renderer.getShape().setStrokeWidth(3);
 
             //renderer.getShape().setStyle("fx-stroke: WHITE;");
@@ -824,7 +833,11 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
             final IRenderer renderer = v.getComponent(ViewComponent.class).getRenderer();
 
             //renderer.getShape().setStyle("fx-stroke: null;");
-            renderer.getShape().setStroke(null);
+
+            Platform.runLater(() -> {
+
+                renderer.getShape().setStroke(null);
+            });
             //renderer.getShape().getStyleClass().remove("picked");
             selection.remove(renderer.getShape());
             selectedVertices.remove(v);
@@ -838,7 +851,11 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
             final IEdgeRenderer renderer = (IEdgeRenderer) c.getComponent(ViewComponent.class).getRenderer();
 
-            renderer.setCurrentFill(renderer.getArrowFillUnpicked());
+            Platform.runLater(() -> {
+
+                renderer.setCurrentFill(renderer.getArrowFillUnpicked());
+            });
+
            // renderer.getLine().setFill(renderer.getArrowFillUnpicked());
 
             selectedEdges.remove(c);
@@ -928,10 +945,14 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
                 dragContext.mouseAnchorX = event.getSceneX();
                 dragContext.mouseAnchorY = event.getSceneY();
 
-                rect.setX(dragContext.mouseAnchorX);
-                rect.setY(dragContext.mouseAnchorY);
-                rect.setWidth(0);
-                rect.setHeight(0);
+                Platform.runLater(() -> {
+
+                    rect.setX(dragContext.mouseAnchorX);
+                    rect.setY(dragContext.mouseAnchorY);
+                    rect.setWidth(0);
+                    rect.setHeight(0);
+                });
+
 
                 group.getChildren().add(rect);
                 event.consume();
@@ -997,12 +1018,19 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
                 //selectionModel.log();
 
-                rect.setX(0);
-                rect.setY(0);
-                rect.setWidth(0);
-                rect.setHeight(0);
+                Platform.runLater(() -> {
 
-                group.getChildren().remove( rect);
+                    rect.setX(0);
+                    rect.setY(0);
+                    rect.setWidth(0);
+                    rect.setHeight(0);
+
+                    group.getChildren().remove( rect);
+
+
+                        }
+                );
+
 
                 event.consume();
 
@@ -1036,10 +1064,14 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
                 double width = Math.abs(dragContext.translateAnchorX - dragContext.mouseAnchorX);
                 double height = Math.abs(dragContext.translateAnchorY - dragContext.mouseAnchorY);
 
-                rect.setX(x);
-                rect.setY(y);
-                rect.setWidth(width);
-                rect.setHeight(height);
+                Platform.runLater(() -> {
+
+                    rect.setX(x);
+                    rect.setY(y);
+                    rect.setWidth(width);
+                    rect.setHeight(height);
+                });
+
 
                 event.consume();
             }
@@ -1181,8 +1213,11 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
                 // all in selection
                 for (Node node: selectionModel.getSelectedNodes()) {
 
-                    node.setTranslateX((event.getSceneX() - dragContext.startX) / canvas.getScale());
-                    node.setTranslateY((event.getSceneY() - dragContext.startY) / canvas.getScale());
+                    Platform.runLater(() -> {
+
+                        node.setTranslateX((event.getSceneX() - dragContext.startX) / canvas.getScale());
+                        node.setTranslateY((event.getSceneY() - dragContext.startY) / canvas.getScale());
+                    });
                 }
             };
         }
@@ -1220,10 +1255,13 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
                         selectionModel.getSelectedNodes().stream().forEach(node -> {
 
-                            node.setLayoutX(node.getLayoutX() + node.getTranslateX());
-                            node.setLayoutY(node.getLayoutY() + node.getTranslateY());
-                            node.setTranslateX(0);
-                            node.setTranslateY(0);
+                            Platform.runLater(() -> {
+
+                                node.setLayoutX(node.getLayoutX() + node.getTranslateX());
+                                node.setLayoutY(node.getLayoutY() + node.getTranslateY());
+                                node.setTranslateX(0);
+                                node.setTranslateY(0);
+                            });
                         });
                         enabled = false;
 
