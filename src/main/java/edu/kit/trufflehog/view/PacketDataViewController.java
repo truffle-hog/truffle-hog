@@ -32,9 +32,6 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
     private TableView<Packet> tableView;
     private TableColumn<Packet, String> nameColumn;
 
-    private PacketDataLoggingComponent pdlComponent;
-    private ListChangeListener pdlComponentListener;
-
     private final ArrayList<PacketDataLoggingComponent> pdlComponentArray = new ArrayList<>();
     private final ArrayList<ListChangeListener> pdlListenerArray = new ArrayList<>();
 
@@ -294,10 +291,7 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
 
         closeButton.setOnMouseClicked(event -> packetDataViewController.setVisible(false));
 
-        if (pdlComponent != null) {
-            pdlComponent.getObservablePacketsProperty().removeListener(pdlComponentListener);
-            pdlComponent = null;
-        }
+        clear();
 
         return closeButton;
     }
