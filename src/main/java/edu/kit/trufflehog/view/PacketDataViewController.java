@@ -4,12 +4,13 @@ import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.PacketDataInteraction;
 import edu.kit.trufflehog.model.network.IPAddress;
 import edu.kit.trufflehog.model.network.MacAddress;
+import edu.kit.trufflehog.model.network.graph.INode;
+import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -33,6 +34,9 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
 
     private PacketDataLoggingComponent pdlComponent;
     private ListChangeListener pdlComponentListener;
+
+    private final ArrayList<PacketDataLoggingComponent> pdlComponentArray = new ArrayList<>();
+    private final ArrayList<ListChangeListener> pdlListenerArray = new ArrayList<>();
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -116,15 +120,6 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
         nameColumn.setPrefWidth(500);
         tableView.getColumns().add(nameColumn);
         nameColumn.setCellValueFactory(param -> param.getValue().getDataProperty());
-    }
-
-    private void update(List<IPacketData> entries){
-        if (entries == null) throw new NullPointerException("entries must not be null!");
-        tableView.getItems().clear();
-        int i = 0;
-        for (IPacketData packetData:entries) {
-            data.add(new Packet(packetDataToString(packetData)));
-        }
     }
 
     private void addEntry(IPacketData entry) {
@@ -229,22 +224,60 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
         nameColumn.setText(name);
     }
 
-    public void register(PacketDataLoggingComponent loggingComponent) {
-        //TODO: change to multiple components (to observe multiple nodes) if needed
+    public void register(Set<INode> nodeSet) {
+        if (nodeSet == null) throw new NullPointerException("node must not be null!");
+        clear();
 
-        if (loggingComponent == null) throw new NullPointerException("loggingComponent must not be null!");
+        int i = 0;
+        PacketDataLoggingComponent loggingComponent = null;
+        NodeInfoComponent infoComponent = null;
 
-        if (pdlComponent != null) {
-            pdlComponent.getObservablePacketsProperty().removeListener(pdlComponentListener);
+        StringBuilder sb = new StringBuilder();
+        sb.append("Nodes: ");
+
+        for (INode node:nodeSet) {
+            loggingComponent = node.getComponent(PacketDataLoggingComponent.class);
+            infoComponent = node.getComponent(NodeInfoComponent.class);
+
+            if (loggingComponent != null && infoComponent != null) {
+                //TODO add comparator to IPacketData to sort list using time of arrival
+                addEntries(loggingComponent.getObservablePackets());
+
+                ListChangeListener listener = c -> {
+                    c.next();
+                    addEntries(c.getAddedSubList());
+                };
+
+                loggingComponent.getObservablePacketsProperty().addListener(listener);
+
+                pdlComponentArray.add(i, loggingComponent);
+                pdlListenerArray.add(i, listener);
+
+                sb.append(infoComponent.getMacAddress());
+                sb.append(" ");
+            }
+
+            loggingComponent = null;
+            infoComponent = null;
+
+            i++;
         }
-        pdlComponent = loggingComponent;
 
-        update(pdlComponent.getObservablePackets());
-        pdlComponentListener = c -> {
-            c.next();
-            addEntries(c.getAddedSubList());
-        };
-        pdlComponent.getObservablePacketsProperty().addListener(pdlComponentListener);
+        setName(sb.toString());
+    }
+
+    private void clear() {
+        PacketDataLoggingComponent component = null;
+
+        for (int i = 0; i < pdlComponentArray.size(); i++) {
+            component = pdlComponentArray.get(i);
+            component.getObservablePacketsProperty().removeListener(pdlListenerArray.get(i));
+        }
+
+        pdlComponentArray.clear();
+        pdlListenerArray.clear();
+        tableView.getItems().clear();
+        data.clear();
     }
 
     /**
