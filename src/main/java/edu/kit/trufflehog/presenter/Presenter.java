@@ -133,28 +133,7 @@ public class Presenter {
        // truffleReceiver.connect();
 
 
-        primaryStage.setOnCloseRequest(e -> {
-
-            //viewer.setCache(false);
-
-            Platform.exit();
-
-            //final ExecutorService service = Executors.newSingleThreadExecutor();
-            // Close all databases and other resources accessing the hard drive that need to be closed.
-            configData.close();
-
-            // Disconnect the truffleReceiver
-            if (truffleReceiver != null) {
-                truffleReceiver.disconnect();
-            }
-
-            // Kill all threads and the thread pool with it
-            LoggedScheduledExecutor.getInstance().shutdownNow();
-
-            System.gc();
-            // Shut down the system
-            System.exit(0);
-        });
+        primaryStage.setOnCloseRequest(event -> finish());
 
 /*        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
                 new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));*/
@@ -212,7 +191,6 @@ public class Presenter {
 
 
         final FXVisualizationViewer viewer = new FXVisualizationViewer(liveNetwork.getViewPort());
-        //final SceneGestures sceneGestures = new SceneGestures(viewer, viewer.getCanvas());
         root.getChildren().add(viewer);
 
         AnchorPane.setLeftAnchor(viewer, 0d);
@@ -224,11 +202,8 @@ public class Presenter {
                 viewer::refreshLayout);
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN),
                 viewer::selectAllNodes);
-        //scene.addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
-        //scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
-        //scene.addEventFilter(ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN),
-                primaryStage::close);
+                this::finish);
 
 
 
@@ -409,13 +384,11 @@ public class Presenter {
      */
     public void finish() {
 
-        // Exit the view
         Platform.exit();
 
+        //final ExecutorService service = Executors.newSingleThreadExecutor();
         // Close all databases and other resources accessing the hard drive that need to be closed.
-        if (configData != null) {
-            configData.close();
-        }
+        configData.close();
 
         // Disconnect the truffleReceiver
         if (truffleReceiver != null) {
@@ -425,7 +398,8 @@ public class Presenter {
         // Kill all threads and the thread pool with it
         LoggedScheduledExecutor.getInstance().shutdownNow();
 
+        System.gc();
         // Shut down the system
-       // System.exit(0);
+        System.exit(0);
     }
 }

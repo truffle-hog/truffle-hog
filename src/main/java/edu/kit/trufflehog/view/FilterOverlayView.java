@@ -8,6 +8,7 @@ import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.view.elements.ImageButton;
 import edu.uci.ics.jung.visualization.picking.PickedState;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -18,6 +19,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -221,21 +223,15 @@ public class FilterOverlayView extends AnchorPaneController<FilterInteraction> {
         tableView.getColumns().add(activeColumn);
         activeColumn.setSortable(false);
 
-        // Set up callback for CheckBoxTableCell
-        activeColumn.setCellFactory(tableColumn -> {
-            final CheckBoxTableCell<FilterInput, Boolean> checkBoxTableCell = new CheckBoxTableCell<>();
+        activeColumn.setCellFactory(CheckBoxTableCell.forTableColumn((Callback<Integer, ObservableValue<Boolean>>) param -> {
 
-            checkBoxTableCell.setSelectedStateCallback(index -> {
-                final FilterInput input = tableView.getItems().get(index);
-                input.getActiveProperty().addListener(l -> {
-                    notifyUpdateCommand(input);
-                });
+            final FilterInput input = tableView.getItems().get(param);
+            input.getActiveProperty().addListener(l -> {
 
-                return input.getActiveProperty();
+                notifyUpdateCommand(input);
             });
-
-            return checkBoxTableCell;
-        });
+            return input.getActiveProperty();
+        }));
     }
 
     /**
