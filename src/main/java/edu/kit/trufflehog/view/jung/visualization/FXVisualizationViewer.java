@@ -48,15 +48,11 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.NumberBinding;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
@@ -114,7 +110,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
 
     private INetworkViewPort port;
 
-    public FXVisualizationViewer(final ObservableLayout<INode, IConnection> layout, INetworkViewPort port) {
+    public FXVisualizationViewer(INetworkViewPort port) {
 
         this.port = port;
         // create canvas
@@ -184,7 +180,7 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
         //this.getChildren().add(spane);
         this.getChildren().add(parent);
 
-        this.layout = layout;
+        this.layout = port.getDelegate();
 
         //this.layout.getGraph().getVertices().forEach(v -> Platform.runLater(() -> this.initVertex(v)));
         //this.layout.getGraph().getEdges().forEach(e -> Platform.runLater(() -> this.initEdge(e)));

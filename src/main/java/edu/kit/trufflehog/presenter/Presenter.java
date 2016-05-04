@@ -11,12 +11,9 @@ import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.filter.MacroFilter;
 import edu.kit.trufflehog.model.network.INetwork;
 import edu.kit.trufflehog.model.network.LiveNetwork;
-import edu.kit.trufflehog.model.network.MacAddress;
 import edu.kit.trufflehog.model.network.graph.IConnection;
 import edu.kit.trufflehog.model.network.graph.INode;
 import edu.kit.trufflehog.model.network.graph.LiveUpdater;
-import edu.kit.trufflehog.model.network.graph.components.node.NodeInfoComponent;
-import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.model.network.recording.INetworkDevice;
 import edu.kit.trufflehog.model.network.recording.INetworkReadingPortSwitch;
 import edu.kit.trufflehog.model.network.recording.INetworkViewPortSwitch;
@@ -32,7 +29,6 @@ import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.Truf
 import edu.kit.trufflehog.service.packetdataprocessor.profinetdataprocessor.UnixSocketReceiver;
 import edu.kit.trufflehog.view.*;
 import edu.kit.trufflehog.view.jung.visualization.FXVisualizationViewer;
-import edu.kit.trufflehog.view.jung.visualization.SceneGestures;
 import edu.kit.trufflehog.viewmodel.FilterViewModel;
 import edu.kit.trufflehog.viewmodel.GeneralStatisticsViewModel;
 import edu.kit.trufflehog.viewmodel.StatisticsViewModel;
@@ -44,14 +40,10 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -219,7 +211,7 @@ public class Presenter {
 
 
 
-        final FXVisualizationViewer viewer = new FXVisualizationViewer(liveNetwork.getViewPort().getDelegate(), liveNetwork.getViewPort());
+        final FXVisualizationViewer viewer = new FXVisualizationViewer(liveNetwork.getViewPort());
         //final SceneGestures sceneGestures = new SceneGestures(viewer, viewer.getCanvas());
         root.getChildren().add(viewer);
 
@@ -260,19 +252,19 @@ public class Presenter {
 
 
 
-        final PacketDataViewController packetDataController = new PacketDataViewController(FXCollections.observableArrayList());
+        final PacketDataView packetDataController = new PacketDataView(FXCollections.observableArrayList());
         packetDataController.setVisible(false);
         root.getChildren().add(packetDataController);
         AnchorPane.setLeftAnchor(packetDataController, 0d);
 
         final StatisticsViewModel statisticsViewModel = new StatisticsViewModel();
-        final StatisticsViewController statisticsViewController = new StatisticsViewController(statisticsViewModel, primaryStage);
-        root.getChildren().add(statisticsViewController);
+        final StatisticsView statisticsView = new StatisticsView(statisticsViewModel, primaryStage);
+        root.getChildren().add(statisticsView);
 
 
 
-        AnchorPane.setTopAnchor(statisticsViewController, 10d);
-        AnchorPane.setRightAnchor(statisticsViewController, 10d);
+        AnchorPane.setTopAnchor(statisticsView, 10d);
+        AnchorPane.setRightAnchor(statisticsView, 10d);
         viewer.addCommand(GraphInteraction.SELECTION, new SelectionCommand(statisticsViewModel));
         viewer.addCommand(GraphInteraction.SELECTION_CONTEXTMENU, new SelectionContextMenuCommand(viewer, contextMenu));
         viewer.addListener(commandExecutor.asUserCommandListener());
@@ -290,8 +282,8 @@ public class Presenter {
 
 
         final GeneralStatisticsViewModel generalStatisticsViewModel = new GeneralStatisticsViewModel();
-        final GeneralStatisticsViewController generalStatisticsViewController = new GeneralStatisticsViewController(generalStatisticsViewModel);
-        root.getChildren().add(generalStatisticsViewController);
+        final GeneralStatisticsView generalStatisticsView = new GeneralStatisticsView(generalStatisticsViewModel);
+        root.getChildren().add(generalStatisticsView);
 
         // FIXME This part is a bit verbose!!! _____________ START
         StringProperty timeProperty = new SimpleStringProperty("");
@@ -322,8 +314,8 @@ public class Presenter {
 
             timeProperty.setValue(sb.toString());
         });
-        AnchorPane.setBottomAnchor(generalStatisticsViewController, 10d);
-        AnchorPane.setRightAnchor(generalStatisticsViewController, 10d);
+        AnchorPane.setBottomAnchor(generalStatisticsView, 10d);
+        AnchorPane.setRightAnchor(generalStatisticsView, 10d);
 
 
 

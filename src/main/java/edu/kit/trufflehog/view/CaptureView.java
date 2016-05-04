@@ -7,5 +7,5 @@ package edu.kit.trufflehog.view;
  * @author Julian Brendl
  * @version 1.0
  */
-public class CaptureViewViewController {
+public class CaptureView {
 }

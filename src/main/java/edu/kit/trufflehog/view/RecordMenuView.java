@@ -24,7 +24,7 @@ import java.util.EnumMap;
  * @author Julian Brendl
  * @version 1.0
  */
-public class RecordMenuViewController extends AnchorPaneController<RecordInteraction> {
+public class RecordMenuView extends AnchorPaneController<RecordInteraction> {
     private boolean pressed = false;
 
     /**
@@ -34,7 +34,7 @@ public class RecordMenuViewController extends AnchorPaneController<RecordInterac
      *
      * @param fxmlFile The fxml file to create the AnchorPaneController from.
      */
-    public RecordMenuViewController(String fxmlFile, INetworkDevice networkDevice, INetwork liveNetwork) {
+    public RecordMenuView(String fxmlFile, INetworkDevice networkDevice, INetwork liveNetwork) {
 
         super(fxmlFile, new EnumMap<>(RecordInteraction.class));
 

@@ -25,9 +25,9 @@ import java.util.*;
 /**
  * Created by Hoehler on 28.04.2016.
  */
-public class PacketDataViewController extends AnchorPaneController<PacketDataInteraction> {
+public class PacketDataView extends AnchorPaneController<PacketDataInteraction> {
     private final Map<PacketDataInteraction, IUserCommand> interactionMap = new EnumMap<>(PacketDataInteraction.class);
-    private final PacketDataViewController packetDataViewController;
+    private final PacketDataView packetDataView;
     private ObservableList<Packet> data;
     private TableView<Packet> tableView;
     private TableColumn<Packet, String> nameColumn;
@@ -37,7 +37,7 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
 
     private static final Logger logger = LogManager.getLogger();
 
-    public PacketDataViewController(final ObservableList<Packet> data) {
+    public PacketDataView(final ObservableList<Packet> data) {
 
         super("filter_menu_overlay.fxml", new EnumMap<>(PacketDataInteraction.class));
 
@@ -47,7 +47,7 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
 
         // Add menu to overlay
         this.getChildren().add(borderPane);
-        this.packetDataViewController = this;
+        this.packetDataView = this;
     }
 
     @Override
@@ -289,7 +289,7 @@ public class PacketDataViewController extends AnchorPaneController<PacketDataInt
         closeButton.setScaleX(0.9);
         closeButton.setScaleY(0.9);
 
-        closeButton.setOnMouseClicked(event -> packetDataViewController.setVisible(false));
+        closeButton.setOnMouseClicked(event -> packetDataView.setVisible(false));
 
         clear();
 

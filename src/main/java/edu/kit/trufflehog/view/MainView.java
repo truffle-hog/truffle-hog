@@ -9,11 +9,11 @@ import java.util.Map;
 
 /**
  * <p>
- *     The MainViewController incorporates all GUI elements that belong to the primary scope of the application.
+ *     The MainView incorporates all GUI elements that belong to the primary scope of the application.
  *     This for example includes the top Menu Bar and all the settings menus as well as the statistic windows.
  * </p>
  */
-public class MainViewController extends BorderPaneController {
+public class MainView extends BorderPaneController {
     /**
      * <p>
      *     The commands that are mapped to their interactions.
@@ -23,13 +23,13 @@ public class MainViewController extends BorderPaneController {
 
     /**
      * <p>
-     *     Creates a new MainViewController with the given fxmlFileName. The fxml file has to be in the same namespace
-     *     as the MainViewController.
+     *     Creates a new MainView with the given fxmlFileName. The fxml file has to be in the same namespace
+     *     as the MainView.
      * </p>
      *
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
-    public MainViewController(final String fxmlFileName) {
+    public MainView(final String fxmlFileName) {
         super(fxmlFileName);
     }
 

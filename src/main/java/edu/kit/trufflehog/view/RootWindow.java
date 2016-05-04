@@ -14,16 +14,16 @@ import javafx.stage.Stage;
  *     window has to be placed into this window controllers.
  * </p>
  */
-public final class RootWindowController implements IWindowController {
+public final class RootWindow implements IWindowController {
 
     /** The Stage this window is using. **/
     private final Stage stage;
 
-    private final MenuBarViewController menuBar;
+    private final MenuBarView menuBar;
 
     /**
      * <p>
-     *     Instantiates a new RootWindowController.
+     *     Instantiates a new RootWindow.
      * </p>
      *
      * @param primaryStage the stage this window is placed on
@@ -31,7 +31,7 @@ public final class RootWindowController implements IWindowController {
      * @param icon the window icon
      * @param menuBar the menu bar
      */
-    public RootWindowController(final Stage primaryStage, final Scene monitorScene, String icon, MenuBarViewController menuBar) {
+    public RootWindow(final Stage primaryStage, final Scene monitorScene, String icon, MenuBarView menuBar) {
 
         this.stage = primaryStage;
         this.menuBar = menuBar;

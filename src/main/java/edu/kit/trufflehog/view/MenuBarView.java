@@ -41,23 +41,23 @@ import java.io.IOException;
 
 /**
  * <p>
- *     The MenuBarViewController contains the MenuBar that is used to control the entire application.
+ *     The MenuBarView contains the MenuBar that is used to control the entire application.
  * </p>
  *
  * @author Julian Brendl
  * @version 1.0
  */
-public class MenuBarViewController extends MenuBar {
+public class MenuBarView extends MenuBar {
 
     /**
      * <p>
-     *     Creates a new MainViewController with the given fxmlFileName. The fxml file has to be in the same namespace
-     *     as the MainViewController.
+     *     Creates a new MainView with the given fxmlFileName. The fxml file has to be in the same namespace
+     *     as the MainView.
      * </p>
      *
      * @param fxmlFileName the name of the fxml file to be loaded.
      */
-    public MenuBarViewController(final String fxmlFileName) {
+    public MenuBarView(final String fxmlFileName) {
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFileName));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);

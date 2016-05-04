@@ -53,6 +53,8 @@ public class AddFilterCommand implements IUserCommand<FilterInput> {
     @Override
     public void execute() {
 
+
+
         if (filterInput != null) {
 
 
@@ -80,9 +82,6 @@ public class AddFilterCommand implements IUserCommand<FilterInput> {
 
             logger.debug("adding filter to filtermap, macrofilter, and apply the new filter");
             filterMap.put(filterInput, filter);
-            macroFilter.addFilter(filter);
-            nwp.applyFilter(filter);
-
             configData.addFilterInput(filterInput);
         }
     }

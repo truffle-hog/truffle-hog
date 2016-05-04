@@ -322,6 +322,7 @@ public class FilterEditingMenuView extends AnchorPaneController<FilterInteractio
      * </p>
      */
     private void updateFilter(FilterInput filterInput) {
+
         final String name = nameTextField.getText();
         final String selectionModelString = selectionComboBox.getValue();
         final String filterOriginString = filterByComboBox.getValue();
@@ -330,7 +331,7 @@ public class FilterEditingMenuView extends AnchorPaneController<FilterInteractio
         final String rules = rulesTextArea.getText();
         final boolean authorized = authorizedCheckBox.isSelected();
 
-        FilterInput filterInputUpdated = filterViewModel.updateFilter(filterInput, name, selectionModelString,
+        final FilterInput filterInputUpdated = filterViewModel.updateFilter(filterInput, name, selectionModelString,
                 filterOriginString, color, priorityText, rules, authorized);
 
         // Notify the model that a filter has changed

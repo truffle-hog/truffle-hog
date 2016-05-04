@@ -17,10 +17,10 @@ import javafx.util.Callback;
 
 /**
  * <p>
- *     The StatisticsViewController provides GUI components and functionality for every statistic view.
+ *     The StatisticsView provides GUI components and functionality for every statistic view.
  * </p>
  */
-public class StatisticsViewController extends BorderPaneController {
+public class StatisticsView extends BorderPaneController {
 
     @FXML
     private TreeTableView<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> infoTable;
@@ -35,12 +35,12 @@ public class StatisticsViewController extends BorderPaneController {
 
     /**
      * <p>
-     *     Creates a new StatisticsViewController with the given fxmlFileName. The fxml file has to be in the same
-     *     namespace as the StatisticsViewController.
+     *     Creates a new StatisticsView with the given fxmlFileName. The fxml file has to be in the same
+     *     namespace as the StatisticsView.
      * </p>
      *
      */
-    public StatisticsViewController(StatisticsViewModel statModel, Stage primaryStage) {
+    public StatisticsView(StatisticsViewModel statModel, Stage primaryStage) {
 
         super("selected_statistics_view.fxml");
 
@@ -57,17 +57,14 @@ public class StatisticsViewController extends BorderPaneController {
         valueColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> param) ->
                 param.getValue().getValue().getValueProperty());
 
-        valueColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object>, ObservableValue<Object>>() {
-            @Override
-            public ObservableValue<Object> call(TreeTableColumn.CellDataFeatures<StatisticsViewModel.IEntry<StringProperty, ? extends Property>, Object> param) {
+        valueColumn.setCellValueFactory(param -> {
 
-                if (param.getValue().getValue().getValueProperty() instanceof ListProperty) {
+            if (param.getValue().getValue().getValueProperty() instanceof ListProperty) {
 
-                    return new SimpleObjectProperty<>("Double click to show");
+                return new SimpleObjectProperty<>("Double click to show");
 
-                } else {
-                    return  param.getValue().getValue().getValueProperty();
-                }
+            } else {
+                return  param.getValue().getValue().getValueProperty();
             }
         });
 

@@ -10,10 +10,10 @@ import javafx.scene.control.TreeTableView;
 
 /**
  * <p>
- *     The StatisticsViewController provides GUI components and functionality for every statistic view.
+ *     The StatisticsView provides GUI components and functionality for every statistic view.
  * </p>
  */
-public class GeneralStatisticsViewController extends BorderPaneController {
+public class GeneralStatisticsView extends BorderPaneController {
 
     @FXML
     private TreeTableView<GeneralStatisticsViewModel.IEntry<StringProperty, ? extends Property>> infoTable;
@@ -28,12 +28,12 @@ public class GeneralStatisticsViewController extends BorderPaneController {
 
     /**
      * <p>
-     *     Creates a new StatisticsViewController with the given fxmlFileName. The fxml file has to be in the same
-     *     namespace as the StatisticsViewController.
+     *     Creates a new StatisticsView with the given fxmlFileName. The fxml file has to be in the same
+     *     namespace as the StatisticsView.
      * </p>
      *
      */
-    public GeneralStatisticsViewController(GeneralStatisticsViewModel statModel) {
+    public GeneralStatisticsView(GeneralStatisticsViewModel statModel) {
 
         super("general_statistics_view.fxml");
 
