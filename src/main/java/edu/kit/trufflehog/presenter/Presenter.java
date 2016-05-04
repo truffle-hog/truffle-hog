@@ -330,45 +330,12 @@ public class Presenter {
         //TODO: make more beautiful, add possibility of multiple node selection (if needed)
         getPackageItem.setOnAction(event -> {
             packetDataController.setVisible(true);
-            PacketDataLoggingComponent loggingComponent = null;
-            NodeInfoComponent tempInfoComponent = null;
-            for (INode node:viewer.getPickedVertexState().getPicked()) {
-                if (loggingComponent == null) {
-                    loggingComponent = node.getComponent(PacketDataLoggingComponent.class);
-                    tempInfoComponent = node.getComponent(NodeInfoComponent.class);
-                } else {
-                    break;
-                }
-            }
-
-            final NodeInfoComponent infoComponent = tempInfoComponent;
-            if (loggingComponent != null) {
-                packetDataController.register(loggingComponent);
-
-                if (infoComponent != null) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Node: ");
-                    if (infoComponent.getDeviceName() != null) sb.append(infoComponent.getDeviceName());
-                    if (infoComponent.getMacAddress() != null) {
-                        sb.append(" ");
-                        sb.append(infoComponent.getMacAddress().toString());
-                    }
-                    if (infoComponent.getIPAddress() != null) {
-                        sb.append(" ");
-                        sb.append(infoComponent.getIPAddress().toString());
-                    }
-
-                    packetDataController.setName(sb.toString());
-                } else {
-                    packetDataController.setName("Node: no info");
-                }
-            }
+            packetDataController.register(viewer.getPickedVertexState().getPicked());
         });
-        addFilterItem.setOnAction(event -> {
-            filterEditingMenuView.showMenu(viewer.getPickedVertexState().getPicked().stream()
-                    .map(node -> node.getAddress().toString())
-                    .collect(Collectors.toList()));
-        });
+        addFilterItem.setOnAction(event -> filterEditingMenuView.showMenu(viewer
+                .getPickedVertexState().getPicked().stream()
+                .map(node -> node.getAddress().toString())
+                .collect(Collectors.toList())));
 
 
 

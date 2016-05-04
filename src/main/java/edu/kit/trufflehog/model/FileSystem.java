@@ -18,7 +18,6 @@
 package edu.kit.trufflehog.model;
 
 import edu.kit.trufflehog.model.configdata.ConfigData;
-import edu.kit.trufflehog.model.network.truffledatalog.TruffleLogger;
 import edu.kit.trufflehog.service.replaylogging.ReplayLog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,7 +57,7 @@ import java.net.URISyntaxException;
  *         <li>
  *             Truffle data log Folder:
  *             <p>
- *                 This is where the logs created by the {@link TruffleLogger} for each Node are saved to.
+ *                 This is where the logs created by the TruffleLogger for each Node are saved to.
  *             </p>
  *         </li>
  *         <br></br>

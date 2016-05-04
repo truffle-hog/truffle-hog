@@ -111,9 +111,14 @@ test.dependsOn processTestResources
 
 jar {
     manifest {
-        attributes 'Main-Class': 'edu.kit.trufflehog.Main'
+        attributes "Main-Class": "$mainClassName"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
+
 
 jacocoTestReport {
     reports {
