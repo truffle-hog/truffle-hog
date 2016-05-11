@@ -17,6 +17,8 @@
 
 package edu.kit.trufflehog.view;
 
+import com.apple.eawt.Application;
+import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
 import edu.kit.trufflehog.model.configdata.IConfig;
@@ -26,12 +28,12 @@ import edu.kit.trufflehog.model.filter.SelectionModel;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.viewmodel.FilterViewModel;
 import javafx.animation.TranslateTransition;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
@@ -41,6 +43,11 @@ import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -56,6 +63,8 @@ import java.util.stream.IntStream;
  * @version 1.0
  */
 public class FilterEditingMenuView extends AnchorPaneController<FilterInteraction> {
+
+    private static final String helpUrl = "http://github.com/TruffleHog/TruffleHog/blob/new_master/MANUAL.md";
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -346,7 +355,7 @@ public class FilterEditingMenuView extends AnchorPaneController<FilterInteractio
      * </p>
      */
     private void help() {
-
+        Main.getHost().showDocument(helpUrl);
     }
 
     /**

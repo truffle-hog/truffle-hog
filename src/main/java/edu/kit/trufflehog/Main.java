@@ -17,14 +17,13 @@
 
 package edu.kit.trufflehog;
 
+import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
+import com.sun.javafx.application.HostServicesDelegate;
 import edu.kit.trufflehog.presenter.Presenter;
 import edu.kit.trufflehog.presenter.nativebuilders.NativeBuilder;
 import edu.kit.trufflehog.presenter.nativebuilders.osx.OSXBuilder;
 import javafx.application.Application;
 import javafx.stage.Stage;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * <p>
@@ -33,6 +32,7 @@ import java.util.concurrent.Executors;
  */
 public class Main extends Application {
 	private static Presenter presenter;
+	private static HostServicesDelegate host;
 
 	/**
 	 * <p>
@@ -63,11 +63,9 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		buildNative();
 
-		// TODO horror
-		primaryStage.setTitle("TruffleHog");
+		host = HostServicesFactory.getInstance(this);
 
-        // FIXME ... wo wird dieses icon sonst noch gesetzt?
-		//primaryStage.getIcons().add(new Image("file:resources/edu/kit/trufflehog/view/icon.png"));
+		primaryStage.setTitle("TruffleHog");
 		presenter = new Presenter(primaryStage);
 		presenter.run();
 	}
@@ -88,5 +86,9 @@ public class Main extends Application {
 	private void buildNative() {
 		NativeBuilder nativeBuilder = new OSXBuilder();
 		nativeBuilder.build();
+	}
+
+	public static HostServicesDelegate getHost() {
+		return host;
 	}
 }
