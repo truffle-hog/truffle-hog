@@ -17,7 +17,6 @@
 
 package edu.kit.trufflehog.view;
 
-import com.apple.eawt.Application;
 import edu.kit.trufflehog.Main;
 import edu.kit.trufflehog.command.usercommand.IUserCommand;
 import edu.kit.trufflehog.interaction.FilterInteraction;
@@ -28,12 +27,10 @@ import edu.kit.trufflehog.model.filter.SelectionModel;
 import edu.kit.trufflehog.view.controllers.AnchorPaneController;
 import edu.kit.trufflehog.viewmodel.FilterViewModel;
 import javafx.animation.TranslateTransition;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
@@ -42,12 +39,6 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.awt.*;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.IntStream;
