@@ -39,9 +39,11 @@ public class UpdateFilterCommand implements IUserCommand<FilterInput> {
      */
     public UpdateFilterCommand(final ConfigData configData, final INetworkIOPort nwp, final MacroFilter macroFilter, final Map<FilterInput, IFilter> filterMap)
     {
+
         if(macroFilter == null) throw new NullPointerException("macroFilter should not be null!");
         if (nwp == null) throw new NullPointerException("NetworkIOPort should not be null");
         if (filterMap == null) throw new NullPointerException("filtermap must not be null");
+        if (configData == null) throw new NullPointerException("configdata must not be null");
 
         this.filterMap = filterMap;
         this.macroFilter = macroFilter;

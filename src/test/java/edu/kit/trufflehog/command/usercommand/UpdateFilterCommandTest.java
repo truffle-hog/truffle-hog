@@ -61,8 +61,6 @@ public class UpdateFilterCommandTest {
         ufc = new UpdateFilterCommand(configData, nwp, null, filterMap);
     }
 
-    // TODO undeprecate
-    @Ignore
     @Test (expected = NullPointerException.class)
     public void updateNullConfigDataTest() {
 

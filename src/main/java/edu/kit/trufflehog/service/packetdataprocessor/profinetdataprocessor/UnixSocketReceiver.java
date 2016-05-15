@@ -22,7 +22,6 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
     private final INetworkWritingPort networkWritingPort;
     private final IFilter filter;
-    private final Stage primaryStage;
     private final Logger logger = LogManager.getLogger();
 
 
@@ -37,10 +36,9 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *     Creates the UnixSocketReceiver.
      * </p>
      */
-    public UnixSocketReceiver(final INetworkWritingPort networkWritingPort, final IFilter filter, final Stage primaryStage) {
+    public UnixSocketReceiver(final INetworkWritingPort networkWritingPort, final IFilter filter) {
         this.networkWritingPort = networkWritingPort;
         this.filter = filter;
-        this.primaryStage = primaryStage;
     }
 
     /**
@@ -100,7 +98,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                     this.notifyAll();
                 }
             } catch (SnortPNPluginNotRunningException e) {
-                notifyListeners(new ReceiverErrorCommand("Snort plugin doesn't seem to be running.", primaryStage));
+                notifyListeners(new ReceiverErrorCommand("Snort plugin doesn't seem to be running."));
             }
         }
     }
@@ -119,7 +117,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                     closeIPC();
                 } catch (SnortPNPluginDisconnectFailedException e) {
                     logger.error(e);
-                    notifyListeners(new ReceiverErrorCommand("Couldn't disconnect from plugin correctly.", primaryStage));
+                    notifyListeners(new ReceiverErrorCommand("Couldn't disconnect from plugin correctly."));
                 }
             }
         }

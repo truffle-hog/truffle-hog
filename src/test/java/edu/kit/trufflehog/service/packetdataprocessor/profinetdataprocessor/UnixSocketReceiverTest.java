@@ -32,14 +32,12 @@ public class UnixSocketReceiverTest {
     IFilter mockedFilter;
     Thread testRunner;
     IListener<ITruffleCommand> mockedListener;
-    Stage mockedStage;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         mockedFilter = mock(IFilter.class);
-        mockedStage = mock(Stage.class);
-        receiver = new UnixSocketReceiver(mock(INetworkWritingPort.class), mockedFilter, mockedStage);
+        receiver = new UnixSocketReceiver(mock(INetworkWritingPort.class), mockedFilter);
 
         mockedListener = (IListener<ITruffleCommand>) mock(IListener.class);
         receiver.addListener(mockedListener);
