@@ -55,7 +55,7 @@ import java.util.stream.IntStream;
  */
 public class FilterEditingMenuView extends AnchorPaneController<FilterInteraction> {
 
-    private static final String helpUrl = "http://github.com/TruffleHog/TruffleHog/blob/new_master/MANUAL.md";
+    private static final String helpUrl = "https://trufflehog.github.io/TruffleHog";
 
     private static final Logger logger = LogManager.getLogger();
 
