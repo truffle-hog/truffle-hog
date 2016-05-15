@@ -150,11 +150,11 @@ public class Presenter {
 
         final ExecutorService truffleFetchService = Executors.newSingleThreadExecutor();
 
-        // TODO register the truffleReceiver somewhere so we can start or stop it.
-        // TODO remove this awful workaround catching an ERROR :o
+        // Don't be shocked, we purposely catch an Error here. It's harmless in this case.
         try {
             truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
         } catch (UnsatisfiedLinkError e) {
+            System.out.println("No IPC connection established, activating fake network traffic.");
             truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
         }
 
