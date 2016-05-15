@@ -4,7 +4,7 @@ The manual is loosely seperated into three sections. *Setup* describes the initi
 ## Setup
 1. Start the customized version of Snort you can obtain [here](https://github.com/404). It contains a PROFINET-preprocessor as well as the necessary classes for IPC with TruffleHog. 
 2. Start TruffleHog as you would start any other Java-program by either running `java -jar TruffleHog.jar` if you downloaded the Jar or `java Main` if you cloned the source code. Consider that you might need to have *Java by Oracle*, not *OpenJDK* installed. 
-3. Click *Connect* in the lower left corner of the main TruffleHog window. 
+3. Click *Connect* in the lower left corner of the main TruffleHog window. If no IPC server is found, the program will show artificial demo traffic.
 4. You are good to go. As soon as Snort intercepts packages TruffleHog will start building a graph of the PROFINET-devices and their connections.
 
 ## Basics
@@ -14,7 +14,7 @@ The manual is loosely seperated into three sections. *Setup* describes the initi
 - In the **center** you can see the graph with nodes representing network participants, edges representing established connections between the participants and MAC-addresses or hostnames associated to one node.
 - In the **lower left corner** there is a toolbar providing the most basic functionality of the program. It includes (left to right) starting inter-process communication with Snort (a.k.a. connect) and the filter menu (see section below).
 - In the **lower right corner** there is an overlay showing pretty self-explanatory basic information about the current network graph.
-- In the **upper right corner (as long at least one node is selected)** one finds another overlay containing information on the *currently selected* nodes. Attention! This information is far more advanced and aimed at professionals looking for a more in-depth view on what is going on the ether.
+- In the **upper right corner (as long at least one node is selected)** one finds another overlay containing information on the *currently selected* nodes. Attention! This information is far more advanced and aimed at professionals looking for a more in-depth view on what is going on on the ether.
 
 ### Navigation
 Very easy! Just drag and drop nodes and use your mouse wheel to move around the whole graph. Alternatively, use the right mouse button to move the view around.
