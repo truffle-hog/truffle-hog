@@ -106,9 +106,6 @@ public class Presenter {
         }
         configData = configDataTemp;
 
-       // primaryStage.setOnCloseRequest(event -> finish());
-
-
     }
 
 
@@ -125,18 +122,8 @@ public class Presenter {
         initDatabase();
         initGUI();
 
-        //ObservableLayout<INode, IConnection> layouts = new ObservableLayout<>(new FRLayout<>(sgv.g));
-        //layouts.setSize(new Dimension(300,300)); // sets the initial size of the space
-
-
-
-       // truffleReceiver.connect();
-
-
         primaryStage.setOnCloseRequest(event -> finish());
 
-/*        viewBuilder.build(viewPortSwitch, liveNetwork, networkDevice, commandExecutor.asUserCommandListener(),
-                new UpdateFilterCommand(liveNetwork.getRWPort(), macroFilter));*/
     }
 
     private void initModel() {
@@ -158,8 +145,6 @@ public class Presenter {
             truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);
         }
 
-
-        //this.viewBuilder = new ViewBuilder(configData, this.primaryStage, this.viewPortMap, this.truffleReceiver);
         truffleFetchService.execute(truffleReceiver);
 
 
@@ -260,7 +245,7 @@ public class Presenter {
         final GeneralStatisticsView generalStatisticsView = new GeneralStatisticsView(generalStatisticsViewModel);
         root.getChildren().add(generalStatisticsView);
 
-        // FIXME This part is a bit verbose!!! _____________ START
+        // TODO the following oddly is a little ugly initialization work and could be converted to FXML iff possible
         StringProperty timeProperty = new SimpleStringProperty("");
         StringProperty throughputStringProperty = new SimpleStringProperty();
         throughputStringProperty.bindBidirectional(viewPortSwitch.getThroughputProperty(), new DecimalFormat("0.00"));
@@ -268,9 +253,7 @@ public class Presenter {
         generalStatisticsViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Population", viewPortSwitch.getPopulationProperty())));
         generalStatisticsViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Packages per second", throughputStringProperty)));
         generalStatisticsViewModel.getRootItem().getChildren().add(new TreeItem<>(new GeneralStatisticsViewModel.StringEntry<>("Running", timeProperty)));
-        //generalStatisticsOverlay.setVisible(true);
 
-        //TODO improve this!
         viewPortSwitch.getViewTimeProperty().addListener((observable, oldValue, newValue) -> {
             StringBuilder sb = new StringBuilder();
             long ms = newValue.longValue();
@@ -292,8 +275,6 @@ public class Presenter {
         AnchorPane.setBottomAnchor(generalStatisticsView, 10d);
         AnchorPane.setRightAnchor(generalStatisticsView, 10d);
 
-
-
         //TODO: make more beautiful, add possibility of multiple node selection (if needed)
         getPackageItem.setOnAction(event -> {
             packetDataController.setVisible(true);
@@ -305,15 +286,8 @@ public class Presenter {
                 .collect(Collectors.toList())));
 
 
-
-        // FIXME This part is a bit verbose!!! _____________ END
-
         filterOverlayView.toFront();
         filterEditingMenuView.toFront();
-
-
-
-
 
         primaryStage.setScene(scene);
         primaryStage.show();
