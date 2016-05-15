@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Trufflehog Manual by TruffleHog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Trufflehog Manual</h1>
+      <h2 class="project-tagline">How to use TruffleHog</h2>
+      <a href="https://github.com/TruffleHog/TruffleHog" class="btn">View on GitHub</a>
+      <a href="https://github.com/TruffleHog/TruffleHog/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/TruffleHog/TruffleHog/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="trufflehog-manual" class="anchor" href="#trufflehog-manual" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TruffleHog Manual</h1>
+
+<p>The manual is loosely seperated into three sections. <em>Setup</em> describes the initial process of starting the programm. <em>Basics</em> covers basic usage such as navigating on the network graph and understanding the different statistic overlays. <em>Filters</em> more deeply explains how the filter menu works and what kind of filters you can apply to the graph how. </p>
+
+<h2>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup</h2>
+
+<ol>
+<li>Start the customized version of Snort you can obtain <a href="https://github.com/404">here</a>. It contains a PROFINET-preprocessor as well as the necessary classes for IPC with TruffleHog. </li>
+<li>Start TruffleHog as you would start any other Java-program by either running <code>java -jar TruffleHog.jar</code> if you downloaded the Jar or <code>java Main</code> if you cloned the source code. Consider that you might need to have <em>Java by Oracle</em>, not <em>OpenJDK</em> installed. </li>
+<li>Click <em>Connect</em> in the lower left corner of the main TruffleHog window. If no IPC server is found, the program will show artificial demo traffic.</li>
+<li>You are good to go. As soon as Snort intercepts packages TruffleHog will start building a graph of the PROFINET-devices and their connections.</li>
+</ol>
+
+<h2>
+<a id="basics" class="anchor" href="#basics" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basics</h2>
+
+<h3>
+<a id="things-you-see" class="anchor" href="#things-you-see" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Things you see</h3>
+
+<ul>
+<li>In the <strong>center</strong> you can see the graph with nodes representing network participants, edges representing established connections between the participants and MAC-addresses or hostnames associated to one node.</li>
+<li>In the <strong>lower left corner</strong> there is a toolbar providing the most basic functionality of the program. It includes (left to right) starting inter-process communication with Snort (a.k.a. connect) and the filter menu (see section below).</li>
+<li>In the <strong>lower right corner</strong> there is an overlay showing pretty self-explanatory basic information about the current network graph.</li>
+<li>In the <strong>upper right corner (as long at least one node is selected)</strong> one finds another overlay containing information on the <em>currently selected</em> nodes. Attention! This information is far more advanced and aimed at professionals looking for a more in-depth view on what is going on on the ether.</li>
+</ul>
+
+<h3>
+<a id="navigation" class="anchor" href="#navigation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Navigation</h3>
+
+<p>Very easy! Just drag and drop nodes and use your mouse wheel to move around the whole graph. Alternatively, use the right mouse button to move the view around.</p>
+
+<h3>
+<a id="key-combinations" class="anchor" href="#key-combinations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Key combinations</h3>
+
+<ul>
+<li>
+<code>CTRL+X</code> algorithmically positions the nodes of the graph according to the current zoom level to <em>look nice</em>. If it does not, try to zoom out a bit, there might not be enough place on your current zoom level to work on.</li>
+<li>
+<code>CTRL+A</code> selects all nodes (see section Filters below).</li>
+<li>
+<code>CTRL+Q</code> closes the program properly just like clicking the <code>X</code> on the window decoration would.</li>
+</ul>
+
+<h2>
+<a id="filters" class="anchor" href="#filters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Filters</h2>
+
+<p>Filters define a set of nodes either by MAC-address, IP-address or Regex (applied to the name of nodes). Selected nodes can then be colored and/or marked as "authorized". Filters are also assigned a priority. The filter with the highest priority gets executed last and therefor mask ones with lower priority.</p>
+
+<p>The list of filters is pretty self-explanatory. <code>+</code> to create a new one, <code>-</code> to delete the highlighted filter and then pen to edit it. The button on the very left adds a new filter matching only the currently selected nodes.</p>
+
+<p>The easiest way to create a filter to a visible set of nodes is selecting them in the graph, then opening the filters menu and clicking the button showing little nodes on the very left. A new filter is opened in the filter creation window then and the selected nodes are defined by MAC-address. Assign priority, color and if they should be marked as authorized and you are good to go.</p>
+
+<p>To create more complex filters you can also define nodes by regex (e.g. station-* to match to all clients with a name starting with "station-") or by fixed IP-address or subnet (192.168.1.1/24).</p>
+
+<p>Marking nodes as authorized with filters serves mainly organisational purposes. It helps to also color them green or any other color that symbolizes "ok" for you. Contrary, clients from foreign subnets could be colored red.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/TruffleHog/TruffleHog">Trufflehog Manual</a> is maintained by <a href="https://github.com/TruffleHog">TruffleHog</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
