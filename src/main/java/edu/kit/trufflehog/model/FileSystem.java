@@ -18,7 +18,6 @@
 package edu.kit.trufflehog.model;
 
 import edu.kit.trufflehog.model.configdata.ConfigData;
-import edu.kit.trufflehog.service.replaylogging.ReplayLog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,13 +36,6 @@ import java.net.URISyntaxException;
  *             <p>
  *                 This is where all files and folders are created. It is the parent folder to every other file and
  *                 folder created by TruffleHog. If you need to save data, put it in here.
- *             </p>
- *         </li>
- *         <br></br>
- *         <li>
- *             Replay log folder:
- *             <p>
- *                 This is where the {@link ReplayLog} objects are saved to.
  *             </p>
  *         </li>
  *         <br></br>
@@ -117,20 +109,6 @@ public class FileSystem {
         dataFolder = createFolder(dataFolder, "data", parentLocation);
 
         return dataFolder;
-    }
-
-    /**
-     * <p>
-     *     Returns the File object of the replay log folder, or creates the folder if it does not exist yet.
-     * </p>
-     *
-     * @return The corresponding File object of the replay log folder.
-     */
-    public File getReplayLogFolder() {
-        getDataFolder();
-        replayLogFolder = createFolder(replayLogFolder, "replay_data", dataFolder);
-
-        return replayLogFolder;
     }
 
     /**
