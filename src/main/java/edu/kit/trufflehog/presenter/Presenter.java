@@ -139,7 +139,7 @@ public class Presenter {
 
         // Don't be shocked, we purposely catch an Error here. It's harmless in this case.
         try {
-            truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter);
+            truffleReceiver = new UnixSocketReceiver(liveNetwork.getWritingPort(), macroFilter, primaryStage);
         } catch (UnsatisfiedLinkError e) {
             System.out.println("No IPC connection established, activating fake network traffic.");
             truffleReceiver = new TruffleCrook(liveNetwork.getWritingPort(), macroFilter);

@@ -5,6 +5,7 @@ import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.command.trufflecommand.ReceiverErrorCommand;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +22,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
 
     private final INetworkWritingPort networkWritingPort;
     private final IFilter filter;
-    //private final ExecutorService executor = Executors.newCachedThreadPool();
+    private final Stage primaryStage;
     private final Logger logger = LogManager.getLogger();
 
 
@@ -36,9 +37,10 @@ public class UnixSocketReceiver extends TruffleReceiver {
      *     Creates the UnixSocketReceiver.
      * </p>
      */
-    public UnixSocketReceiver(final INetworkWritingPort networkWritingPort, final IFilter filter) {
+    public UnixSocketReceiver(final INetworkWritingPort networkWritingPort, final IFilter filter, final Stage primaryStage) {
         this.networkWritingPort = networkWritingPort;
         this.filter = filter;
+        this.primaryStage = primaryStage;
     }
 
     /**
@@ -98,7 +100,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                     this.notifyAll();
                 }
             } catch (SnortPNPluginNotRunningException e) {
-                notifyListeners(new ReceiverErrorCommand("Snort plugin doesn't seem to be running."));
+                notifyListeners(new ReceiverErrorCommand("Snort plugin doesn't seem to be running.", primaryStage));
             }
         }
     }
@@ -117,7 +119,7 @@ public class UnixSocketReceiver extends TruffleReceiver {
                     closeIPC();
                 } catch (SnortPNPluginDisconnectFailedException e) {
                     logger.error(e);
-                    notifyListeners(new ReceiverErrorCommand("Couldn't disconnect from plugin correctly."));
+                    notifyListeners(new ReceiverErrorCommand("Couldn't disconnect from plugin correctly.", primaryStage));
                 }
             }
         }

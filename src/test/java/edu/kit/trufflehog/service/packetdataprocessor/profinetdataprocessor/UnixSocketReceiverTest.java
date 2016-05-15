@@ -4,6 +4,7 @@ import edu.kit.trufflehog.command.trufflecommand.ITruffleCommand;
 import edu.kit.trufflehog.model.filter.IFilter;
 import edu.kit.trufflehog.model.network.INetworkWritingPort;
 import edu.kit.trufflehog.util.IListener;
+import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,12 +32,14 @@ public class UnixSocketReceiverTest {
     IFilter mockedFilter;
     Thread testRunner;
     IListener<ITruffleCommand> mockedListener;
+    Stage mockedStage;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         mockedFilter = mock(IFilter.class);
-        receiver = new UnixSocketReceiver(mock(INetworkWritingPort.class), mockedFilter);
+        mockedStage = mock(Stage.class);
+        receiver = new UnixSocketReceiver(mock(INetworkWritingPort.class), mockedFilter, mockedStage);
 
         mockedListener = (IListener<ITruffleCommand>) mock(IListener.class);
         receiver.addListener(mockedListener);
