@@ -10,16 +10,20 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+repositories {
+    jcenter()
+}
+
 allprojects {
     repositories {
-        mavenCentral()
+        jcenter()
         maven { url "https://jitpack.io" }
     }
 }
 
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
 
     dependencies {
