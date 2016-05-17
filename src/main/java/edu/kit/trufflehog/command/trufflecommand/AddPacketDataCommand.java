@@ -122,11 +122,11 @@ public class AddPacketDataCommand implements ITruffleCommand {
         //logger.debug("src: " + sourceNode);
         //logger.debug("dest: " + destNode);
 
-        Platform.runLater(() -> {
+        //Platform.runLater(() -> {
             writingPort.writeNode(sourceNode);
             writingPort.writeNode(destNode);
             writingPort.writeConnection(connection);
-        });
+        //});
     }
 
 /*    *//** Returns an ImageIcon, or null if the path was invalid. *//*

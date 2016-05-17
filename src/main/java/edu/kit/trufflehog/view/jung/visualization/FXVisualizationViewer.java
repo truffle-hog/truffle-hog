@@ -947,10 +947,9 @@ public class FXVisualizationViewer extends Pane implements VisualizationServer<I
                     rect.setY(dragContext.mouseAnchorY);
                     rect.setWidth(0);
                     rect.setHeight(0);
+                    group.getChildren().add(rect);
                 });
 
-
-                group.getChildren().add(rect);
                 event.consume();
                 enabled = true;
             }

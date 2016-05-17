@@ -8,6 +8,7 @@ import edu.kit.trufflehog.model.network.graph.IUpdater;
 import edu.kit.trufflehog.model.network.graph.components.AbstractComponent;
 import edu.kit.trufflehog.model.network.graph.components.IComponentVisitor;
 import edu.kit.trufflehog.util.bindings.MyBindings;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
@@ -55,7 +56,9 @@ public class NodeInfoComponent extends AbstractComponent implements IComponent {
     public void setDeviceName(String deviceName) {
         if (deviceName == null)
             throw new NullPointerException("deviceName must not be null");
-        deviceNameProperty.setValue(deviceName);
+
+        Platform.runLater(() -> {deviceNameProperty.setValue(deviceName);});
+
     }
 
     /**

@@ -9,10 +9,10 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="edu.kit.trufflehog" level="debug">
+        <Logger name="edu.kit.trufflehog" level="OFF">
             <AppenderRef ref="fileAppenderTruffleHog"/>
         </Logger>
-        <Root level="debug">
+        <Root level="OFF">
             <AppenderRef ref="CONSOLE"/>
         </Root>
     </Loggers>

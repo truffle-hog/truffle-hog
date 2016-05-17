@@ -21,19 +21,12 @@ public class ReceiverErrorCommand implements ITruffleCommand {
 
     @Override
     public void execute() {
-        //final Popup popup = new Popup();
-        //popup.setAutoHide(true);
-        //popup.setHideOnEscape(true);
+
         Platform.runLater( () -> {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning");
         //alert.setHeaderText("Look, a Warning Dialog");
         alert.setContentText(message);
         alert.showAndWait();});
-        //popup.setX(primaryStage.getX() + primaryStage.getHeight() / 2);
-        //popup.setY(primaryStage.getY() + primaryStage.getWidth() / 2);
-        //popup.getContent().addAll(new Label(message));
-
-        // popup.show(primaryStage);
     }
 }
