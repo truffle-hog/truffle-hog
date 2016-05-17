@@ -85,6 +85,7 @@ public class StatisticsView extends BorderPaneController {
 
                 final TreeItem<StatisticsViewModel.IEntry<StringProperty, ? extends Property>> item = infoTable.getSelectionModel().getSelectedItem();
 
+                if (item == null) { return; };
 
                 if (item.getValue().getValueProperty() instanceof ListProperty) {
 

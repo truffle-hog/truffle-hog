@@ -57,7 +57,7 @@ public class NodeInfoComponent extends AbstractComponent implements IComponent {
         if (deviceName == null)
             throw new NullPointerException("deviceName must not be null");
 
-        Platform.runLater(() -> {deviceNameProperty.setValue(deviceName);});
+        deviceNameProperty.setValue(deviceName);
 
     }
 

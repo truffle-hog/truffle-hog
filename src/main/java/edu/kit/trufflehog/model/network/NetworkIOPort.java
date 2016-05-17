@@ -8,6 +8,7 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComp
 import edu.kit.trufflehog.util.ICopyCreator;
 import edu.kit.trufflehog.util.bindings.MaximumOfValuesBinding;
 import edu.uci.ics.jung.graph.ObservableUpdatableGraph;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -59,7 +60,10 @@ public class NetworkIOPort implements INetworkIOPort {
 
             final EdgeStatisticsComponent edgeStat = connection.getComponent(EdgeStatisticsComponent.class);
             if (edgeStat != null) {
-                maxTrafficBinding.bindProperty(edgeStat.getTrafficProperty());
+                Platform.runLater(() -> {
+                    maxTrafficBinding.bindProperty(edgeStat.getTrafficProperty());
+                });
+
             }
             idConnectionMap.put(connectionKey, connection);
         }
@@ -72,7 +76,10 @@ public class NetworkIOPort implements INetworkIOPort {
 
             final NodeStatisticsComponent nodeStat = node.getComponent(NodeStatisticsComponent.class);
             if (nodeStat != null) {
-                maxThroughputBinding.bindProperty(nodeStat.getCommunicationCountProperty());
+                Platform.runLater(() -> {
+                    maxThroughputBinding.bindProperty(nodeStat.getCommunicationCountProperty());
+                });
+
             }
             idNodeMap.put(node.getAddress(), node);
         }

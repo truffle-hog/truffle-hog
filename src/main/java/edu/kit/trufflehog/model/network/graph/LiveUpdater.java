@@ -29,6 +29,7 @@ import edu.kit.trufflehog.model.network.graph.components.node.NodeStatisticsComp
 import edu.kit.trufflehog.model.network.graph.components.node.PacketDataLoggingComponent;
 import edu.kit.trufflehog.service.packetdataprocessor.IPacketData;
 import edu.uci.ics.jung.graph.GraphUpdater;
+import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,9 +67,15 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
 
         final NodeStatisticsComponent other = (NodeStatisticsComponent) instance;
 
-        nodeStatisticsComponent.setOutgoingCount(nodeStatisticsComponent.getOutgoingCount() + other.getOutgoingCount());
+        Platform.runLater(() -> {
 
-        nodeStatisticsComponent.setIncomingCount(nodeStatisticsComponent.getIncomingCount() + other.getIncomingCount());
+            nodeStatisticsComponent.setOutgoingCount(nodeStatisticsComponent.getOutgoingCount() + other.getOutgoingCount());
+
+            nodeStatisticsComponent.setIncomingCount(nodeStatisticsComponent.getIncomingCount() + other.getIncomingCount());
+
+
+        });
+
 
         // TODO maybe check for more variants of values (potential bug???)
 /*        if (other.getOutgoingCount() == 0 && other.getIncomingCount() == 0)
@@ -94,9 +101,16 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
     @Override
     public boolean update(PacketDataLoggingComponent packetDataLoggingComponent, IComponent instance) {
         if (!packetDataLoggingComponent.equals(instance)) return false;
+
         PacketDataLoggingComponent updater = (PacketDataLoggingComponent)instance;
-        for (IPacketData packetData:updater.getObservablePackets()) {
-            packetDataLoggingComponent.addPacket(packetData);
+
+        for (IPacketData packetData : updater.getObservablePackets()) {
+
+            Platform.runLater(() -> {
+
+                packetDataLoggingComponent.addPacket(packetData);
+
+            });
         }
 
         return true;
@@ -127,20 +141,25 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
 
     @Override
     public boolean update(BasicEdgeRenderer basicEdgeRenderer, IRenderer instance) {
-        if (basicEdgeRenderer.getCurrentBrightness() > 0.7) {
+/*        if (basicEdgeRenderer.getCurrentBrightness() > 0.7) {
             return true;
         }
 
         // TODO implement more
         basicEdgeRenderer.setCurrentBrightness(1.0f);
+        return true;*/
         return true;
     }
 
     @Override
     public boolean update(EdgeStatisticsComponent edgeStatisticsComponent, IComponent instance) {
         // TODO maybe change to another value
-        edgeStatisticsComponent.setLastUpdateTimeProperty(Instant.now().toEpochMilli());
-        edgeStatisticsComponent.incrementTraffic(1);
+        Platform.runLater(() -> {
+
+            edgeStatisticsComponent.setLastUpdateTimeProperty(Instant.now().toEpochMilli());
+            edgeStatisticsComponent.incrementTraffic(1);
+        });
+
         return true;
     }
 
@@ -155,12 +174,18 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
         boolean changed = false;
 
         if (other.getDeviceName() != null) {
-            nodeInfoComponent.setDeviceName(other.getDeviceName());
+            Platform.runLater(() -> {
+                nodeInfoComponent.setDeviceName(other.getDeviceName());
+            });
+
             changed = true;
         }
 
         if (other.getIPAddress() != null) {
-            nodeInfoComponent.setIPAddress(other.getIPAddress());
+            Platform.runLater(() -> {
+                nodeInfoComponent.setIPAddress(other.getIPAddress());
+            });
+
             changed = true;
         }
         return changed;
@@ -189,7 +214,11 @@ public class LiveUpdater implements IUpdater, GraphUpdater<INode, IConnection> {
         if (!filterPropertiesComponent.equals(instance))
             return false;
 
-        filterPropertiesComponent.addFilterColors(((FilterPropertiesComponent)instance).getFilterColors());
+        Platform.runLater(() -> {
+            filterPropertiesComponent.addFilterColors(((FilterPropertiesComponent)instance).getFilterColors());
+        });
+
+
         return true;
     }
 

@@ -162,6 +162,7 @@ public class Presenter {
     private void initGUI() {
 
         final AnchorPane root = new AnchorPane();
+        root.setPrefSize(1360, 768);
         final Scene scene = new Scene(root);
 
 
@@ -290,7 +291,8 @@ public class Presenter {
         filterEditingMenuView.toFront();
 
         primaryStage.setScene(scene);
-        primaryStage.show();
+
+        Platform.runLater(primaryStage::show);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

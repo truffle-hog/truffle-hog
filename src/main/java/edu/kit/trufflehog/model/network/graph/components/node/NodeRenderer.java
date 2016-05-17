@@ -47,7 +47,10 @@ public class NodeRenderer implements IRenderer {
 
        // shape.getStyle
 
-        shape.fillProperty().bind(fillPaintProperty);
+        Platform.runLater(() -> {
+            shape.fillProperty().bind(fillPaintProperty);
+        });
+
         //shape.strokeProperty().bind(strokePaintProperty);
         shape.setStrokeWidth(6);
     }
@@ -80,9 +83,11 @@ public class NodeRenderer implements IRenderer {
         // TODO maybe make this more error prone
         if (fpc != null) {
 
-            shape.fillProperty().unbind();
+            Platform.runLater(() -> {
+                shape.fillProperty().unbind();
+                shape.fillProperty().bind(new When(fpc.hasColorProperty()).then(fpc.activeColorProperty()).otherwise(colorPicked));
 
-            shape.fillProperty().bind(new When(fpc.hasColorProperty()).then(fpc.activeColorProperty()).otherwise(colorPicked));
+            });
 
         }
     }
