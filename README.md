@@ -1,7 +1,5 @@
 # TruffleHog
 
-[![Build Status](https://travis-ci.org/TruffleHog/TruffleHog.svg?branch=master)](https://travis-ci.org/TruffleHog/TruffleHog) [![Coverage Status](https://coveralls.io/repos/github/TruffleHog/TruffleHog/badge.svg)](https://coveralls.io/github/TruffleHog/TruffleHog)
-
 The usage manual is located [here](http://trufflehog.github.io/TruffleHog).
 
 This program requires a modified version of Snort including a PROFINET-preprocessor in order to collect so called Truffles representing a semantic analysis of one PROFINET-network package. 
