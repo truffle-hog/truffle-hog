@@ -128,5 +128,5 @@ jacocoTestReport {
 }
 
 test {
-    exclude 'edu/kit/trufflehog/MainTest'
+    exclude '**/MainTest.class'
 }
