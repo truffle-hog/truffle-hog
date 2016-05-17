@@ -37,7 +37,7 @@
 <a id="setup" class="anchor" href="#setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup</h2>
 
 <ol>
-<li>Start the customized version of Snort you can obtain <a href="https://github.com/TruffleHog/spp_profinet">here</a>. It contains a PROFINET-preprocessor as well as the necessary classes for IPC with TruffleHog. </li>
+<li>Start Snort with the plugin you can obtain <a href="https://github.com/TruffleHog/spp_profinet">here</a>. It contains a PROFINET-preprocessor as well as the necessary classes for IPC with TruffleHog. The README contains information on how to integrate the plugin into Snort. </li>
 <li>Start TruffleHog as you would start any other Java-program by either running <code>./bin/TruffleHog</code> if you downloaded the Release or <code>java Main</code> if you cloned the source code. Consider that you might need to have <em>Java by Oracle</em>, not <em>OpenJDK</em> installed. It should work out-of-the-box on Linux.</li>
 <li>Click <em>Connect</em> in the lower left corner of the main TruffleHog window. If no IPC server is found, the program will show artificial demo traffic.</li>
 <li>You are good to go. As soon as Snort intercepts packages TruffleHog will start building a graph of the PROFINET-devices and their connections.</li>
