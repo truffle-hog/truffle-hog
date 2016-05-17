@@ -1,5 +1,5 @@
 group 'edu.kit.trufflehog'
-version '0.0.1-SNAPSHOT'
+version '0.1'
 
 apply plugin: 'java'
 apply plugin: 'jacoco'
@@ -125,8 +125,4 @@ jacocoTestReport {
         xml.enabled = true // coveralls plugin depends on xml format report
         html.enabled = true
     }
-}
-
-test {
-    exclude '**/MainTest.class'
 }
