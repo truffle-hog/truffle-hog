@@ -126,3 +126,7 @@ jacocoTestReport {
         html.enabled = true
     }
 }
+
+test {
+    exclude 'edu/kit/trufflehog/MainTest'
+}
