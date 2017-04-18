@@ -76,19 +76,6 @@ public class FileSystemTest {
 
     /**
      * <p>
-     *     Tests if the replay_log folder is created correctly.
-     * </p>
-     *
-     * @throws Exception Passes any errors that occurred during the test on
-     */
-    @Test
-    public void testGetReplayLogFolder() throws Exception {
-        boolean fileExists = fileSystem.getReplayLogFolder().exists();
-        assertEquals(fileExists, true);
-    }
-
-    /**
-     * <p>
      *     Tests if the config folder is created correctly.
      * </p>
      *
